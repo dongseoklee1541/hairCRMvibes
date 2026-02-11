@@ -1,0 +1,22 @@
+{
+  "name": "미용실 CRM",
+  "short_name": "헤어CRM",
+  "description": "고객관리 & 예약관리 미용실 CRM 앱",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F4F1",
+  "theme_color": "#F5F4F1",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

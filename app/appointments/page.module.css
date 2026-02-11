@@ -1,0 +1,93 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  padding: 4px;
+}
+
+.calendarCard {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.calendarRow {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0;
+}
+
+.dayHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 0 8px;
+}
+
+.dayCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 50%;
+  transition: all var(--transition-fast);
+}
+
+.dayCell:not(:disabled):hover {
+  background: var(--border-subtle);
+}
+
+.daySelected {
+  background: var(--accent-primary) !important;
+  font-weight: 600;
+}
+
+.dayToday {
+  border: 1.5px solid var(--accent-primary);
+}
+
+.emptyState {
+  padding: 32px;
+  text-align: center;
+}
+
+.apptRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+}
+
+.accentBar {
+  width: 4px;
+  height: 36px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.apptTime {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 48px;
+  flex-shrink: 0;
+}
+
+.apptInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
