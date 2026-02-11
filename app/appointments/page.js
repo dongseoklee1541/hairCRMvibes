@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Plus, Loader2 } from 'lucide-react';
-import TabBar from '@/components/TabBar';
+
 import { supabase } from '@/lib/supabase';
 import styles from './page.module.css';
 
@@ -181,7 +181,7 @@ export default function AppointmentsPage() {
                     >
                       {day || ''}
                       {hasAppt && day !== selectedDay && (
-                        <div style={{
+                        <span style={{
                           position: 'absolute',
                           bottom: -6,
                           left: '50%',
@@ -245,7 +245,7 @@ export default function AppointmentsPage() {
         </section>
       </div>
 
-      <TabBar />
+
     </>
   );
 }

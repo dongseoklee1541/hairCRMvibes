@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { Search, UserPlus, ChevronRight, User, Loader2 } from 'lucide-react';
-import TabBar from '@/components/TabBar';
+
 import { supabase } from '@/lib/supabase';
 import styles from './page.module.css';
 
@@ -187,7 +187,7 @@ export default function HomePage() {
         </section>
       </div>
 
-      <TabBar />
+
     </>
   );
 }
