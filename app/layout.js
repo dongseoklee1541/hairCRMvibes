@@ -1,5 +1,6 @@
 import { Outfit } from "next/font/google";
 import "./globals.css";
+import TabBar from "@/components/TabBar";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -37,6 +38,7 @@ export default function RootLayout({ children }) {
       <body className={outfit.variable}>
         <div className="app-container">
           {children}
+          <TabBar />
         </div>
       </body>
     </html>
