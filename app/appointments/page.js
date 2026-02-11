@@ -229,7 +229,9 @@ export default function AppointmentsPage() {
                 >
                   <div className={styles.accentBar} style={{ background: i % 2 === 0 ? 'var(--accent-primary)' : 'var(--accent-warm)' }} />
                   <div className={styles.apptTime}>
-                    <span className="body-md" style={{ fontWeight: 600 }}>{appt.time.substring(0, 5)}</span>
+                    <span className="body-md" style={{ fontWeight: 600 }}>
+                      {appt.time ? appt.time.substring(0, 5) : '--:--'}
+                    </span>
                   </div>
                   <div className="divider" style={{ height: 36 }} />
                   <div className={styles.apptInfo}>

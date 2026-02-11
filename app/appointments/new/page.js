@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { X, ChevronDown, Check, Clock, Calendar as CalendarIcon, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import styles from './page.module.css';
 
-export default function NewAppointmentPage() {
+function NewAppointmentForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const customerIdFromQuery = searchParams.get('customerId');
@@ -212,5 +212,17 @@ export default function NewAppointmentPage() {
         </button>
       </form>
     </div>
+  );
+}
+
+export default function NewAppointmentPage() {
+  return (
+    <Suspense fallback={
+      <div className="page-content flex-center" style={{ height: '80vh' }}>
+        <Loader2 size={32} className="animate-spin text-tertiary" />
+      </div>
+    }>
+      <NewAppointmentForm />
+    </Suspense>
   );
 }

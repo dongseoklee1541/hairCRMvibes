@@ -7,17 +7,18 @@ const outfit = Outfit({
   weight: ["300", "400", "500", "600", "700"],
 });
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: "#F5F4F1",
+};
+
 export const metadata = {
   title: "미용실 CRM",
   description: "고객관리 & 예약관리 미용실 CRM 모바일 앱",
   manifest: "/manifest.json",
-  themeColor: "#F5F4F1",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",

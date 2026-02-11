@@ -128,7 +128,11 @@ export default function HomePage() {
                     <span className="caption">{customer.phone}</span>
                   </div>
                   <div className={styles.customerMeta}>
-                    {/* customer.last_visit 필드는 현재 스키마에 없으므로 일단 생략하거나 이력에서 계산 필요 */}
+                    {customer.last_visit ? (
+                      <span className="caption text-tertiary">{formatLastVisit(customer.last_visit)}</span>
+                    ) : (
+                      <span className="caption text-tertiary">기록 없음</span>
+                    )}
                     <ChevronRight size={16} className="text-tertiary" />
                   </div>
                 </Link>
@@ -169,7 +173,7 @@ export default function HomePage() {
                   />
                   <div className={styles.apptTime}>
                     <span className="body-md" style={{ fontWeight: 600 }}>
-                      {appt.time.substring(0, 5)}
+                      {appt.time ? appt.time.substring(0, 5) : '--:--'}
                     </span>
                   </div>
                   <div className="divider" style={{ height: 32 }} />
