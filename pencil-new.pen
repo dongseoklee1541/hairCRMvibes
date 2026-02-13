@@ -1252,7 +1252,8 @@
                           "fill": "#9C9894",
                           "content": "010-1234-5678",
                           "fontFamily": "Outfit",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -1347,7 +1348,8 @@
                           "fill": "#9C9894",
                           "content": "010-9876-5432",
                           "fontFamily": "Outfit",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -1364,7 +1366,8 @@
                           "fill": "#9C9894",
                           "content": "기록 없음",
                           "fontFamily": "Outfit",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "icon_font",
@@ -2185,6 +2188,896 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "MnzM5",
+      "x": -483,
+      "y": 0,
+      "name": "고객 상세 페이지",
+      "clip": true,
+      "width": 402,
+      "fill": "$bg-primary",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "M7rz9",
+          "name": "Nav Bar",
+          "width": "fill_container",
+          "height": 56,
+          "padding": [
+            0,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "Kqrld",
+              "name": "Back Button",
+              "gap": 4,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon_font",
+                  "id": "U3ZlU",
+                  "name": "backIcon",
+                  "width": 22,
+                  "height": 22,
+                  "iconFontName": "chevron-left",
+                  "iconFontFamily": "lucide",
+                  "fill": "$text-primary"
+                },
+                {
+                  "type": "text",
+                  "id": "3ROJR",
+                  "name": "backText",
+                  "fill": "$text-primary",
+                  "content": "뒤로",
+                  "fontFamily": "Outfit",
+                  "fontSize": 15,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "xhHlz",
+              "name": "Edit Button",
+              "width": 36,
+              "height": 36,
+              "fill": "$bg-surface",
+              "cornerRadius": 100,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#1A191808",
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "blur": 12
+              },
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon_font",
+                  "id": "lhSK4",
+                  "name": "editIcon",
+                  "width": 16,
+                  "height": 16,
+                  "iconFontName": "pencil",
+                  "iconFontFamily": "lucide",
+                  "fill": "$text-secondary"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Mpzso",
+          "name": "Content Wrapper",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": [
+            0,
+            24,
+            100,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "vQJRS",
+              "name": "Profile Card",
+              "width": "fill_container",
+              "fill": "$bg-surface",
+              "cornerRadius": 16,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#1A191808",
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "blur": 12
+              },
+              "gap": 16,
+              "padding": 20,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "63wlM",
+                  "name": "Avatar",
+                  "width": 72,
+                  "height": 72,
+                  "fill": "$accent-light",
+                  "cornerRadius": 100,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "9UNhu",
+                      "name": "avatarIcon",
+                      "width": 32,
+                      "height": 32,
+                      "iconFontName": "user",
+                      "iconFontFamily": "lucide",
+                      "fill": "$accent-primary"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "VwiRi",
+                  "name": "Profile Info",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "RdHtz",
+                      "name": "profileName",
+                      "fill": "$text-primary",
+                      "content": "김지은",
+                      "fontFamily": "Outfit",
+                      "fontSize": 22,
+                      "fontWeight": "600",
+                      "letterSpacing": -0.3
+                    },
+                    {
+                      "type": "text",
+                      "id": "y8Xt1",
+                      "name": "profilePhone",
+                      "fill": "$text-secondary",
+                      "content": "010-1234-5678",
+                      "fontFamily": "Outfit",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "p9Spu",
+                      "name": "profileSince",
+                      "fill": "$text-tertiary",
+                      "content": "등록일: 2024.08.15",
+                      "fontFamily": "Outfit",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "zR3DB",
+              "name": "Memo Section",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "4O9hq",
+                  "name": "Memo Header",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "2Niey",
+                      "name": "memoTitle",
+                      "fill": "$text-primary",
+                      "content": "특이사항",
+                      "fontFamily": "Outfit",
+                      "fontSize": 18,
+                      "fontWeight": "600",
+                      "letterSpacing": -0.2
+                    },
+                    {
+                      "type": "frame",
+                      "id": "2mrfc",
+                      "name": "Memo Edit Btn",
+                      "fill": "$accent-light",
+                      "cornerRadius": 100,
+                      "gap": 4,
+                      "padding": [
+                        6,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "OKdxs",
+                          "name": "memoEditIcon",
+                          "width": 14,
+                          "height": 14,
+                          "iconFontName": "pencil",
+                          "iconFontFamily": "lucide",
+                          "fill": "$accent-primary"
+                        },
+                        {
+                          "type": "text",
+                          "id": "6L3wZ",
+                          "name": "memoEditText",
+                          "fill": "$accent-primary",
+                          "content": "편집",
+                          "fontFamily": "Outfit",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "G9BJ5",
+                  "name": "Memo Card",
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": 16,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#1A191808",
+                    "offset": {
+                      "x": 0,
+                      "y": 2
+                    },
+                    "blur": 12
+                  },
+                  "layout": "vertical",
+                  "gap": 8,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "FgumJ",
+                      "name": "memoText",
+                      "fill": "$text-secondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "• 두피가 민감한 편 — 약산성 제품 사용 권장\n• 왼쪽 앞머리 볼륨 선호\n• 펌 후 2주 뒤 커트 트리밍 예약 습관\n• 염색 시 자연 갈색 톤 선호 (7단 레벨)",
+                      "lineHeight": 1.7,
+                      "fontFamily": "Outfit",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "CzDdC",
+              "name": "History Section",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "OEKjM",
+                  "name": "History Header",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "RUVkz",
+                      "name": "historyTitle",
+                      "fill": "$text-primary",
+                      "content": "시술 이력",
+                      "fontFamily": "Outfit",
+                      "fontSize": 18,
+                      "fontWeight": "600",
+                      "letterSpacing": -0.2
+                    },
+                    {
+                      "type": "frame",
+                      "id": "AKhsy",
+                      "name": "History Meta",
+                      "gap": 8,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "KVLmy",
+                          "name": "historyCount",
+                          "fill": "$text-tertiary",
+                          "content": "총 12회",
+                          "fontFamily": "Outfit",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "yPWlQ",
+                          "name": "Add Btn",
+                          "width": 36,
+                          "height": 36,
+                          "fill": "$accent-primary",
+                          "cornerRadius": 100,
+                          "effect": {
+                            "type": "shadow",
+                            "shadowType": "outer",
+                            "color": "#3D8A5A33",
+                            "offset": {
+                              "x": 0,
+                              "y": 2
+                            },
+                            "blur": 8
+                          },
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "HqgIb",
+                              "name": "historyAddIcon",
+                              "width": 16,
+                              "height": 16,
+                              "iconFontName": "plus",
+                              "iconFontFamily": "lucide",
+                              "fill": "#FFFFFF"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "HQYGS",
+                  "name": "History Card",
+                  "clip": true,
+                  "width": "fill_container",
+                  "fill": "$bg-surface",
+                  "cornerRadius": 16,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#1A191808",
+                    "offset": {
+                      "x": 0,
+                      "y": 2
+                    },
+                    "blur": 12
+                  },
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "UAlYb",
+                      "name": "History Row 1",
+                      "width": "fill_container",
+                      "gap": 14,
+                      "padding": [
+                        16,
+                        18
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "0BGZa",
+                          "name": "Date Col",
+                          "width": 52,
+                          "layout": "vertical",
+                          "gap": 2,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "5ka3o",
+                              "name": "dateText1",
+                              "fill": "$text-primary",
+                              "content": "02.10",
+                              "fontFamily": "Outfit",
+                              "fontSize": 13,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "JRDwU",
+                              "name": "dayText1",
+                              "fill": "$text-tertiary",
+                              "content": "월요일",
+                              "fontFamily": "Outfit",
+                              "fontSize": 10,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "6kSF7",
+                          "name": "divider1",
+                          "fill": "$border-subtle",
+                          "width": 1,
+                          "height": 36
+                        },
+                        {
+                          "type": "frame",
+                          "id": "DpJbI",
+                          "name": "Info Col",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "I8RFc",
+                              "name": "service1",
+                              "fill": "$text-primary",
+                              "content": "커트 + 펌",
+                              "fontFamily": "Outfit",
+                              "fontSize": 15,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "text",
+                              "id": "mNkPM",
+                              "name": "memo1",
+                              "fill": "$text-tertiary",
+                              "content": "C컬 펌 · 볼륨 윗부분 강조",
+                              "fontFamily": "Outfit",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "DTCAd",
+                          "name": "Status Badge",
+                          "fill": "$accent-light",
+                          "cornerRadius": 6,
+                          "padding": [
+                            4,
+                            8
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "46N7C",
+                              "name": "badgeText1",
+                              "fill": "$accent-primary",
+                              "content": "완료",
+                              "fontFamily": "Outfit",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "spTYx",
+                      "name": "Separator 1",
+                      "fill": "$border-subtle",
+                      "width": "fill_container",
+                      "height": 1
+                    },
+                    {
+                      "type": "frame",
+                      "id": "7BDFA",
+                      "name": "History Row 2",
+                      "width": "fill_container",
+                      "gap": 14,
+                      "padding": [
+                        16,
+                        18
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "cPvRI",
+                          "name": "Date Col 2",
+                          "width": 52,
+                          "layout": "vertical",
+                          "gap": 2,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "u1VZ3",
+                              "name": "dateText2",
+                              "fill": "$text-primary",
+                              "content": "01.25",
+                              "fontFamily": "Outfit",
+                              "fontSize": 13,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "KEnx1",
+                              "name": "dayText2",
+                              "fill": "$text-tertiary",
+                              "content": "토요일",
+                              "fontFamily": "Outfit",
+                              "fontSize": 10,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "nA2Fi",
+                          "name": "divider2",
+                          "fill": "$border-subtle",
+                          "width": 1,
+                          "height": 36
+                        },
+                        {
+                          "type": "frame",
+                          "id": "x4kYG",
+                          "name": "Info Col 2",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "afKc3",
+                              "name": "service2",
+                              "fill": "$text-primary",
+                              "content": "염색",
+                              "fontFamily": "Outfit",
+                              "fontSize": 15,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "text",
+                              "id": "Bhxyz",
+                              "name": "memo2",
+                              "fill": "$text-tertiary",
+                              "content": "자연 갈색 7레벨 · 뿌리 리터치",
+                              "fontFamily": "Outfit",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "FUSq5",
+                          "name": "Status Badge 2",
+                          "fill": "$accent-light",
+                          "cornerRadius": 6,
+                          "padding": [
+                            4,
+                            8
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "wtGmx",
+                              "name": "badgeText2",
+                              "fill": "$accent-primary",
+                              "content": "완료",
+                              "fontFamily": "Outfit",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "n6R9E",
+                      "name": "Separator 2",
+                      "fill": "$border-subtle",
+                      "width": "fill_container",
+                      "height": 1
+                    },
+                    {
+                      "type": "frame",
+                      "id": "HECjT",
+                      "name": "History Row 3",
+                      "width": "fill_container",
+                      "gap": 14,
+                      "padding": [
+                        16,
+                        18
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "QZKT7",
+                          "name": "Date Col 3",
+                          "width": 52,
+                          "layout": "vertical",
+                          "gap": 2,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "WjuNE",
+                              "name": "dateText3",
+                              "fill": "$text-primary",
+                              "content": "01.08",
+                              "fontFamily": "Outfit",
+                              "fontSize": 13,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "ZC7Jb",
+                              "name": "dayText3",
+                              "fill": "$text-tertiary",
+                              "content": "수요일",
+                              "fontFamily": "Outfit",
+                              "fontSize": 10,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "u5Gjo",
+                          "name": "divider3",
+                          "fill": "$border-subtle",
+                          "width": 1,
+                          "height": 36
+                        },
+                        {
+                          "type": "frame",
+                          "id": "hDjQf",
+                          "name": "Info Col 3",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "a8ZdT",
+                              "name": "service3",
+                              "fill": "$text-primary",
+                              "content": "커트",
+                              "fontFamily": "Outfit",
+                              "fontSize": 15,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "text",
+                              "id": "WxiUh",
+                              "name": "memo3",
+                              "fill": "$text-tertiary",
+                              "content": "앞머리 라운드 레이어드",
+                              "fontFamily": "Outfit",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "mSvRx",
+                          "name": "Status Badge 3",
+                          "fill": "$accent-light",
+                          "cornerRadius": 6,
+                          "padding": [
+                            4,
+                            8
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "r9lUV",
+                              "name": "badgeText3",
+                              "fill": "$accent-primary",
+                              "content": "완료",
+                              "fontFamily": "Outfit",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "8Ixr5",
+                      "name": "Separator 3",
+                      "fill": "$border-subtle",
+                      "width": "fill_container",
+                      "height": 1
+                    },
+                    {
+                      "type": "frame",
+                      "id": "NdfJ6",
+                      "name": "History Row 4",
+                      "width": "fill_container",
+                      "gap": 14,
+                      "padding": [
+                        16,
+                        18
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "RlmKY",
+                          "name": "Date Col 4",
+                          "width": 52,
+                          "layout": "vertical",
+                          "gap": 2,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "bfe4E",
+                              "name": "dateText4",
+                              "fill": "$text-primary",
+                              "content": "12.20",
+                              "fontFamily": "Outfit",
+                              "fontSize": 13,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "MBguM",
+                              "name": "dayText4",
+                              "fill": "$text-tertiary",
+                              "content": "금요일",
+                              "fontFamily": "Outfit",
+                              "fontSize": 10,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "rectangle",
+                          "id": "v4y9O",
+                          "name": "divider4",
+                          "fill": "$border-subtle",
+                          "width": 1,
+                          "height": 36
+                        },
+                        {
+                          "type": "frame",
+                          "id": "02oYg",
+                          "name": "Info Col 4",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Tr5KY",
+                              "name": "service4",
+                              "fill": "$text-primary",
+                              "content": "클리닉 + 트리트먼트",
+                              "fontFamily": "Outfit",
+                              "fontSize": 15,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "text",
+                              "id": "NUJEo",
+                              "name": "memo4",
+                              "fill": "$text-tertiary",
+                              "content": "두피 스케일링 · 단백질 케어",
+                              "fontFamily": "Outfit",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "m0J4x",
+                          "name": "Status Badge 4",
+                          "fill": "$accent-warm-light",
+                          "cornerRadius": 6,
+                          "padding": [
+                            4,
+                            8
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "RmgVR",
+                              "name": "badgeText4",
+                              "fill": "$accent-warm",
+                              "content": "예약",
+                              "fontFamily": "Outfit",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
-  ]
+  ],
+  "variables": {
+    "bg-primary": {
+      "type": "color",
+      "value": "#F5F4F1"
+    },
+    "text-primary": {
+      "type": "color",
+      "value": "#1A1918"
+    },
+    "bg-surface": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "text-secondary": {
+      "type": "color",
+      "value": "#6B6966"
+    },
+    "accent-light": {
+      "type": "color",
+      "value": "#C8F0D8"
+    },
+    "accent-primary": {
+      "type": "color",
+      "value": "#3D8A5A"
+    },
+    "text-tertiary": {
+      "type": "color",
+      "value": "#9C9894"
+    },
+    "border-subtle": {
+      "type": "color",
+      "value": "#EEECEA"
+    },
+    "accent-warm-light": {
+      "type": "color",
+      "value": "#F5DFD0"
+    },
+    "accent-warm": {
+      "type": "color",
+      "value": "#D89575"
+    }
+  }
 }
