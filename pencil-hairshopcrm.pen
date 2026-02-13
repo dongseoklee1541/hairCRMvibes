@@ -4,7 +4,7 @@
     {
       "type": "frame",
       "id": "IcfZ0",
-      "x": 0,
+      "x": 1632,
       "y": 0,
       "name": "통계 페이지",
       "width": 430,
@@ -1041,7 +1041,7 @@
     {
       "type": "frame",
       "id": "I3GZw",
-      "x": 520,
+      "x": -951,
       "y": 0,
       "name": "고객 리스트 페이지",
       "width": 430,
@@ -1182,7 +1182,8 @@
               "fill": "#6B6966",
               "content": "이름, 전화번호로 검색...",
               "fontFamily": "Outfit",
-              "fontSize": 15
+              "fontSize": 15,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -1280,7 +1281,8 @@
                           "fill": "#9C9894",
                           "content": "010-1234-5678",
                           "fontFamily": "Outfit",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -1297,7 +1299,8 @@
                           "fill": "#9C9894",
                           "content": "기록 없음",
                           "fontFamily": "Outfit",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "icon_font",
@@ -1383,7 +1386,8 @@
                           "fill": "#9C9894",
                           "content": "010-9876-5432",
                           "fontFamily": "Outfit",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -1400,7 +1404,8 @@
                           "fill": "#9C9894",
                           "content": "기록 없음",
                           "fontFamily": "Outfit",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "icon_font",
@@ -1454,7 +1459,8 @@
                       "fill": "#9C9894",
                       "content": "고객 정보를 불러오는 중입니다.",
                       "fontFamily": "Outfit",
-                      "fontSize": 12
+                      "fontSize": 12,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -1634,7 +1640,8 @@
                           "fill": "#9C9894",
                           "content": "오늘 예약이 없습니다.",
                           "fontFamily": "Outfit",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         }
                       ]
                     }
@@ -1649,14 +1656,18 @@
           "type": "ref",
           "ref": "WV7HX",
           "x": 0,
-          "y": 760
+          "y": 760,
+          "flipX": false,
+          "flipY": false,
+          "width": 430,
+          "height": 84
         }
       ]
     },
     {
       "type": "frame",
       "id": "TtNfz",
-      "x": 1050,
+      "x": 407,
       "y": 0,
       "name": "예약 페이지",
       "width": 430,
@@ -2474,7 +2485,8 @@
                               "fill": "#9C9894",
                               "content": "약 60분 예상",
                               "fontFamily": "Outfit",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -2521,7 +2533,8 @@
                       "fill": "#9C9894",
                       "content": "일정을 불러오는 중입니다.",
                       "fontFamily": "Outfit",
-                      "fontSize": 12
+                      "fontSize": 12,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -2564,7 +2577,8 @@
                       "fill": "#9C9894",
                       "content": "예약이 없습니다.",
                       "fontFamily": "Outfit",
-                      "fontSize": 12
+                      "fontSize": 12,
+                      "fontWeight": "normal"
                     }
                   ]
                 }
@@ -2584,7 +2598,7 @@
     {
       "type": "frame",
       "id": "NwNq2",
-      "x": 1480,
+      "x": 1012,
       "y": 0,
       "name": "새 예약 페이지",
       "width": 430,
@@ -2652,8 +2666,9 @@
           "y": 92,
           "name": "Content",
           "width": "fill_container(430)",
+          "height": 760,
           "layout": "vertical",
-          "gap": 24,
+          "gap": 20,
           "padding": [
             0,
             24
@@ -2677,13 +2692,15 @@
                 "blur": 12
               },
               "layout": "vertical",
-              "gap": 16,
+              "gap": 20,
               "padding": 16,
               "children": [
                 {
                   "type": "frame",
                   "id": "Dk3v2",
                   "name": "CustomerField",
+                  "width": 350,
+                  "height": 78,
                   "layout": "vertical",
                   "gap": 8,
                   "children": [
@@ -2700,7 +2717,7 @@
                       "type": "frame",
                       "id": "Lq2xV",
                       "name": "CustomerInput",
-                      "width": 382,
+                      "width": 350,
                       "height": 48,
                       "fill": "#F5F4F1",
                       "cornerRadius": 12,
@@ -2737,6 +2754,8 @@
                   "type": "frame",
                   "id": "yB9mT",
                   "name": "DateField",
+                  "width": 350,
+                  "height": 78,
                   "layout": "vertical",
                   "gap": 8,
                   "children": [
@@ -2753,7 +2772,7 @@
                       "type": "frame",
                       "id": "J7zQb",
                       "name": "DateInput",
-                      "width": 382,
+                      "width": 350,
                       "height": 48,
                       "fill": "#F5F4F1",
                       "cornerRadius": 12,
@@ -2790,6 +2809,8 @@
                   "type": "frame",
                   "id": "r9mC5",
                   "name": "TimeField",
+                  "width": 350,
+                  "height": 78,
                   "layout": "vertical",
                   "gap": 8,
                   "children": [
@@ -2806,7 +2827,7 @@
                       "type": "frame",
                       "id": "nQvT2",
                       "name": "TimeInput",
-                      "width": 382,
+                      "width": 350,
                       "height": 48,
                       "fill": "#F5F4F1",
                       "cornerRadius": 12,
@@ -2843,6 +2864,8 @@
                   "type": "frame",
                   "id": "gV2kX",
                   "name": "ServiceField",
+                  "width": 350,
+                  "height": 78,
                   "layout": "vertical",
                   "gap": 8,
                   "children": [
@@ -2859,11 +2882,11 @@
                       "type": "frame",
                       "id": "K7jLm",
                       "name": "ServiceInput",
-                      "width": 382,
+                      "width": 350,
                       "height": 48,
                       "fill": "#F5F4F1",
-                      "layout": "vertical",
                       "cornerRadius": 12,
+                      "layout": "vertical",
                       "padding": [
                         12,
                         16
@@ -2886,6 +2909,8 @@
                   "type": "frame",
                   "id": "Zp2jM",
                   "name": "DurationField",
+                  "width": 350,
+                  "height": 78,
                   "layout": "vertical",
                   "gap": 8,
                   "children": [
@@ -2902,7 +2927,7 @@
                       "type": "frame",
                       "id": "pQ3yN",
                       "name": "DurationInput",
-                      "width": 382,
+                      "width": 350,
                       "height": 48,
                       "fill": "#F5F4F1",
                       "cornerRadius": 12,
@@ -2939,6 +2964,8 @@
                   "type": "frame",
                   "id": "m2yPd",
                   "name": "MemoField",
+                  "width": 350,
+                  "height": 120,
                   "layout": "vertical",
                   "gap": 8,
                   "children": [
@@ -2955,11 +2982,11 @@
                       "type": "frame",
                       "id": "H8vQy",
                       "name": "MemoInput",
-                      "width": 382,
+                      "width": 350,
                       "height": 84,
                       "fill": "#F5F4F1",
-                      "layout": "vertical",
                       "cornerRadius": 12,
+                      "layout": "vertical",
                       "padding": [
                         12,
                         16
@@ -2982,19 +3009,19 @@
             },
             {
               "type": "frame",
-              "id": "aX9pL",
+              "id": "mT6pQ",
               "name": "SubmitButton",
-              "width": 382,
+              "width": 350,
               "height": 56,
               "fill": "#3D8A5A",
               "cornerRadius": 16,
+              "gap": 10,
               "justifyContent": "center",
               "alignItems": "center",
-              "gap": 10,
               "children": [
                 {
                   "type": "icon_font",
-                  "id": "rX7fD",
+                  "id": "eP4mR",
                   "width": 20,
                   "height": 20,
                   "iconFontName": "check",
@@ -3013,6 +3040,331 @@
               ]
             }
           ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "QmN8k",
+      "x": -497,
+      "y": 969,
+      "name": "새 고객 등록 페이지",
+      "width": 430,
+      "height": 900,
+      "fill": "#F5F4F1",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "V7h2r",
+          "x": 0,
+          "y": 0,
+          "name": "Header",
+          "width": "fill_container(430)",
+          "height": 80,
+          "padding": [
+            12,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "Lk8mF",
+              "name": "BackButton",
+              "width": 52,
+              "height": 36,
+              "gap": 4,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon_font",
+                  "id": "P8wGv",
+                  "width": 22,
+                  "height": 22,
+                  "iconFontName": "chevron-left",
+                  "iconFontFamily": "lucide",
+                  "fill": "#6B6966"
+                },
+                {
+                  "type": "text",
+                  "id": "tL2qN",
+                  "fill": "#6B6966",
+                  "content": "뒤로",
+                  "fontFamily": "Outfit",
+                  "fontSize": 11,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "z4QvA",
+              "fill": "#1A1918",
+              "content": "새 고객 등록",
+              "fontFamily": "Outfit",
+              "fontSize": 18,
+              "fontWeight": "600",
+              "letterSpacing": -0.2
+            },
+            {
+              "type": "frame",
+              "id": "y7xTq",
+              "width": 36,
+              "height": 36
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "sWcJd",
+          "x": 0,
+          "y": 92,
+          "name": "Content",
+          "width": "fill_container(430)",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": [
+            0,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "hK8sN",
+              "name": "FormCard",
+              "width": 382,
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#1A191808",
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "blur": 12
+              },
+              "layout": "vertical",
+              "gap": 20,
+              "padding": 20,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "mA4pM",
+                  "name": "NameField",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "qkV2e",
+                      "fill": "#6B6966",
+                      "content": "이름",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "NwD9j",
+                      "name": "NameInput",
+                      "width": 342,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Hc8pY",
+                          "fill": "#6B6966",
+                          "content": "고객명 입력",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "rP8qV",
+                  "name": "PhoneField",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Dg6hQ",
+                      "fill": "#6B6966",
+                      "content": "전화번호",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "kQ2mS",
+                      "name": "PhoneInput",
+                      "width": 342,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "j8nM6",
+                          "fill": "#6B6966",
+                          "content": "010-0000-0000",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "z8rTy",
+                  "name": "MemoField",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "x2jDq",
+                      "fill": "#6B6966",
+                      "content": "메모",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "P3rXq",
+                      "name": "MemoInput",
+                      "width": 342,
+                      "height": 84,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "layout": "vertical",
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "g7mLk",
+                          "fill": "#6B6966",
+                          "content": "고객 특이사항, 선호 스타일 등",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "aX9pL",
+              "name": "SubmitButton",
+              "width": 382,
+              "height": 56,
+              "fill": "#3D8A5A",
+              "cornerRadius": 16,
+              "gap": 10,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon_font",
+                  "id": "rX7fD",
+                  "width": 20,
+                  "height": 20,
+                  "iconFontName": "check",
+                  "iconFontFamily": "lucide",
+                  "fill": "#FFFFFF"
+                },
+                {
+                  "type": "text",
+                  "id": "Vg8xS",
+                  "fill": "#FFFFFF",
+                  "content": "등록 완료",
+                  "fontFamily": "Outfit",
+                  "fontSize": 17,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "rYt9h",
+      "x": 2184,
+      "y": 0,
+      "name": "설정 페이지",
+      "width": 430,
+      "height": 900,
+      "fill": "#F5F4F1",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "Kx1zP",
+          "x": 0,
+          "y": 0,
+          "width": 430,
+          "height": 760,
+          "layout": "vertical",
+          "gap": 16,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "y5nYk",
+              "fill": "#1A1918",
+              "content": "설정",
+              "fontFamily": "Outfit",
+              "fontSize": 22,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "m2qLp",
+              "fill": "#9C9894",
+              "content": "준비 중인 기능입니다.",
+              "fontFamily": "Outfit",
+              "fontSize": 15,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "id": "A0mQp",
+          "type": "ref",
+          "ref": "WV7HX",
+          "x": 0,
+          "y": 760
         }
       ]
     },
