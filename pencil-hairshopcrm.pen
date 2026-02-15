@@ -3373,7 +3373,7 @@
       "id": "WV7HX",
       "x": 0,
       "y": 760,
-      "name": "TabBar Component",
+      "name": "TabBar - Owner",
       "reusable": true,
       "width": 430,
       "height": 84,
@@ -3408,9 +3408,11 @@
             {
               "type": "icon_font",
               "id": "hDRQJ",
-              "width": 0,
-              "height": 0,
-              "iconFontFamily": "Material Symbols Rounded"
+              "width": 22,
+              "height": 22,
+              "iconFontName": "users",
+              "iconFontFamily": "lucide",
+              "fill": "#3D8A5A"
             },
             {
               "type": "text",
@@ -3434,9 +3436,11 @@
             {
               "type": "icon_font",
               "id": "OKmYl",
-              "width": 0,
-              "height": 0,
-              "iconFontFamily": "Material Symbols Rounded"
+              "width": 22,
+              "height": 22,
+              "iconFontName": "calendar",
+              "iconFontFamily": "lucide",
+              "fill": "#B8B4AE"
             },
             {
               "type": "text",
@@ -3460,9 +3464,11 @@
             {
               "type": "icon_font",
               "id": "J30I7",
-              "width": 0,
-              "height": 0,
-              "iconFontFamily": "Material Symbols Rounded"
+              "width": 22,
+              "height": 22,
+              "iconFontName": "trending-up",
+              "iconFontFamily": "lucide",
+              "fill": "#B8B4AE"
             },
             {
               "type": "text",
@@ -3486,15 +3492,407 @@
             {
               "type": "icon_font",
               "id": "ocMhC",
-              "width": 0,
-              "height": 0,
-              "iconFontFamily": "Material Symbols Rounded"
+              "width": 22,
+              "height": 22,
+              "iconFontName": "settings",
+              "iconFontFamily": "lucide",
+              "fill": "#B8B4AE"
             },
             {
               "type": "text",
               "id": "8mvBB",
               "fill": "#B8B4AE",
               "content": "설정",
+              "fontFamily": "Outfit",
+              "fontSize": 10,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "dP9mS",
+      "x": 1840,
+      "y": 0,
+      "name": "권한 없음 페이지",
+      "width": 430,
+      "height": 900,
+      "fill": "#F5F4F1",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "q3mA4",
+          "x": 24,
+          "y": 180,
+          "width": 382,
+          "height": 286,
+          "layout": "vertical",
+          "gap": 16,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "Qf8nL",
+              "fill": "#1A1918",
+              "content": "권한 없음",
+              "fontFamily": "Outfit",
+              "fontSize": 22,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "bN7hP",
+              "fill": "#9C9894",
+              "content": "이 페이지는 원장 계정만 접근할 수 있습니다.",
+              "fontFamily": "Outfit",
+              "fontSize": 15,
+              "fontWeight": "normal",
+              "textGrowth": "fixed-width",
+              "width": 340,
+              "textAlign": "center",
+              "lineHeight": 1.4
+            },
+            {
+              "type": "frame",
+              "id": "7qW3V",
+              "width": 140,
+              "height": 44,
+              "fill": "#3D8A5A",
+              "cornerRadius": 12,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "t2hKc",
+                  "fill": "#FFFFFF",
+                  "content": "홈으로 이동",
+                  "fontFamily": "Outfit",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Nq4Lx",
+      "x": 2260,
+      "y": 0,
+      "name": "로그인 페이지 (SSOT)",
+      "width": 430,
+      "height": 900,
+      "fill": "#F5F4F1",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "fG6rB",
+          "x": 24,
+          "y": 170,
+          "width": 382,
+          "height": 296,
+          "layout": "vertical",
+          "gap": 16,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "xY3Lp",
+              "fill": "#1A1918",
+              "content": "미용실 CRM 로그인",
+              "fontFamily": "Outfit",
+              "fontSize": 22,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "h1m3U",
+              "fill": "#9C9894",
+              "content": "계정 정보를 입력해 시작하세요.",
+              "fontFamily": "Outfit",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "w9a9E",
+              "width": 382,
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "p4X2N",
+                  "name": "Email Input",
+                  "width": 382,
+                  "height": 48,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 12,
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "n5P9s",
+                      "fill": "#9C9894",
+                      "content": "이메일",
+                      "fontFamily": "Outfit",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "q8vN0",
+                  "name": "Password Input",
+                  "width": 382,
+                  "height": 48,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 12,
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "j9kX2",
+                      "fill": "#9C9894",
+                      "content": "비밀번호",
+                      "fontFamily": "Outfit",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "m1fYd",
+                  "width": 382,
+                  "height": 48,
+                  "fill": "#3D8A5A",
+                  "cornerRadius": 12,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "r7qNw",
+                      "width": 18,
+                      "height": 18,
+                      "iconFontName": "log-in",
+                      "iconFontFamily": "lucide",
+                      "fill": "#FFFFFF"
+                    },
+                    {
+                      "type": "text",
+                      "id": "a8YwL",
+                      "fill": "#FFFFFF",
+                      "content": "로그인",
+                      "fontFamily": "Outfit",
+                      "fontSize": 15,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ],
+              "alignItems": "center"
+            },
+            {
+              "type": "text",
+              "id": "xB9aQ",
+              "fill": "#9C9894",
+              "content": "앱 사용 권한은 운영자가 사전에 부여합니다.",
+              "fontFamily": "Outfit",
+              "fontSize": 12,
+              "fontWeight": "normal",
+              "textAlign": "center"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Rk2cA",
+      "x": 2680,
+      "y": 0,
+      "name": "Role Mapping Note",
+      "width": 430,
+      "height": 260,
+      "fill": "#FFFFFF",
+      "cornerRadius": 16,
+      "padding": [
+        16,
+        16
+      ],
+      "layout": "vertical",
+      "gap": 10,
+      "children": [
+        {
+          "type": "text",
+          "id": "p9kW2",
+          "fill": "#1A1918",
+          "content": "권한 분기 규칙",
+          "fontFamily": "Outfit",
+          "fontSize": 16,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "j0L4m",
+          "fill": "#1A1918",
+          "content": "role=owner: TabBar - Owner 사용 + /settings 접근 허용",
+          "fontFamily": "Outfit",
+          "fontSize": 12,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "fP4qN",
+          "fill": "#1A1918",
+          "content": "role=staff: TabBar - Staff 사용 + /settings 접근 시 권한 없음 표시",
+          "fontFamily": "Outfit",
+          "fontSize": 12,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "Yg2qM",
+          "fill": "#1A1918",
+          "content": "role=guest: /login 화면은 탭바 미노출",
+          "fontFamily": "Outfit",
+          "fontSize": 12,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "uJ1mV",
+          "fill": "#1A1918",
+          "content": "Path Rule: /customers/:id, /appointments/new, /login에서 탭바 미노출",
+          "fontFamily": "Outfit",
+          "fontSize": 11,
+          "fontWeight": "500"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "S4w2L",
+      "x": 0,
+      "y": 760,
+      "name": "TabBar - Staff",
+      "reusable": true,
+      "width": 430,
+      "height": 84,
+      "fill": "#FFFFFF",
+      "cornerRadius": [
+        24,
+        24,
+        0,
+        0
+      ],
+      "effect": {
+        "type": "shadow",
+        "shadowType": "outer",
+        "color": "#1A191803",
+        "offset": {
+          "x": 0,
+          "y": -1
+        },
+        "blur": 8
+      },
+      "justifyContent": "space_around",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "hD7jS",
+          "name": "tab1",
+          "layout": "vertical",
+          "gap": 4,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon_font",
+              "id": "s1aW9",
+              "width": 22,
+              "height": 22,
+              "iconFontName": "users",
+              "iconFontFamily": "lucide",
+              "fill": "#3D8A5A"
+            },
+            {
+              "type": "text",
+              "id": "s8pHq",
+              "fill": "#3D8A5A",
+              "content": "고객",
+              "fontFamily": "Outfit",
+              "fontSize": 10,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "p6kJt",
+          "name": "tab2",
+          "layout": "vertical",
+          "gap": 4,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon_font",
+              "id": "s9rQp",
+              "width": 22,
+              "height": 22,
+              "iconFontName": "calendar",
+              "iconFontFamily": "lucide",
+              "fill": "#B8B4AE"
+            },
+            {
+              "type": "text",
+              "id": "d4fVb",
+              "fill": "#B8B4AE",
+              "content": "예약",
+              "fontFamily": "Outfit",
+              "fontSize": 10,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "n8qLh",
+          "name": "tab3",
+          "layout": "vertical",
+          "gap": 4,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon_font",
+              "id": "q0zLm",
+              "width": 22,
+              "height": 22,
+              "iconFontName": "trending-up",
+              "iconFontFamily": "lucide",
+              "fill": "#B8B4AE"
+            },
+            {
+              "type": "text",
+              "id": "d1rMn",
+              "fill": "#B8B4AE",
+              "content": "통계",
               "fontFamily": "Outfit",
               "fontSize": 10,
               "fontWeight": "normal"
