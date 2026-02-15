@@ -4,7 +4,7 @@
     {
       "type": "frame",
       "id": "IcfZ0",
-      "x": 1632,
+      "x": 920,
       "y": 0,
       "name": "통계 페이지",
       "width": 430,
@@ -1041,7 +1041,7 @@
     {
       "type": "frame",
       "id": "I3GZw",
-      "x": -951,
+      "x": 0,
       "y": 0,
       "name": "고객 리스트 페이지",
       "width": 430,
@@ -1667,7 +1667,7 @@
     {
       "type": "frame",
       "id": "TtNfz",
-      "x": 407,
+      "x": 460,
       "y": 0,
       "name": "예약 페이지",
       "width": 430,
@@ -2598,8 +2598,8 @@
     {
       "type": "frame",
       "id": "NwNq2",
-      "x": 1012,
-      "y": 0,
+      "x": 460,
+      "y": 940,
       "name": "새 예약 페이지",
       "width": 430,
       "height": 900,
@@ -3046,8 +3046,8 @@
     {
       "type": "frame",
       "id": "QmN8k",
-      "x": -497,
-      "y": 969,
+      "x": 0,
+      "y": 940,
       "name": "새 고객 등록 페이지",
       "width": 430,
       "height": 900,
@@ -3319,7 +3319,7 @@
     {
       "type": "frame",
       "id": "rYt9h",
-      "x": 2184,
+      "x": 1380,
       "y": 0,
       "name": "설정 페이지",
       "width": 430,
@@ -3371,8 +3371,8 @@
     {
       "type": "frame",
       "id": "WV7HX",
-      "x": 192,
-      "y": -246,
+      "x": 0,
+      "y": 760,
       "name": "TabBar Component",
       "reusable": true,
       "width": 430,
@@ -3506,11 +3506,12 @@
     {
       "type": "frame",
       "id": "MnzM5",
-      "x": -483,
-      "y": 0,
+      "x": 920,
+      "y": 940,
       "name": "고객 상세 페이지",
       "clip": true,
-      "width": 402,
+      "width": 430,
+      "height": 900,
       "fill": "$bg-primary",
       "layout": "vertical",
       "children": [
