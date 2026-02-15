@@ -3226,9 +3226,37 @@
                           "type": "text",
                           "id": "j8nM6",
                           "fill": "#6B6966",
-                          "content": "010-0000-0000",
+                          "content": "010-0000-0000 또는 02-000-0000",
                           "fontFamily": "Outfit",
                           "fontSize": 15,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "h8qZc",
+                      "name": "PhoneHelp",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "p2kQx",
+                          "fill": "#9C9894",
+                          "content": "숫자만 넣어도 돼요. 저장할 때 -를 자동으로 넣어드려요.",
+                          "fontFamily": "Outfit",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "q1mLw",
+                          "fill": "#9C9894",
+                          "content": "예: 010-1234-5678, 02-123-4567",
+                          "fontFamily": "Outfit",
+                          "fontSize": 11,
                           "fontWeight": "normal"
                         }
                       ]
@@ -3309,6 +3337,98 @@
                   "fontFamily": "Outfit",
                   "fontSize": 17,
                   "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "hW7eQ",
+              "name": "PhoneErrorCaptureSection_Guide",
+              "width": 382,
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#1A191808",
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "blur": 12
+              },
+              "layout": "vertical",
+              "gap": 12,
+              "padding": 20,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "hQm3b",
+                  "fill": "#6B6966",
+                  "content": "전화번호 오류 상태 샘플",
+                  "fontFamily": "Outfit",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "g4kP9",
+                  "fill": "#9C9894",
+                  "content": "가이드: 잘못된 번호일 때만 에러 문구가 보이는 샘플입니다.",
+                  "fontFamily": "Outfit",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "u2fJd",
+                  "name": "PhoneFieldErrorSample_Guide",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "n9mWQ",
+                      "fill": "#6B6966",
+                      "content": "전화번호",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "w8rP3",
+                      "name": "PhoneInputError",
+                      "width": 342,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "b4kX2",
+                          "fill": "#6B6966",
+                          "content": "12a34",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "x7zRk",
+                      "fill": "#D85B5B",
+                      "content": "형식이 맞지 않습니다. 휴대폰은 010/011... 시작, 유선은 02, 031, 032... 형태입니다.",
+                      "fontFamily": "Outfit",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
                 }
               ]
             }
