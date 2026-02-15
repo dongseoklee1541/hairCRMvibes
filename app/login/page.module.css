@@ -1,0 +1,39 @@
+.loginForm {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.loginCard {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-lg);
+}
+
+.loginTitle {
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.loginDescription {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.loginMessage {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background: #fdecea;
+  color: var(--status-negative);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.loginFooter {
+  margin-top: 20px;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
