@@ -343,6 +343,8 @@ ul, ol {
   flex-direction: column;
   align-items: center;
   gap: 4px;
+  min-height: 44px;
+  min-width: 44px;
   color: var(--tab-inactive);
   transition: color var(--transition-fast);
   font-size: 10px;
