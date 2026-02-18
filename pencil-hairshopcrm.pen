@@ -3799,6 +3799,12 @@
                   "type": "frame",
                   "id": "m1fYd",
                   "width": 382,
+                  "metadata": {
+                    "type": "prototype",
+                    "action": "navigate",
+                    "target": "IcfZ0",
+                    "targetType": "frame"
+                  },
                   "height": 48,
                   "fill": "#3D8A5A",
                   "cornerRadius": 12,
@@ -3817,6 +3823,14 @@
                     {
                       "type": "text",
                       "id": "a8YwL",
+                      "href": "/stats",
+                      "metadata": {
+                        "type": "prototype",
+                        "action": "navigate",
+                        "target": "/stats",
+                        "targetType": "route",
+                        "fallback": true
+                      },
                       "fill": "#FFFFFF",
                       "content": "로그인",
                       "fontFamily": "Outfit",
