@@ -2755,7 +2755,7 @@
                   "id": "yB9mT",
                   "name": "DateField",
                   "width": 350,
-                  "height": 78,
+                  "height": "fit_content(98)",
                   "layout": "vertical",
                   "gap": 8,
                   "children": [
@@ -2763,7 +2763,7 @@
                       "type": "text",
                       "id": "h2qfR",
                       "fill": "#6B6966",
-                      "content": "예약 날짜",
+                      "content": "예약 날짜 (휴무일 선택 불가)",
                       "fontFamily": "Outfit",
                       "fontSize": 13,
                       "fontWeight": "600"
@@ -2802,6 +2802,15 @@
                           "fill": "#9C9894"
                         }
                       ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "r03DateHelp",
+                      "fill": "#9C9894",
+                      "content": "휴무일은 달력에서 비활성화됩니다.",
+                      "fontFamily": "Outfit",
+                      "fontSize": 12,
+                      "fontWeight": "500"
                     }
                   ]
                 },
@@ -3452,31 +3461,223 @@
           "id": "Kx1zP",
           "x": 0,
           "y": 0,
-          "width": 430,
+          "width": "fill_container(430)",
           "height": 760,
           "layout": "vertical",
           "gap": 16,
-          "justifyContent": "center",
-          "alignItems": "center",
+          "justifyContent": "start",
+          "alignItems": "start",
           "children": [
             {
               "type": "text",
-              "id": "y5nYk",
+              "id": "r03SettingsTitle",
               "fill": "#1A1918",
               "content": "설정",
               "fontFamily": "Outfit",
-              "fontSize": 22,
-              "fontWeight": "600"
+              "fontSize": 26,
+              "fontWeight": "700",
+              "letterSpacing": -0.5
             },
             {
               "type": "text",
-              "id": "m2qLp",
-              "fill": "#9C9894",
-              "content": "준비 중인 기능입니다.",
+              "id": "r03SettingsSubtitle",
+              "fill": "#6B6966",
+              "content": "휴무일 관리와 충돌 예약 정리를 설정합니다.",
               "fontFamily": "Outfit",
-              "fontSize": 15,
+              "fontSize": 14,
               "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "r03ClosedCard",
+              "name": "ClosedDayCard",
+              "width": "fill_container",
+              "height": "fit_content(0)",
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#1A191808",
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "blur": 12
+              },
+              "layout": "vertical",
+              "gap": 12,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "r03ClosedCardTitle",
+                  "fill": "#1A1918",
+                  "content": "휴무일 추가",
+                  "fontFamily": "Outfit",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "r03ClosedDateInput",
+                  "name": "ClosedDateInput",
+                  "width": "fill_container",
+                  "height": 48,
+                  "fill": "#F5F4F1",
+                  "cornerRadius": 12,
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "r03ClosedDateInputText",
+                      "fill": "#1A1918",
+                      "content": "날짜 선택",
+                      "fontFamily": "Outfit",
+                      "fontSize": 15,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "icon_font",
+                      "id": "r03ClosedDateInputIcon",
+                      "width": 18,
+                      "height": 18,
+                      "iconFontName": "calendar",
+                      "iconFontFamily": "lucide",
+                      "fill": "#9C9894"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "r03ConflictCard",
+              "name": "ConflictPreviewCard",
+              "width": "fill_container",
+              "height": "fit_content(0)",
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#1A191808",
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "blur": 12
+              },
+              "layout": "vertical",
+              "gap": 10,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "r03ConflictTitle",
+                  "fill": "#1A1918",
+                  "content": "충돌 예약 확인",
+                  "fontFamily": "Outfit",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "r03ConflictDesc",
+                  "fill": "#6B6966",
+                  "content": "해당 날짜 예약 중 confirmed만 선택 취소할 수 있습니다.",
+                  "fontFamily": "Outfit",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "r03ConflictItem",
+                  "name": "ConflictItem",
+                  "width": "fill_container",
+                  "height": "fit_content(0)",
+                  "fill": "#F5F4F1",
+                  "cornerRadius": 12,
+                  "padding": [
+                    10,
+                    12
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "r03ConflictItemText",
+                      "fill": "#1A1918",
+                      "content": "10:00 김고객 · 커트",
+                      "fontFamily": "Outfit",
+                      "fontSize": 14,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "text",
+                      "id": "r03ConflictItemBadge",
+                      "fill": "#3D8A5A",
+                      "content": "confirmed",
+                      "fontFamily": "Outfit",
+                      "fontSize": 11,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "r03ClosedListCard",
+              "name": "ClosedDayListCard",
+              "width": "fill_container",
+              "height": "fit_content(0)",
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#1A191808",
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "blur": 12
+              },
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "r03ClosedListTitle",
+                  "fill": "#1A1918",
+                  "content": "등록된 휴무일",
+                  "fontFamily": "Outfit",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "r03ClosedListItem",
+                  "fill": "#6B6966",
+                  "content": "2026-02-19 · 교육 일정",
+                  "fontFamily": "Outfit",
+                  "fontSize": 13,
+                  "fontWeight": "500"
+                }
+              ]
             }
+          ],
+          "padding": [
+            20,
+            24
           ]
         },
         {
