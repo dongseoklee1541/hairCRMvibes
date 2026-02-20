@@ -2,8 +2,11 @@
 
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { X, ChevronDown, Check, Clock, Calendar as CalendarIcon, Loader2 } from 'lucide-react';
+import { X, ChevronDown, Check, Clock, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import AppointmentDatePicker from '@/components/appointments/AppointmentDatePicker';
+import { addDaysToDateKey, getTodayKstDateKey } from '@/lib/dateTime';
+import { buildClosedDateSet, isClosedDate } from '@/lib/appointmentRules';
 import styles from './page.module.css';
 
 function NewAppointmentForm() {
@@ -13,16 +16,29 @@ function NewAppointmentForm() {
   
   const [loading, setLoading] = useState(false);
   const [fetchingCustomers, setFetchingCustomers] = useState(true);
+  const [fetchingClosedDays, setFetchingClosedDays] = useState(true);
   const [customers, setCustomers] = useState([]);
+  const [closedDateSet, setClosedDateSet] = useState(new Set());
   
   const [formData, setFormData] = useState({
     customer_id: '',
-    date: new Date().toISOString().split('T')[0],
+    date: getTodayKstDateKey(),
     time: '10:00',
     service: '',
     duration: '1시간',
     memo: '',
   });
+
+  const findNextAvailableDate = useCallback((startDate, blockedSet) => {
+    let candidate = startDate;
+    for (let i = 0; i < 365; i += 1) {
+      if (!blockedSet.has(candidate)) {
+        return candidate;
+      }
+      candidate = addDaysToDateKey(candidate, 1);
+    }
+    return startDate;
+  }, []);
 
   const fetchCustomers = useCallback(async () => {
     try {
@@ -48,14 +64,46 @@ function NewAppointmentForm() {
     }
   }, [customerIdFromQuery]);
 
+  const fetchClosedDays = useCallback(async () => {
+    try {
+      setFetchingClosedDays(true);
+      const { data, error } = await supabase
+        .from('salon_closed_dates')
+        .select('closed_date');
+
+      if (error) throw error;
+
+      const nextClosedSet = buildClosedDateSet(data || []);
+      setClosedDateSet(nextClosedSet);
+      setFormData((prev) => {
+        if (!nextClosedSet.has(prev.date)) {
+          return prev;
+        }
+        return {
+          ...prev,
+          date: findNextAvailableDate(prev.date, nextClosedSet),
+        };
+      });
+    } catch (error) {
+      console.error('Error fetching closed days:', error);
+    } finally {
+      setFetchingClosedDays(false);
+    }
+  }, [findNextAvailableDate]);
+
   useEffect(() => {
     fetchCustomers();
-  }, [fetchCustomers]);
+    fetchClosedDays();
+  }, [fetchCustomers, fetchClosedDays]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.customer_id || !formData.date || !formData.time || !formData.service) {
       alert('모든 필수 항목을 입력해주세요.');
+      return;
+    }
+    if (isClosedDate(formData.date, closedDateSet)) {
+      alert('휴무일은 예약할 수 없습니다. 다른 날짜를 선택해주세요.');
       return;
     }
 
@@ -126,15 +174,17 @@ function NewAppointmentForm() {
           {/* Date */}
           <div className="form-group">
             <label className="form-label">예약 날짜</label>
-            <div className="form-input">
-              <input 
-                type="date" 
+            <AppointmentDatePicker
                 value={formData.date} 
-                onChange={(e) => setFormData({...formData, date: e.target.value})} 
-                disabled={loading}
-              />
-              <CalendarIcon size={18} color="var(--text-tertiary)" />
-            </div>
+                onChange={(nextDate) => setFormData({ ...formData, date: nextDate })}
+                disabled={loading || fetchingClosedDays}
+                disabledDates={closedDateSet}
+            />
+            <p className={styles.dateHelp}>
+              {fetchingClosedDays
+                ? '휴무일 정보를 불러오는 중입니다...'
+                : '휴무일은 달력에서 선택할 수 없도록 비활성화됩니다.'}
+            </p>
           </div>
 
           {/* Time */}
@@ -200,7 +250,7 @@ function NewAppointmentForm() {
           </div>
         </div>
 
-        <button type="submit" className="btn-primary" disabled={loading || fetchingCustomers}>
+        <button type="submit" className="btn-primary" disabled={loading || fetchingCustomers || fetchingClosedDays}>
           {loading ? (
             <Loader2 size={20} className="animate-spin" />
           ) : (

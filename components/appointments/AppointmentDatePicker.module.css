@@ -1,0 +1,102 @@
+.trigger {
+  width: 100%;
+  min-height: 48px;
+  border-radius: 12px;
+  background: var(--bg-primary);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.32);
+  z-index: 220;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.picker {
+  width: min(430px, 100%);
+  background: var(--bg-surface);
+  border-radius: 20px 20px 0 0;
+  padding: 16px 16px calc(18px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.dayLabel {
+  min-height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+}
+
+.emptyCell {
+  min-height: 40px;
+}
+
+.dateCell {
+  min-height: 44px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+}
+
+.selected {
+  background: var(--accent-primary);
+  color: #fff;
+  font-weight: 600;
+}
+
+.disabled {
+  color: #c8c5c1;
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+.todayBtn {
+  min-height: 46px;
+  border-radius: 12px;
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 600;
+}
