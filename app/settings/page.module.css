@@ -11,6 +11,32 @@
   gap: 14px;
 }
 
+.modeTabs {
+  display: flex;
+  gap: 8px;
+}
+
+.modeButton {
+  flex: 1;
+  min-height: 44px;
+  border-radius: 999px;
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.modeButtonActive {
+  background: var(--text-primary);
+  color: #fff;
+}
+
+.splitRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
 .actions {
   display: flex;
   flex-direction: column;
@@ -44,6 +70,41 @@
   padding: 10px 12px;
 }
 
+.warningBox {
+  min-height: 44px;
+  border-radius: 12px;
+  background: #fff7ec;
+  color: #8c4f00;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+}
+
+.policyText {
+  margin-top: -6px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.impactCard {
+  border-radius: 12px;
+  background: var(--bg-primary);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.impactValue {
+  color: #8c4f00;
+  font-size: 13px;
+  font-weight: 600;
+}
+
 .closedDateList {
   display: flex;
   flex-direction: column;
@@ -68,4 +129,10 @@
   justify-content: center;
   color: var(--text-tertiary);
   font-size: 13px;
+}
+
+@media (max-width: 380px) {
+  .splitRow {
+    grid-template-columns: 1fr;
+  }
 }
