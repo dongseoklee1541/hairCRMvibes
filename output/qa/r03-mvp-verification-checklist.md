@@ -193,7 +193,7 @@ order by time;
 ## R-03 Lite 확장 검증 (기간/정기/기간 해제)
 
 > 브랜치: `feature/r03-closed-days-lite`  
-> 점검 시각(UTC): `2026-02-21`  
+> 점검 시각(UTC): `2026-02-21T14:46:42.883Z`  
 
 ### A) 로컬 빌드
 - [x] `npm run build`
@@ -210,17 +210,17 @@ order by time;
   - “해제해도 기존 취소 예약은 자동복구되지 않습니다.”
 
 ### C) 신규 DB 함수 접근 확인
-- [ ] `apply_closed_days_batch_with_cancellations(...)`
-- [ ] `remove_closed_day_range(...)`
-- 결과: `BLOCKED`
+- [x] `apply_closed_days_batch_with_cancellations(...)`
+- [x] `remove_closed_day_range(...)`
+- 결과: `PASS`
 - 메모:
-  - 현재 연결된 Supabase 프로젝트 스키마 캐시에 신규 함수가 없음(`PGRST202`)
-  - 신규 마이그레이션 파일 적용 필요:
-    - `supabase/migrations/20260221_r03_closed_days_lite.sql`
+  - 신규 함수 2개 호출 성공
+  - `PGRST202` 미발생으로 스키마 반영 확인
+  - 권한 경계 추가 확인: Owner 성공, Staff `42501` 거부
 
 ### D) 확장 기능 최종 판정
-- 최종 결과: `PARTIAL`
-- 배포 가능 여부: `조건부 보류`
+- 최종 결과: `PASS`
+- 배포 가능 여부: `가능 (Lite 확장 검증 기준)`
 - 남은 작업:
-  - 1. 신규 마이그레이션을 대상 Supabase 프로젝트에 적용
-  - 2. Owner/Staff 권한 시나리오 및 기간/정기/해제 RPC 실측 재검증
+  - 1. 운영 계정 기준 동일 시나리오 1회 재실행(권장)
+  - 2. PR 후 main 기준 스모크 테스트 1회(권장)
