@@ -187,3 +187,40 @@ order by time;
 - 후속 조치:
   - 1. 운영 반영 전 동일 시나리오를 실제 운영 계정으로 1회 재실행 권장
   - 2. 월 단위로 휴무일 대량 등록 시 UX(스크롤/성능) 스모크 테스트 권장
+
+---
+
+## R-03 Lite 확장 검증 (기간/정기/기간 해제)
+
+> 브랜치: `feature/r03-closed-days-lite`  
+> 점검 시각(UTC): `2026-02-21`  
+
+### A) 로컬 빌드
+- [x] `npm run build`
+- 결과: `PASS`
+- 메모:
+  - `/settings` 모드 확장(single/range/weekly) 코드 포함 상태로 빌드 통과
+
+### B) UI 동작(모바일 화면 수동 점검)
+- [x] `/settings` 진입 후 `단일/기간/정기` 모드 전환
+- [x] `휴무일 해제` 섹션 노출 및 경고 문구 확인
+- 결과: `PASS`
+- 메모:
+  - “선택 기간의 모든 휴무일이 해제됩니다.”
+  - “해제해도 기존 취소 예약은 자동복구되지 않습니다.”
+
+### C) 신규 DB 함수 접근 확인
+- [ ] `apply_closed_days_batch_with_cancellations(...)`
+- [ ] `remove_closed_day_range(...)`
+- 결과: `BLOCKED`
+- 메모:
+  - 현재 연결된 Supabase 프로젝트 스키마 캐시에 신규 함수가 없음(`PGRST202`)
+  - 신규 마이그레이션 파일 적용 필요:
+    - `supabase/migrations/20260221_r03_closed_days_lite.sql`
+
+### D) 확장 기능 최종 판정
+- 최종 결과: `PARTIAL`
+- 배포 가능 여부: `조건부 보류`
+- 남은 작업:
+  - 1. 신규 마이그레이션을 대상 Supabase 프로젝트에 적용
+  - 2. Owner/Staff 권한 시나리오 및 기간/정기/해제 RPC 실측 재검증
