@@ -122,7 +122,7 @@ Use the following template verbatim:
 
 ## 5) Verification & Testing Rules
 
-* After implementing functionality, test in mobile viewport using **Antigravity’s browser agent**.
+* After implementing functionality, test in mobile viewport using **Playwright MCP**.
 * Minimum test viewports (recommended):
 
   * 390×844 (iPhone 14/15 class)
