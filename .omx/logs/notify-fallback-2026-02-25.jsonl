@@ -1,0 +1,4 @@
+{"timestamp":"2026-02-25T06:32:27.465Z","type":"watcher_start","cwd":"/Users/idongseog/workspace/hairCRMvibes","notify_script":"/opt/homebrew/lib/node_modules/oh-my-codex/scripts/notify-hook.js","poll_ms":700,"once":false}
+{"timestamp":"2026-02-25T06:32:35.471Z","type":"watcher_start","cwd":"/Users/idongseog/workspace/hairCRMvibes","notify_script":"/opt/homebrew/lib/node_modules/oh-my-codex/scripts/notify-hook.js","poll_ms":700,"once":true}
+{"timestamp":"2026-02-25T06:32:35.475Z","type":"watcher_once_complete","seen_turns":0}
+{"timestamp":"2026-02-25T06:32:35.483Z","type":"watcher_stop","signal":"SIGTERM"}

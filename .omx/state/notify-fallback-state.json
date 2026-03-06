@@ -1,0 +1,9 @@
+{
+  "pid": 10996,
+  "started_at": "2026-03-06T01:26:57.944Z",
+  "cwd": "/Users/idongseog/workspace/hairCRMvibes",
+  "notify_script": "/opt/homebrew/lib/node_modules/oh-my-codex/scripts/notify-hook.js",
+  "poll_ms": 700,
+  "tracked_files": 0,
+  "seen_turns": 0
+}
