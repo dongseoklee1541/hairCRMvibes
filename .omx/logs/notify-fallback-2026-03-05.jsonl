@@ -1,4 +1,0 @@
-{"timestamp":"2026-03-05T03:44:29.728Z","type":"watcher_start","cwd":"/Users/idongseog/workspace/hairCRMvibes","notify_script":"/opt/homebrew/lib/node_modules/oh-my-codex/scripts/notify-hook.js","poll_ms":700,"once":false}
-{"timestamp":"2026-03-05T03:45:44.276Z","type":"fallback_notify","ok":true,"thread_id":"019cbc19-3761-7ab2-a739-0d7607a6fa70","turn_id":"019cbc19-88be-7521-859f-1d1cadfa57ab","file":"/Users/idongseog/.codex/sessions/2026/03/05/rollout-2026-03-05T12-44-55-019cbc19-3761-7ab2-a739-0d7607a6fa70.jsonl","reason":"sent"}
-{"timestamp":"2026-03-05T03:46:08.935Z","type":"fallback_notify","ok":true,"thread_id":"019cbc19-3761-7ab2-a739-0d7607a6fa70","turn_id":"019cbc1a-4f81-7060-8799-7bb6311475ab","file":"/Users/idongseog/.codex/sessions/2026/03/05/rollout-2026-03-05T12-44-55-019cbc19-3761-7ab2-a739-0d7607a6fa70.jsonl","reason":"sent"}
-{"timestamp":"2026-03-06T01:26:57.768Z","type":"watcher_stop","signal":"SIGTERM"}

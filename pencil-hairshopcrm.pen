@@ -2700,350 +2700,51 @@
                   "id": "Dk3v2",
                   "name": "CustomerField",
                   "width": 350,
-                  "height": "fit_content(386)",
+                  "height": 78,
                   "layout": "vertical",
                   "gap": 8,
                   "children": [
                     {
+                      "type": "text",
+                      "id": "v8mLQ",
+                      "fill": "#6B6966",
+                      "content": "고객 선택",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
                       "type": "frame",
-                      "id": "s7kFZ",
-                      "name": "CustomerFieldHeader",
+                      "id": "Lq2xV",
+                      "name": "CustomerInput",
                       "width": 350,
-                      "height": 20,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
                       "justifyContent": "space_between",
                       "alignItems": "center",
                       "children": [
                         {
                           "type": "text",
-                          "id": "GRZzT",
-                          "fill": "#6B6966",
-                          "content": "고객 선택",
-                          "fontFamily": "Outfit",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "text",
-                          "id": "kNkDD",
-                          "fill": "#3D8A5A",
-                          "content": "원하는 고객이 없어요",
-                          "fontFamily": "Outfit",
-                          "fontSize": 12,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "zzwHt",
-                      "name": "CustomerSearchInput",
-                      "width": 350,
-                      "height": 48,
-                      "fill": "#F5F4F1",
-                      "cornerRadius": 12,
-                      "gap": 10,
-                      "padding": [
-                        12,
-                        16
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon_font",
-                          "id": "JItm4",
-                          "width": 18,
-                          "height": 18,
-                          "iconFontName": "search",
-                          "iconFontFamily": "lucide",
-                          "fill": "#9C9894"
-                        },
-                        {
-                          "type": "text",
-                          "id": "cZhH6",
-                          "fill": "#9C9894",
-                          "content": "이름 또는 전화번호로 검색",
+                          "id": "k5fQw",
+                          "fill": "#1A1918",
+                          "content": "김철수",
                           "fontFamily": "Outfit",
                           "fontSize": 15,
                           "fontWeight": "500"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "ZRtEr",
-                      "name": "CustomerResultList",
-                      "width": 350,
-                      "fill": "#F5F4F1",
-                      "cornerRadius": 12,
-                      "layout": "vertical",
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "3KkCd",
-                          "name": "CustomerRowSelected",
-                          "width": "fill_container",
-                          "height": 52,
-                          "padding": [
-                            10,
-                            14
-                          ],
-                          "justifyContent": "space_between",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "RTK66",
-                              "layout": "vertical",
-                              "gap": 2,
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "YxyQZ",
-                                  "fill": "#1A1918",
-                                  "content": "김철수",
-                                  "fontFamily": "Outfit",
-                                  "fontSize": 14,
-                                  "fontWeight": "600"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "Pisso",
-                                  "fill": "#6B6966",
-                                  "content": "010-1234-5678",
-                                  "fontFamily": "Outfit",
-                                  "fontSize": 12,
-                                  "fontWeight": "500"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "icon_font",
-                              "id": "wt1zB",
-                              "width": 16,
-                              "height": 16,
-                              "iconFontName": "check",
-                              "iconFontFamily": "lucide",
-                              "fill": "#3D8A5A"
-                            }
-                          ]
                         },
                         {
-                          "type": "frame",
-                          "id": "J1qQL",
-                          "name": "Divider",
-                          "width": "fill_container",
-                          "height": 1,
-                          "fill": "#E7E4DF"
-                        },
-                        {
-                          "type": "frame",
-                          "id": "e5Lst",
-                          "name": "CustomerRow",
-                          "width": "fill_container",
-                          "height": 52,
-                          "padding": [
-                            10,
-                            14
-                          ],
-                          "justifyContent": "space_between",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "vhhci",
-                              "layout": "vertical",
-                              "gap": 2,
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "6zkQg",
-                                  "fill": "#1A1918",
-                                  "content": "박민지",
-                                  "fontFamily": "Outfit",
-                                  "fontSize": 14,
-                                  "fontWeight": "500"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "y13FU",
-                                  "fill": "#6B6966",
-                                  "content": "010-7777-1111",
-                                  "fontFamily": "Outfit",
-                                  "fontSize": 12,
-                                  "fontWeight": "500"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "icon_font",
-                              "id": "qVRwQ",
-                              "width": 16,
-                              "height": 16,
-                              "iconFontName": "chevron-right",
-                              "iconFontFamily": "lucide",
-                              "fill": "#9C9894"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "fhIUC",
-                          "name": "Divider",
-                          "width": "fill_container",
-                          "height": 1,
-                          "fill": "#E7E4DF"
-                        },
-                        {
-                          "type": "frame",
-                          "id": "vxeTe",
-                          "name": "CustomerRow",
-                          "width": "fill_container",
-                          "height": 52,
-                          "padding": [
-                            10,
-                            14
-                          ],
-                          "justifyContent": "space_between",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "fHH58",
-                              "layout": "vertical",
-                              "gap": 2,
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "NFn37",
-                                  "fill": "#1A1918",
-                                  "content": "이서윤",
-                                  "fontFamily": "Outfit",
-                                  "fontSize": 14,
-                                  "fontWeight": "500"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "e2n8E",
-                                  "fill": "#6B6966",
-                                  "content": "02-123-4567",
-                                  "fontFamily": "Outfit",
-                                  "fontSize": 12,
-                                  "fontWeight": "500"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "icon_font",
-                              "id": "zqAvN",
-                              "width": 16,
-                              "height": 16,
-                              "iconFontName": "chevron-right",
-                              "iconFontFamily": "lucide",
-                              "fill": "#9C9894"
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "type": "text",
-                      "id": "IxKsr",
-                      "name": "SearchEmptyHint",
-                      "fill": "#9C9894",
-                      "content": "검색 결과가 없으면 아래에서 바로 등록할 수 있어요.",
-                      "fontFamily": "Outfit",
-                      "fontSize": 11,
-                      "fontWeight": "500"
-                    },
-                    {
-                      "type": "frame",
-                      "id": "GlEWS",
-                      "name": "QuickCreateCard",
-                      "width": 350,
-                      "fill": "#F5F4F1",
-                      "cornerRadius": 12,
-                      "layout": "vertical",
-                      "gap": 10,
-                      "padding": 12,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "78Dux",
-                          "fill": "#1A1918",
-                          "content": "원하는 고객이 없나요?",
-                          "fontFamily": "Outfit",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "frame",
-                          "id": "HnFwY",
-                          "name": "QuickCreateNameInput",
-                          "width": "fill_container",
-                          "height": 44,
-                          "fill": "#FFFFFF",
-                          "cornerRadius": 10,
-                          "padding": [
-                            10,
-                            12
-                          ],
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "rP0EE",
-                              "fill": "#9C9894",
-                              "content": "이름 입력 (필수)",
-                              "fontFamily": "Outfit",
-                              "fontSize": 14,
-                              "fontWeight": "500"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "4Judt",
-                          "name": "QuickCreatePhoneInput",
-                          "width": "fill_container",
-                          "height": 44,
-                          "fill": "#FFFFFF",
-                          "cornerRadius": 10,
-                          "padding": [
-                            10,
-                            12
-                          ],
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "vYvon",
-                              "fill": "#9C9894",
-                              "content": "전화번호 입력 (선택)",
-                              "fontFamily": "Outfit",
-                              "fontSize": 14,
-                              "fontWeight": "500"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "276f1",
-                          "name": "QuickCreateButton",
-                          "width": "fill_container",
-                          "height": 44,
-                          "fill": "#3D8A5A",
-                          "cornerRadius": 10,
-                          "justifyContent": "center",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "Ppsf8",
-                              "fill": "#FFFFFF",
-                              "content": "고객 생성 후 자동 선택",
-                              "fontFamily": "Outfit",
-                              "fontSize": 13,
-                              "fontWeight": "600"
-                            }
-                          ]
+                          "type": "icon_font",
+                          "id": "tY8fG",
+                          "width": 18,
+                          "height": 18,
+                          "iconFontName": "chevron-down",
+                          "iconFontFamily": "lucide",
+                          "fill": "#9C9894"
                         }
                       ]
                     }
