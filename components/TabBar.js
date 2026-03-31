@@ -19,16 +19,16 @@ function shouldHideByPath(pathname) {
 
 export default function TabBar() {
   const pathname = usePathname();
-  const { isAuthReady, isRoleReady, role, user, loading } = useAuth();
+  const { isAuthReady, isRoleReady, role, roleLoadError, user, loading } = useAuth();
 
   const isLoginPage = pathname === '/login';
 
   const tabs = useMemo(() => {
-    if (!isAuthReady || loading) {
+    if (!isAuthReady || !isRoleReady || loading) {
       return [];
     }
 
-    if (!user || !isRoleReady) {
+    if (!user || roleLoadError || !role) {
       return [];
     }
 
@@ -37,7 +37,7 @@ export default function TabBar() {
     }
 
     return baseTabs.filter((tab) => tab.href !== '/settings');
-  }, [isAuthReady, isRoleReady, role, user, loading]);
+  }, [isAuthReady, isRoleReady, role, roleLoadError, user, loading]);
 
   if (!tabs.length) {
     return null;

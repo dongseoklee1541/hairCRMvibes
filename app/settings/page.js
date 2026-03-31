@@ -238,8 +238,7 @@ function SettingsPageContent() {
       setConflicts([]);
       setSelectedConflictIds([]);
       setSheetOpen(false);
-      await fetchClosedDates();
-      await calculateImpact();
+      await Promise.all([fetchClosedDates(), calculateImpact()]);
     } catch (error) {
       console.error('휴무일 저장 오류:', error);
       setFeedbackMessage(error?.message || '휴무일 저장 중 오류가 발생했습니다.');
@@ -287,8 +286,7 @@ function SettingsPageContent() {
       const cancelledCount = data?.cancelled_count ?? currentImpact;
 
       setFeedbackMessage(`${modeLabel} 휴무일 ${appliedDays}일 저장, confirmed ${cancelledCount}건 취소 완료.`);
-      await fetchClosedDates();
-      await calculateImpact();
+      await Promise.all([fetchClosedDates(), calculateImpact()]);
     } catch (error) {
       console.error('기간/정기 휴무일 저장 오류:', error);
       setFeedbackMessage(error?.message || '기간/정기 휴무일 저장 중 오류가 발생했습니다.');
@@ -327,8 +325,7 @@ function SettingsPageContent() {
       if (error) throw error;
 
       setFeedbackMessage(`휴무일 ${data?.removed_days || 0}일이 해제되었습니다.`);
-      await fetchClosedDates();
-      await calculateImpact();
+      await Promise.all([fetchClosedDates(), calculateImpact()]);
     } catch (error) {
       console.error('휴무일 해제 오류:', error);
       setFeedbackMessage(error?.message || '휴무일 해제 중 오류가 발생했습니다.');

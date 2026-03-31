@@ -24,18 +24,32 @@ export default function AuthGate({
   const {
     user,
     role,
+    roleLoadError,
+    signOut,
     loading,
     isAuthReady,
     isRoleReady,
   } = useAuth();
 
   const needsRoleCheck = Array.isArray(allowedRoles) && allowedRoles.length > 0;
-  const hasRole = Boolean(role);
-  const isAllowed = !needsRoleCheck || (hasRole && allowedRoles.includes(role));
-  const waiting = loading || (needsRoleCheck && !isRoleReady);
+  const hasRole = Boolean(role) && !roleLoadError;
+  const isAllowed = hasRole && (!needsRoleCheck || allowedRoles.includes(role));
+  const waiting = loading || !isAuthReady || !isRoleReady;
+
+  const forbiddenTitle = roleLoadError ? '권한 확인 필요' : '권한 없음';
+  const forbiddenDescription = roleLoadError
+    ? '계정 권한을 확인할 수 없습니다. 다른 계정으로 다시 로그인해주세요.'
+    : needsRoleCheck
+      ? '이 페이지는 원장 계정만 접근할 수 있습니다.'
+      : '현재 계정으로는 이 페이지를 이용할 수 없습니다.';
+  const actionKind = roleLoadError ? 'button' : 'link';
+  const actionLabel = roleLoadError ? '로그아웃' : '홈으로 이동';
+  const handleRoleRecovery = () => {
+    void signOut();
+  };
 
   useEffect(() => {
-    if (!requireAuth || waiting || !isAuthReady || user) {
+    if (!requireAuth || waiting || user) {
       return;
     }
 
@@ -51,7 +65,6 @@ export default function AuthGate({
   }, [
     requireAuth,
     waiting,
-    isAuthReady,
     user,
     pathname,
     redirectTo,
@@ -62,7 +75,7 @@ export default function AuthGate({
     return <>{children}</>;
   }
 
-  if (!isAuthReady || waiting) {
+  if (waiting) {
     return (
       loadingFallback || (
         <div className="page-content flex-center" style={{ minHeight: '70vh' }}>
@@ -80,10 +93,12 @@ export default function AuthGate({
     return (
       forbiddenFallback || (
         <ForbiddenView
-          title="권한 없음"
-          description="이 페이지는 원장 계정만 접근할 수 있습니다."
+          title={forbiddenTitle}
+          description={forbiddenDescription}
           actionHref="/"
-          actionLabel="홈으로 이동"
+          actionLabel={actionLabel}
+          actionKind={actionKind}
+          onAction={roleLoadError ? handleRoleRecovery : null}
         />
       )
     );

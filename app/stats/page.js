@@ -48,21 +48,22 @@ export default function StatsPage() {
         .toISOString()
         .split('T')[0];
 
-      // 이번 달 예약 가져오기
-      const { data: apptData, error: apptError } = await supabase
-        .from('appointments')
-        .select('*, customers(id, name)')
-        .gte('date', firstDay)
-        .lte('date', lastDay)
-        .order('date', { ascending: false });
+      const [
+        { data: apptData, error: apptError },
+        { data: custData, error: custError },
+      ] = await Promise.all([
+        supabase
+          .from('appointments')
+          .select('*, customers(id, name)')
+          .gte('date', firstDay)
+          .lte('date', lastDay)
+          .order('date', { ascending: false }),
+        supabase
+          .from('customers')
+          .select('*'),
+      ]);
 
       if (apptError) throw apptError;
-
-      // 전체 고객 목록
-      const { data: custData, error: custError } = await supabase
-        .from('customers')
-        .select('*');
-
       if (custError) throw custError;
 
       setAppointments(apptData || []);

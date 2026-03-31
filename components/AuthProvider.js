@@ -17,6 +17,7 @@ const AuthContext = createContext({
   user: null,
   session: null,
   role: null,
+  roleLoadError: false,
   loading: true,
   isAuthReady: false,
   isRoleReady: false,
@@ -30,6 +31,7 @@ const AuthContext = createContext({
 export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
   const [role, setRole] = useState(null);
+  const [roleLoadError, setRoleLoadError] = useState(false);
   const [loading, setLoading] = useState(hasAuthClient);
   const [isAuthReady, setIsAuthReady] = useState(false);
   const [isRoleReady, setIsRoleReady] = useState(false);
@@ -39,16 +41,19 @@ export function AuthProvider({ children }) {
   const resolveRole = async (currentUser) => {
     if (!currentUser) {
       setRole(null);
+      setRoleLoadError(false);
       setIsRoleReady(true);
       return;
     }
 
     if (!hasAuthClient) {
-      setRole('staff');
+      setRole(null);
+      setRoleLoadError(true);
       setIsRoleReady(true);
       return;
     }
 
+    setRoleLoadError(false);
     setIsRoleReady(false);
 
     try {
@@ -62,17 +67,20 @@ export function AuthProvider({ children }) {
         if (process.env.NODE_ENV !== 'production') {
           console.error('프로필 조회 오류:', error);
         }
-        setRole('staff');
+        setRole(null);
+        setRoleLoadError(true);
         return;
       }
 
-      const nextRole = VALID_ROLES.has(data?.role) ? data.role : 'staff';
+      const nextRole = VALID_ROLES.has(data?.role) ? data.role : null;
       setRole(nextRole);
+      setRoleLoadError(nextRole === null);
     } catch (error) {
       if (process.env.NODE_ENV !== 'production') {
         console.error('프로필 조회 예외:', error);
       }
-      setRole('staff');
+      setRole(null);
+      setRoleLoadError(true);
     } finally {
       setIsRoleReady(true);
     }
@@ -119,6 +127,7 @@ export function AuthProvider({ children }) {
         if (!cancelled) {
           setSession(null);
           setRole(null);
+          setRoleLoadError(false);
           setIsRoleReady(true);
         }
       } finally {
@@ -175,6 +184,7 @@ export function AuthProvider({ children }) {
     if (!hasAuthClient) {
       setSession(null);
       setRole(null);
+      setRoleLoadError(false);
       setIsRoleReady(true);
       return;
     }
@@ -193,6 +203,7 @@ export function AuthProvider({ children }) {
       user,
       session,
       role,
+      roleLoadError,
       loading,
       isAuthReady,
       isRoleReady,
@@ -200,7 +211,7 @@ export function AuthProvider({ children }) {
       signOut,
       refreshAuth,
     }),
-    [user, session, role, loading, isAuthReady, isRoleReady]
+    [user, session, role, roleLoadError, loading, isAuthReady, isRoleReady]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

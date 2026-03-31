@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hair CRM Vibes
 
-## Getting Started
+Next.js 15 기반의 소형 헤어샵 CRM입니다. 고객 관리, 예약, 통계, 권한 기반 설정 화면을 포함합니다.
 
-First, run the development server:
+## 주요 화면
+
+- `/` 고객 검색 및 오늘 예약 요약
+- `/appointments` 예약 목록
+- `/customers/new` 고객 등록
+- `/customers/[id]` 고객 상세 및 이력
+- `/stats` 월간 통계
+- `/settings` 원장 전용 휴무일 관리
+- `/login` 이메일/비밀번호 로그인
+
+## 기술 스택
+
+- Next.js 15
+- React 19
+- Supabase
+- Node built-in test runner
+
+## 실행
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 검증
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```bash
+npm test
+npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+현재 저장소에는 별도 ESLint 설정이 없어 `next lint`가 대화형 초기화 프롬프트를 띄웁니다. 따라서 기본 검증 절차는 테스트와 빌드 성공 여부입니다.
 
-## Learn More
+## 권한 경계
 
-To learn more about Next.js, take a look at the following resources:
+- `owner`는 전체 탭과 설정 화면 접근 가능
+- `staff`는 설정 탭 비노출
+- 역할 조회 실패 시 보호 화면에서 로그아웃 복구 유도
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+자세한 내용은 `docs/auth-role-boundary.md`와 `docs/reviews/2026-03-25-multi-module-refactor-review.md`를 참고하세요.

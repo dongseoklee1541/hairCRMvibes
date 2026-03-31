@@ -28,28 +28,26 @@ export default function HomePage() {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      
-      // 1. 고객 목록 가져오기 (마지막 방문일 포함)
-      // 실제로는 appointments 테이블과 조인하여 마지막 방문일을 계산해야 하지만,
-      // 일단 간단하게 customers 테이블에서 가져옵니다.
-      const { data: customerData, error: customerError } = await supabase
-        .from('customers')
-        .select('*')
-        .order('name');
-        
-      if (customerError) throw customerError;
-
-      // 2. 오늘 예약 가져오기
       const today = new Date().toISOString().split('T')[0];
-      const { data: apptData, error: apptError } = await supabase
-        .from('appointments')
-        .select(`
-          *,
-          customers(name)
-        `)
-        .eq('date', today)
-        .order('time');
+      const [
+        { data: customerData, error: customerError },
+        { data: apptData, error: apptError },
+      ] = await Promise.all([
+        supabase
+          .from('customers')
+          .select('*')
+          .order('name'),
+        supabase
+          .from('appointments')
+          .select(`
+            *,
+            customers(name)
+          `)
+          .eq('date', today)
+          .order('time'),
+      ]);
 
+      if (customerError) throw customerError;
       if (apptError) throw apptError;
 
       setCustomers(customerData || []);

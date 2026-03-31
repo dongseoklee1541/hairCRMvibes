@@ -181,23 +181,26 @@ export default function CustomerDetailPage() {
     try {
       setLoading(true);
 
-      const { data: customerData, error: customerError } = await supabase
-        .from('customers')
-        .select('*')
-        .eq('id', id)
-        .single();
+      const [
+        { data: customerData, error: customerError },
+        { data: historyData, error: historyError },
+      ] = await Promise.all([
+        supabase
+          .from('customers')
+          .select('*')
+          .eq('id', id)
+          .single(),
+        supabase
+          .from('appointments')
+          .select('*')
+          .eq('customer_id', id)
+          .order('date', { ascending: false })
+          .order('time', { ascending: false }),
+      ]);
 
       if (customerError) throw customerError;
       setCustomer(customerData);
       setMemoText(customerData.memo || '');
-
-      const { data: historyData, error: historyError } = await supabase
-        .from('appointments')
-        .select('*')
-        .eq('customer_id', id)
-        .order('date', { ascending: false })
-        .order('time', { ascending: false });
-
       if (historyError) throw historyError;
       setHistory(historyData || []);
     } catch (error) {
