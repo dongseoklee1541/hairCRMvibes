@@ -37,6 +37,116 @@
   gap: 8px;
 }
 
+.businessHoursList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.businessHourRow {
+  border-radius: 12px;
+  background: var(--bg-primary);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.openToggle {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.openToggle input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent-primary);
+}
+
+.timeGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.timeGrid input {
+  min-width: 0;
+  min-height: 44px;
+  border-radius: 10px;
+  background: var(--bg-surface);
+  padding: 0 10px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.closedLabel {
+  min-height: 44px;
+  border-radius: 10px;
+  background: var(--bg-surface);
+  color: var(--text-tertiary);
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+}
+
+.serviceList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.serviceRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.serviceInputs {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 128px;
+  gap: 8px;
+}
+
+.serviceActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.iconButton,
+.addButton {
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.addButton {
+  background: var(--accent-primary);
+  color: #fff;
+}
+
+.addServiceRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 128px 44px;
+  gap: 8px;
+  align-items: center;
+}
+
 .actions {
   display: flex;
   flex-direction: column;
@@ -132,7 +242,18 @@
 }
 
 @media (max-width: 380px) {
-  .splitRow {
+  .splitRow,
+  .serviceInputs,
+  .addServiceRow {
     grid-template-columns: 1fr;
+  }
+
+  .serviceRow {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .serviceActions {
+    justify-content: flex-end;
   }
 }
