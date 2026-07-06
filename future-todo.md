@@ -38,7 +38,7 @@
 | ID | 상태 | 근거 | 다음 액션 |
 | --- | --- | --- | --- |
 | R-01 | Done (local) | `Allow all`/`auth.role()` 기반 정책을 제거하고 owner/staff 역할 기반 RLS 정책과 explicit grants를 `20260706_r01_rls_policy.sql` 및 `schema.sql`에 반영, `npm run build` 통과 | 실제 Supabase 프로젝트가 `INACTIVE`라 적용 후 Owner/Staff 계정 CRUD smoke 검증 필요 |
-| R-02 | Planned | 예약 수정·취소·상태변경 UI/상태 전이 규칙 미구현 | R-04 이후 `feature/r02-appointment-edit-status`에서 진행 |
+| R-02 | In Progress | 예약 상태 check constraint와 `set_appointment_status` RPC를 `20260706_r02_appointment_status.sql` 및 `schema.sql`에 반영 | 예약 수정/취소/상태변경 UI 구현 및 모바일 회귀 검증 |
 | R-03 | Done (local) | DB 레벨 더블부킹/영업시간 guard와 예약 생성 저장 전 영업시간/휴게시간/confirmed 겹침 검증을 구현, `npm run build` 통과 | 실제 Supabase 프로젝트 활성화 후 double booking/business hours live regression 검증 필요 |
 | R-04 | Done (local) | 화면별 날짜 key/달력/상대 날짜 계산을 `lib/dateTime.js` KST 유틸로 공통화하고 `npm run build` 통과 | 모바일 viewport에서 월 경계/자정 근처 날짜 표시 smoke 필요 |
 | R-05 | Done (local) | `.pen`에 영업시간/기본 예약값/기본 시술 UI를 반영했고, owner 설정 페이지 조회/저장 UI와 예약 생성 기본 시술/소요시간 조회를 구현, `npm run build` 통과 | 실제 Supabase 프로젝트 활성화 후 Owner/Staff RLS smoke 및 설정 저장 live 검증 필요 |
@@ -88,4 +88,4 @@
 
 ## 마지막 업데이트
 - 작성일: 2026-07-07
-- 작성 기준: 워크스페이스 코드베이스 + `pencil-hairshopcrm.pen` R-05/R-03 SSOT 업데이트 + R-05 설정/예약 UI 구현 + R-03 예약 충돌/영업시간 guard UX + R-04 KST 공통화 + `npm run build` 검증
+- 작성 기준: 워크스페이스 코드베이스 + `pencil-hairshopcrm.pen` R-05/R-03 SSOT 업데이트 + R-05 설정/예약 UI 구현 + R-03 예약 충돌/영업시간 guard UX + R-04 KST 공통화 + R-02 상태전이 기반 + `npm run build` 검증

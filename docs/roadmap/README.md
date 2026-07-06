@@ -9,7 +9,7 @@
 | R-05 | [R-05-settings-page.md](./R-05-settings-page.md) | Done (local) |
 | R-03 | [R-03-booking-conflict-business-hours.md](./R-03-booking-conflict-business-hours.md) | Done (local) |
 | R-04 | [R-04-kst-date-time-consistency.md](./R-04-kst-date-time-consistency.md) | Done (local) |
-| R-02 | R-02-appointment-edit-cancel-status.md | Pending |
+| R-02 | [R-02-appointment-edit-cancel-status.md](./R-02-appointment-edit-cancel-status.md) | In Progress |
 
 ## 업데이트 규칙
 - 각 R 작업 완료 시 상태, 근거, 검증 결과, 남은 리스크를 해당 문서에 갱신합니다.
