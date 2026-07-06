@@ -41,7 +41,7 @@
 | R-02 | Planned | 예약 수정·취소·상태변경 UI/상태 전이 규칙 미구현 | R-04 이후 `feature/r02-appointment-edit-status`에서 진행 |
 | R-03 | In Progress | 휴무일 MVP/Lite는 main 반영 완료, 더블부킹/영업시간 충돌 방지는 미구현 | R-05 이후 `feature/r03-booking-conflict-hours`에서 잔여 구현 |
 | R-04 | Planned | KST 유틸 일부 존재, 화면별 `new Date()` 사용 잔존 | `feature/r04-kst-date-consistency`에서 공통화 |
-| R-05 | Planned | 휴무일 UI는 구현됨, 영업시간/기본 시술/기본 소요시간 설정 미구현 | `feature/r05-settings-business-hours`에서 Pencil 업데이트 후 구현 |
+| R-05 | In Progress | 영업시간/운영 기본값/기본 시술 DB foundation과 RLS 정책을 `20260706_r05_settings_business_hours.sql` 및 `schema.sql`에 반영 | Pencil MCP 연결 복구 후 `.pen` 업데이트와 설정/예약 UI 구현 |
 
 ### Phase 2 (P1 운영 고도화)
 - `R-06` PWA 완성 (`next-pwa`, SW/캐시 전략)
@@ -88,4 +88,4 @@
 
 ## 마지막 업데이트
 - 작성일: 2026-07-06
-- 작성 기준: 워크스페이스 코드베이스 + `pencil-hairshopcrm.pen` 분석 결과 + R-01 RLS 정책 정리
+- 작성 기준: 워크스페이스 코드베이스 + `pencil-hairshopcrm.pen` 분석 결과 + R-01 RLS 정책 정리 + R-05 DB foundation

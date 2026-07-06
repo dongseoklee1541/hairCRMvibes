@@ -6,7 +6,7 @@
 | ID | 문서 | 상태 |
 | --- | --- | --- |
 | R-01 | [R-01-rls-policy.md](./R-01-rls-policy.md) | Done (local) |
-| R-05 | R-05-settings-page.md | Pending |
+| R-05 | [R-05-settings-page.md](./R-05-settings-page.md) | In Progress |
 | R-03 | R-03-booking-conflict-business-hours.md | Pending |
 | R-04 | R-04-kst-date-time-consistency.md | Pending |
 | R-02 | R-02-appointment-edit-cancel-status.md | Pending |
