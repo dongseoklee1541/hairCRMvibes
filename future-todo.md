@@ -34,6 +34,15 @@
 - `R-04` 날짜·시간대 정합성 개선
 - `R-05` 설정 페이지 실구현
 
+## 구현 상태
+| ID | 상태 | 근거 | 다음 액션 |
+| --- | --- | --- | --- |
+| R-01 | Done (local) | `Allow all`/`auth.role()` 기반 정책을 제거하고 owner/staff 역할 기반 RLS 정책과 explicit grants를 `20260706_r01_rls_policy.sql` 및 `schema.sql`에 반영, `npm run build` 통과 | 실제 Supabase 프로젝트가 `INACTIVE`라 적용 후 Owner/Staff 계정 CRUD smoke 검증 필요 |
+| R-02 | Planned | 예약 수정·취소·상태변경 UI/상태 전이 규칙 미구현 | R-04 이후 `feature/r02-appointment-edit-status`에서 진행 |
+| R-03 | In Progress | 휴무일 MVP/Lite는 main 반영 완료, 더블부킹/영업시간 충돌 방지는 미구현 | R-05 이후 `feature/r03-booking-conflict-hours`에서 잔여 구현 |
+| R-04 | Planned | KST 유틸 일부 존재, 화면별 `new Date()` 사용 잔존 | `feature/r04-kst-date-consistency`에서 공통화 |
+| R-05 | Planned | 휴무일 UI는 구현됨, 영업시간/기본 시술/기본 소요시간 설정 미구현 | `feature/r05-settings-business-hours`에서 Pencil 업데이트 후 구현 |
+
 ### Phase 2 (P1 운영 고도화)
 - `R-06` PWA 완성 (`next-pwa`, SW/캐시 전략)
 - `R-07` 고객 정보 편집·삭제 + 중복고객 처리
@@ -78,5 +87,5 @@
 - 실제 구현 착수는 별도 승인 후 진행하며, 구현 계획 문서는 본 로드맵을 참조합니다.
 
 ## 마지막 업데이트
-- 작성일: 2026-02-19
-- 작성 기준: 워크스페이스 코드베이스 + `pencil-hairshopcrm.pen` 분석 결과
+- 작성일: 2026-07-06
+- 작성 기준: 워크스페이스 코드베이스 + `pencil-hairshopcrm.pen` 분석 결과 + R-01 RLS 정책 정리

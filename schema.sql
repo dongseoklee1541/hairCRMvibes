@@ -28,23 +28,18 @@ create table public.appointments (
   constraint appointments_customer_id_fkey foreign key (customer_id) references public.customers (id) on delete cascade
 );
 
--- 3. RLS (Row Level Security) 설정
--- 개인 사용 앱이므로 anon 키로 모든 권한을 허용합니다 (추후 인증 도입 시 수정 필요)
+-- 3. RLS (Row Level Security) 기본 설정
 
 alter table public.customers enable row level security;
 alter table public.appointments enable row level security;
 
-create policy "Allow all access to customers"
-  on public.customers
-  for all
-  using (true)
-  with check (true);
+revoke all on table public.customers from anon;
+revoke all on table public.customers from authenticated;
+grant select, insert, update, delete on table public.customers to authenticated;
 
-create policy "Allow all access to appointments"
-  on public.appointments
-  for all
-  using (true)
-  with check (true);
+revoke all on table public.appointments from anon;
+revoke all on table public.appointments from authenticated;
+grant select, insert, update, delete on table public.appointments to authenticated;
 
 -- 4. 실시간 구독 설정 (선택 사항)
 alter publication supabase_realtime add table public.customers;
@@ -63,16 +58,44 @@ create table if not exists public.profiles (
 
 alter table public.profiles enable row level security;
 
-create policy "Users can read own profile"
+revoke all on table public.profiles from anon;
+revoke all on table public.profiles from authenticated;
+grant select on table public.profiles to authenticated;
+
+create policy "Authenticated users can read own profile"
   on public.profiles
   for select
-  using (auth.uid() = id);
+  to authenticated
+  using ((select auth.uid()) = id);
 
-create policy "Users can update own profile"
-  on public.profiles
-  for update
-  using (auth.uid() = id)
-  with check (auth.uid() = id);
+with missing_users as (
+  select
+    u.id,
+    row_number() over (order by u.created_at, u.id) as ordinal
+  from auth.users u
+  where not exists (
+    select 1
+    from public.profiles p
+    where p.id = u.id
+  )
+),
+owner_state as (
+  select exists (
+    select 1
+    from public.profiles p
+    where p.role = 'owner'
+  ) as has_owner
+)
+insert into public.profiles (id, role)
+select
+  missing_users.id,
+  case
+    when owner_state.has_owner = false and missing_users.ordinal = 1 then 'owner'::text
+    else 'staff'::text
+  end
+from missing_users
+cross join owner_state
+on conflict (id) do nothing;
 
 create or replace function public.ensure_user_profile_role()
 returns trigger
@@ -103,18 +126,47 @@ create trigger if not exists create_profile_for_new_user
 -- 6. Customers/Appointments 정책 보강
 -- ==========================================
 
--- 인증 사용자만 사용하도록 수정 (기존 열려있던 정책을 점차 단계적으로 교체)
-create policy "Authenticated users can access customers"
+create policy "Owner and staff can manage customers"
   on public.customers
   for all
-  using (auth.role() = 'authenticated')
-  with check (auth.role() = 'authenticated');
+  to authenticated
+  using (
+    exists (
+      select 1
+      from public.profiles p
+      where p.id = (select auth.uid())
+        and p.role in ('owner', 'staff')
+    )
+  )
+  with check (
+    exists (
+      select 1
+      from public.profiles p
+      where p.id = (select auth.uid())
+        and p.role in ('owner', 'staff')
+    )
+  );
 
-create policy "Authenticated users can access appointments"
+create policy "Owner and staff can manage appointments"
   on public.appointments
   for all
-  using (auth.role() = 'authenticated')
-  with check (auth.role() = 'authenticated');
+  to authenticated
+  using (
+    exists (
+      select 1
+      from public.profiles p
+      where p.id = (select auth.uid())
+        and p.role in ('owner', 'staff')
+    )
+  )
+  with check (
+    exists (
+      select 1
+      from public.profiles p
+      where p.id = (select auth.uid())
+        and p.role in ('owner', 'staff')
+    )
+  );
 
 -- ==========================================
 -- 7. R-03 MVP (휴무일/충돌 방지/취소 감사)
@@ -138,30 +190,43 @@ create table if not exists public.salon_closed_dates (
 
 alter table public.salon_closed_dates enable row level security;
 
-drop policy if exists "Authenticated users can read closed dates" on public.salon_closed_dates;
-create policy "Authenticated users can read closed dates"
+revoke all on table public.salon_closed_dates from anon;
+revoke all on table public.salon_closed_dates from authenticated;
+grant select, insert, update, delete on table public.salon_closed_dates to authenticated;
+
+drop policy if exists "Owner and staff can read closed dates" on public.salon_closed_dates;
+create policy "Owner and staff can read closed dates"
   on public.salon_closed_dates
   for select
-  using (auth.role() = 'authenticated');
+  to authenticated
+  using (
+    exists (
+      select 1
+      from public.profiles p
+      where p.id = (select auth.uid())
+        and p.role in ('owner', 'staff')
+    )
+  );
 
 drop policy if exists "Owners can manage closed dates" on public.salon_closed_dates;
 create policy "Owners can manage closed dates"
   on public.salon_closed_dates
   for all
+  to authenticated
   using (
-    auth.role() = 'authenticated'
-    and exists (
+    exists (
       select 1
       from public.profiles p
-      where p.id = auth.uid() and p.role = 'owner'
+      where p.id = (select auth.uid())
+        and p.role = 'owner'
     )
   )
   with check (
-    auth.role() = 'authenticated'
-    and exists (
+    exists (
       select 1
       from public.profiles p
-      where p.id = auth.uid() and p.role = 'owner'
+      where p.id = (select auth.uid())
+        and p.role = 'owner'
     )
   );
 
