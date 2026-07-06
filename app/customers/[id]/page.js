@@ -8,25 +8,28 @@ import {
   X, Check, Calendar, Scissors, FileText
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import {
+  formatKoreanShortDate,
+  formatKstDateDot,
+  getCurrentKstTimestampIso,
+  getTodayKstDateKey,
+  getWeekdayLabelFromDateKey,
+  KOREAN_WEEKDAYS_LONG,
+} from '@/lib/dateTime';
 import styles from './page.module.css';
 
 // 날짜 포맷 헬퍼
 function formatDate(dateStr) {
-  const date = new Date(dateStr);
-  const days = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
   return {
-    short: `${month}.${day}`,
-    day: days[date.getDay()],
+    short: formatKoreanShortDate(dateStr),
+    day: getWeekdayLabelFromDateKey(dateStr, KOREAN_WEEKDAYS_LONG),
     full: dateStr,
   };
 }
 
 // 등록일 포맷
 function formatCreatedAt(dateStr) {
-  const date = new Date(dateStr);
-  return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
+  return formatKstDateDot(dateStr);
 }
 
 // 상태 뱃지 컴포넌트
@@ -43,7 +46,7 @@ function StatusBadge({ status }) {
 // 시술 추가 모달
 function AddHistoryModal({ customerId, onClose, onAdded }) {
   const [loading, setLoading] = useState(false);
-  const today = new Date().toISOString().split('T')[0];
+  const today = getTodayKstDateKey();
   const [form, setForm] = useState({
     date: today,
     time: '10:00',
@@ -217,7 +220,7 @@ export default function CustomerDetailPage() {
       setSavingMemo(true);
       const { error } = await supabase
         .from('customers')
-        .update({ memo: memoText, updated_at: new Date().toISOString() })
+        .update({ memo: memoText, updated_at: getCurrentKstTimestampIso() })
         .eq('id', id);
       if (error) throw error;
       setCustomer((prev) => ({ ...prev, memo: memoText }));

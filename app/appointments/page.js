@@ -5,34 +5,31 @@ import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Plus, Loader2 } from 'lucide-react';
 
 import { supabase } from '@/lib/supabase';
+import {
+  formatDateKey,
+  getDaysInKstMonth,
+  getFirstWeekdayOfKstMonth,
+  getTodayKstCalendarParts,
+  getTodayKstDateKey,
+  getWeekdayFromDateKey,
+  KOREAN_WEEKDAYS_SHORT,
+} from '@/lib/dateTime';
 import styles from './page.module.css';
 
-const DAYS = ['일', '월', '화', '수', '목', '금', '토'];
-
-function getDaysInMonth(year, month) {
-  return new Date(year, month + 1, 0).getDate();
-}
-
-function getFirstDayOfMonth(year, month) {
-  return new Date(year, month, 1).getDay();
-}
-
-function formatDateKey(year, month, day) {
-  return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-}
+const DAYS = KOREAN_WEEKDAYS_SHORT;
 
 export default function AppointmentsPage() {
-  const now = new Date();
-  const [year, setYear] = useState(now.getFullYear());
-  const [month, setMonth] = useState(now.getMonth());
-  const [selectedDay, setSelectedDay] = useState(now.getDate());
+  const today = getTodayKstCalendarParts();
+  const [year, setYear] = useState(today.year);
+  const [month, setMonth] = useState(today.monthIndex);
+  const [selectedDay, setSelectedDay] = useState(today.day);
   
   const [loading, setLoading] = useState(true);
   const [dailyAppts, setDailyAppts] = useState([]);
   const [monthHasAppts, setMonthHasAppts] = useState(new Set());
 
-  const daysInMonth = getDaysInMonth(year, month);
-  const firstDay = getFirstDayOfMonth(year, month);
+  const daysInMonth = getDaysInKstMonth(year, month);
+  const firstDay = getFirstWeekdayOfKstMonth(year, month);
 
   const fetchMonthData = useCallback(async () => {
     try {
@@ -98,7 +95,7 @@ export default function AppointmentsPage() {
   };
 
   const isToday = (day) => {
-    return year === now.getFullYear() && month === now.getMonth() && day === now.getDate();
+    return day ? formatDateKey(year, month, day) === getTodayKstDateKey() : false;
   };
 
   // 캘린더 주 데이터 생성
@@ -116,7 +113,7 @@ export default function AppointmentsPage() {
     weeks.push(currentWeek);
   }
 
-  const dayOfWeek = new Date(year, month, selectedDay).getDay();
+  const dayOfWeek = getWeekdayFromDateKey(formatDateKey(year, month, selectedDay));
   const dayName = DAYS[dayOfWeek];
 
   return (

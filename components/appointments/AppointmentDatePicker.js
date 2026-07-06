@@ -3,26 +3,17 @@
 import { useMemo, useState } from 'react';
 import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import styles from './AppointmentDatePicker.module.css';
-import { addDaysToDateKey, formatKoreanDate } from '@/lib/dateTime';
+import {
+  addDaysToDateKey,
+  formatDateKey,
+  formatKoreanDate,
+  getDaysInKstMonth,
+  getFirstWeekdayOfKstMonth,
+  KOREAN_WEEKDAYS_SHORT,
+  parseDateKey,
+} from '@/lib/dateTime';
 
-const DAYS = ['일', '월', '화', '수', '목', '금', '토'];
-
-function formatDateKey(year, month, day) {
-  return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-}
-
-function getFirstDay(year, month) {
-  return new Date(year, month, 1).getDay();
-}
-
-function getDaysInMonth(year, month) {
-  return new Date(year, month + 1, 0).getDate();
-}
-
-function parseDateKey(dateKey) {
-  const [year, month] = dateKey.split('-').map(Number);
-  return { year, month: month - 1 };
-}
+const DAYS = KOREAN_WEEKDAYS_SHORT;
 
 export default function AppointmentDatePicker({
   value,
@@ -35,8 +26,8 @@ export default function AppointmentDatePicker({
   const [cursor, setCursor] = useState(cursorInitial);
 
   const weeks = useMemo(() => {
-    const daysInMonth = getDaysInMonth(cursor.year, cursor.month);
-    const firstDay = getFirstDay(cursor.year, cursor.month);
+    const daysInMonth = getDaysInKstMonth(cursor.year, cursor.monthIndex);
+    const firstDay = getFirstWeekdayOfKstMonth(cursor.year, cursor.monthIndex);
 
     const rows = [];
     let currentWeek = new Array(firstDay).fill(null);
@@ -55,7 +46,7 @@ export default function AppointmentDatePicker({
     }
 
     return rows;
-  }, [cursor.month, cursor.year]);
+  }, [cursor.monthIndex, cursor.year]);
 
   const isDisabledDate = (dateKey) => disabledDates?.has(dateKey);
 
@@ -79,25 +70,25 @@ export default function AppointmentDatePicker({
                 type="button"
                 className={styles.navBtn}
                 onClick={() => {
-                  if (cursor.month === 0) {
-                    setCursor({ year: cursor.year - 1, month: 11 });
+                  if (cursor.monthIndex === 0) {
+                    setCursor({ year: cursor.year - 1, month: 12, monthIndex: 11 });
                     return;
                   }
-                  setCursor((prev) => ({ ...prev, month: prev.month - 1 }));
+                  setCursor((prev) => ({ ...prev, month: prev.month - 1, monthIndex: prev.monthIndex - 1 }));
                 }}
               >
                 <ChevronLeft size={18} />
               </button>
-              <h4 className="body-md">{cursor.year}년 {cursor.month + 1}월</h4>
+              <h4 className="body-md">{cursor.year}년 {cursor.month}월</h4>
               <button
                 type="button"
                 className={styles.navBtn}
                 onClick={() => {
-                  if (cursor.month === 11) {
-                    setCursor({ year: cursor.year + 1, month: 0 });
+                  if (cursor.monthIndex === 11) {
+                    setCursor({ year: cursor.year + 1, month: 1, monthIndex: 0 });
                     return;
                   }
-                  setCursor((prev) => ({ ...prev, month: prev.month + 1 }));
+                  setCursor((prev) => ({ ...prev, month: prev.month + 1, monthIndex: prev.monthIndex + 1 }));
                 }}
               >
                 <ChevronRight size={18} />
@@ -113,7 +104,7 @@ export default function AppointmentDatePicker({
                   return <div key={`empty-${index}`} className={styles.emptyCell} />;
                 }
 
-                const nextDate = formatDateKey(cursor.year, cursor.month, day);
+                const nextDate = formatDateKey(cursor.year, cursor.monthIndex, day);
                 const selected = nextDate === value;
                 const blocked = isDisabledDate(nextDate);
 

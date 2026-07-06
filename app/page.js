@@ -5,18 +5,11 @@ import Link from 'next/link';
 import { Search, UserPlus, ChevronRight, User, Loader2 } from 'lucide-react';
 
 import { supabase } from '@/lib/supabase';
+import { getRelativeKstDateLabel, getTodayKstDateKey } from '@/lib/dateTime';
 import styles from './page.module.css';
 
 function formatLastVisit(dateStr) {
-  if (!dateStr) return '';
-  const date = new Date(dateStr);
-  const now = new Date();
-  const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
-  if (diffDays === 0) return '오늘';
-  if (diffDays === 1) return '어제';
-  if (diffDays < 7) return `${diffDays}일 전`;
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)}주 전`;
-  return `${Math.floor(diffDays / 30)}개월 전`;
+  return getRelativeKstDateLabel(dateStr);
 }
 
 export default function HomePage() {
@@ -40,7 +33,7 @@ export default function HomePage() {
       if (customerError) throw customerError;
 
       // 2. 오늘 예약 가져오기
-      const today = new Date().toISOString().split('T')[0];
+      const today = getTodayKstDateKey();
       const { data: apptData, error: apptError } = await supabase
         .from('appointments')
         .select(`

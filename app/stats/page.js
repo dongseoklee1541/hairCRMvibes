@@ -12,18 +12,16 @@ import {
   BarChart3,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import {
+  getKstMonthRange,
+  getRelativeKstDateLabel,
+  getTodayKstCalendarParts,
+  getTodayKstDateKey,
+} from '@/lib/dateTime';
 import styles from './page.module.css';
 
 function formatRelativeDate(dateStr) {
-  if (!dateStr) return '';
-  const date = new Date(dateStr);
-  const now = new Date();
-  const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
-  if (diffDays === 0) return '오늘';
-  if (diffDays === 1) return '어제';
-  if (diffDays < 7) return `${diffDays}일 전`;
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)}주 전`;
-  return `${Math.floor(diffDays / 30)}개월 전`;
+  return getRelativeKstDateLabel(dateStr);
 }
 
 export default function StatsPage() {
@@ -31,22 +29,17 @@ export default function StatsPage() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const now = new Date();
-  const currentMonth = now.getMonth(); // 0-indexed
-  const currentYear = now.getFullYear();
-  const monthLabel = `${currentMonth + 1}월`;
+  const today = getTodayKstCalendarParts();
+  const currentMonth = today.monthIndex;
+  const currentYear = today.year;
+  const monthLabel = `${today.month}월`;
 
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
 
       // 이번 달 시작/끝 날짜
-      const firstDay = new Date(currentYear, currentMonth, 1)
-        .toISOString()
-        .split('T')[0];
-      const lastDay = new Date(currentYear, currentMonth + 1, 0)
-        .toISOString()
-        .split('T')[0];
+      const { startDate: firstDay, endDate: lastDay } = getKstMonthRange(currentYear, currentMonth);
 
       // 이번 달 예약 가져오기
       const { data: apptData, error: apptError } = await supabase
@@ -80,8 +73,8 @@ export default function StatsPage() {
 
   // ── 통계 계산 ──
   const stats = useMemo(() => {
-    const today = new Date().toISOString().split('T')[0];
-    const todayAppts = appointments.filter((a) => a.date === today);
+    const todayKey = getTodayKstDateKey();
+    const todayAppts = appointments.filter((a) => a.date === todayKey);
     const completed = appointments.filter((a) => a.status === 'completed');
     const cancelled = appointments.filter((a) => a.status === 'cancelled');
 
@@ -115,7 +108,7 @@ export default function StatsPage() {
     // 최근 완료된 예약 (고객 포함)
     const recentVisits = appointments
       .filter((a) => a.status === 'completed' && a.customers)
-      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .sort((a, b) => b.date.localeCompare(a.date))
       .slice(0, 5);
 
     return {
