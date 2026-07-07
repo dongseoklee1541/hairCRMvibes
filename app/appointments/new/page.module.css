@@ -24,3 +24,14 @@
   color: var(--text-tertiary);
   line-height: 1.4;
 }
+
+.submitMessage {
+  min-height: 44px;
+  border-radius: 12px;
+  background: #fff7ec;
+  color: #8c4f00;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}

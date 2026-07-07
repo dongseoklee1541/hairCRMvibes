@@ -3017,6 +3017,45 @@
             },
             {
               "type": "frame",
+              "id": "kbDu6",
+              "name": "BookingGuardNotice",
+              "width": 382,
+              "height": 52,
+              "fill": "#FFF7EC",
+              "cornerRadius": 12,
+              "gap": 8,
+              "padding": [
+                10,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "Y33LWZ",
+                  "name": "BookingGuardIcon",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "circle-alert",
+                  "library": "lucide",
+                  "fill": "#8C4F00"
+                },
+                {
+                  "type": "text",
+                  "id": "erMGk",
+                  "name": "BookingGuardMessage",
+                  "fill": "#8C4F00",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "영업시간 밖이거나 기존 예약과 겹치면 저장 전 안내합니다.",
+                  "fontFamily": "Outfit",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
               "id": "mT6pQ",
               "name": "SubmitButton",
               "width": 350,

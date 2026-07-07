@@ -5,12 +5,14 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { X, ChevronDown, Check, Clock, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import AppointmentDatePicker from '@/components/appointments/AppointmentDatePicker';
-import { addDaysToDateKey, getTodayKstDateKey } from '@/lib/dateTime';
+import { addDaysToDateKey, getTodayKstDateKey, getWeekdayFromDateKey } from '@/lib/dateTime';
 import {
   buildClosedDateSet,
   DURATION_MINUTE_OPTIONS,
+  findConflictingAppointment,
   formatDurationMinutes,
   isClosedDate,
+  validateAppointmentBusinessHours,
 } from '@/lib/appointmentRules';
 import styles from './page.module.css';
 
@@ -26,6 +28,7 @@ function NewAppointmentForm() {
   const [customers, setCustomers] = useState([]);
   const [closedDateSet, setClosedDateSet] = useState(new Set());
   const [serviceDefaults, setServiceDefaults] = useState([]);
+  const [businessHours, setBusinessHours] = useState([]);
   const [operationSettings, setOperationSettings] = useState({
     default_service_name: '커트',
     default_duration_minutes: 60,
@@ -40,6 +43,7 @@ function NewAppointmentForm() {
     duration_minutes: 60,
     memo: '',
   });
+  const [submitMessage, setSubmitMessage] = useState('');
 
   const findNextAvailableDate = useCallback((startDate, blockedSet) => {
     let candidate = startDate;
@@ -107,7 +111,7 @@ function NewAppointmentForm() {
     try {
       setFetchingSettings(true);
 
-      const [operationResult, serviceResult] = await Promise.all([
+      const [operationResult, serviceResult, businessHoursResult] = await Promise.all([
         supabase
           .from('salon_operation_settings')
           .select('default_service_name, default_duration_minutes, appointment_slot_minutes')
@@ -119,10 +123,15 @@ function NewAppointmentForm() {
           .eq('is_active', true)
           .order('sort_order', { ascending: true })
           .order('name', { ascending: true }),
+        supabase
+          .from('salon_business_hours')
+          .select('weekday, is_open, open_time, close_time, break_start, break_end')
+          .order('weekday', { ascending: true }),
       ]);
 
       if (operationResult.error) throw operationResult.error;
       if (serviceResult.error) throw serviceResult.error;
+      if (businessHoursResult.error) throw businessHoursResult.error;
 
       const nextOperationSettings = {
         default_service_name: operationResult.data?.default_service_name || '커트',
@@ -133,6 +142,7 @@ function NewAppointmentForm() {
 
       setOperationSettings(nextOperationSettings);
       setServiceDefaults(nextServices);
+      setBusinessHours(businessHoursResult.data || []);
       setFormData((prev) => {
         if (prev.service) {
           return prev;
@@ -171,19 +181,62 @@ function NewAppointmentForm() {
     }));
   };
 
+  const validateBeforeSubmit = async () => {
+    if (isClosedDate(formData.date, closedDateSet)) {
+      return '휴무일은 예약할 수 없습니다. 다른 날짜를 선택해주세요.';
+    }
+
+    const businessHoursMessage = validateAppointmentBusinessHours({
+      dateKey: formData.date,
+      time: formData.time,
+      durationMinutes: formData.duration_minutes,
+      businessHours,
+      getWeekdayFromDateKey,
+    });
+
+    if (businessHoursMessage) {
+      return businessHoursMessage;
+    }
+
+    const { data, error } = await supabase
+      .from('appointments')
+      .select('id, time, duration, duration_minutes, service, status, customers(name)')
+      .eq('date', formData.date)
+      .eq('status', 'confirmed')
+      .order('time', { ascending: true });
+
+    if (error) throw error;
+
+    const conflict = findConflictingAppointment(data || [], {
+      time: formData.time,
+      durationMinutes: formData.duration_minutes,
+    });
+
+    if (conflict) {
+      const conflictTime = conflict.time ? conflict.time.slice(0, 5) : '--:--';
+      const customerName = conflict.customers?.name || '기존 고객';
+      return `${conflictTime} ${customerName} · ${conflict.service || '예약'}과 시간이 겹칩니다.`;
+    }
+
+    return '';
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitMessage('');
     if (!formData.customer_id || !formData.date || !formData.time || !formData.service) {
-      alert('모든 필수 항목을 입력해주세요.');
-      return;
-    }
-    if (isClosedDate(formData.date, closedDateSet)) {
-      alert('휴무일은 예약할 수 없습니다. 다른 날짜를 선택해주세요.');
+      setSubmitMessage('모든 필수 항목을 입력해주세요.');
       return;
     }
 
     try {
       setLoading(true);
+      const validationMessage = await validateBeforeSubmit();
+      if (validationMessage) {
+        setSubmitMessage(validationMessage);
+        return;
+      }
+
       const { error } = await supabase
         .from('appointments')
         .insert([
@@ -193,6 +246,7 @@ function NewAppointmentForm() {
             time: formData.time,
             service: formData.service,
             duration: formatDurationMinutes(formData.duration_minutes),
+            duration_minutes: formData.duration_minutes,
             memo: formData.memo,
             status: 'confirmed'
           },
@@ -204,7 +258,7 @@ function NewAppointmentForm() {
       router.refresh();
     } catch (error) {
       console.error('Error creating appointment:', error);
-      alert('예약 등록 중 오류가 발생했습니다.');
+      setSubmitMessage(error?.message || '예약 등록 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
     }
@@ -350,6 +404,12 @@ function NewAppointmentForm() {
             </div>
           </div>
         </div>
+
+        {submitMessage ? (
+          <div className={styles.submitMessage}>
+            {submitMessage}
+          </div>
+        ) : null}
 
         <button type="submit" className="btn-primary" disabled={loading || fetchingCustomers || fetchingClosedDays || fetchingSettings}>
           {loading ? (
