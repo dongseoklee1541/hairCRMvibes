@@ -88,4 +88,4 @@
 
 ## 마지막 업데이트
 - 작성일: 2026-07-07
-- 작성 기준: 워크스페이스 코드베이스 + `pencil-hairshopcrm.pen` R-05/R-03/R-02 SSOT 업데이트 + R-05 설정/예약 UI 구현 + R-03 예약 충돌/영업시간 guard UX + R-04 KST 공통화 + R-02 예약 수정/상태변경 UI + `npm run build` 검증
+- 작성 기준: 워크스페이스 코드베이스 + `pencil-hairshopcrm.pen` R-05/R-03/R-02 SSOT 업데이트 + R-05 설정/예약 UI 구현 + R-03 예약 충돌/영업시간 guard UX + R-04 KST 공통화 + R-02 예약 수정/상태변경 UI + Phase 2 planned 문서/실행 프롬프트 초기화 + `npm run build` 검증

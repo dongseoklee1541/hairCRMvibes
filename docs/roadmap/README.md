@@ -11,6 +11,17 @@
 | R-04 | [R-04-kst-date-time-consistency.md](./R-04-kst-date-time-consistency.md) | Done (local) |
 | R-02 | [R-02-appointment-edit-cancel-status.md](./R-02-appointment-edit-cancel-status.md) | Done (local) |
 
+## Phase 2
+| ID | 문서 | 상태 |
+| --- | --- | --- |
+| R-06 | [R-06-pwa-completion.md](./R-06-pwa-completion.md) | Planned |
+| R-07 | [R-07-customer-edit-delete-dedupe.md](./R-07-customer-edit-delete-dedupe.md) | Planned |
+| R-08 | [R-08-service-master.md](./R-08-service-master.md) | Planned |
+| R-09 | [R-09-stats-advanced.md](./R-09-stats-advanced.md) | Planned |
+
+## 실행 프롬프트
+- [Phase 2 Execution Prompt](./phase-2-execution-prompt.md)
+
 ## 업데이트 규칙
 - 각 R 작업 완료 시 상태, 근거, 검증 결과, 남은 리스크를 해당 문서에 갱신합니다.
 - `future-todo.md`의 구현 상태 표와 이 디렉터리 문서의 상태가 서로 다르면 `future-todo.md`를 요약본, R-xx 문서를 상세 근거로 봅니다.
