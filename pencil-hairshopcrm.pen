@@ -1671,7 +1671,7 @@
       "y": 0,
       "name": "예약 페이지",
       "width": 430,
-      "height": 900,
+      "height": 1120,
       "fill": "#F5F4F1",
       "layout": "none",
       "children": [
@@ -1790,7 +1790,7 @@
           "y": 100,
           "name": "Content",
           "width": 430,
-          "height": 760,
+          "height": 960,
           "layout": "vertical",
           "gap": 24,
           "padding": [
@@ -2491,6 +2491,319 @@
                           ]
                         }
                       ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "zjCX3",
+                      "name": "AppointmentStatusActions",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "padding": [
+                        0,
+                        16,
+                        14,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "EYjrs",
+                          "name": "완료 버튼",
+                          "width": "fill_container",
+                          "height": 40,
+                          "fill": "#C8F0D8",
+                          "cornerRadius": 12,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "d83zG",
+                              "name": "완료 라벨",
+                              "fill": "#3D8A5A",
+                              "content": "완료",
+                              "fontFamily": "Outfit",
+                              "fontSize": 13,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "jRacp",
+                          "name": "취소 버튼",
+                          "width": "fill_container",
+                          "height": 40,
+                          "fill": "#F5DFD0",
+                          "cornerRadius": 12,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "u9am2",
+                              "name": "취소 라벨",
+                              "fill": "#D89575",
+                              "content": "취소",
+                              "fontFamily": "Outfit",
+                              "fontSize": 13,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "h8ICM",
+                          "name": "수정 버튼",
+                          "width": "fill_container",
+                          "height": 40,
+                          "fill": "#F5F4F1",
+                          "cornerRadius": 12,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "d9qZuD",
+                              "name": "수정 라벨",
+                              "fill": "#6B6966",
+                              "content": "수정",
+                              "fontFamily": "Outfit",
+                              "fontSize": 13,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "hnxeR",
+                      "name": "AppointmentEditPanel",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 10,
+                      "padding": [
+                        0,
+                        16,
+                        16,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "CUvNb",
+                          "name": "EditPanelTitle",
+                          "fill": "#6B6966",
+                          "content": "예약 수정",
+                          "fontFamily": "Outfit",
+                          "fontSize": 13,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "zspWS",
+                          "name": "날짜 수정 행",
+                          "width": "fill_container",
+                          "height": 44,
+                          "fill": "#F5F4F1",
+                          "cornerRadius": 12,
+                          "padding": [
+                            0,
+                            12
+                          ],
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "e8Mvm",
+                              "name": "날짜 수정 라벨",
+                              "fill": "#9C9894",
+                              "content": "날짜",
+                              "fontFamily": "Outfit",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "S78TCJ",
+                              "name": "날짜 수정 값",
+                              "fill": "#1A1918",
+                              "content": "2026-02-13",
+                              "fontFamily": "Outfit",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "yxzFn",
+                          "name": "시간 수정 행",
+                          "width": "fill_container",
+                          "height": 44,
+                          "fill": "#F5F4F1",
+                          "cornerRadius": 12,
+                          "padding": [
+                            0,
+                            12
+                          ],
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "xdu76",
+                              "name": "시간 수정 라벨",
+                              "fill": "#9C9894",
+                              "content": "시간",
+                              "fontFamily": "Outfit",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "yc7ku",
+                              "name": "시간 수정 값",
+                              "fill": "#1A1918",
+                              "content": "10:00",
+                              "fontFamily": "Outfit",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "k5yPdP",
+                          "name": "시술 수정 행",
+                          "width": "fill_container",
+                          "height": 44,
+                          "fill": "#F5F4F1",
+                          "cornerRadius": 12,
+                          "padding": [
+                            0,
+                            12
+                          ],
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "R10tsR",
+                              "name": "시술 수정 라벨",
+                              "fill": "#9C9894",
+                              "content": "시술",
+                              "fontFamily": "Outfit",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "oukyh",
+                              "name": "시술 수정 값",
+                              "fill": "#1A1918",
+                              "content": "커트",
+                              "fontFamily": "Outfit",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "JKLRs",
+                          "name": "소요 수정 행",
+                          "width": "fill_container",
+                          "height": 44,
+                          "fill": "#F5F4F1",
+                          "cornerRadius": 12,
+                          "padding": [
+                            0,
+                            12
+                          ],
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "TZtEY",
+                              "name": "소요 수정 라벨",
+                              "fill": "#9C9894",
+                              "content": "소요",
+                              "fontFamily": "Outfit",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "P1eHhn",
+                              "name": "소요 수정 값",
+                              "fill": "#1A1918",
+                              "content": "60분",
+                              "fontFamily": "Outfit",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "z0Yww",
+                          "name": "EditPanelActions",
+                          "width": "fill_container",
+                          "gap": 8,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "Z6HAl",
+                              "name": "수정 취소",
+                              "width": "fill_container",
+                              "height": 44,
+                              "fill": "#F5F4F1",
+                              "cornerRadius": 12,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "keSuP",
+                                  "name": "수정 취소 라벨",
+                                  "fill": "#6B6966",
+                                  "content": "취소",
+                                  "fontFamily": "Outfit",
+                                  "fontSize": 14,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "d6VT8L",
+                              "name": "수정 저장",
+                              "width": "fill_container",
+                              "height": 44,
+                              "fill": "#3D8A5A",
+                              "cornerRadius": 12,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "YX8yR",
+                                  "name": "수정 저장 라벨",
+                                  "fill": "#FFFFFF",
+                                  "content": "저장",
+                                  "fontFamily": "Outfit",
+                                  "fontSize": 14,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
                     }
                   ]
                 },
@@ -2591,7 +2904,7 @@
           "type": "ref",
           "ref": "WV7HX",
           "x": 0,
-          "y": 760
+          "y": 1036
         }
       ]
     },
@@ -3012,45 +3325,6 @@
                       ]
                     }
                   ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "kbDu6",
-              "name": "BookingGuardNotice",
-              "width": 382,
-              "height": 52,
-              "fill": "#FFF7EC",
-              "cornerRadius": 12,
-              "gap": 8,
-              "padding": [
-                10,
-                12
-              ],
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "icon",
-                  "id": "Y33LWZ",
-                  "name": "BookingGuardIcon",
-                  "width": 16,
-                  "height": 16,
-                  "icon": "circle-alert",
-                  "library": "lucide",
-                  "fill": "#8C4F00"
-                },
-                {
-                  "type": "text",
-                  "id": "erMGk",
-                  "name": "BookingGuardMessage",
-                  "fill": "#8C4F00",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "영업시간 밖이거나 기존 예약과 겹치면 저장 전 안내합니다.",
-                  "fontFamily": "Outfit",
-                  "fontSize": 13,
-                  "fontWeight": "600"
                 }
               ]
             },
