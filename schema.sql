@@ -889,6 +889,8 @@ begin
     return new;
   end if;
 
+  perform pg_advisory_xact_lock(20260706, hashtext(new.date::text));
+
   v_duration := public.resolve_appointment_duration_minutes(new.duration_minutes, new.duration);
   new.duration_minutes := v_duration;
 
