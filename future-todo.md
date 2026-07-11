@@ -64,6 +64,14 @@
 - Push/PR은 아직 수행하지 않았습니다. 권장 흐름은 검증 정리 커밋 1개를 현재 브랜치에 추가한 뒤, Phase 1 전체를 단일 PR로 `main`에 반영하는 것입니다.
 - migration baseline A안을 적용해 disposable fresh replay를 통과했습니다. main 병합은 가능하지만 live DB 배포는 migration history repair 승인 후 별도 수행해야 합니다.
 
+## Phase 2 착수 전 운영 선행 작업 (2026-07-11)
+- Supabase Free inactivity 완화를 위한 Vercel 일일 keepalive를 `feature/ops-supabase-keepalive`에서 로컬 구현했습니다.
+- `CRON_SECRET`으로 보호된 server route가 고객/예약 데이터 대신 `salon_operation_settings.id` 한 컬럼만 read-only 조회합니다.
+- 실제 secret은 저장소에 기록하지 않으며 Vercel Production 환경에 `SUPABASE_SECRET_KEY`, `CRON_SECRET`을 직접 등록해야 합니다.
+- 남은 운영 게이트: Phase 1/main 통합, Vercel Production 환경변수 등록, production deployment, Cron Jobs 등록/200 응답 확인.
+- keepalive는 Supabase Free uptime을 보장하지 않으며, Vercel Hobby는 내부 테스트/개인 베타 전제로만 사용합니다.
+- 운영 절차: `docs/operations/supabase-free-keepalive.md`
+
 ### Phase 2 (P1 운영 고도화)
 - `R-06` PWA 완성 (`next-pwa`, SW/캐시 전략)
 - `R-07` 고객 정보 편집·삭제 + 중복고객 처리
