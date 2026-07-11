@@ -3,7 +3,7 @@
 ## 상태
 - Planned
 - 브랜치: `feature/r06-pwa-completion`
-- 최종 업데이트: 2026-07-07
+- 최종 업데이트: 2026-07-11
 
 ## 목표
 - `next-pwa` 기반 설치 가능 PWA 구성을 완성합니다.
@@ -12,6 +12,8 @@
 
 ## 선행조건
 - Phase 1 브랜치 스택이 main에 반영되어 있어야 합니다.
+- Supabase Free keepalive는 `feature/ops-supabase-keepalive`에서 로컬 구현됐으며 production 환경변수/배포/cron 실행 검증은 별도 운영 게이트입니다.
+- keepalive route는 `no-store`이며 R-06 service worker/runtime cache 대상에서 반드시 제외해야 합니다.
 - 캐시 정책 결정 필요: 화면 shell은 캐시 가능, Supabase 데이터 요청은 network-first 권장.
 - 아이콘/manifest 최종 자산 확인 필요.
 
@@ -31,3 +33,4 @@
 ## 남은 리스크
 - Next.js 15와 `next-pwa` 조합의 호환성 확인 필요
 - Supabase 인증/데이터 요청을 캐시하면 보안/최신성 문제가 생길 수 있으므로 제외 규칙 필요
+- Vercel Hobby의 비상업적 사용 제한과 Supabase Free의 자동 일시정지 가능성은 PWA 구현으로 해소되지 않음
