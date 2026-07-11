@@ -12,7 +12,7 @@
 | R-02 | [R-02-appointment-edit-cancel-status.md](./R-02-appointment-edit-cancel-status.md) | Done (live verified) |
 
 ## Phase 1 검증 기준
-- 기준일: 2026-07-11
+- 기준일: 2026-07-12
 - 브랜치: `feature/r02-appointment-edit-status`
 - live Supabase migration/RLS/RPC/R-03 smoke, R-02 Playwright mobile smoke, Pencil R-02 `snapshot_layout`/export, `npm run build`, `git diff --check`를 통과 기준으로 삼습니다.
 - Fresh DB 정책은 A안을 선택했습니다. `20260219000000_phase1_genesis_baseline.sql`을 포함한 forward migration 8개를 disposable PostgreSQL 17에서 전체 replay했고, 핵심 객체/RLS/RPC/예약 guard를 검증했습니다.
@@ -37,21 +37,20 @@
 | 8 | `20260707161054_phase1_function_privilege_hardening.sql` | search path/anon execute hardening |
 | 9 | `20260711110928_r07_customer_lifecycle_dedupe.sql` | 고객 archive/anonymize, 중복 후보, 원자적 merge/undo |
 
-live DB에는 4~8번과 동일한 timestamp가 기록되어 있습니다. 1~3번은 기존 schema가 이미 동등하지만 migration history에 없으므로, 향후 Supabase CLI 배포 전에 다음 절차가 필요합니다.
+2026-07-12 production 작업에서 1~3번의 live 객체 동등성을 다시 확인한 뒤 SQL을 재실행하지 않고 migration history만 `applied`로 repair했습니다. 이어 9번 R-07 migration 한 개만 적용했습니다. 현재 live history 9개는 위 forward migration 9개와 exact match이며 R-07 row는 name `r07_customer_lifecycle_dedupe`, statements 94개입니다.
 
-9번 R-07 migration은 로컬 fresh replay만 통과했으며 live DB에는 아직 적용하지 않았습니다. 아래 history repair와 R-07 migration 적용은 각각 별도 승인 아래 순서대로 진행해야 합니다.
-
-1. `supabase migration list`와 read-only schema 검증으로 live 객체 동등성을 다시 확인합니다.
-2. 사용자의 live history 변경 승인을 받습니다.
-3. SQL을 재실행하지 않고 history만 맞춥니다.
+실행 순서는 다음과 같았고, `--include-all`로 backdated migration을 재실행하지 않았습니다.
 
 ```bash
-supabase migration repair --status applied 20260219000000 20260220000000 20260221000000
+supabase migration repair --status applied 20260219000000
+supabase migration repair --status applied 20260220000000
+supabase migration repair --status applied 20260221000000
 supabase migration list
 supabase db push --dry-run
+supabase db push --linked --yes
 ```
 
-`migration repair`는 live schema를 변경하지 않지만 migration history를 변경하므로 이번 정리 작업에서는 실행하지 않았습니다. `--include-all`로 backdated migration을 live에 재실행해서는 안 됩니다.
+R-07 적용 후 catalog/ACL/RPC 29개 계약과 실제 owner/staff/anon Data API/RPC smoke 106개를 통과했고 synthetic fixture residue 0건을 확인했습니다. Production UI/PWA smoke는 Vercel 배포 후 별도 수행합니다.
 
 ## Auth profile 운영 제약
 
@@ -69,16 +68,17 @@ supabase db push --dry-run
 - 기존 rollback SQL은 production 자동 실행용이 아니라 수동 검토 자료입니다.
 
 ## Phase 1 통합 전략
-- 현재 Phase 1 브랜치는 local `main`과 `origin/main` 모두에 대해 fast-forward 가능한 ahead 상태입니다.
+- 현재 stack은 `origin/main → R-02(11 commits) → Ops(1) → R-06(1) → R-07(2)` ancestry를 유지하며 네 remote branch SHA가 local과 일치합니다.
 - 권장 PR 단위는 Phase 1 전체 단일 PR입니다. R-01~R-05가 DB/RLS/UI smoke로 서로 연결되어 있어 잘게 나누면 migration 순서와 검증 근거가 분산됩니다.
-- main 병합과 live DB 배포는 분리합니다. 코드/문서 PR을 먼저 리뷰할 수 있지만, 향후 `db push` 전에는 위 migration history repair를 별도 승인·검증해야 합니다.
-- push/PR 생성은 사용자 승인 전 수행하지 않습니다.
+- Draft PR은 #9 `main←R-02`, #10 `R-02←Ops`, #11 `Ops←R-06`, #12 `R-06←R-07`로 생성됐고 모두 `MERGEABLE/CLEAN`, Vercel checks 2/2 성공입니다. review/required checks는 없지만 네 PR 모두 Draft입니다.
+- R-07 DB-first migration과 실제 role smoke는 완료됐습니다. Ready 전환, base retarget, main merge, Vercel Production deploy는 각각 승인 전 수행하지 않습니다.
+- Vercel `main` auto-deploy가 활성화돼 있어 main merge가 즉시 Production build를 유발합니다. main merge와 배포 승인을 분리하려면 별도 설정 변경 또는 env/release gate 선완료가 필요합니다.
 
 ## Phase 2
 | ID | 문서 | 상태 |
 | --- | --- | --- |
 | R-06 | [R-06-pwa-completion.md](./R-06-pwa-completion.md) | Done (local verified; production smoke pending) |
-| R-07 | [R-07-customer-edit-delete-dedupe.md](./R-07-customer-edit-delete-dedupe.md) | Done (local verified; production migration/live smoke pending) |
+| R-07 | [R-07-customer-edit-delete-dedupe.md](./R-07-customer-edit-delete-dedupe.md) | Done (production DB verified; UI/PWA smoke pending) |
 | R-08 | [R-08-service-master.md](./R-08-service-master.md) | Planned |
 | R-09 | [R-09-stats-advanced.md](./R-09-stats-advanced.md) | Planned |
 

@@ -1,10 +1,11 @@
 # R-07 Customer Edit Delete Dedupe
 
 ## 상태
-- Done (local verified; production migration/live smoke pending)
+- Done (production DB migration/role smoke verified; production UI/PWA smoke pending)
 - 브랜치: `feature/r07-customer-edit-delete-dedupe`
 - 기반 commit: `1ca4494` (`feat(pwa): complete R-06 offline experience`)
 - 최초 R-07 구현 commit: `a2249d7` (`feat(customers): complete R-07 lifecycle and dedupe`)
+- 호환성 보완 commit: `a6551a8` (`fix(customers): preserve legacy memo update compatibility`)
 - 최종 업데이트: 2026-07-12
 
 ## 목표
@@ -97,11 +98,24 @@
 - PWA cache: `output/playwright/r07-customer-edit-delete-dedupe/20260711_r07_pwa_cache_audit_390x844.png`
 - Pencil: `output/playwright/r07-customer-edit-delete-dedupe/pencil-verified/20260711_r07_merge_result_pencil.png`
 
+## Production DB 검증 (2026-07-12)
+- Phase 1 genesis/기존 R-03 세 version은 SQL을 재실행하지 않고 migration history만 `applied`로 repair했습니다. 이어 `20260711110928_r07_customer_lifecycle_dedupe.sql` 한 개만 migration으로 적용했고, live history 9개가 로컬 forward migration 9개와 exact match임을 확인했습니다.
+- R-07 history row는 name `r07_customer_lifecycle_dedupe`, statements 94개이며 production project는 적용 후에도 `ACTIVE_HEALTHY`를 유지했습니다.
+- 실제 QA owner/staff Auth 세션과 세션 없는 anon client로 Data API/RPC smoke 106개를 통과했습니다. credential, 실제 Auth ID, 고객 이름·전화번호는 출력하지 않았습니다.
+- owner는 기본정보 편집·전화 정규화·서버 `updated_at`, archive/restore, irreversible anonymize, 예약 이력 보존, 정상 merge/audit/undo를 통과했습니다. self/unrelated/archived/anonymized merge, 중복 undo, 고객·예약 hard delete는 의도한 SQLSTATE로 차단됐습니다.
+- staff는 active 고객 등록·편집과 exact phone/name 후보 조회를 통과했고 lifecycle/merge/undo/hard delete는 차단됐습니다. merge audit 두 테이블은 owner-only RLS로 0건을 반환했습니다.
+- anon은 고객 CRUD, audit 조회, lifecycle/dedupe RPC 7개가 모두 차단됐습니다. authenticated RPC EXECUTE 7/7, anon EXECUTE 0/7, 예약 FK `RESTRICT`, audit RLS 2/2도 적용 후 재확인했습니다.
+- smoke fixture는 고유 run tag와 DB 반환 synthetic ID에만 한정했습니다. 첫 cleanup scope assertion이 공백/대소문자 synthetic 이름을 보수적으로 거부해 삭제 전 중단됐고, 동일 ID 집합의 assertion만 보완해 고객 8건·예약 2건·event/mapping 각 1건을 정리했습니다. 최종 residue는 네 테이블 모두 0건이고 production 총계는 smoke 전 baseline과 일치함을 확인했습니다.
+- 최신 point-in-time Advisor는 Security WARN 20건, Performance 17건(4 WARN·13 INFO)입니다. Security의 R-07 증가분은 owner-only 내부 검증을 가진 authenticated `SECURITY DEFINER` RPC 5개와 RLS owner-only audit table GraphQL 노출 2개이며 실제 owner/staff/anon smoke와 exact ACL로 의도된 경계를 확인했습니다. 나머지 hardening과 performance 항목은 R-07과 분리한 backlog로 유지합니다.
+- 네 원격 branch와 Draft PR #9~#12는 push 완료 상태이며 각 PR은 `MERGEABLE/CLEAN`, Vercel checks 2/2 성공입니다. Ready 전환, base 변경, main merge는 아직 승인·수행하지 않았습니다.
+
 ## 남은 리스크 / 배포 게이트
-- R-07 migration은 production Supabase에 적용하지 않았습니다. migration 적용 전 R-07 UI를 배포하면 새 column/RPC 조회가 실패합니다. 기존 production 앱의 `memo + updated_at` payload는 최소 column grant와 서버 시각 trigger smoke로 DB-first 호환성을 로컬 검증했습니다.
-- live history에는 genesis/기존 R-03 세 timestamp가 없으므로 향후 `db push` 전 별도 승인 아래 Phase 1 migration history repair가 먼저 필요합니다.
-- 현재 production Advisor는 R-07 미적용 기준 security 13건/performance 8건을 보고합니다. GraphQL schema 노출 경고, 기존 `rls_auto_enable` execute 경고, leaked-password protection, FK index/다중 permissive policy는 R-07과 분리해 운영 hardening backlog로 처리합니다.
+- Phase 1 history repair와 R-07 production migration은 완료됐지만 Vercel Production은 아직 `origin/main@f725269` 기반 이전 앱입니다. 현재 앱의 legacy `memo + updated_at` payload와 R-07 Data API/RPC 역할 경계 수준의 backward compatibility를 통과했고, R-07 UI는 main merge/Production deploy 전까지 제공되지 않습니다.
+- Vercel은 `main` push를 Production으로 자동 배포하도록 설정돼 있습니다. main merge와 Production 배포 승인을 분리하려면 merge 전에 auto-deploy를 별도 승인 아래 중지하거나, Production env와 release gate를 먼저 모두 완료해야 합니다.
+- Vercel public Supabase env 2개는 각각 Development/Preview/Production을 target하며 세 environment가 동일 Production Supabase 값 세트를 공유합니다. Preview가 Production Supabase를 공유하므로 격리 전 Preview 실제 로그인·데이터 smoke는 금지합니다.
+- Production keepalive에 필요한 `SUPABASE_SECRET_KEY`, `CRON_SECRET`은 아직 없고 현재 `/api/cron/supabase-keepalive`는 `404`입니다. 현재 배포된 Production의 Cron 등록은 0건이며 repo `vercel.json`의 설정 1건은 아직 미배포입니다. secret 등록·Production build·무인증 `401`/승인 호출 `200`/로그 비노출 검증이 남았습니다.
+- 최신 Advisor의 GraphQL/`SECURITY DEFINER`, leaked-password protection, unindexed FK/unused index/multiple permissive policy는 별도 hardening backlog입니다. 실제 권한 회귀는 발견되지 않았지만 설정·성능 개선과 R-07 release를 섞어 즉시 변경하지 않습니다.
 - audit event는 개인정보 snapshot을 남기지 않으므로 비식별화 이후 당시 이름/전화번호를 복구하는 용도로 사용할 수 없습니다. 이는 의도된 privacy 경계입니다.
-- production에서는 owner/staff 실제 세션, migration 적용 순서, browser install/standalone, service worker update를 다시 검증해야 합니다.
+- production DB owner/staff/anon 검증은 완료됐습니다. R-07 UI 배포 후 실제 browser owner/staff/anon, install/standalone, service worker update, offline/cache privacy 경계를 다시 검증해야 합니다.
 - `prefetch={false}`를 적용한 정적 진입은 첫 이동이 소폭 느려질 수 있으므로 production 실기기에서 체감 속도를 다시 확인합니다.
-- R-07 최초 구현은 `a2249d7`로 commit했고 승인된 호환성 보완까지 로컬 반영·검증했습니다. push/PR/main 병합/deploy는 아직 수행하지 않았습니다.
+- R-07 최초 구현 `a2249d7`과 호환성 보완 `a6551a8`은 remote branch와 Draft PR #12에 반영됐습니다. main 병합과 Vercel Production deploy는 아직 수행하지 않았습니다.
