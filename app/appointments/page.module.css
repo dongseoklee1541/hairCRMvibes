@@ -63,9 +63,24 @@
   text-align: center;
 }
 
+.feedbackBox {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: rgba(42, 157, 143, 0.1);
+  color: var(--accent-primary);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.apptItem {
+  display: flex;
+  flex-direction: column;
+}
+
 .apptRow {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 14px;
   padding: 14px 16px;
 }
@@ -89,5 +104,166 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
+  min-width: 0;
+}
+
+.apptTitleLine {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.statusConfirmed {
+  background: rgba(42, 157, 143, 0.12);
+  color: var(--accent-primary);
+}
+
+.statusCompleted {
+  background: rgba(91, 139, 212, 0.14);
+  color: #3f6eb0;
+}
+
+.statusCancelled {
+  background: rgba(217, 83, 79, 0.12);
+  color: var(--status-negative);
+}
+
+.apptActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 6px;
+}
+
+.actionButton,
+.secondaryButton,
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  transition: all var(--transition-fast);
+}
+
+.actionButton {
+  gap: 6px;
+  padding: 0 12px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
+.actionButton:disabled,
+.secondaryButton:disabled,
+.primaryButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.editPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0 16px 16px 82px;
+  padding: 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-secondary);
+}
+
+.editGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.editField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.editField input,
+.editField select,
+.editField textarea {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 0 12px;
+  outline: none;
+}
+
+.editField textarea {
+  padding-top: 10px;
+  resize: vertical;
+  line-height: 1.4;
+}
+
+.editActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.secondaryButton {
+  min-width: 84px;
+  padding: 0 14px;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
+.primaryButton {
+  gap: 6px;
+  min-width: 96px;
+  padding: 0 16px;
+  background: var(--accent-primary);
+  color: #fff;
+}
+
+@media (max-width: 380px) {
+  .apptRow {
+    gap: 10px;
+    padding: 14px 12px;
+  }
+
+  .apptTime {
+    width: 44px;
+  }
+
+  .editPanel {
+    margin-left: 12px;
+    margin-right: 12px;
+  }
+
+  .editGrid {
+    grid-template-columns: 1fr;
+  }
 }

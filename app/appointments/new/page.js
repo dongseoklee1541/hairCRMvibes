@@ -5,8 +5,15 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { X, ChevronDown, Check, Clock, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import AppointmentDatePicker from '@/components/appointments/AppointmentDatePicker';
-import { addDaysToDateKey, getTodayKstDateKey } from '@/lib/dateTime';
-import { buildClosedDateSet, isClosedDate } from '@/lib/appointmentRules';
+import { addDaysToDateKey, getTodayKstDateKey, getWeekdayFromDateKey } from '@/lib/dateTime';
+import {
+  buildClosedDateSet,
+  DURATION_MINUTE_OPTIONS,
+  findConflictingAppointment,
+  formatDurationMinutes,
+  isClosedDate,
+  validateAppointmentBusinessHours,
+} from '@/lib/appointmentRules';
 import styles from './page.module.css';
 
 function NewAppointmentForm() {
@@ -17,17 +24,26 @@ function NewAppointmentForm() {
   const [loading, setLoading] = useState(false);
   const [fetchingCustomers, setFetchingCustomers] = useState(true);
   const [fetchingClosedDays, setFetchingClosedDays] = useState(true);
+  const [fetchingSettings, setFetchingSettings] = useState(true);
   const [customers, setCustomers] = useState([]);
   const [closedDateSet, setClosedDateSet] = useState(new Set());
+  const [serviceDefaults, setServiceDefaults] = useState([]);
+  const [businessHours, setBusinessHours] = useState([]);
+  const [operationSettings, setOperationSettings] = useState({
+    default_service_name: '커트',
+    default_duration_minutes: 60,
+    appointment_slot_minutes: 30,
+  });
   
   const [formData, setFormData] = useState({
     customer_id: '',
     date: getTodayKstDateKey(),
     time: '10:00',
     service: '',
-    duration: '1시간',
+    duration_minutes: 60,
     memo: '',
   });
+  const [submitMessage, setSubmitMessage] = useState('');
 
   const findNextAvailableDate = useCallback((startDate, blockedSet) => {
     let candidate = startDate;
@@ -91,24 +107,136 @@ function NewAppointmentForm() {
     }
   }, [findNextAvailableDate]);
 
+  const fetchAppointmentSettings = useCallback(async () => {
+    try {
+      setFetchingSettings(true);
+
+      const [operationResult, serviceResult, businessHoursResult] = await Promise.all([
+        supabase
+          .from('salon_operation_settings')
+          .select('default_service_name, default_duration_minutes, appointment_slot_minutes')
+          .eq('id', true)
+          .maybeSingle(),
+        supabase
+          .from('salon_service_defaults')
+          .select('id, name, default_duration_minutes, sort_order')
+          .eq('is_active', true)
+          .order('sort_order', { ascending: true })
+          .order('name', { ascending: true }),
+        supabase
+          .from('salon_business_hours')
+          .select('weekday, is_open, open_time, close_time, break_start, break_end')
+          .order('weekday', { ascending: true }),
+      ]);
+
+      if (operationResult.error) throw operationResult.error;
+      if (serviceResult.error) throw serviceResult.error;
+      if (businessHoursResult.error) throw businessHoursResult.error;
+
+      const nextOperationSettings = {
+        default_service_name: operationResult.data?.default_service_name || '커트',
+        default_duration_minutes: operationResult.data?.default_duration_minutes || 60,
+        appointment_slot_minutes: operationResult.data?.appointment_slot_minutes || 30,
+      };
+      const nextServices = serviceResult.data || [];
+
+      setOperationSettings(nextOperationSettings);
+      setServiceDefaults(nextServices);
+      setBusinessHours(businessHoursResult.data || []);
+      setFormData((prev) => {
+        if (prev.service) {
+          return prev;
+        }
+
+        const matchedService =
+          nextServices.find((service) => service.name === nextOperationSettings.default_service_name) ||
+          nextServices[0];
+
+        return {
+          ...prev,
+          service: matchedService?.name || nextOperationSettings.default_service_name,
+          duration_minutes:
+            matchedService?.default_duration_minutes || nextOperationSettings.default_duration_minutes,
+        };
+      });
+    } catch (error) {
+      console.error('Error fetching appointment settings:', error);
+    } finally {
+      setFetchingSettings(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchCustomers();
     fetchClosedDays();
-  }, [fetchCustomers, fetchClosedDays]);
+    fetchAppointmentSettings();
+  }, [fetchCustomers, fetchClosedDays, fetchAppointmentSettings]);
+
+  const handleServiceChange = (serviceName) => {
+    const matchedService = serviceDefaults.find((service) => service.name === serviceName);
+    setFormData((prev) => ({
+      ...prev,
+      service: serviceName,
+      duration_minutes: matchedService?.default_duration_minutes || prev.duration_minutes,
+    }));
+  };
+
+  const validateBeforeSubmit = async () => {
+    if (isClosedDate(formData.date, closedDateSet)) {
+      return '휴무일은 예약할 수 없습니다. 다른 날짜를 선택해주세요.';
+    }
+
+    const businessHoursMessage = validateAppointmentBusinessHours({
+      dateKey: formData.date,
+      time: formData.time,
+      durationMinutes: formData.duration_minutes,
+      businessHours,
+      getWeekdayFromDateKey,
+    });
+
+    if (businessHoursMessage) {
+      return businessHoursMessage;
+    }
+
+    const { data, error } = await supabase
+      .from('appointments')
+      .select('id, time, duration, duration_minutes, service, status, customers(name)')
+      .eq('date', formData.date)
+      .eq('status', 'confirmed')
+      .order('time', { ascending: true });
+
+    if (error) throw error;
+
+    const conflict = findConflictingAppointment(data || [], {
+      time: formData.time,
+      durationMinutes: formData.duration_minutes,
+    });
+
+    if (conflict) {
+      const conflictTime = conflict.time ? conflict.time.slice(0, 5) : '--:--';
+      const customerName = conflict.customers?.name || '기존 고객';
+      return `${conflictTime} ${customerName} · ${conflict.service || '예약'}과 시간이 겹칩니다.`;
+    }
+
+    return '';
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitMessage('');
     if (!formData.customer_id || !formData.date || !formData.time || !formData.service) {
-      alert('모든 필수 항목을 입력해주세요.');
-      return;
-    }
-    if (isClosedDate(formData.date, closedDateSet)) {
-      alert('휴무일은 예약할 수 없습니다. 다른 날짜를 선택해주세요.');
+      setSubmitMessage('모든 필수 항목을 입력해주세요.');
       return;
     }
 
     try {
       setLoading(true);
+      const validationMessage = await validateBeforeSubmit();
+      if (validationMessage) {
+        setSubmitMessage(validationMessage);
+        return;
+      }
+
       const { error } = await supabase
         .from('appointments')
         .insert([
@@ -117,7 +245,8 @@ function NewAppointmentForm() {
             date: formData.date,
             time: formData.time,
             service: formData.service,
-            duration: formData.duration,
+            duration: formatDurationMinutes(formData.duration_minutes),
+            duration_minutes: formData.duration_minutes,
             memo: formData.memo,
             status: 'confirmed'
           },
@@ -129,7 +258,7 @@ function NewAppointmentForm() {
       router.refresh();
     } catch (error) {
       console.error('Error creating appointment:', error);
-      alert('예약 등록 중 오류가 발생했습니다.');
+      setSubmitMessage(error?.message || '예약 등록 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
     }
@@ -205,14 +334,38 @@ function NewAppointmentForm() {
           <div className="form-group">
             <label className="form-label">시술 내용</label>
             <div className="form-input">
-              <input 
-                placeholder="예: 커트, 염색 등"
-                value={formData.service} 
-                onChange={(e) => setFormData({...formData, service: e.target.value})} 
-                disabled={loading}
-                required
-              />
+              {serviceDefaults.length > 0 ? (
+                <>
+                  <select
+                    value={formData.service}
+                    onChange={(e) => handleServiceChange(e.target.value)}
+                    disabled={loading || fetchingSettings}
+                    className="w-full h-full bg-transparent appearance-none"
+                    required
+                  >
+                    {serviceDefaults.map((service) => (
+                      <option key={service.id} value={service.name}>
+                        {service.name}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown size={18} color="var(--text-tertiary)" />
+                </>
+              ) : (
+                <input
+                  placeholder={operationSettings.default_service_name || '예: 커트, 염색 등'}
+                  value={formData.service}
+                  onChange={(e) => setFormData({...formData, service: e.target.value})}
+                  disabled={loading || fetchingSettings}
+                  required
+                />
+              )}
             </div>
+            <p className={styles.dateHelp}>
+              {fetchingSettings
+                ? '기본 시술을 불러오는 중입니다...'
+                : '설정 페이지의 기본 시술 목록을 사용합니다.'}
+            </p>
           </div>
 
           {/* Duration */}
@@ -220,20 +373,22 @@ function NewAppointmentForm() {
             <label className="form-label">예상 소요시간</label>
             <div className="form-input">
               <select
-                value={formData.duration}
-                onChange={(e) => setFormData({...formData, duration: e.target.value})}
-                disabled={loading}
+                value={formData.duration_minutes}
+                onChange={(e) => setFormData({...formData, duration_minutes: Number(e.target.value)})}
+                disabled={loading || fetchingSettings}
                 className="w-full h-full bg-transparent appearance-none"
               >
-                <option value="30분">30분</option>
-                <option value="1시간">1시간</option>
-                <option value="1시간 30분">1시간 30분</option>
-                <option value="2시간">2시간</option>
-                <option value="2시간 30분">2시간 30분</option>
-                <option value="3시간">3시간</option>
+                {DURATION_MINUTE_OPTIONS.map((minutes) => (
+                  <option key={minutes} value={minutes}>
+                    {formatDurationMinutes(minutes)}
+                  </option>
+                ))}
               </select>
               <ChevronDown size={18} color="var(--text-tertiary)" />
             </div>
+            <p className={styles.dateHelp}>
+              기본값: {formatDurationMinutes(operationSettings.default_duration_minutes)} · 슬롯 {operationSettings.appointment_slot_minutes}분
+            </p>
           </div>
 
           {/* Memo */}
@@ -250,7 +405,13 @@ function NewAppointmentForm() {
           </div>
         </div>
 
-        <button type="submit" className="btn-primary" disabled={loading || fetchingCustomers || fetchingClosedDays}>
+        {submitMessage ? (
+          <div className={styles.submitMessage}>
+            {submitMessage}
+          </div>
+        ) : null}
+
+        <button type="submit" className="btn-primary" disabled={loading || fetchingCustomers || fetchingClosedDays || fetchingSettings}>
           {loading ? (
             <Loader2 size={20} className="animate-spin" />
           ) : (

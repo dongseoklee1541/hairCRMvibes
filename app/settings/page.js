@@ -1,14 +1,16 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { AlertCircle, Loader2 } from 'lucide-react';
+import { AlertCircle, Clock, Loader2, Plus, Save, Trash2 } from 'lucide-react';
 import AuthGate from '@/components/AuthGate';
 import ClosedDayConflictSheet from '@/components/settings/ClosedDayConflictSheet';
 import { supabase } from '@/lib/supabase';
 import {
   APPOINTMENT_STATUS,
   buildBatchTargetDates,
+  DURATION_MINUTE_OPTIONS,
   extractCancellableIds,
+  formatDurationMinutes,
 } from '@/lib/appointmentRules';
 import {
   formatKoreanDate,
@@ -34,6 +36,46 @@ const WEEKDAY_OPTIONS = [
   { value: 6, label: '토요일' },
 ];
 
+const SLOT_OPTIONS = [5, 10, 15, 20, 30, 45, 60];
+
+function normalizeTimeValue(value, fallback = '') {
+  if (!value) return fallback;
+  return String(value).slice(0, 5);
+}
+
+function buildDefaultBusinessHours() {
+  return WEEKDAY_OPTIONS.map((option) => ({
+    weekday: option.value,
+    is_open: true,
+    open_time: '10:00',
+    close_time: '19:00',
+    break_start: '',
+    break_end: '',
+  }));
+}
+
+function normalizeBusinessHour(row) {
+  return {
+    weekday: row.weekday,
+    is_open: Boolean(row.is_open),
+    open_time: normalizeTimeValue(row.open_time, '10:00'),
+    close_time: normalizeTimeValue(row.close_time, '19:00'),
+    break_start: normalizeTimeValue(row.break_start),
+    break_end: normalizeTimeValue(row.break_end),
+  };
+}
+
+function getBusinessHourPayload(row) {
+  return {
+    weekday: row.weekday,
+    is_open: row.is_open,
+    open_time: row.open_time || '10:00',
+    close_time: row.close_time || '19:00',
+    break_start: row.is_open && row.break_start ? row.break_start : null,
+    break_end: row.is_open && row.break_end ? row.break_end : null,
+  };
+}
+
 function SettingsPageContent() {
   const today = getTodayKstDateKey();
 
@@ -47,19 +89,92 @@ function SettingsPageContent() {
   const [removeStartDate, setRemoveStartDate] = useState(today);
   const [removeEndDate, setRemoveEndDate] = useState(today);
 
+  const [operationSettings, setOperationSettings] = useState({
+    default_service_name: '커트',
+    default_duration_minutes: 60,
+    appointment_slot_minutes: 30,
+  });
+  const [businessHours, setBusinessHours] = useState(buildDefaultBusinessHours);
+  const [serviceDefaults, setServiceDefaults] = useState([]);
+  const [newService, setNewService] = useState({
+    name: '',
+    default_duration_minutes: 60,
+  });
+
   const [closedDates, setClosedDates] = useState([]);
   const [conflicts, setConflicts] = useState([]);
   const [selectedConflictIds, setSelectedConflictIds] = useState([]);
 
+  const [loadingSettings, setLoadingSettings] = useState(true);
   const [loadingClosedDays, setLoadingClosedDays] = useState(true);
   const [checkingConflicts, setCheckingConflicts] = useState(false);
   const [calculatingImpact, setCalculatingImpact] = useState(false);
+  const [savingOperation, setSavingOperation] = useState(false);
+  const [savingBusinessHours, setSavingBusinessHours] = useState(false);
+  const [savingServices, setSavingServices] = useState(false);
   const [saving, setSaving] = useState(false);
   const [removing, setRemoving] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
 
   const [impactCount, setImpactCount] = useState(0);
+  const [settingsFeedback, setSettingsFeedback] = useState('');
   const [feedbackMessage, setFeedbackMessage] = useState('');
+
+  const fetchSettings = useCallback(async () => {
+    try {
+      setLoadingSettings(true);
+
+      const [
+        operationResult,
+        businessHoursResult,
+        serviceDefaultsResult,
+      ] = await Promise.all([
+        supabase
+          .from('salon_operation_settings')
+          .select('default_service_name, default_duration_minutes, appointment_slot_minutes')
+          .eq('id', true)
+          .maybeSingle(),
+        supabase
+          .from('salon_business_hours')
+          .select('weekday, is_open, open_time, close_time, break_start, break_end')
+          .order('weekday', { ascending: true }),
+        supabase
+          .from('salon_service_defaults')
+          .select('id, name, default_duration_minutes, is_active, sort_order')
+          .eq('is_active', true)
+          .order('sort_order', { ascending: true })
+          .order('name', { ascending: true }),
+      ]);
+
+      if (operationResult.error) throw operationResult.error;
+      if (businessHoursResult.error) throw businessHoursResult.error;
+      if (serviceDefaultsResult.error) throw serviceDefaultsResult.error;
+
+      if (operationResult.data) {
+        setOperationSettings({
+          default_service_name: operationResult.data.default_service_name || '커트',
+          default_duration_minutes: operationResult.data.default_duration_minutes || 60,
+          appointment_slot_minutes: operationResult.data.appointment_slot_minutes || 30,
+        });
+      }
+
+      const defaultsByWeekday = new Map(buildDefaultBusinessHours().map((row) => [row.weekday, row]));
+      for (const row of businessHoursResult.data || []) {
+        defaultsByWeekday.set(row.weekday, normalizeBusinessHour(row));
+      }
+      setBusinessHours(Array.from(defaultsByWeekday.values()).sort((a, b) => a.weekday - b.weekday));
+      setServiceDefaults(serviceDefaultsResult.data || []);
+    } catch (error) {
+      console.error('운영 설정 조회 오류:', error);
+      setSettingsFeedback('운영 설정을 불러오지 못했습니다.');
+    } finally {
+      setLoadingSettings(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchSettings();
+  }, [fetchSettings]);
 
   const fetchClosedDates = useCallback(async () => {
     try {
@@ -82,6 +197,180 @@ function SettingsPageContent() {
   useEffect(() => {
     fetchClosedDates();
   }, [fetchClosedDates]);
+
+  const updateBusinessHour = (weekday, patch) => {
+    setBusinessHours((prev) =>
+      prev.map((row) => (row.weekday === weekday ? { ...row, ...patch } : row))
+    );
+  };
+
+  const updateServiceDefault = (id, patch) => {
+    setServiceDefaults((prev) =>
+      prev.map((service) => (service.id === id ? { ...service, ...patch } : service))
+    );
+  };
+
+  const handleSaveOperationSettings = async () => {
+    const defaultDuration = Number(operationSettings.default_duration_minutes);
+    const slotMinutes = Number(operationSettings.appointment_slot_minutes);
+
+    if (!operationSettings.default_service_name.trim()) {
+      setSettingsFeedback('기본 시술명을 입력해주세요.');
+      return;
+    }
+
+    try {
+      setSavingOperation(true);
+      const { error } = await supabase
+        .from('salon_operation_settings')
+        .upsert(
+          {
+            id: true,
+            default_service_name: operationSettings.default_service_name.trim(),
+            default_duration_minutes: defaultDuration,
+            appointment_slot_minutes: slotMinutes,
+          },
+          { onConflict: 'id' }
+        );
+
+      if (error) throw error;
+      setSettingsFeedback('기본 예약값이 저장되었습니다.');
+      await fetchSettings();
+    } catch (error) {
+      console.error('기본 예약값 저장 오류:', error);
+      setSettingsFeedback(error?.message || '기본 예약값 저장 중 오류가 발생했습니다.');
+    } finally {
+      setSavingOperation(false);
+    }
+  };
+
+  const handleSaveBusinessHours = async () => {
+    for (const row of businessHours) {
+      if (row.is_open && (!row.open_time || !row.close_time || row.open_time >= row.close_time)) {
+        setSettingsFeedback(`${WEEKDAY_OPTIONS[row.weekday].label} 영업 시작/종료 시간을 확인해주세요.`);
+        return;
+      }
+
+      if (
+        row.is_open &&
+        ((row.break_start && !row.break_end) || (!row.break_start && row.break_end))
+      ) {
+        setSettingsFeedback(`${WEEKDAY_OPTIONS[row.weekday].label} 휴게 시작/종료를 모두 입력해주세요.`);
+        return;
+      }
+
+      if (
+        row.is_open &&
+        row.break_start &&
+        row.break_end &&
+        !(row.open_time < row.break_start && row.break_start < row.break_end && row.break_end < row.close_time)
+      ) {
+        setSettingsFeedback(`${WEEKDAY_OPTIONS[row.weekday].label} 휴게시간은 영업시간 안에 있어야 합니다.`);
+        return;
+      }
+    }
+
+    try {
+      setSavingBusinessHours(true);
+      const { error } = await supabase
+        .from('salon_business_hours')
+        .upsert(businessHours.map(getBusinessHourPayload), { onConflict: 'weekday' });
+
+      if (error) throw error;
+      setSettingsFeedback('영업시간이 저장되었습니다.');
+      await fetchSettings();
+    } catch (error) {
+      console.error('영업시간 저장 오류:', error);
+      setSettingsFeedback(error?.message || '영업시간 저장 중 오류가 발생했습니다.');
+    } finally {
+      setSavingBusinessHours(false);
+    }
+  };
+
+  const handleSaveServiceDefault = async (service) => {
+    if (!service.name.trim()) {
+      setSettingsFeedback('시술명을 입력해주세요.');
+      return;
+    }
+
+    try {
+      setSavingServices(true);
+      const { error } = await supabase
+        .from('salon_service_defaults')
+        .update({
+          name: service.name.trim(),
+          default_duration_minutes: Number(service.default_duration_minutes),
+          is_active: true,
+          sort_order: service.sort_order || 0,
+        })
+        .eq('id', service.id);
+
+      if (error) throw error;
+      setSettingsFeedback(`${service.name.trim()} 기본 시술이 저장되었습니다.`);
+      await fetchSettings();
+    } catch (error) {
+      console.error('기본 시술 저장 오류:', error);
+      setSettingsFeedback(error?.message || '기본 시술 저장 중 오류가 발생했습니다.');
+    } finally {
+      setSavingServices(false);
+    }
+  };
+
+  const handleAddServiceDefault = async () => {
+    if (!newService.name.trim()) {
+      setSettingsFeedback('추가할 시술명을 입력해주세요.');
+      return;
+    }
+
+    try {
+      setSavingServices(true);
+      const nextSortOrder = serviceDefaults.reduce(
+        (max, service) => Math.max(max, Number(service.sort_order) || 0),
+        0
+      ) + 10;
+
+      const { error } = await supabase
+        .from('salon_service_defaults')
+        .insert({
+          name: newService.name.trim(),
+          default_duration_minutes: Number(newService.default_duration_minutes),
+          sort_order: nextSortOrder,
+          is_active: true,
+        });
+
+      if (error) throw error;
+      setNewService({ name: '', default_duration_minutes: 60 });
+      setSettingsFeedback('기본 시술이 추가되었습니다.');
+      await fetchSettings();
+    } catch (error) {
+      console.error('기본 시술 추가 오류:', error);
+      setSettingsFeedback(error?.message || '기본 시술 추가 중 오류가 발생했습니다.');
+    } finally {
+      setSavingServices(false);
+    }
+  };
+
+  const handleDeleteServiceDefault = async (service) => {
+    const shouldDelete = window.confirm(`${service.name} 기본 시술을 삭제할까요?`);
+    if (!shouldDelete) return;
+
+    try {
+      setSavingServices(true);
+      const { error } = await supabase
+        .from('salon_service_defaults')
+        .delete()
+        .eq('id', service.id);
+
+      if (error) throw error;
+      setSettingsFeedback('기본 시술이 삭제되었습니다.');
+      await fetchSettings();
+    } catch (error) {
+      console.error('기본 시술 삭제 오류:', error);
+      setSettingsFeedback(error?.message || '기본 시술 삭제 중 오류가 발생했습니다.');
+    } finally {
+      setSavingServices(false);
+    }
+  };
 
   const getTargetDates = useCallback(
     (targetMode = mode) => {
@@ -341,8 +630,277 @@ function SettingsPageContent() {
     <div className="page-content" style={{ paddingTop: 12 }}>
       <header className={styles.header}>
         <h1 className="heading-xl">설정</h1>
-        <p className="caption">휴무일 등록/해제와 충돌 예약 정리를 설정합니다.</p>
+        <p className="caption">영업시간, 기본 시술, 휴무일을 관리합니다.</p>
       </header>
+
+      <section className={`card ${styles.card}`}>
+        <div className="section-header">
+          <div>
+            <h2 className="heading-md">기본 예약값</h2>
+            <p className="caption">새 예약 화면에서 사용할 기본 시술과 시간 단위입니다.</p>
+          </div>
+          {loadingSettings ? <Loader2 size={18} className="animate-spin text-tertiary" /> : null}
+        </div>
+
+        <div className={styles.splitRow}>
+          <div className="form-group">
+            <label className="form-label">기본 시술명</label>
+            <div className="form-input">
+              <input
+                value={operationSettings.default_service_name}
+                onChange={(e) =>
+                  setOperationSettings((prev) => ({ ...prev, default_service_name: e.target.value }))
+                }
+                disabled={loadingSettings || savingOperation}
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">기본 소요시간</label>
+            <div className="form-input">
+              <select
+                value={operationSettings.default_duration_minutes}
+                onChange={(e) =>
+                  setOperationSettings((prev) => ({
+                    ...prev,
+                    default_duration_minutes: Number(e.target.value),
+                  }))
+                }
+                disabled={loadingSettings || savingOperation}
+                className="w-full h-full bg-transparent appearance-none"
+              >
+                {DURATION_MINUTE_OPTIONS.map((minutes) => (
+                  <option key={minutes} value={minutes}>
+                    {formatDurationMinutes(minutes)}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div className="form-group">
+          <label className="form-label">예약 슬롯 간격</label>
+          <div className="form-input">
+            <select
+              value={operationSettings.appointment_slot_minutes}
+              onChange={(e) =>
+                setOperationSettings((prev) => ({
+                  ...prev,
+                  appointment_slot_minutes: Number(e.target.value),
+                }))
+              }
+              disabled={loadingSettings || savingOperation}
+              className="w-full h-full bg-transparent appearance-none"
+            >
+              {SLOT_OPTIONS.map((minutes) => (
+                <option key={minutes} value={minutes}>
+                  {minutes}분
+                </option>
+              ))}
+            </select>
+            <Clock size={18} color="var(--text-tertiary)" />
+          </div>
+        </div>
+
+        <button
+          type="button"
+          className={styles.secondaryButton}
+          onClick={handleSaveOperationSettings}
+          disabled={loadingSettings || savingOperation}
+        >
+          {savingOperation ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+          <span>기본 예약값 저장</span>
+        </button>
+      </section>
+
+      <section className={`card ${styles.card}`}>
+        <div className="section-header">
+          <div>
+            <h2 className="heading-md">영업시간</h2>
+            <p className="caption">confirmed 예약은 이 시간 밖에서 저장되지 않습니다.</p>
+          </div>
+        </div>
+
+        <div className={styles.businessHoursList}>
+          {businessHours.map((row) => {
+            const weekday = WEEKDAY_OPTIONS.find((option) => option.value === row.weekday);
+            return (
+              <div key={row.weekday} className={styles.businessHourRow}>
+                <label className={styles.openToggle}>
+                  <input
+                    type="checkbox"
+                    checked={row.is_open}
+                    onChange={(e) => updateBusinessHour(row.weekday, { is_open: e.target.checked })}
+                    disabled={loadingSettings || savingBusinessHours}
+                  />
+                  <span>{weekday?.label}</span>
+                </label>
+
+                {row.is_open ? (
+                  <div className={styles.timeGrid}>
+                    <input
+                      type="time"
+                      aria-label={`${weekday?.label} 영업 시작`}
+                      value={row.open_time}
+                      onChange={(e) => updateBusinessHour(row.weekday, { open_time: e.target.value })}
+                      disabled={loadingSettings || savingBusinessHours}
+                    />
+                    <input
+                      type="time"
+                      aria-label={`${weekday?.label} 영업 종료`}
+                      value={row.close_time}
+                      onChange={(e) => updateBusinessHour(row.weekday, { close_time: e.target.value })}
+                      disabled={loadingSettings || savingBusinessHours}
+                    />
+                    <input
+                      type="time"
+                      aria-label={`${weekday?.label} 휴게 시작`}
+                      value={row.break_start}
+                      onChange={(e) => updateBusinessHour(row.weekday, { break_start: e.target.value })}
+                      disabled={loadingSettings || savingBusinessHours}
+                    />
+                    <input
+                      type="time"
+                      aria-label={`${weekday?.label} 휴게 종료`}
+                      value={row.break_end}
+                      onChange={(e) => updateBusinessHour(row.weekday, { break_end: e.target.value })}
+                      disabled={loadingSettings || savingBusinessHours}
+                    />
+                  </div>
+                ) : (
+                  <span className={styles.closedLabel}>휴무</span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        <button
+          type="button"
+          className={styles.secondaryButton}
+          onClick={handleSaveBusinessHours}
+          disabled={loadingSettings || savingBusinessHours}
+        >
+          {savingBusinessHours ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+          <span>영업시간 저장</span>
+        </button>
+      </section>
+
+      <section className={`card ${styles.card}`}>
+        <div className="section-header">
+          <div>
+            <h2 className="heading-md">기본 시술</h2>
+            <p className="caption">예약 생성에서 빠르게 선택할 시술 목록입니다.</p>
+          </div>
+          <span className="badge badge-green">{serviceDefaults.length}건</span>
+        </div>
+
+        <div className={styles.serviceList}>
+          {serviceDefaults.length === 0 ? (
+            <div className={styles.empty}>등록된 기본 시술이 없습니다.</div>
+          ) : (
+            serviceDefaults.map((service) => (
+              <div key={service.id} className={styles.serviceRow}>
+                <div className={styles.serviceInputs}>
+                  <div className="form-input">
+                    <input
+                      value={service.name}
+                      onChange={(e) => updateServiceDefault(service.id, { name: e.target.value })}
+                      disabled={loadingSettings || savingServices}
+                    />
+                  </div>
+                  <div className="form-input">
+                    <select
+                      value={service.default_duration_minutes}
+                      onChange={(e) =>
+                        updateServiceDefault(service.id, {
+                          default_duration_minutes: Number(e.target.value),
+                        })
+                      }
+                      disabled={loadingSettings || savingServices}
+                      className="w-full h-full bg-transparent appearance-none"
+                    >
+                      {DURATION_MINUTE_OPTIONS.map((minutes) => (
+                        <option key={minutes} value={minutes}>
+                          {formatDurationMinutes(minutes)}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div className={styles.serviceActions}>
+                  <button
+                    type="button"
+                    className={styles.iconButton}
+                    onClick={() => handleSaveServiceDefault(service)}
+                    disabled={savingServices}
+                    aria-label={`${service.name} 저장`}
+                  >
+                    <Save size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.iconButton}
+                    onClick={() => handleDeleteServiceDefault(service)}
+                    disabled={savingServices}
+                    aria-label={`${service.name} 삭제`}
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        <div className={styles.addServiceRow}>
+          <div className="form-input">
+            <input
+              placeholder="시술명"
+              value={newService.name}
+              onChange={(e) => setNewService((prev) => ({ ...prev, name: e.target.value }))}
+              disabled={savingServices}
+            />
+          </div>
+          <div className="form-input">
+            <select
+              value={newService.default_duration_minutes}
+              onChange={(e) =>
+                setNewService((prev) => ({
+                  ...prev,
+                  default_duration_minutes: Number(e.target.value),
+                }))
+              }
+              disabled={savingServices}
+              className="w-full h-full bg-transparent appearance-none"
+            >
+              {DURATION_MINUTE_OPTIONS.map((minutes) => (
+                <option key={minutes} value={minutes}>
+                  {formatDurationMinutes(minutes)}
+                </option>
+              ))}
+            </select>
+          </div>
+          <button
+            type="button"
+            className={styles.addButton}
+            onClick={handleAddServiceDefault}
+            disabled={savingServices}
+            aria-label="기본 시술 추가"
+          >
+            {savingServices ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
+          </button>
+        </div>
+      </section>
+
+      {settingsFeedback ? (
+        <div className={styles.feedbackBox}>
+          <AlertCircle size={16} />
+          <span>{settingsFeedback}</span>
+        </div>
+      ) : null}
 
       <section className={`card ${styles.card}`}>
         <h2 className="heading-md">휴무일 등록</h2>
