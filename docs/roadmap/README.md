@@ -74,7 +74,7 @@ supabase db push --dry-run
 ## Phase 2
 | ID | 문서 | 상태 |
 | --- | --- | --- |
-| R-06 | [R-06-pwa-completion.md](./R-06-pwa-completion.md) | Planned |
+| R-06 | [R-06-pwa-completion.md](./R-06-pwa-completion.md) | Done (local verified; production smoke pending) |
 | R-07 | [R-07-customer-edit-delete-dedupe.md](./R-07-customer-edit-delete-dedupe.md) | Planned |
 | R-08 | [R-08-service-master.md](./R-08-service-master.md) | Planned |
 | R-09 | [R-09-stats-advanced.md](./R-09-stats-advanced.md) | Planned |

@@ -42,6 +42,7 @@
 | R-03 | Done (live + fresh replay verified) | DB 레벨 더블부킹/영업시간/휴게시간/휴무일 guard, 날짜 단위 advisory lock, cancelled/completed 비점유 규칙을 live DB와 PostgreSQL 17 disposable replay에서 검증 | full Supabase `db reset`은 Docker/config 부재로 미실행이며 대량 동시성 부하는 후속 검증 |
 | R-04 | Done (live verified) | 화면별 날짜 key/달력/상대 날짜 계산을 `lib/dateTime.js` KST 유틸로 공통화하고 정적 검색, build, 모바일 `/appointments` smoke 통과 | 실제 자정/월경계 time-travel 자동 테스트는 별도 unit/e2e로 후속 보강 |
 | R-05 | Done (live verified) | `.pen` 설정 UI, owner 설정 조회/저장, 예약 생성 기본값 조회를 구현했고 live owner 설정 write/staff write 차단/anon 차단 smoke 검증 완료 | staff 설정 페이지 UI 라우팅과 PWA cache refresh 정책은 Phase 2/R-06에서 추가 확인 |
+| R-06 | Done (local verified) | Next 15.5.20/React 19.0.7, npm audit 0, build·SW·390x844/360x800 정적 offline smoke·민감 문서 cache 0건·Pencil 원본 node 14개/hash 변경·console/RSC 0건 확인 | production 배포 후 install prompt/standalone/SW update와 고정 URL precache 자산 갱신 정책 검증 |
 
 ## Phase 1 live 검증 요약 (2026-07-08)
 - Supabase 프로젝트 `burtyhairCRM`은 `ACTIVE_HEALTHY` 상태였고, Phase 1 migration 5개(`r01`, `r02`, `r05`, `r03`, `phase1_function_privilege_hardening`)를 live DB에 적용했습니다.
@@ -73,7 +74,7 @@
 - 운영 절차: `docs/operations/supabase-free-keepalive.md`
 
 ### Phase 2 (P1 운영 고도화)
-- `R-06` PWA 완성 (`next-pwa`, SW/캐시 전략)
+- `R-06` PWA 완성: 로컬 Done, production install/standalone/SW update smoke 대기
 - `R-07` 고객 정보 편집·삭제 + 중복고객 처리
 - `R-08` 서비스 마스터(가격/기본 소요시간)
 - `R-09` 통계 고도화(매출/객단가/재방문율)
@@ -117,4 +118,4 @@
 
 ## 마지막 업데이트
 - 작성일: 2026-07-11
-- 작성 기준: 워크스페이스 코드베이스 + live Supabase read-only drift/권한 확인 + PostgreSQL 17 disposable fresh replay/기능 검증 + 기존 R-02 Playwright/Pencil 근거 + `npm run build`/`git diff --check` 검증
+- 작성 기준: 워크스페이스 코드베이스 + live Supabase read-only drift/권한 확인 + PostgreSQL 17 disposable fresh replay/기능 검증 + R-02/R-06 Playwright/Pencil 근거 + `npm run build`/`git diff --check` 검증
