@@ -35,8 +35,11 @@
 | 6 | `20260707160023_r05_settings_business_hours.sql` | 영업시간/기본값 설정 |
 | 7 | `20260707160103_r03_booking_conflict_hours.sql` | 더블부킹/영업시간 guard |
 | 8 | `20260707161054_phase1_function_privilege_hardening.sql` | search path/anon execute hardening |
+| 9 | `20260711110928_r07_customer_lifecycle_dedupe.sql` | 고객 archive/anonymize, 중복 후보, 원자적 merge/undo |
 
 live DB에는 4~8번과 동일한 timestamp가 기록되어 있습니다. 1~3번은 기존 schema가 이미 동등하지만 migration history에 없으므로, 향후 Supabase CLI 배포 전에 다음 절차가 필요합니다.
+
+9번 R-07 migration은 로컬 fresh replay만 통과했으며 live DB에는 아직 적용하지 않았습니다. 아래 history repair와 R-07 migration 적용은 각각 별도 승인 아래 순서대로 진행해야 합니다.
 
 1. `supabase migration list`와 read-only schema 검증으로 live 객체 동등성을 다시 확인합니다.
 2. 사용자의 live history 변경 승인을 받습니다.
@@ -75,9 +78,11 @@ supabase db push --dry-run
 | ID | 문서 | 상태 |
 | --- | --- | --- |
 | R-06 | [R-06-pwa-completion.md](./R-06-pwa-completion.md) | Done (local verified; production smoke pending) |
-| R-07 | [R-07-customer-edit-delete-dedupe.md](./R-07-customer-edit-delete-dedupe.md) | Planned |
+| R-07 | [R-07-customer-edit-delete-dedupe.md](./R-07-customer-edit-delete-dedupe.md) | Done (local verified; production migration/live smoke pending) |
 | R-08 | [R-08-service-master.md](./R-08-service-master.md) | Planned |
 | R-09 | [R-09-stats-advanced.md](./R-09-stats-advanced.md) | Planned |
+
+R-07 로컬 완료 게이트에는 등록·편집 미저장 상태의 브라우저 Back/Forward·내부 이동 확인, 제출 중 dirty 유지·지연 응답 stale route 차단, 저장 성공 시 대화상자 0건, 홈 390×844·360×800 지속 콘솔 0건, 새 브라우저 컨텍스트의 production PWA/offline 재검증이 포함됩니다.
 
 ## 실행 프롬프트
 - [Phase 2 Execution Prompt](./phase-2-execution-prompt.md)

@@ -1,19 +1,60 @@
+.page {
+  padding-top: 12px;
+}
 .header {
-  display: flex;
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) 72px;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 24px;
+  gap: 8px;
 }
 
-.formContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4px;
+  min-width: 64px;
+  min-height: 44px;
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
 }
 
-.formCard {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+.backButton:disabled {
+  color: var(--disabled-text, var(--text-tertiary));
+  cursor: not-allowed;
+}
+
+.headerTitle {
+  min-width: 0;
+  text-align: center;
+}
+
+.headerTitle p {
+  margin-top: 2px;
+  overflow: hidden;
+  color: var(--text-tertiary);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.headerSpacer {
+  width: 72px;
+}
+
+@media (max-width: 359px) {
+  .header {
+    grid-template-columns: 58px minmax(0, 1fr) 58px;
+  }
+
+  .headerSpacer {
+    width: 58px;
+  }
+
+  .backButton span,
+  .headerTitle p {
+    display: none;
+  }
 }

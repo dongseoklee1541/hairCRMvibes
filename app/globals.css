@@ -1,8 +1,8 @@
+@import "tailwindcss";
+
 /* ============================================
    미용실 CRM — 디자인 시스템 (Design Tokens)
    ============================================ */
-
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
 :root {
   /* Colors — Background */
@@ -24,6 +24,17 @@
   --status-positive: #3D8A5A;
   --status-negative: #D85B5B;
   --status-warning: #E8A838;
+  --status-success: #2F7D4A;
+  --status-success-light: #E2F3E8;
+  --status-warning-strong: #9A5A2B;
+  --status-warning-light: #FCEBDF;
+  --status-danger: #B24444;
+  --status-danger-light: #FBE8E8;
+  --status-info: #356A8A;
+  --status-info-light: #E7F2F8;
+  --focus-ring: #6FB889;
+  --disabled-bg: #E7E4DF;
+  --disabled-text: #9C9894;
 
   /* Colors — Border */
   --border-subtle: #EEECEA;
@@ -33,7 +44,7 @@
   --tab-inactive: #B8B4AE;
 
   /* Typography */
-  --font-primary: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-primary: var(--font-outfit), -apple-system, BlinkMacSystemFont, sans-serif;
   --font-system: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
 
   /* Corner Radius */
@@ -59,6 +70,13 @@
   --transition-fast: 0.15s ease;
   --transition-normal: 0.25s ease;
   --transition-slow: 0.4s ease;
+
+  /* Mobile interaction */
+  --touch-target-min: 44px;
+  --input-height: 48px;
+  --cta-height: 56px;
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 /* ============================================
@@ -121,6 +139,7 @@ ul, ol {
   position: relative;
   display: flex;
   flex-direction: column;
+  padding-top: var(--safe-area-top);
 }
 
 .page-content {
@@ -129,7 +148,7 @@ ul, ol {
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
-  padding-bottom: calc(84px + var(--space-lg));
+  padding-bottom: calc(84px + var(--space-lg) + var(--safe-area-bottom));
 }
 
 /* ============================================
@@ -329,12 +348,12 @@ ul, ol {
   transform: translateX(-50%);
   width: 100%;
   max-width: 430px;
-  height: 84px;
+  height: calc(84px + var(--safe-area-bottom));
   background: var(--bg-surface);
   box-shadow: var(--shadow-tab);
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  padding: 12px 0 34px;
+  padding: 12px 0 calc(34px + var(--safe-area-bottom));
   z-index: 100;
 }
 
