@@ -1,6 +1,7 @@
 import { Outfit } from 'next/font/google';
 import './globals.css';
 import AppShell from '@/components/AppShell';
+import UnsavedChangesGuardBootstrap from '@/components/customers/UnsavedChangesGuardBootstrap';
 
 const outfit = Outfit({
   variable: '--font-outfit',
@@ -13,6 +14,7 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  viewportFit: 'cover',
   themeColor: '#F5F4F1',
 };
 
@@ -38,6 +40,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ko">
       <head>
+        <UnsavedChangesGuardBootstrap />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="mobile-web-app-capable" content="yes" />
       </head>

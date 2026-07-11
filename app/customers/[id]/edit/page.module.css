@@ -1,0 +1,131 @@
+.page {
+  padding-top: 12px;
+}
+.header {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) 72px;
+  align-items: center;
+  gap: 8px;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4px;
+  min-width: 64px;
+  min-height: 44px;
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.backButton:disabled {
+  color: var(--disabled-text, var(--text-tertiary));
+  cursor: not-allowed;
+}
+
+.headerTitle {
+  min-width: 0;
+  text-align: center;
+}
+
+.headerTitle p {
+  margin-top: 2px;
+  overflow: hidden;
+  color: var(--text-tertiary);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.headerSpacer {
+  width: 72px;
+}
+
+.centerState {
+  align-items: center;
+  justify-content: center;
+  min-height: 62dvh;
+  text-align: center;
+}
+
+.centerState p {
+  max-width: 300px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.errorIcon {
+  color: var(--status-danger, var(--status-negative));
+}
+
+.retryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: var(--radius-md);
+  background: var(--accent-primary);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.readOnlyCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid color-mix(in srgb, var(--status-warning, #e8a838) 38%, transparent);
+  border-radius: var(--radius-lg);
+  background: var(--status-warning-light, #fcebdf);
+  color: var(--status-warning-strong, #9a5a2b);
+}
+
+.readOnlyCard svg {
+  flex: 0 0 auto;
+}
+
+.readOnlyCard h2 {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.readOnlyCard p {
+  margin-top: 6px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.readOnlyCard a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 8px;
+  color: var(--status-warning-strong, #9a5a2b);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 359px) {
+  .header {
+    grid-template-columns: 58px minmax(0, 1fr) 58px;
+  }
+
+  .headerSpacer {
+    width: 58px;
+  }
+
+  .backButton span,
+  .headerTitle p {
+    display: none;
+  }
+}

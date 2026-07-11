@@ -62,17 +62,16 @@ function NewAppointmentForm() {
       const { data, error } = await supabase
         .from('customers')
         .select('id, name')
+        .is('archived_at', null)
         .order('name');
         
       if (error) throw error;
       setCustomers(data || []);
       
       // 쿼리 파라미터로 고객 ID가 넘어온 경우 자동 선택
-      if (customerIdFromQuery) {
-        setFormData(prev => ({ ...prev, customer_id: customerIdFromQuery }));
-      } else if (data && data.length > 0) {
-        setFormData(prev => ({ ...prev, customer_id: data[0].id }));
-      }
+      const requestedCustomer = data?.find((customer) => customer.id === customerIdFromQuery);
+      const nextCustomerId = requestedCustomer?.id || data?.[0]?.id || '';
+      setFormData((prev) => ({ ...prev, customer_id: nextCustomerId }));
     } catch (error) {
       console.error('Error fetching customers:', error);
     } finally {
@@ -268,11 +267,17 @@ function NewAppointmentForm() {
     <div className="page-content" style={{ paddingTop: 12 }}>
       {/* Header */}
       <div className={styles.header}>
-        <button onClick={() => router.back()} className="btn-icon btn-icon-sm" disabled={loading}>
-          <X size={22} color="var(--text-primary)" />
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="btn-icon"
+          disabled={loading}
+          aria-label="새 예약 닫기"
+        >
+          <X size={22} color="var(--text-primary)" aria-hidden="true" />
         </button>
         <h1 className="heading-md">새 예약</h1>
-        <div style={{ width: 36 }} />
+        <div style={{ width: 44 }} aria-hidden="true" />
       </div>
 
       <form onSubmit={handleSubmit} className={styles.formContainer}>
@@ -290,6 +295,8 @@ function NewAppointmentForm() {
               >
                 {fetchingCustomers ? (
                   <option>로딩 중...</option>
+                ) : customers.length === 0 ? (
+                  <option value="">예약 가능한 고객이 없습니다</option>
                 ) : (
                   customers.map(c => (
                     <option key={c.id} value={c.id}>{c.name}</option>

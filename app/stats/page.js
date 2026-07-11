@@ -26,7 +26,7 @@ function formatRelativeDate(dateStr) {
 
 export default function StatsPage() {
   const [appointments, setAppointments] = useState([]);
-  const [customers, setCustomers] = useState([]);
+  const [activeCustomerCount, setActiveCustomerCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   const today = getTodayKstCalendarParts();
@@ -51,15 +51,16 @@ export default function StatsPage() {
 
       if (apptError) throw apptError;
 
-      // 전체 고객 목록
-      const { data: custData, error: custError } = await supabase
+      // 보관되지 않은 활성 고객 수만 집계합니다. 과거 예약의 고객 join은 위 쿼리에서 유지합니다.
+      const { count: customerCount, error: custError } = await supabase
         .from('customers')
-        .select('*');
+        .select('*', { count: 'exact', head: true })
+        .is('archived_at', null);
 
       if (custError) throw custError;
 
       setAppointments(apptData || []);
-      setCustomers(custData || []);
+      setActiveCustomerCount(customerCount || 0);
     } catch (error) {
       console.error('Error fetching stats:', error);
     } finally {
@@ -172,11 +173,11 @@ export default function StatsPage() {
             className={styles.kpiCard}
             style={{ animationDelay: '0.05s' }}
           >
-            <span className={styles.kpiLabel}>이번달 고객</span>
-            <span className={styles.kpiValue}>{stats.monthlyCustomers}명</span>
+            <span className={styles.kpiLabel}>활성 고객</span>
+            <span className={styles.kpiValue}>{activeCustomerCount}명</span>
             <div className={`${styles.kpiChange} ${styles.kpiChangePositive}`}>
               <TrendingUp size={14} />
-              <span>{stats.totalAppointments}건 예약</span>
+              <span>이번달 {stats.monthlyCustomers}명 방문</span>
             </div>
           </div>
 

@@ -56,7 +56,12 @@ export default function TabBar() {
             : pathname.startsWith(href);
 
         return (
-          <Link key={href} href={href} className={`tab-item ${isActive ? 'active' : ''}`}>
+          <Link
+            key={href}
+            href={href}
+            prefetch={false}
+            className={`tab-item ${isActive ? 'active' : ''}`}
+          >
             <Icon size={22} strokeWidth={isActive ? 2.2 : 1.8} />
             <span>{label}</span>
           </Link>
