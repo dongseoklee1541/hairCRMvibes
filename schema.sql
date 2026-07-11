@@ -102,30 +102,9 @@ from missing_users
 cross join owner_state
 on conflict (id) do nothing;
 
-create or replace function public.ensure_user_profile_role()
-returns trigger
-language plpgsql
-security definer
-set search_path = public
-as $$
-begin
-  insert into public.profiles (id, role)
-  values (
-    new.id,
-    case
-      when exists (select 1 from public.profiles p where p.role = 'owner') then 'staff'::text
-      else 'owner'::text
-    end
-  )
-  on conflict (id) do nothing;
-
-  return new;
-end;
-$$;
-
-create trigger if not exists create_profile_for_new_user
-  after insert on auth.users
-  for each row execute function public.ensure_user_profile_role();
+-- 신규 Auth 사용자의 profile/role은 초대 또는 운영 절차에서 명시적으로
+-- 생성합니다. 첫 가입자를 자동 owner로 승격하는 auth.users trigger는
+-- 보안 경계가 합의될 때까지 schema snapshot과 live DB 모두에 두지 않습니다.
 
 -- ==========================================
 -- 6. Customers/Appointments 정책 보강
@@ -238,6 +217,7 @@ create policy "Owners can manage closed dates"
 create or replace function public.set_updated_at()
 returns trigger
 language plpgsql
+set search_path = public
 as $$
 begin
   new.updated_at = now();
@@ -258,6 +238,7 @@ create trigger set_closed_dates_updated_at
 create or replace function public.fill_cancel_audit_fields()
 returns trigger
 language plpgsql
+set search_path = public
 as $$
 begin
   if new.status = 'cancelled' and (tg_op = 'INSERT' or old.status is distinct from 'cancelled') then
@@ -282,6 +263,7 @@ create trigger fill_appointments_cancel_audit
 create or replace function public.guard_closed_day_appointment()
 returns trigger
 language plpgsql
+set search_path = public
 as $$
 begin
   if new.status = 'confirmed'
@@ -387,6 +369,7 @@ end;
 $$;
 
 revoke all on function public.apply_closed_day_with_cancellations(date, uuid[], text) from public;
+revoke all on function public.apply_closed_day_with_cancellations(date, uuid[], text) from anon;
 grant execute on function public.apply_closed_day_with_cancellations(date, uuid[], text) to authenticated;
 
 -- ==========================================
@@ -515,6 +498,7 @@ end;
 $$;
 
 revoke all on function public.apply_closed_days_batch_with_cancellations(text, date, date, int, text) from public;
+revoke all on function public.apply_closed_days_batch_with_cancellations(text, date, date, int, text) from anon;
 grant execute on function public.apply_closed_days_batch_with_cancellations(text, date, date, int, text) to authenticated;
 
 create or replace function public.remove_closed_day_range(
@@ -571,6 +555,7 @@ end;
 $$;
 
 revoke all on function public.remove_closed_day_range(date, date) from public;
+revoke all on function public.remove_closed_day_range(date, date) from anon;
 grant execute on function public.remove_closed_day_range(date, date) to authenticated;
 
 -- ==========================================
@@ -794,6 +779,7 @@ create or replace function public.parse_duration_minutes(p_duration text)
 returns integer
 language plpgsql
 immutable
+set search_path = public
 as $$
 declare
   v_text text := btrim(coalesce(p_duration, ''));
@@ -828,6 +814,7 @@ end;
 $$;
 
 revoke all on function public.parse_duration_minutes(text) from public;
+revoke all on function public.parse_duration_minutes(text) from anon;
 grant execute on function public.parse_duration_minutes(text) to authenticated;
 
 create or replace function public.resolve_appointment_duration_minutes(
@@ -837,6 +824,7 @@ create or replace function public.resolve_appointment_duration_minutes(
 returns integer
 language plpgsql
 stable
+set search_path = public
 as $$
 declare
   v_default integer := 60;
@@ -863,11 +851,13 @@ end;
 $$;
 
 revoke all on function public.resolve_appointment_duration_minutes(integer, text) from public;
+revoke all on function public.resolve_appointment_duration_minutes(integer, text) from anon;
 grant execute on function public.resolve_appointment_duration_minutes(integer, text) to authenticated;
 
 create or replace function public.guard_appointment_conflict_and_business_hours()
 returns trigger
 language plpgsql
+set search_path = public
 as $$
 declare
   v_weekday integer;
@@ -967,6 +957,7 @@ end;
 $$;
 
 revoke all on function public.guard_appointment_conflict_and_business_hours() from public;
+revoke all on function public.guard_appointment_conflict_and_business_hours() from anon;
 
 drop trigger if exists guard_appointment_conflict_and_business_hours on public.appointments;
 create trigger guard_appointment_conflict_and_business_hours
@@ -1042,4 +1033,5 @@ end;
 $$;
 
 revoke all on function public.set_appointment_status(uuid, text, text) from public;
+revoke all on function public.set_appointment_status(uuid, text, text) from anon;
 grant execute on function public.set_appointment_status(uuid, text, text) to authenticated;

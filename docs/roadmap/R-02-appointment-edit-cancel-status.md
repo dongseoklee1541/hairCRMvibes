@@ -1,9 +1,9 @@
 # R-02 Appointment Edit Cancel Status
 
 ## 상태
-- Done (local)
+- Done (live verified)
 - 브랜치: `feature/r02-appointment-edit-status`
-- 최종 업데이트: 2026-07-07
+- 최종 업데이트: 2026-07-11
 
 ## 목표
 - 예약 상세/리스트에서 예약 수정, 취소, 완료/확정 상태 변경을 할 수 있게 합니다.
@@ -30,13 +30,37 @@
 ## 검증
 - `PATH="/Users/idongseog/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" npm run build` 통과
 - 기본 Homebrew `node`는 ICU dylib mismatch로 실패하므로 bundled Node로 검증
-- Pencil MCP wrapper/direct stdio가 `Transport closed`/응답 없음 상태라 R-02 최종 `snapshot_layout`/export는 미실행
-- Playwright 모바일 viewport 390x844, 360x800 접근 확인: 인증 세션이 없어 `/appointments`는 `/login?from=%2Fappointments`로 리다이렉트됨
-- Screenshot: `output/playwright/r02-appointment-edit-status/20260707_appointments_login_gate_390x844.png`
-- Screenshot: `output/playwright/r02-appointment-edit-status/20260707_appointments_login_gate_360x800.png`
-- 실제 Supabase 프로젝트 활성화 후 owner/staff RPC smoke 필요
+- Supabase live RPC smoke:
+  - owner/staff 계정 sign-in과 profile role 확인
+  - `set_appointment_status` staff cancel 동작 확인
+  - cancel reason, `cancelled_at`, `cancelled_by` 저장 확인
+  - owner reconfirm 시 `cancelled_reason`, `cancelled_at`, `cancelled_by` 초기화 확인
+  - anon `set_appointment_status` 실행 차단 확인
+- PostgreSQL 17 disposable fresh replay에서 owner RPC cancel/reconfirm, 취소 감사 필드 기록 및 재확정 시 초기화를 재검증
+- Playwright authenticated UI smoke:
+  - `/appointments` 실제 예약 목록 진입
+  - `완료`, `취소`, `확정`, `수정` 버튼 동작 확인
+  - inline 수정 패널에서 memo 수정/저장 확인
+  - UI 취소 prompt reason 저장을 DB에서 확인
+  - 재확정 후 감사 필드 초기화를 DB에서 확인
+  - 검증용 `CODEX-P1-*` 고객/예약 데이터 cleanup 확인
+- Mobile screenshots:
+  - `output/playwright/r02-appointment-edit-status/20260708_appointments_actions_390x844_before.png`
+  - `output/playwright/r02-appointment-edit-status/20260708_appointments_edit_panel_390x844.png`
+  - `output/playwright/r02-appointment-edit-status/20260708_appointments_completed_390x844.png`
+  - `output/playwright/r02-appointment-edit-status/20260708_appointments_cancelled_390x844.png`
+  - `output/playwright/r02-appointment-edit-status/20260708_appointments_reconfirmed_390x844.png`
+  - `output/playwright/r02-appointment-edit-status/20260708_appointments_edit_panel_360x800.png`
+- 이전 login gate baseline:
+  - `output/playwright/r02-appointment-edit-status/20260707_appointments_login_gate_390x844.png`
+  - `output/playwright/r02-appointment-edit-status/20260707_appointments_login_gate_360x800.png`
+- Pencil MCP 최종 재검증:
+  - active editor: `pencil-hairshopcrm.pen`
+  - node: `TtNfz` (`예약 페이지`)
+  - `snapshot_layout(..., problemsOnly: true)` 결과: layout problem 없음
+  - export: `output/playwright/r02-appointment-edit-status/TtNfz.png`
 
 ## 남은 작업
-- 실제 Supabase 프로젝트가 `INACTIVE`라 live DB smoke는 미실행입니다.
-- owner/staff 계정으로 완료/취소/확정 복귀, 취소 감사 필드, 예약 수정 시 R-03 충돌/영업시간 차단 회귀 검증이 필요합니다.
-- Pencil MCP 연결 복구 후 R-02 예약 목록 액션 UI의 `snapshot_layout`/export 재검증이 필요합니다.
+- 취소 reason 입력은 현재 browser prompt 기반입니다. 기능은 검증됐지만 모바일 UX polish 시 modal/form 컴포넌트로 전환하는 편이 낫습니다.
+- R-03 guard와의 결합은 live smoke로 확인했지만, 예약 수정 시 다양한 edge duration/service 조합은 후속 regression suite로 자동화해야 합니다.
+- PWA install/offline/cache 검증은 R-06 범위로 남깁니다.

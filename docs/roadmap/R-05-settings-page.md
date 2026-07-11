@@ -1,9 +1,9 @@
 # R-05 Settings Page
 
 ## 상태
-- Done (local)
-- 브랜치: `feature/r05-settings-business-hours`
-- 최종 업데이트: 2026-07-07
+- Done (live verified)
+- 브랜치: `feature/r02-appointment-edit-status` (Phase 1 통합 브랜치)
+- 최종 업데이트: 2026-07-11
 
 ## 목표
 - 설정 페이지에서 영업시간, 기본 시술, 기본 소요시간을 관리합니다.
@@ -29,7 +29,7 @@
 - 모바일 390x844, 360x800에서 설정 페이지 UI 검증
 
 ## 현재 진행
-- DB foundation 완료: `20260706_r05_settings_business_hours.sql`
+- DB foundation 완료: `20260707160023_r05_settings_business_hours.sql`
 - `schema.sql` 동기화 완료
 - Pencil MCP 직접 연결로 `pencil-hairshopcrm.pen` 설정 화면에 영업시간/기본 예약값/기본 시술 SSOT 반영
 - `/settings` owner UI에서 `salon_operation_settings`, `salon_business_hours`, `salon_service_defaults` 조회/저장 구현
@@ -41,8 +41,22 @@
 - `npm run build` 통과
 - Pencil `snapshot_layout`에서 설정 화면 layout problem 없음
 - Pencil export: `output/playwright/r05-settings-business-hours/rYt9h.png`
-- Playwright 모바일 viewport 390x844, 360x800 접근 확인: 인증 세션이 없어 `/settings`와 `/appointments/new`는 로그인으로 리다이렉트됨
+- live schema 확인:
+  - `salon_operation_settings`, `salon_business_hours`, `salon_service_defaults` 생성 확인
+  - `salon_business_hours` 7개 요일 row 존재 확인
+  - RLS policy와 owner/staff read, owner manage 정책 존재 확인
+- live RLS smoke:
+  - owner 설정 read/write 허용 확인
+  - staff 설정 write 차단 확인(`0 rows affected`, 값 변경 없음)
+  - anon 설정 read 차단 확인
+  - owner 검증 후 설정값 restore 확인
+- Playwright 이전 baseline:
+  - 인증 세션 없이 `/settings`와 `/appointments/new` 접근 시 login redirect 확인
+  - 390x844, 360x800 login gate smoke 완료
+- R-03 live smoke에서 설정 테이블 기반 영업시간/휴게시간 guard가 동작함을 간접 확인
+- PostgreSQL 17 disposable fresh replay에서 owner/staff read 경계, staff 설정 write 차단, 영업시간/휴게시간 guard를 재검증
 
 ## 남은 리스크
-- 실제 Supabase 프로젝트가 활성화되고 owner/staff 계정 세션이 준비된 뒤 설정 저장/RLS smoke가 필요합니다.
-- R-03 브랜치에서 `duration_minutes` 저장과 영업시간/더블부킹 오류 메시지 UX를 이어서 연결해야 합니다.
+- staff의 `/settings` UI 접근 차단 화면은 이번 세션에서 별도 browser session으로 재검증하지 않았습니다. DB RLS write 차단은 live로 확인했습니다.
+- settings 관련 select 정책은 Supabase advisor에서 multiple permissive policy 경고가 남습니다. 동작 문제는 아니지만 정책 수를 줄이는 후속 정리가 가능합니다.
+- PWA cache가 설정 변경 후 오래된 값을 보여주는지 여부는 R-06 서비스워커/캐시 전략 검증 범위입니다.

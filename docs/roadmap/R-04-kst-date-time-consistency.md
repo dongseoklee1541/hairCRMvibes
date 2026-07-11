@@ -1,9 +1,9 @@
 # R-04 KST Date Time Consistency
 
 ## 상태
-- Done (local)
-- 브랜치: `feature/r04-kst-date-consistency`
-- 최종 업데이트: 2026-07-07
+- Done (live verified)
+- 브랜치: `feature/r02-appointment-edit-status` (Phase 1 통합 브랜치)
+- 최종 업데이트: 2026-07-11
 
 ## 목표
 - 브라우저 로컬 timezone이나 UTC 변환으로 인해 `YYYY-MM-DD` date key가 하루 밀리는 문제를 방지합니다.
@@ -28,7 +28,15 @@
   - 앱/컴포넌트의 직접 날짜 생성 제거 확인
   - 남은 `new Date()`는 `lib/dateTime.js` 내부로 집중
 - `PATH="/Users/idongseog/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" npm run build` 통과
+- KST 정적 검색:
+  - app/components는 `formatDateKey`, `getTodayKst`, `getWeekdayFromDateKey`, `getMonthMatrix` 등 공통 유틸 경유 확인
+  - `toISOString()` date key 생성은 app/components에서 사용하지 않음 확인
+- Phase 1 integration readiness 재검증에서도 동일 정적 검색 기준을 유지
+- Playwright mobile smoke:
+  - `/appointments` authenticated 화면을 390x844에서 확인
+  - `/appointments` inline edit panel을 390x844와 360x800에서 확인
+  - screenshot 근거는 R-02 문서의 `output/playwright/r02-appointment-edit-status/20260708_*` 파일에 기록
 
 ## 남은 리스크
-- 실제 모바일 브라우저 viewport에서 월 경계/자정 근처 날짜 표시 smoke는 아직 미실행입니다.
-- 별도 date unit test 스크립트가 없어 빌드와 정적 검색 중심으로 검증했습니다.
+- 실제 자정/월경계 time-travel 테스트는 아직 자동화하지 않았습니다. 브라우저 timezone mock 또는 date 유틸 unit test를 추가해야 장기 회귀를 막을 수 있습니다.
+- 별도 date unit test 스크립트가 없어 이번 검증은 build, 정적 검색, 모바일 route smoke 중심입니다.

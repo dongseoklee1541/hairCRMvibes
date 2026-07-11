@@ -37,11 +37,32 @@
 ## 구현 상태
 | ID | 상태 | 근거 | 다음 액션 |
 | --- | --- | --- | --- |
-| R-01 | Done (local) | `Allow all`/`auth.role()` 기반 정책을 제거하고 owner/staff 역할 기반 RLS 정책과 explicit grants를 `20260706_r01_rls_policy.sql` 및 `schema.sql`에 반영, `npm run build` 통과 | 실제 Supabase 프로젝트가 `INACTIVE`라 적용 후 Owner/Staff 계정 CRUD smoke 검증 필요 |
-| R-02 | Done (local) | 예약 상태 check constraint/RPC와 예약 목록 상태 배지, 완료/취소/확정 액션, inline 수정 패널을 구현하고 `npm run build` 통과 | 실제 Supabase 프로젝트 활성화 후 Owner/Staff 상태전이/수정/R-03 guard live 검증 필요 |
-| R-03 | Done (local) | DB 레벨 더블부킹/영업시간 guard, 날짜 단위 advisory lock, 예약 생성 저장 전 영업시간/휴게시간/confirmed 겹침 검증을 구현, `npm run build` 통과 | 실제 Supabase 프로젝트 활성화 후 double booking/business hours live regression 검증 필요 |
-| R-04 | Done (local) | 화면별 날짜 key/달력/상대 날짜 계산을 `lib/dateTime.js` KST 유틸로 공통화하고 `npm run build` 통과 | 모바일 viewport에서 월 경계/자정 근처 날짜 표시 smoke 필요 |
-| R-05 | Done (local) | `.pen`에 영업시간/기본 예약값/기본 시술 UI를 반영했고, owner 설정 페이지 조회/저장 UI와 예약 생성 기본 시술/소요시간 조회를 구현, `npm run build` 통과 | 실제 Supabase 프로젝트 활성화 후 Owner/Staff RLS smoke 및 설정 저장 live 검증 필요 |
+| R-01 | Done (live + fresh replay verified) | `Allow all`/`auth.role()` 기반 정책 제거, owner/staff RLS, explicit grants를 `20260707155922_r01_rls_policy.sql` 및 `schema.sql`에 반영했고 live/fresh owner·staff·anon 경계를 검증 | 신규 Auth profile provisioning, `rls_auto_enable`, GraphQL 노출, leaked-password protection 등 advisor 잔여 항목은 별도 보안/운영 backlog로 분리 |
+| R-02 | Done (live verified) | 예약 상태 check constraint/RPC, 상태 배지, 완료/취소/확정 액션, inline 수정 패널을 구현했고 live RPC/UI/감사 필드 smoke와 모바일 390x844/360x800 screenshot 검증 완료 | 취소 reason 입력 UX는 현재 browser prompt 기반이므로 후속 UI polish 시 modal/form 전환 검토 |
+| R-03 | Done (live + fresh replay verified) | DB 레벨 더블부킹/영업시간/휴게시간/휴무일 guard, 날짜 단위 advisory lock, cancelled/completed 비점유 규칙을 live DB와 PostgreSQL 17 disposable replay에서 검증 | full Supabase `db reset`은 Docker/config 부재로 미실행이며 대량 동시성 부하는 후속 검증 |
+| R-04 | Done (live verified) | 화면별 날짜 key/달력/상대 날짜 계산을 `lib/dateTime.js` KST 유틸로 공통화하고 정적 검색, build, 모바일 `/appointments` smoke 통과 | 실제 자정/월경계 time-travel 자동 테스트는 별도 unit/e2e로 후속 보강 |
+| R-05 | Done (live verified) | `.pen` 설정 UI, owner 설정 조회/저장, 예약 생성 기본값 조회를 구현했고 live owner 설정 write/staff write 차단/anon 차단 smoke 검증 완료 | staff 설정 페이지 UI 라우팅과 PWA cache refresh 정책은 Phase 2/R-06에서 추가 확인 |
+
+## Phase 1 live 검증 요약 (2026-07-08)
+- Supabase 프로젝트 `burtyhairCRM`은 `ACTIVE_HEALTHY` 상태였고, Phase 1 migration 5개(`r01`, `r02`, `r05`, `r03`, `phase1_function_privilege_hardening`)를 live DB에 적용했습니다.
+- RLS/RPC/R-03 live smoke는 owner/staff/anon 경계, 설정 write 권한, `set_appointment_status`, 더블부킹, 영업시간 외, 휴게시간, 휴무일, cancelled/completed 비점유, 동시성 guard를 포함해 통과했습니다.
+- R-02 UI는 `/appointments` 인증 세션에서 완료/취소/확정/수정 버튼, 취소 reason 저장, 재확정 시 감사 필드 초기화, 390x844/360x800 편집 패널을 검증했습니다.
+- Pencil MCP는 `.pen` 파일을 직접 읽지 않고 `snapshot_layout`과 PNG export를 실행했으며, 예약 페이지 layout problem은 없었습니다.
+- 당시 Claude Opus alias 리뷰에서는 R-03/R-05 상대 migration 순서만 정리됐고 기존 MVP base table migration 부재로 전체 빈 DB replay가 미지원이라는 리스크를 확인했습니다. 이 리스크는 아래 2026-07-11 통합 준비에서 A안 baseline으로 해소했습니다.
+
+## Phase 1 통합 준비 검증 (2026-07-11)
+- 선택 결과: fresh DB A안, Auth profile 자동 생성 별도 작업 분리, hardening 의도적 rollback 불가.
+- `20260219000000_phase1_genesis_baseline.sql`을 추가하고 forward migration 8개를 14자리 timestamp로 정규화했습니다. live 적용된 Phase 1 다섯 파일은 live migration version과 timestamp를 일치시켰습니다.
+- `*.down.sql`은 fresh replay 대상에서 빠지도록 `supabase/rollbacks/`로 분리했습니다.
+- PostgreSQL 17 disposable DB에서 전체 forward replay, 핵심 테이블/RLS/realtime, owner/staff/anon, 상태 RPC, 더블부킹, 영업시간, 휴게시간, 휴무일을 검증했습니다.
+- migration replay와 `schema.sql` snapshot의 table/constraint/index/policy/function/trigger/ACL/realtime 구성을 정규화 비교해 semantic diff가 없음을 확인했습니다.
+- live read-only 재확인에서 프로젝트 `ACTIVE_HEALTHY`, Auth/profile 각 2건과 누락 0건, 자동 profile 함수/trigger 부재, Phase 1 함수 `search_path=public`, 사용자 호출 RPC/helper anon 차단을 확인했습니다.
+- live history에는 genesis/기존 R-03 세 timestamp가 없으므로 향후 `db push` 전 별도 승인 아래 `migration repair --status applied 20260219000000 20260220000000 20260221000000`가 필요합니다. 이번 작업에서는 live history를 변경하지 않았습니다.
+
+## Phase 1 통합 메모
+- 현재 `feature/r02-appointment-edit-status`는 local `main` 대비 9 commits ahead, `origin/main` 대비 10 commits ahead이며 양쪽 모두 fast-forward 가능 상태입니다.
+- Push/PR은 아직 수행하지 않았습니다. 권장 흐름은 검증 정리 커밋 1개를 현재 브랜치에 추가한 뒤, Phase 1 전체를 단일 PR로 `main`에 반영하는 것입니다.
+- migration baseline A안을 적용해 disposable fresh replay를 통과했습니다. main 병합은 가능하지만 live DB 배포는 migration history repair 승인 후 별도 수행해야 합니다.
 
 ### Phase 2 (P1 운영 고도화)
 - `R-06` PWA 완성 (`next-pwa`, SW/캐시 전략)
@@ -87,5 +108,5 @@
 - 실제 구현 착수는 별도 승인 후 진행하며, 구현 계획 문서는 본 로드맵을 참조합니다.
 
 ## 마지막 업데이트
-- 작성일: 2026-07-07
-- 작성 기준: 워크스페이스 코드베이스 + `pencil-hairshopcrm.pen` R-05/R-03/R-02 SSOT 업데이트 + R-05 설정/예약 UI 구현 + R-03 예약 충돌/영업시간 guard UX/advisory lock 보강 + R-04 KST 공통화 + R-02 예약 수정/상태변경 UI + Phase 2 planned 문서/실행 프롬프트 초기화 + `npm run build` 검증
+- 작성일: 2026-07-11
+- 작성 기준: 워크스페이스 코드베이스 + live Supabase read-only drift/권한 확인 + PostgreSQL 17 disposable fresh replay/기능 검증 + 기존 R-02 Playwright/Pencil 근거 + `npm run build`/`git diff --check` 검증
