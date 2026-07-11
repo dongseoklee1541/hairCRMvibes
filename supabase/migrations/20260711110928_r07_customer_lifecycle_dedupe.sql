@@ -128,7 +128,8 @@ revoke all on table public.customers from anon;
 revoke all on table public.customers from authenticated;
 grant select on table public.customers to authenticated;
 grant insert (name, phone, memo) on table public.customers to authenticated;
-grant update (name, phone, memo) on table public.customers to authenticated;
+-- 기존 고객 상세의 memo 저장 payload는 updated_at도 보내지만 trigger가 서버 시각으로 덮어쓴다.
+grant update (name, phone, memo, updated_at) on table public.customers to authenticated;
 
 -- 예약 이력도 status 전환으로 관리하며 직접 hard delete를 허용하지 않는다.
 revoke delete on table public.appointments from authenticated;

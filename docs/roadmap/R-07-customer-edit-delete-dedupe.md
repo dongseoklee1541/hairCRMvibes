@@ -3,8 +3,9 @@
 ## 상태
 - Done (local verified; production migration/live smoke pending)
 - 브랜치: `feature/r07-customer-edit-delete-dedupe`
-- 기준 HEAD: `1ca4494` (`feat(pwa): complete R-06 offline experience`)
-- 최종 업데이트: 2026-07-11
+- 기반 commit: `1ca4494` (`feat(pwa): complete R-06 offline experience`)
+- 최초 R-07 구현 commit: `a2249d7` (`feat(customers): complete R-07 lifecycle and dedupe`)
+- 최종 업데이트: 2026-07-12
 
 ## 목표
 - 고객 이름·전화번호·메모를 편집하고 명시적인 loading/error/empty/success 상태를 제공합니다.
@@ -49,7 +50,7 @@
 - snapshot: `schema.sql`
 - smoke: `supabase/tests/r07_customer_lifecycle.sql`
 - lifecycle column, phone normalization trigger/index, audit/mapping table, active-customer appointment guard를 추가했습니다.
-- 고객 direct write는 `insert(name, phone, memo)`와 `update(name, phone, memo)` column grant로 제한했습니다.
+- 고객 direct write는 `insert(name, phone, memo)`와 `update(name, phone, memo, updated_at)` column grant로 제한했습니다. `updated_at`은 기존 고객 상세의 memo 저장 payload 호환용이며 trigger가 서버 시각으로 덮어써 client가 보낸 시각을 저장하지 않습니다.
 - 신규 audit table은 RLS를 활성화하고 owner select만 허용합니다.
 - privileged RPC는 `SECURITY DEFINER`, `search_path=''`, 내부 `auth.uid()`/owner 검증, PUBLIC·anon execute 회수를 적용했습니다.
 
@@ -70,7 +71,7 @@
 - bundled Node `npm run build`: 통과
 - PostgreSQL 17 전체 forward migration 9개 fresh replay + R-07 smoke: 통과
 - 별도 PostgreSQL 17 `schema.sql` from-scratch + 동일 smoke: 통과
-- owner/staff/anon, authenticated column/table privilege(`MAINTAIN` 포함), anon RPC/mapping 접근 차단, phone sync, archive/restore/anonymize, hard delete 차단, archived 예약 차단: 통과
+- owner/staff/anon, authenticated column/table privilege(`MAINTAIN` 포함), 기존 상세 `memo + updated_at` payload와 서버 시각 trigger 호환, anon RPC/mapping 접근 차단, phone sync, archive/restore/anonymize, hard delete 차단, archived 예약 차단: 통과
 - exact phone/name 후보, unrelated/self/archived merge 거부, 원자적 merge·audit·undo, stale undo 거부: 통과
 - 강제 appointment trigger 오류 후 customer/event/mapping/appointment 전체 rollback: 통과
 - `appointments_customer_id_fkey=RESTRICT`, authenticated 고객/예약 DELETE=false, audit RLS=true: 확인
@@ -97,10 +98,10 @@
 - Pencil: `output/playwright/r07-customer-edit-delete-dedupe/pencil-verified/20260711_r07_merge_result_pencil.png`
 
 ## 남은 리스크 / 배포 게이트
-- R-07 migration은 production Supabase에 적용하지 않았습니다. migration 적용 전 R-07 UI를 배포하면 새 column/RPC 조회가 실패합니다.
+- R-07 migration은 production Supabase에 적용하지 않았습니다. migration 적용 전 R-07 UI를 배포하면 새 column/RPC 조회가 실패합니다. 기존 production 앱의 `memo + updated_at` payload는 최소 column grant와 서버 시각 trigger smoke로 DB-first 호환성을 로컬 검증했습니다.
 - live history에는 genesis/기존 R-03 세 timestamp가 없으므로 향후 `db push` 전 별도 승인 아래 Phase 1 migration history repair가 먼저 필요합니다.
 - 현재 production Advisor는 R-07 미적용 기준 security 13건/performance 8건을 보고합니다. GraphQL schema 노출 경고, 기존 `rls_auto_enable` execute 경고, leaked-password protection, FK index/다중 permissive policy는 R-07과 분리해 운영 hardening backlog로 처리합니다.
 - audit event는 개인정보 snapshot을 남기지 않으므로 비식별화 이후 당시 이름/전화번호를 복구하는 용도로 사용할 수 없습니다. 이는 의도된 privacy 경계입니다.
 - production에서는 owner/staff 실제 세션, migration 적용 순서, browser install/standalone, service worker update를 다시 검증해야 합니다.
 - `prefetch={false}`를 적용한 정적 진입은 첫 이동이 소폭 느려질 수 있으므로 production 실기기에서 체감 속도를 다시 확인합니다.
-- R-07은 아직 stage/commit/push/PR/deploy하지 않았습니다.
+- R-07 최초 구현은 `a2249d7`로 commit했고 승인된 호환성 보완까지 로컬 반영·검증했습니다. push/PR/main 병합/deploy는 아직 수행하지 않았습니다.

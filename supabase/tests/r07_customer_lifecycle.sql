@@ -146,7 +146,7 @@ begin
         'public.customers',
         c.column_name,
         'UPDATE'
-      ) is distinct from (c.column_name = any (array['name', 'phone', 'memo']))
+      ) is distinct from (c.column_name = any (array['name', 'phone', 'memo', 'updated_at']))
   ) then
     raise exception 'R-07 smoke: authenticated customers UPDATE 컬럼 allowlist가 정확하지 않습니다.';
   end if;
@@ -204,6 +204,10 @@ declare
   v_phone_candidates integer;
   v_name_pairs integer;
   v_staff_customer_id uuid;
+  v_legacy_expected_memo constant text := '기존 앱 memo 저장 호환 검증';
+  v_legacy_client_updated_at constant timestamptz := '2000-01-01T00:00:00Z'::timestamptz;
+  v_legacy_effective_memo text;
+  v_legacy_effective_updated_at timestamptz;
 begin
   insert into public.customers (name, phone, memo)
   values ('staff 등록 검증', '010 2222 3333', 'staff 등록 가상 메모')
@@ -219,6 +223,23 @@ begin
       and c.anonymized_at is null
   ) then
     raise exception 'R-07 smoke: staff 허용 컬럼 insert 또는 전화번호 정규화가 실패했습니다.';
+  end if;
+
+  update public.customers
+  set
+    memo = v_legacy_expected_memo,
+    updated_at = v_legacy_client_updated_at
+  where id = v_staff_customer_id
+  returning memo, updated_at
+  into v_legacy_effective_memo, v_legacy_effective_updated_at;
+
+  if v_legacy_effective_memo is distinct from v_legacy_expected_memo then
+    raise exception 'R-07 smoke: 기존 앱 memo payload 저장이 실패했습니다.';
+  end if;
+
+  if v_legacy_effective_updated_at is null
+     or v_legacy_effective_updated_at is not distinct from v_legacy_client_updated_at then
+    raise exception 'R-07 smoke: updated_at 서버 시각 overwrite가 실패했습니다.';
   end if;
 
   begin

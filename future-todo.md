@@ -43,7 +43,7 @@
 | R-04 | Done (live verified) | 화면별 날짜 key/달력/상대 날짜 계산을 `lib/dateTime.js` KST 유틸로 공통화하고 정적 검색, build, 모바일 `/appointments` smoke 통과 | 실제 자정/월경계 time-travel 자동 테스트는 별도 unit/e2e로 후속 보강 |
 | R-05 | Done (live verified) | `.pen` 설정 UI, owner 설정 조회/저장, 예약 생성 기본값 조회를 구현했고 live owner 설정 write/staff write 차단/anon 차단 smoke 검증 완료 | staff 설정 페이지 UI 라우팅과 PWA cache refresh 정책은 Phase 2/R-06에서 추가 확인 |
 | R-06 | Done (local verified) | Next 15.5.20/React 19.0.7, npm audit 0, build·SW·390x844/360x800 정적 offline smoke·민감 문서 cache 0건·Pencil 원본 node 14개/hash 변경·console/RSC 0건 확인 | production 배포 후 install prompt/standalone/SW update와 고정 URL precache 자산 갱신 정책 검증 |
-| R-07 | Done (local verified) | 고객 archive/restore/irreversible anonymize, exact phone/name 후보, owner transaction merge·durable guarded undo, exact ACL을 구현했고 PostgreSQL 17 migration/schema replay·강제 rollback, 등록·편집 dirty Back/Forward·지연 저장 stale route 차단, 저장 dialog 0건, 홈 지속 console 0건, 390x844/360x800 UI·PWA/Pencil 검증 통과 | production 배포 전 Phase 1 migration history repair 승인 후 R-07 migration 적용, 실제 owner/staff 세션·Advisor·install/standalone/SW update·prefetch 체감 속도 재검증 |
+| R-07 | Done (local verified) | 고객 archive/restore/irreversible anonymize, exact phone/name 후보, owner transaction merge·durable guarded undo, exact ACL과 기존 상세의 `memo + updated_at` 저장 payload 호환을 구현했고 PostgreSQL 17 migration/schema replay·강제 rollback, 등록·편집 dirty Back/Forward·지연 저장 stale route 차단, 저장 dialog 0건, 홈 지속 console 0건, 390x844/360x800 UI·PWA/Pencil 검증 통과 | production 배포 전 Phase 1 migration history repair 승인 후 R-07 migration 적용, 실제 owner/staff 세션·Advisor·install/standalone/SW update·prefetch 체감 속도 재검증 |
 
 ## Phase 1 live 검증 요약 (2026-07-08)
 - Supabase 프로젝트 `burtyhairCRM`은 `ACTIVE_HEALTHY` 상태였고, Phase 1 migration 5개(`r01`, `r02`, `r05`, `r03`, `phase1_function_privilege_hardening`)를 live DB에 적용했습니다.
@@ -62,8 +62,8 @@
 - live history에는 genesis/기존 R-03 세 timestamp가 없으므로 향후 `db push` 전 별도 승인 아래 `migration repair --status applied 20260219000000 20260220000000 20260221000000`가 필요합니다. 이번 작업에서는 live history를 변경하지 않았습니다.
 
 ## Phase 1 통합 메모
-- 현재 `feature/r02-appointment-edit-status`는 local `main` 대비 9 commits ahead, `origin/main` 대비 10 commits ahead이며 양쪽 모두 fast-forward 가능 상태입니다.
-- Push/PR은 아직 수행하지 않았습니다. 권장 흐름은 검증 정리 커밋 1개를 현재 브랜치에 추가한 뒤, Phase 1 전체를 단일 PR로 `main`에 반영하는 것입니다.
+- 현재 `feature/r02-appointment-edit-status`는 local `main` 대비 10 commits ahead, `origin/main` 대비 11 commits ahead이며 양쪽 모두 fast-forward 가능 상태입니다.
+- Phase 1 검증 정리 head `e5bd5c2` 이후 Ops `09ea09a` → R-06 `1ca4494` → R-07 최초 구현 `a2249d7` 순으로 로컬 stack을 완료했고, push/PR은 아직 수행하지 않았습니다. 권장 통합은 Phase 1 전체 단일 PR 후 Ops → R-06 → R-07 순차 PR입니다.
 - migration baseline A안을 적용해 disposable fresh replay를 통과했습니다. main 병합은 가능하지만 live DB 배포는 migration history repair 승인 후 별도 수행해야 합니다.
 
 ## Phase 2 착수 전 운영 선행 작업 (2026-07-11)
