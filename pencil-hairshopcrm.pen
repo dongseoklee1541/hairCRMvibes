@@ -6356,6 +6356,292 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "m2vOg",
+      "x": 3210,
+      "y": 0,
+      "name": "오프라인 페이지 (R-06 SSOT)",
+      "width": 430,
+      "height": 900,
+      "fill": "#F5F4F1",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "omD4C",
+          "x": 24,
+          "y": 199,
+          "width": 382,
+          "layout": "vertical",
+          "gap": 16,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "ZtGlG",
+              "name": "Offline Icon Container",
+              "metadata": {
+                "type": "prototype",
+                "action": "navigate",
+                "target": "IcfZ0",
+                "targetType": "frame"
+              },
+              "width": 96,
+              "height": 96,
+              "fill": "#F5DFD0",
+              "cornerRadius": 48,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "StVgl",
+                  "name": "Wifi Off Icon",
+                  "width": 42,
+                  "height": 42,
+                  "icon": "wifi-off",
+                  "library": "lucide",
+                  "fill": "#D89575"
+                },
+                {
+                  "type": "text",
+                  "id": "WSvuX",
+                  "name": "Icon Spacer",
+                  "metadata": {
+                    "type": "prototype",
+                    "action": "navigate",
+                    "target": "/stats",
+                    "targetType": "route",
+                    "fallback": true
+                  },
+                  "fill": "#F5DFD0",
+                  "fontFamily": "Outfit",
+                  "fontSize": 1,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "i1s1p4",
+              "name": "Offline Title",
+              "fill": "#1A1918",
+              "textGrowth": "fixed-width",
+              "width": 382,
+              "content": "인터넷 연결을 확인해 주세요",
+              "lineHeight": 1.25,
+              "textAlign": "center",
+              "fontFamily": "Outfit",
+              "fontSize": 24,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "x6SBz",
+              "name": "Offline Description",
+              "fill": "#6B6966",
+              "textGrowth": "fixed-width",
+              "width": 382,
+              "content": "연결이 복구되면 최신 예약과 고객 정보를 다시 불러올 수 있어요.",
+              "lineHeight": 1.5,
+              "textAlign": "center",
+              "fontFamily": "Outfit",
+              "fontSize": 15,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "iuKfD",
+              "name": "Offline Actions",
+              "width": 382,
+              "layout": "vertical",
+              "gap": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "rt9jf",
+                  "name": "Offline Status",
+                  "metadata": {
+                    "type": "prototype",
+                    "action": "navigate",
+                    "target": "IcfZ0",
+                    "targetType": "frame"
+                  },
+                  "width": 120,
+                  "height": 36,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 18,
+                  "stroke": "#EEECEA",
+                  "strokeWidth": 1,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "N9vski",
+                      "name": "Offline Status Dot",
+                      "width": 8,
+                      "height": 8,
+                      "icon": "circle",
+                      "library": "lucide",
+                      "fill": "#D89575"
+                    },
+                    {
+                      "type": "text",
+                      "id": "E6Atug",
+                      "name": "Offline Status Label",
+                      "metadata": {
+                        "type": "prototype",
+                        "action": "navigate",
+                        "target": "/stats",
+                        "targetType": "route",
+                        "fallback": true
+                      },
+                      "fill": "#6B6966",
+                      "content": "현재 오프라인",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "i03Uyk",
+                  "name": "Privacy Notice",
+                  "width": 382,
+                  "height": 70,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 12,
+                  "padding": [
+                    14,
+                    18
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "dhQ20",
+                      "name": "Privacy Notice Text",
+                      "fill": "#6B6966",
+                      "textGrowth": "fixed-width",
+                      "width": 346,
+                      "content": "예약·고객 정보는 연결 후 최신 상태로 표시되며, 오프라인 캐시에 저장하지 않습니다.",
+                      "lineHeight": 1.5,
+                      "textAlign": "center",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "usZ4a",
+                  "name": "Retry Connection Button",
+                  "metadata": {
+                    "type": "prototype",
+                    "action": "navigate",
+                    "target": "IcfZ0",
+                    "targetType": "frame"
+                  },
+                  "width": 382,
+                  "height": 52,
+                  "fill": "#3D8A5A",
+                  "cornerRadius": 12,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "FR5GF",
+                      "name": "Retry Icon",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "refresh-cw",
+                      "library": "lucide",
+                      "fill": "#FFFFFF"
+                    },
+                    {
+                      "type": "text",
+                      "id": "uxjcg",
+                      "name": "Retry Label",
+                      "metadata": {
+                        "type": "prototype",
+                        "action": "navigate",
+                        "target": "/stats",
+                        "targetType": "route",
+                        "fallback": true
+                      },
+                      "fill": "#FFFFFF",
+                      "content": "다시 연결하기",
+                      "fontFamily": "Outfit",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "H2m9z",
+              "name": "Reconnect Hint",
+              "fill": "#9C9894",
+              "textGrowth": "fixed-width",
+              "width": 382,
+              "content": "네트워크가 복구되면 자동으로 페이지를 새로고침합니다.",
+              "lineHeight": 1.5,
+              "textAlign": "center",
+              "fontFamily": "Outfit",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "mLNRr",
+      "x": 3740,
+      "y": 0,
+      "name": "PWA App Icon 512 (R-06 SSOT)",
+      "clip": true,
+      "width": 512,
+      "height": 512,
+      "fill": "#3D8A5A",
+      "cornerRadius": 112,
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "kqu8i",
+          "x": 0,
+          "y": 0,
+          "name": "Icon Content",
+          "width": 512,
+          "height": 512,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "BuO5G",
+              "name": "App Monogram",
+              "fill": "#FFFFFF",
+              "content": "HC",
+              "fontFamily": "Outfit",
+              "fontSize": 144,
+              "fontWeight": "700"
+            }
+          ]
+        }
+      ]
     }
   ],
   "variables": {
@@ -6400,5 +6686,5 @@
       "value": "#D89575"
     }
   },
-  "fileToken": "5c9e6830-a87d-4722-9cb8-da7c8c49bd36"
+  "fileToken": "27baa9e5-5dea-4072-8b2f-28a60fd8c0a0"
 }
