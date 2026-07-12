@@ -13,8 +13,8 @@
 
 ## Phase 1 검증 기준
 - 기준일: 2026-07-12
-- 브랜치: `feature/r02-appointment-edit-status`
-- live Supabase migration/RLS/RPC/R-03 smoke, R-02 Playwright mobile smoke, Pencil R-02 `snapshot_layout`/export, `npm run build`, `git diff --check`를 통과 기준으로 삼습니다.
+- release 기준: remote `main@16157f89976e41f5218377712d5d77026bc14417`
+- live Supabase migration/RLS/RPC/R-03 smoke, R-02 Playwright mobile smoke, Pencil R-02 `snapshot_layout`/export, `npm run build`, `git diff --check`, Vercel Production canonical smoke를 통과 기준으로 삼습니다.
 - Fresh DB 정책은 A안을 선택했습니다. `20260219000000_phase1_genesis_baseline.sql`을 포함한 forward migration 8개를 disposable PostgreSQL 17에서 전체 replay했고, 핵심 객체/RLS/RPC/예약 guard를 검증했습니다.
 - migration replay 결과와 `schema.sql` snapshot을 별도 DB에 적용해 public schema 의미 구성을 비교했으며 semantic diff가 없습니다.
 - 신규 Auth 사용자 profile 자동 생성은 별도 보안/운영 작업으로 분리했습니다. live와 `schema.sql` 모두 자동 owner trigger가 없으며 profile provisioning 전 사용자는 RLS 접근이 차단됩니다.
@@ -50,7 +50,7 @@ supabase db push --dry-run
 supabase db push --linked --yes
 ```
 
-R-07 적용 후 catalog/ACL/RPC 29개 계약과 실제 owner/staff/anon Data API/RPC smoke 106개를 통과했고 synthetic fixture residue 0건을 확인했습니다. Production UI/PWA smoke는 Vercel 배포 후 별도 수행합니다.
+R-07 적용 후 catalog/ACL/RPC 29개 계약과 실제 owner/staff/anon Data API/RPC smoke 106개를 통과했고 synthetic fixture residue 0건을 확인했습니다. Vercel Production 배포 후 canonical 홈페이지·로그인·manifest/SW/offline/icon, Cron 401/200, DB `select 1`, Runtime log 0건도 확인했습니다.
 
 ## Auth profile 운영 제약
 
@@ -67,22 +67,21 @@ R-07 적용 후 catalog/ACL/RPC 29개 계약과 실제 owner/staff/anon Data API
 - 필요한 함수 하나만 신규 forward migration으로 교정하고, mutable `search_path` 또는 anon 권한을 일괄 복원하지 않습니다.
 - 기존 rollback SQL은 production 자동 실행용이 아니라 수동 검토 자료입니다.
 
-## Phase 1 통합 전략
-- 현재 stack은 `origin/main → R-02(11 commits) → Ops(1) → R-06(1) → R-07(2)` ancestry를 유지하며 네 remote branch SHA가 local과 일치합니다.
-- 권장 PR 단위는 Phase 1 전체 단일 PR입니다. R-01~R-05가 DB/RLS/UI smoke로 서로 연결되어 있어 잘게 나누면 migration 순서와 검증 근거가 분산됩니다.
-- Draft PR은 #9 `main←R-02`, #10 `R-02←Ops`, #11 `Ops←R-06`, #12 `R-06←R-07`로 생성됐고 모두 `MERGEABLE/CLEAN`, Vercel checks 2/2 성공입니다. review/required checks는 없지만 네 PR 모두 Draft입니다.
-- R-07 DB-first migration과 실제 role smoke는 완료됐습니다. Ready 전환, base retarget, main merge, Vercel Production deploy는 각각 승인 전 수행하지 않습니다.
-- Vercel `main` auto-deploy가 활성화돼 있어 main merge가 즉시 Production build를 유발합니다. main merge와 배포 승인을 분리하려면 별도 설정 변경 또는 env/release gate 선완료가 필요합니다.
+## Phase 1 통합 및 release 결과
+- Phase 1/R-02, Ops, R-06, R-07 stacked PR #9~#12와 Keychain 운영 보완 PR #13을 모두 `main`에 merge했습니다. 최종 release 기준은 `main@16157f89976e41f5218377712d5d77026bc14417`입니다.
+- Vercel `main` auto-deploy는 merge SHA의 Production build를 성공시켰지만 custom domain 할당은 `Staged` 상태에서 생략됐습니다. deployment `5z5MKHSAyxtLrRt6ACF3UZtLBGh7`을 명시적으로 Promote해 `hair-cr-mvibes.vercel.app`을 갱신했습니다.
+- Production에는 `SUPABASE_SECRET_KEY`, `CRON_SECRET`이 Sensitive 변수로 존재하고 Cron Jobs는 Enabled, `/api/cron/supabase-keepalive`는 `17 3 * * *`로 등록됐습니다.
+- canonical smoke는 홈페이지·로그인·PWA 핵심 자산 200, Cron 무인증 401/승인 200, DB `select 1`, Runtime Warning/Error/Fatal 0건을 통과했습니다.
 
 ## Phase 2
 | ID | 문서 | 상태 |
 | --- | --- | --- |
-| R-06 | [R-06-pwa-completion.md](./R-06-pwa-completion.md) | Done (local verified; production smoke pending) |
-| R-07 | [R-07-customer-edit-delete-dedupe.md](./R-07-customer-edit-delete-dedupe.md) | Done (production DB verified; UI/PWA smoke pending) |
+| R-06 | [R-06-pwa-completion.md](./R-06-pwa-completion.md) | Done (production asset smoke verified; install/standalone/update pending) |
+| R-07 | [R-07-customer-edit-delete-dedupe.md](./R-07-customer-edit-delete-dedupe.md) | Done (production deployed and verified) |
 | R-08 | [R-08-service-master.md](./R-08-service-master.md) | Planned |
 | R-09 | [R-09-stats-advanced.md](./R-09-stats-advanced.md) | Planned |
 
-R-07 로컬 완료 게이트에는 등록·편집 미저장 상태의 브라우저 Back/Forward·내부 이동 확인, 제출 중 dirty 유지·지연 응답 stale route 차단, 저장 성공 시 대화상자 0건, 홈 390×844·360×800 지속 콘솔 0건, 새 브라우저 컨텍스트의 production PWA/offline 재검증이 포함됩니다.
+R-07 로컬 완료 게이트에는 등록·편집 미저장 상태의 브라우저 Back/Forward·내부 이동 확인, 제출 중 dirty 유지·지연 응답 stale route 차단, 저장 성공 시 대화상자 0건, 홈 390×844·360×800 지속 콘솔 0건, 새 브라우저 컨텍스트의 PWA/offline 재검증이 포함됩니다. Production release에서는 canonical PWA 핵심 자산과 Cron/DB/runtime log 경계를 추가 확인했습니다.
 
 ## 실행 프롬프트
 - [Phase 2 Execution Prompt](./phase-2-execution-prompt.md)

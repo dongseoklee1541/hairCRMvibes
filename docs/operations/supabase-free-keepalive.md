@@ -38,6 +38,15 @@ openssl rand -hex 32
 [`scripts/haircrm-keychain`](./local-keychain-secrets.md)의 고정 alias와 비출력 명령으로 접근합니다.
 로컬 Keychain 사본은 Vercel Production 환경변수를 대체하는 원본이 아닙니다.
 
+## Production 적용 상태 (2026-07-12)
+
+- release 기준은 `main@16157f89976e41f5218377712d5d77026bc14417`, Vercel deployment는 `5z5MKHSAyxtLrRt6ACF3UZtLBGh7`입니다.
+- 자동 Production build는 성공했지만 deployment가 `Staged` 상태이고 custom domain 할당이 생략돼, Dashboard에서 정확한 merge SHA를 Promote했습니다. 현재 canonical은 `https://hair-cr-mvibes.vercel.app`입니다.
+- Vercel Production에 `SUPABASE_SECRET_KEY`, `CRON_SECRET`이 Sensitive 변수로 존재함을 이름과 scope만 확인했습니다. 실제 값은 열거나 출력하지 않았습니다.
+- Cron Jobs는 Enabled이며 `/api/cron/supabase-keepalive`가 `17 3 * * *`로 등록됐습니다.
+- 무인증 요청은 `401 + application/json + no-store`, Keychain wrapper 승인 요청은 `200 + {"ok":true}`를 반환했습니다. Runtime Logs의 Warning/Error/Fatal은 각각 0건이었습니다.
+- Production DB `select 1`과 임시 CA/Cron response residue 0건도 함께 확인했습니다.
+
 ## 배포 후 검증
 
 Cron은 production deployment에서만 등록·실행됩니다. push/deploy 승인 후 다음 순서로 확인합니다.
@@ -55,6 +64,8 @@ scripts/haircrm-keychain cron-request \
 
 6. Vercel Runtime Logs에서 성공 여부만 확인합니다. secret이나 Supabase 응답 데이터가 로그에 없어야 합니다.
 7. Supabase에서 inactivity 경고 메일이 오면 실제 앱 요청과 Dashboard 활동을 추가 확인합니다.
+
+Production build가 성공해도 deployment가 `Staged`이고 `Assigning Custom Domains`가 `Skipped`라면 canonical은 이전 배포를 계속 가리킬 수 있습니다. 이 경우 deployment detail에서 source SHA를 다시 확인한 후 `Promote`하고, canonical의 무인증 `401`과 승인 `200`을 모두 재검증합니다.
 
 ## 실패 상태
 

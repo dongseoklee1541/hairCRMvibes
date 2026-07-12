@@ -1,11 +1,14 @@
 # R-07 Customer Edit Delete Dedupe
 
 ## 상태
-- Done (production DB migration/role smoke verified; production UI/PWA smoke pending)
+- Done (production deployed and verified)
 - 브랜치: `feature/r07-customer-edit-delete-dedupe`
 - 기반 commit: `1ca4494` (`feat(pwa): complete R-06 offline experience`)
 - 최초 R-07 구현 commit: `a2249d7` (`feat(customers): complete R-07 lifecycle and dedupe`)
 - 호환성 보완 commit: `a6551a8` (`fix(customers): preserve legacy memo update compatibility`)
+- Production 검증 기록 commit: `ae7ac3e` (`docs(roadmap): record R-07 production verification`)
+- Keychain 운영 보완 commit: `c8e2307` (`chore(ops): add allowlisted Keychain helper`)
+- release merge: PR #12·#13, `main@16157f89976e41f5218377712d5d77026bc14417`
 - 최종 업데이트: 2026-07-12
 
 ## 목표
@@ -107,15 +110,18 @@
 - anon은 고객 CRUD, audit 조회, lifecycle/dedupe RPC 7개가 모두 차단됐습니다. authenticated RPC EXECUTE 7/7, anon EXECUTE 0/7, 예약 FK `RESTRICT`, audit RLS 2/2도 적용 후 재확인했습니다.
 - smoke fixture는 고유 run tag와 DB 반환 synthetic ID에만 한정했습니다. 첫 cleanup scope assertion이 공백/대소문자 synthetic 이름을 보수적으로 거부해 삭제 전 중단됐고, 동일 ID 집합의 assertion만 보완해 고객 8건·예약 2건·event/mapping 각 1건을 정리했습니다. 최종 residue는 네 테이블 모두 0건이고 production 총계는 smoke 전 baseline과 일치함을 확인했습니다.
 - 최신 point-in-time Advisor는 Security WARN 20건, Performance 17건(4 WARN·13 INFO)입니다. Security의 R-07 증가분은 owner-only 내부 검증을 가진 authenticated `SECURITY DEFINER` RPC 5개와 RLS owner-only audit table GraphQL 노출 2개이며 실제 owner/staff/anon smoke와 exact ACL로 의도된 경계를 확인했습니다. 나머지 hardening과 performance 항목은 R-07과 분리한 backlog로 유지합니다.
-- 네 원격 branch와 Draft PR #9~#12는 push 완료 상태이며 각 PR은 `MERGEABLE/CLEAN`, Vercel checks 2/2 성공입니다. Ready 전환, base 변경, main merge는 아직 승인·수행하지 않았습니다.
+- stacked PR #9~#12와 Keychain 운영 보완 PR #13은 모두 Vercel checks를 통과하고 `main`에 merge됐습니다.
 
-## 남은 리스크 / 배포 게이트
-- Phase 1 history repair와 R-07 production migration은 완료됐지만 Vercel Production은 아직 `origin/main@f725269` 기반 이전 앱입니다. 현재 앱의 legacy `memo + updated_at` payload와 R-07 Data API/RPC 역할 경계 수준의 backward compatibility를 통과했고, R-07 UI는 main merge/Production deploy 전까지 제공되지 않습니다.
-- Vercel은 `main` push를 Production으로 자동 배포하도록 설정돼 있습니다. main merge와 Production 배포 승인을 분리하려면 merge 전에 auto-deploy를 별도 승인 아래 중지하거나, Production env와 release gate를 먼저 모두 완료해야 합니다.
+## Production release 결과 (2026-07-12)
+- release 기준은 `main@16157f89976e41f5218377712d5d77026bc14417`입니다. Vercel deployment `5z5MKHSAyxtLrRt6ACF3UZtLBGh7`은 build 성공 후 `Staged` 상태였고, custom domain 할당이 생략돼 Dashboard에서 정확한 merge SHA를 Promote했습니다.
+- canonical `https://hair-cr-mvibes.vercel.app`은 해당 deployment의 `Current` domain입니다. `/`, `/login`, `/manifest.json`, `/sw.js`, `/offline.html`, favicon과 192/512 icon이 모두 HTTP 200을 반환했습니다.
+- Production에는 `SUPABASE_SECRET_KEY`, `CRON_SECRET`이 Sensitive 변수로 존재합니다. Cron Jobs는 Enabled이고 `/api/cron/supabase-keepalive`가 `17 3 * * *`로 등록됐습니다.
+- keepalive는 무인증 `401 + application/json + no-store`, Keychain 승인 호출 `200 + {"ok":true}`를 통과했습니다. Production DB `select 1`도 성공했고 임시 CA/Cron response residue는 0건입니다.
+- Vercel Runtime Logs에서 release smoke 요청의 Warning/Error/Fatal은 각각 0건이었습니다. rollback은 필요하지 않았습니다.
+
+## 남은 리스크
 - Vercel public Supabase env 2개는 각각 Development/Preview/Production을 target하며 세 environment가 동일 Production Supabase 값 세트를 공유합니다. Preview가 Production Supabase를 공유하므로 격리 전 Preview 실제 로그인·데이터 smoke는 금지합니다.
-- Production keepalive에 필요한 `SUPABASE_SECRET_KEY`, `CRON_SECRET`은 아직 없고 현재 `/api/cron/supabase-keepalive`는 `404`입니다. 현재 배포된 Production의 Cron 등록은 0건이며 repo `vercel.json`의 설정 1건은 아직 미배포입니다. secret 등록·Production build·무인증 `401`/승인 호출 `200`/로그 비노출 검증이 남았습니다.
 - 최신 Advisor의 GraphQL/`SECURITY DEFINER`, leaked-password protection, unindexed FK/unused index/multiple permissive policy는 별도 hardening backlog입니다. 실제 권한 회귀는 발견되지 않았지만 설정·성능 개선과 R-07 release를 섞어 즉시 변경하지 않습니다.
 - audit event는 개인정보 snapshot을 남기지 않으므로 비식별화 이후 당시 이름/전화번호를 복구하는 용도로 사용할 수 없습니다. 이는 의도된 privacy 경계입니다.
-- production DB owner/staff/anon 검증은 완료됐습니다. R-07 UI 배포 후 실제 browser owner/staff/anon, install/standalone, service worker update, offline/cache privacy 경계를 다시 검증해야 합니다.
+- production DB owner/staff/anon 검증은 완료됐습니다. 이번 release에서는 canonical public/PWA/Cron/DB smoke만 반복했으므로 실제 browser owner/staff 시나리오와 install/standalone/service worker update는 후속 검증으로 유지합니다.
 - `prefetch={false}`를 적용한 정적 진입은 첫 이동이 소폭 느려질 수 있으므로 production 실기기에서 체감 속도를 다시 확인합니다.
-- R-07 최초 구현 `a2249d7`과 호환성 보완 `a6551a8`은 remote branch와 Draft PR #12에 반영됐습니다. main 병합과 Vercel Production deploy는 아직 수행하지 않았습니다.
