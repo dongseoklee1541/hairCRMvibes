@@ -1,7 +1,7 @@
 # R-13 예약 고객 검색·빠른 등록
 
 ## 상태
-- Done (local mock verified; PR/release pending)
+- Done (production deployed; public/PWA smoke verified)
 - 구현 브랜치: `codex/r13-appointment-customer-quick-create`
 - 기준: `origin/main@bbcb47b34987f534860422c786dd7354ca818f4a`
 - 최종 업데이트: 2026-07-12
@@ -61,7 +61,18 @@
 - after 360×800: `output/playwright/r13-appointment-customer-quick-create/20260712_r13_appointments_new_360x800_after.png`
 - sheet 360×800: `output/playwright/r13-appointment-customer-quick-create/20260712_r13_quick_create_sheet_360x800_after.png`
 
+## Production release
+- PR #18 merge commit: `f904bcfe676e73e4f629eef6e1003a186a7bbec9`
+- Vercel deployment: `dpl_5VemJYn7XhZAorkpEaHBNZN9x85o`
+- Deployment URL: `https://hair-cr-mvibes-81bpponh2-dongseoklee1541s-projects.vercel.app`
+- 상태: `READY`, target `production`, canonical alias `https://hair-cr-mvibes.vercel.app` 연결
+- 비로그인·비변경 smoke:
+  - `/appointments/new`와 R-13 page chunk HTTP 200 후 `/login?from=%2Fappointments%2Fnew` redirect
+  - `/login`, `/manifest.json`, `/sw.js`, `/offline.html`, `/favicon.ico`, `/icons/icon-192.png`, `/icons/icon-512.png` HTTP 200
+  - browser console error/warning 0건
+  - Supabase 고객·예약 요청 0건, 실데이터 생성·수정·삭제 0건
+
 ## 남은 리스크와 release 경계
 - Preview Supabase 격리가 확인되지 않아 Preview/Production 실제 고객 생성 smoke는 금지 상태입니다.
 - 실제 owner/staff 로그인 세션과 모바일 실기기 IME·standalone install은 후속 운영 검증입니다.
-- PR 검증·merge·Production deploy는 아직 수행하지 않았습니다. deploy 후 공개 route/manifest/SW/offline/favicon의 비변경 smoke만 수행하고 실데이터는 만들지 않습니다.
+- 실제 owner/staff authenticated Production 기능 smoke는 실데이터 변경 위험 때문에 수행하지 않았습니다.

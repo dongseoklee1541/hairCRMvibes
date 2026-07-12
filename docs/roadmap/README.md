@@ -13,7 +13,7 @@
 
 ## Phase 1 검증 기준
 - 기준일: 2026-07-12
-- Production 애플리케이션 release 기준: PR #16 merge `main@01440b6c4e3386c26a60ba786dacc90fa6d95223`
+- Production 애플리케이션 release 기준: PR #18 merge `main@f904bcfe676e73e4f629eef6e1003a186a7bbec9`
 - 2026-07-12 감사 착수 baseline은 PR #14 merge `2f915c2e8f7ec7e736a6ee4c315caa03113416ab`이었고, 감사 문서 PR #15 merge 후 최신 `origin/main`은 `a7a4186e76c9225c9273fa8474cea27440d36d40`입니다. 두 PR은 문서만 변경했으므로 Production 애플리케이션 release SHA와 구분합니다.
 - release 세션의 live Supabase migration/RLS/RPC/R-03 smoke, R-02 Playwright mobile smoke, Pencil R-02 `snapshot_layout`/export, `npm run build`, `git diff --check`, Vercel Production canonical smoke를 완료 근거로 사용합니다. 이번 감사에서는 현재 GitHub/Supabase catalog와 canonical 공개 endpoint만 읽기 전용으로 재확인했습니다.
 - Fresh DB 정책은 A안을 선택했습니다. `20260219000000_phase1_genesis_baseline.sql`을 포함한 forward migration 8개를 disposable PostgreSQL 17에서 전체 replay했고, 핵심 객체/RLS/RPC/예약 guard를 검증했습니다.
@@ -83,7 +83,7 @@ R-07 release 세션에서 catalog/ACL/RPC 29개 계약과 실제 owner/staff/ano
 | R-06 | [R-06-pwa-completion.md](./R-06-pwa-completion.md) | Done (production asset smoke verified; install/standalone/update pending) |
 | R-07 | [R-07-customer-edit-delete-dedupe.md](./R-07-customer-edit-delete-dedupe.md) | Done (production deployed; public endpoint rechecked) |
 | R-08 | [R-08-service-master.md](./R-08-service-master.md) | Done (production deployed; live transactional smoke verified) |
-| R-13 | [R-13-appointment-customer-search-quick-create.md](./R-13-appointment-customer-search-quick-create.md) | Done (local mock verified; PR/release pending) |
+| R-13 | [R-13-appointment-customer-search-quick-create.md](./R-13-appointment-customer-search-quick-create.md) | Done (production deployed; public/PWA smoke verified) |
 | R-09 | [R-09-stats-advanced.md](./R-09-stats-advanced.md) | Planned (metric contract prepared; implementation not started) |
 
 R-07 로컬 완료 게이트에는 등록·편집 미저장 상태의 브라우저 Back/Forward·내부 이동 확인, 제출 중 dirty 유지·지연 응답 stale route 차단, 저장 성공 시 대화상자 0건, 홈 390×844·360×800 지속 콘솔 0건, 새 브라우저 컨텍스트의 PWA/offline 재검증이 포함됩니다. Production release에서는 canonical PWA 핵심 자산과 Cron/DB/runtime log 경계를 추가 확인했습니다.
@@ -92,10 +92,12 @@ R-08은 기존 `salon_service_defaults` 확장, 10번째 migration, 예약 snaps
 
 R-13은 R-09보다 먼저 수행하는 P1 작업입니다. 활성 고객 `id,name`만 조회하는 이름 combobox와 R-07 `CustomerForm`·`find_customer_duplicates`를 재사용한 인라인 빠른 등록을 구현했고, 성공·실패·취소·중복 기존 고객 선택 뒤 예약 draft 보존을 local mock으로 검증했습니다. DB migration/RPC/RLS 및 PWA cache 전략은 변경하지 않았습니다.
 
+R-13은 PR #18 merge `main@f904bcf`로 Production에 배포됐습니다. deployment `dpl_5VemJYn7XhZAorkpEaHBNZN9x85o`가 READY이고 canonical alias가 연결됐으며, `/appointments/new`와 R-13 chunk, 로그인 redirect, manifest/SW/offline/favicon/192·512 icon 200 및 console 0건을 비로그인·비변경 smoke로 확인했습니다. 고객·예약 API와 실데이터는 건드리지 않았습니다.
+
 ## Phase 2 착수 기준
 - R-06/R-07은 재구현하지 않습니다. 실기기 install/standalone/SW update와 post-deploy authenticated browser 검증은 완료 근거와 분리한 후속 운영 작업입니다.
 - R-08은 `/Users/idongseog/workspace/hairCRMvibes-r08-service-master` clean worktree에서 구현한 뒤 PR #16 merge `main@01440b6`, live migration 10개와 Production 배포까지 완료했습니다. 기존 R-07 checkout과 미추적 산출물은 변경하지 않았습니다.
-- R-13 PR merge를 먼저 완료한 뒤 다음 기능 단계는 R-09입니다. 최신 `origin/main`에 R-13이 포함됐는지 확인하고 별도 clean worktree와 Plan으로 시작합니다.
+- R-13 Production 완료 후 현재 다음 기능 단계는 R-09입니다. 최신 `origin/main`을 확인하고 별도 clean worktree와 Plan으로 시작합니다.
 - Preview가 Production Supabase를 공유한다는 문서와 Preview env 제거 인계 기록이 충돌합니다. Vercel connector로 현재 설정을 확인하지 못했으므로 `확인 필요`이며, 확인 전 Preview 로그인·실데이터 smoke는 금지합니다.
 
 ## 실행 프롬프트
