@@ -1,202 +1,288 @@
-# AGENTS.md — Hair Salon Client Management Service (Codex Always-On)
+# AGENTS.md — Hair Salon Client Management Service
 
-> Goal: Enforce consistent procedures and quality standards so Codex implements/changes a **Next.js mobile web service** predictably.
-> Principle: Never skip the sequence **Plan → Approval → Implementation → Verification → Report**.
-
----
-
-## 0) AGENTS.md Discovery Rules & App-Scoped Operation
-
-### 0.1 How Codex discovers guidance
-
-* Codex reads `AGENTS.md`-family files **before doing any work**, and builds an **instruction chain** once per run (in the TUI, typically once per launched session). ([developers.openai.com](https://developers.openai.com/codex/guides/agents-md/?utm_source=chatgpt.com))
-* Discovery precedence is:
-
-  1. **Global scope**: In your Codex home directory (defaults to `~/.codex` unless you set `CODEX_HOME`), Codex reads `AGENTS.override.md` if it exists; otherwise it reads `AGENTS.md`. Codex uses only the **first non-empty** file at this level. ([developers.openai.com](https://developers.openai.com/codex/guides/agents-md/?utm_source=chatgpt.com))
-  2. **Project scope**: Starting at the project root (typically the Git root), Codex walks down to your current working directory (if no project root is found, it only checks the current directory). In each directory along the path, it checks `AGENTS.override.md` → `AGENTS.md` → any fallback names in `project_doc_fallback_filenames`. Codex includes **at most one file per directory**. ([developers.openai.com](https://developers.openai.com/codex/guides/agents-md/?utm_source=chatgpt.com))
-  3. **Merge order**: Files are merged in **root-to-leaf order** (global first, then repo root, then deeper directories). Later (deeper) directories effectively **override** earlier guidance. ([developers.openai.com](https://developers.openai.com/codex/guides/agents-md/?utm_source=chatgpt.com))
-* Empty files are ignored. If the combined size reaches `project_doc_max_bytes` (default 32KiB), the remainder may be truncated; if instructions grow, manage them by **splitting across directories**. ([developers.openai.com](https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide/?utm_source=chatgpt.com))
-
-### 0.2 Scope of this document (App-Scoped)
-
-* This document is **not repo-global**; it applies only within a **specific app directory scope**.
-* This file is intended to live at the **app root** (e.g., `apps/<app>/AGENTS.md` or `apps/<app>/AGENTS.override.md`).
-* Because Codex may also load repo-root guidance per discovery rules, follow this operating model to enforce “app-only” rules:
-
-  * Prefer not to place `AGENTS.md` at the repo root; if you do, keep it **minimal/neutral**.
-  * Place app-specific guidance under `apps/<app>/`, and use `AGENTS.override.md` if you need to guarantee higher precedence within that directory.
-  * Since Codex composes instructions based on the **current working directory**, run Codex **from the app directory** to ensure these rules are active.
-* If work must extend outside the app directory (shared packages / repo-root configuration), treat it as a **scope expansion**. It must be included in the Implementation Plan with stronger impact/risk/rollback details.
-
-### 0.3 Verify configuration
-
-* To verify the intended guidance is loaded, from the app root request a summary such as “current instruction summary / active instruction files”. Examples:
-
-  * `codex --ask-for-approval never "Summarize the current instructions."`
-  * `codex --cd apps/<app> --ask-for-approval never "Show which instruction files are active."`
+> Goal: Keep Codex work on this Next.js mobile web service predictable, reviewable, and aligned with the repository's actual state.
+> Principle: Follow **Plan → Approval → Implementation → Verification → Report** for every change.
 
 ---
 
-## 1) Role & Communication Rules
+## 0) Scope And Codex Guidance
 
-* You are a professional **mobile web service development partner**.
-* All conversations/comments/reports must be written in **Korean**.
-* If requirements are ambiguous, do not guess-implement. Explicitly list what is undecided and ask only the necessary questions.
-* For large changes (data model / auth / routing / payments / push, etc.), you must propose **at least two** risk/alternative options.
+### 0.1 Scope Of This File
+
+This is the repository-root `AGENTS.md`. It applies to every file under this repository unless a deeper `AGENTS.md` or `AGENTS.override.md` supplies more specific guidance for its subtree.
+
+Keep this file focused on durable repository rules: workflow gates, build and verification commands, review expectations, security boundaries, and project-specific conventions. Current status and priorities belong in `future-todo.md`; task execution details belong in `docs/roadmap/`.
+
+For roadmap work, read sources in this order before proposing a change:
+
+1. `AGENTS.md`
+2. `future-todo.md`
+3. `docs/roadmap/README.md`
+4. The relevant `docs/roadmap/R-*.md` files
+5. Current branch, HEAD, diff, worktree, package scripts, and runtime state
+
+### 0.2 How Codex Discovers Guidance
+
+According to the official OpenAI Codex documentation:
+
+- Global guidance comes from the first non-empty file among `~/.codex/AGENTS.override.md` and `~/.codex/AGENTS.md`.
+- Project guidance is discovered from the project root down to the current working directory.
+- In each directory Codex checks `AGENTS.override.md`, then `AGENTS.md`, then configured fallback filenames, and includes at most one file from that directory.
+- Guidance is combined from root to leaf, so a deeper file appears later and overrides conflicting broader guidance.
+- Empty files are skipped. Instruction loading stops when the combined `project_doc_max_bytes` limit is reached; the default is 32 KiB.
+- The instruction chain is rebuilt for each run and at the start of a TUI session. If guidance appears stale, start a new run or session in the intended directory.
+
+Official OpenAI references:
+
+- `https://developers.openai.com/codex/guides/agents-md/`
+- `https://developers.openai.com/codex/config-reference/`
+- `https://learn.chatgpt.com/docs/prompting`
+
+### 0.3 Repository Safety And Concurrency
+
+- Inspect `git status`, the current branch, and relevant worktrees before planning edits.
+- Preserve user-owned or unrelated changes. Do not overwrite, stash, stage, revert, or clean them unless that exact operation is included in the approved scope.
+- Keep roadmap work separated by task and branch unless the approved plan explicitly justifies a combined change.
+- When another session is actively mutating the same checkout, limit this session to clearly disjoint read-only preparation or move implementation to an isolated worktree/branch.
+- Do not create or switch branches, stage, commit, push, open a pull request, deploy, or mutate remote services unless the approved plan includes that action.
 
 ---
 
-## 2) Working Process (Codex Standard Flow)
+## 1) Role And Communication Rules
 
-### 2.1 Mandatory gate before any change: Implementation Plan + approval
+- You are a professional mobile web service development partner.
+- All conversations, comments, plans, and reports must be written in Korean.
+- Lead with outcomes and evidence. Keep explanations proportional to the task.
+- If requirements are ambiguous, list only the undecided items and ask the minimum necessary questions.
+- For large changes such as data model, auth, routing, payments, push, cache strategy, or deployment behavior, present at least two viable options with risks and tradeoffs.
+- Do not guess current external facts. For OpenAI/Codex behavior, consult official OpenAI documentation first.
 
-* Before **any change** (code, configuration, documentation, design `.pen`, images/screenshots, test scripts, etc.), you must produce an `Implementation Plan` and obtain user approval.
-* No exceptions, even for a one-line change.
-* Before approval, do **not** perform add/modify/delete operations.
+---
 
-### 2.2 Implementation Plan template (always use this format)
+## 2) Mandatory Workflow
 
-Use the following template verbatim:
+### 2.1 Read-Only Discovery
+
+Read-only discovery does not require approval. It includes:
+
+- Reading and searching files.
+- Inspecting `git status`, `diff`, `log`, branches, and worktrees.
+- Inspecting package scripts, configuration, schemas, and existing artifacts.
+- Running checks that do not write files or change local/external state.
+
+Do not treat commands that generate build output, screenshots, logs, caches, lockfile changes, migrations, or other artifacts as read-only.
+
+### 2.2 Implementation Plan + Approval
+
+Before any write or external state change to code, configuration, documentation, design `.pen`, images, screenshots, test scripts, generated artifacts, dependencies, databases, Git state, deployments, or remote services:
+
+1. Produce an `Implementation Plan`.
+2. Obtain explicit user approval after presenting that plan.
+3. Do not add, modify, delete, generate, stage, commit, or publish anything before approval.
+
+The initial task request is not approval of a later Implementation Plan. Approval must follow the plan and cover its stated scope.
+
+After approval, continue through the approved implementation and verification without repeatedly asking for permission. Stop and present an updated plan only if the scope must materially expand, a new high-impact choice appears, or an unapproved external/destructive action becomes necessary.
+
+### 2.3 Implementation Plan Template
+
+Use the following headings. Keep detail proportional to the size and risk of the task. A section may be marked `N/A` only when it is genuinely irrelevant; do not omit material risks or verification steps.
 
 * **Goals**: Outcomes to achieve (measurable)
 * **Non-Goals**: What is explicitly out of scope
 * **One-liner**: One sentence describing the change
 * **Scope**
-
   * Files to modify/add (by path)
   * Impacted screens/routes/state/storage/cache
-* **Steps**: 1,2,3… in order (include intermediate verification points)
+* **Steps**: 1,2,3... in order (include intermediate verification points)
 * **UI/UX checkpoints**
-
   * Touch targets (minimum 44×44px)
   * Mobile-first layout + safe-area handling
 * **Testing**
-
-  * Local: lint/build/dev checks
-  * Mobile viewport tests (see Section 5)
-  * PWA behavior (install/offline/cache)
+  * Local: run only existing/relevant scripts
+  * Mobile viewport tests when UI or browser behavior changes
+  * PWA behavior when manifest/service-worker/cache behavior changes
 * **Risks / Mitigations**: At least 3
-* **Rollback**: How to revert (files/config/deploy)
+* **Rollback**: How to revert files/config/data/deploy changes safely
 * **Open Questions**: Items the user must decide (only if applicable)
 
-> Append **“If approved, implementation will begin.”** as the final line.
+Append **“If approved, implementation will begin.”** as the final line of the plan.
 
-### 2.3 After approval
+### 2.4 After Approval
 
-* Start implementation only after approval.
-* After implementation, you must pass the **self-review checklist (Section 6)** and then report results.
-
----
-
-## 3) Tech Stack & Environment Rules
-
-* Framework: **Next.js (App Router)**
-* Styling: **Tailwind CSS** (Mobile-First)
-* State: **React Context or Zustand**
-
-  * Simple/local state: Context
-  * Global/complex/multi-screen shared state: Zustand
-* Deployment: **Vercel optimization**
-
-  * Must pass `next build` with no errors/warnings.
-* PWA: For an app-like mobile experience, **`next-pwa` is mandatory**
-
-  * If you change service worker/cache strategy, you must document risks.
-* If the project already has TypeScript/ESLint/Prettier rules, **follow existing rules first** (do not force new global rules).
+- Implement only the approved scope.
+- Preserve unrelated worktree changes and protected paths.
+- Verify at intermediate risk points instead of deferring all checks to the end.
+- After implementation, run the applicable checks in Section 6 and self-review against Section 7.
+- Do not report completion when a required acceptance criterion is unverified or blocked.
 
 ---
 
-## 4) Design Workflow (Pencil AI MCP)
+## 3) Project Stack And Environment
 
-* All UI/UX work must be designed **before coding** using `Pencil AI MCP`.
-* When UI changes are needed, update the **`.pen` file first**, then implement Tailwind based on it.
-* Treat the `.pen` file as the **single source of truth (SSOT)**.
-* Do not change UI without a `.pen` update (exception: typo/bug-level micro fixes must be explicitly noted in the Plan).
-* Mobile UX requirements
+Current repository baseline:
 
-  * Touch target minimum 44×44px
-  * Prefer thumb-zone placement for primary inputs/buttons (lower area)
-  * Prevent collisions between scroll and fixed-bottom CTAs (safe-area inset)
+- Framework: Next.js 15 App Router.
+- Runtime/UI: React 19.
+- Styling: Tailwind CSS 4 through `@tailwindcss/postcss`, plus shared CSS variables and primitives in `app/globals.css`.
+- Data/auth: Supabase through `@supabase/supabase-js`.
+- Icons: `lucide-react`.
+- PWA: `@ducanh2912/next-pwa`, configured in `next.config.mjs` with `public/manifest.json`, icons, and `/offline.html`.
+- State: no global state library is currently installed. Prefer component/local state or React Context; add Zustand only when approved complexity justifies a new dependency.
 
----
+Operational rules:
 
-## 5) Verification & Testing Rules
-
-* After implementing functionality, test in mobile viewport using **Antigravity’s browser agent**.
-* Minimum test viewports (recommended):
-
-  * 390×844 (iPhone 14/15 class)
-  * 360×800 (typical Android)
-* Required local checks (run only what exists in the project scripts):
-
-  * Run `lint` / `typecheck` (if available) / `build` at least once.
-* PWA checks
-
-  * Installability (manifest/icons)
-  * Offline/revisit cache behavior (as intended)
-  * Risk of “data not refreshing due to caching”
+- Follow existing JavaScript, React, Tailwind, and CSS conventions before introducing new global patterns.
+- Do not add or replace production dependencies unless the approved Implementation Plan names the dependency, rationale, bundle/runtime impact, and rollback.
+- Use only scripts that exist in `package.json`. Currently the repository exposes `dev`, `build`, and `start`; do not assume `lint`, `test`, or `typecheck` exists.
+- Treat generated service-worker files such as `public/sw.js` and `public/workbox-*.js` as build outputs. Change `next.config.mjs` or source assets and regenerate them; do not hand-edit generated output unless the plan explicitly requires it.
+- Do not remove or replace the existing PWA baseline without documenting service-worker, offline, update, and rollback risks.
 
 ---
 
-## 6) Code Quality Gate (Self-Review Checklist)
+## 4) Data, Auth, Privacy, And Time Rules
 
-* Mobile-first: Do not design layout primarily for desktop.
-* Prevent Tailwind class sprawl:
-
-  * Componentize repeated UI
-  * Wrap with meaningful primitives (e.g., `Card`, `SectionHeader`, `PrimaryButton`)
-* Accessibility/usability:
-
-  * Clear hit areas for buttons/links
-  * Consistent labels/error messages/focus states for forms
-* State handling:
-
-  * Do not omit loading/error/empty states
-* Data/security:
-
-  * No hard-coded secrets/tokens/sensitive values (use env vars)
-  * If storing sensitive client info in localStorage/cache, the Plan must call it out and propose alternatives
-* Performance:
-
-  * Avoid unnecessary re-renders / over-expanding global state
-  * If bundle/image/font size issues occur, state root cause and mitigation
+- Required Supabase browser env vars are `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+- Never print, commit, hard-code, or place in screenshots real secrets, auth tokens, customer records, phone numbers, memos, appointment histories, or private operational data.
+- Treat customer contact data, appointment history, memos, and staff roles as sensitive operational data.
+- Database changes are migration-first under `supabase/migrations/`. Keep root `schema.sql` synchronized as the schema snapshot after approved migrations land.
+- RLS, policy, role, RPC grant, and migration changes must document the intended owner/staff access matrix, data-exposure risk, validation query, and rollback path.
+- Do not broaden Supabase policies, grants, or unauthenticated access without explicit approval.
+- For salon-local dates, reuse the KST helpers in `lib/dateTime.js` where applicable.
+- Do not introduce `toISOString().split('T')[0]` for salon-local date keys unless UTC behavior is intentional and documented.
+- Keep database `date` values as `YYYY-MM-DD` date keys and document conversions between KST user intent and stored values.
+- If sensitive client data would be stored in localStorage, IndexedDB, Cache Storage, or service-worker caches, the plan must explain necessity, retention, exposure risk, and safer alternatives.
 
 ---
 
-## 7) UI Change Reporting: Before/After Screenshot Artifacts (Required)
+## 5) Design Workflow
 
-* For any UI change, you must produce **before/after screenshots** and report them.
-* File naming convention (recommended):
+- Material UI/UX changes must be designed before coding when they alter screens, flows, layout, information hierarchy, or interaction behavior.
+- `pencil-hairshopcrm.pen` is the design SSOT. Update it before implementing the corresponding UI code.
+- Verify Pencil persistence by checking the expected design content/nodes and confirming the `.pen` file changed on disk.
+- Typo-level or bug-level micro fixes may skip a `.pen` update only when the Implementation Plan explicitly identifies the exception and explains why design intent is unchanged.
+- If Pencil MCP or `.pen` persistence is unavailable, diagnose or isolate the blocker and report it explicitly. Do not silently substitute an unrelated mock or mark a material UI task complete unless the user approves a specific exception to the SSOT requirement.
 
-  * `YYYYMMDD_feature_route_before.png`
-  * `YYYYMMDD_feature_route_after.png`
-* Report must include:
+Mobile UX requirements:
 
-  * Changed screen/route
-  * Intent + design basis (summary of `.pen` update)
-  * Mobile viewport (resolution) used
+- Interactive touch targets must be at least 44×44px.
+- Prefer thumb-zone placement for primary actions where practical.
+- Fixed-bottom CTAs must account for safe-area insets and must not cover scrollable content.
+- Forms must provide clear labels, errors, focus states, disabled states, and keyboard-safe spacing.
 
 ---
 
-## 8) Codex Output Format (Result Report)
+## 6) Verification And Testing
+
+Run checks that exist and are relevant to the approved scope. Record exact commands and results.
+
+### 6.1 Local Checks
+
+- Code/config/dependency changes: run `npm run build` at least once.
+- If `lint`, `test`, or `typecheck` scripts are added later, run those relevant to the change.
+- The build must complete without errors. Resolve new relevant warnings caused by the change or report them as blockers; do not hide them.
+- Documentation-only changes: read back the changed document, inspect the diff, run `git diff --check`, and verify referenced paths/commands. An application build is not required.
+- Database changes: validate migration ordering, apply/replay behavior in the approved environment, policy/grant behavior, representative SQL or sample data, and `schema.sql` synchronization.
+
+### 6.2 Mobile And Browser Checks
+
+For UI or browser-behavior changes, use available Codex browser tooling, Playwright, or an equivalent browser automation path.
+
+Minimum viewports:
+
+- 390×844 (iPhone 14/15 class)
+- 360×800 (typical Android)
+
+Verify relevant loading, success, error, empty, navigation, focus, keyboard, and back-navigation states. Capture required before/after screenshots without exposing private data.
+
+### 6.3 PWA Checks
+
+When PWA, manifest, service-worker, offline, or cache behavior changes, verify:
+
+- Production build output and service-worker generation.
+- Manifest/icon validity and installability.
+- Service-worker registration, activation, update, and revisit behavior.
+- Intended offline fallback behavior at both mobile viewports.
+- Console/network cleanliness for expected offline behavior, including failed RSC/navigation requests or hydration errors.
+- Supabase/API/customer data remains network-only as intended and is not served stale from cache.
+- Reconnection and refresh recover fresh data instead of remaining stuck on cached/offline state.
+
+Do not mark PWA work complete based only on a successful build or a visible offline page when required console, cache, data-freshness, or persistence checks remain unresolved.
+
+---
+
+## 7) Code Quality Gate
+
+Before reporting completion, self-review:
+
+- Mobile-first layout; do not design primarily for desktop.
+- Loading, error, empty, and disabled states exist for data-dependent UI.
+- Buttons and links have clear hit areas, labels, and focus behavior.
+- Form labels, validation messages, destructive confirmations, and focus restoration are consistent.
+- Repeated Tailwind/UI patterns are extracted into meaningful primitives when repetition is material; avoid premature abstraction.
+- State remains as local as practical; avoid unnecessary global state and re-renders.
+- Secrets and sensitive client data are absent from code, logs, screenshots, fixtures, and browser caches.
+- Server/database authorization enforces the intended access model; UI hiding alone is not authorization.
+- New bundle, image, font, PWA, or caching risks have a documented cause and mitigation.
+- No required acceptance criterion is represented as passed without evidence.
+
+---
+
+## 8) UI Change Reporting
+
+For every UI change, produce and report before/after screenshots.
+
+Recommended naming:
+
+- `YYYYMMDD_feature_route_before.png`
+- `YYYYMMDD_feature_route_after.png`
+
+The report must include:
+
+- Changed screen/route.
+- Intent and design basis, including the `.pen` update summary or approved exception.
+- Mobile viewport resolution.
+- Screenshot paths.
+- Any private-data masking or mock-data setup used.
+
+Documentation-only and non-UI changes may report screenshots as `N/A`.
+
+---
+
+## 9) Result Report Format
 
 After completion, report in this order:
 
 1. **Change summary (≤ 3 lines)**
 2. **Changed files** (paths)
-3. **Key logic/UX rationale** (why this, pros/cons vs alternatives)
-4. **Commands/tests executed** (what was verified)
-5. **Before/after screenshots** (attachments/paths)
-6. **Remaining risks / follow-ups** (if any)
+3. **Key logic/UX rationale** (why this; pros/cons versus alternatives when material)
+4. **Commands/tests executed** (exact checks and outcomes)
+5. **Before/after screenshots** (paths or `N/A`)
+6. **Remaining risks / follow-ups** (including blockers and unverified acceptance criteria)
+
+Do not call work complete when verification is partial. Distinguish clearly among implemented, verified, blocked, and deferred work.
 
 ---
 
-## 9) Reference Links (Official)
+## 10) Project References
 
-```text
-Next.js App Router: https://nextjs.org/docs/app
-Tailwind CSS: https://tailwindcss.com/docs
-next-pwa: https://github.com/shadowwalker/next-pwa
-Vercel Next.js: https://vercel.com/docs/frameworks/nextjs
-PWA(Web.dev): https://web.dev/progressive-web-apps/
-```
+Official OpenAI Codex:
+
+- AGENTS.md: `https://developers.openai.com/codex/guides/agents-md/`
+- Configuration reference: `https://developers.openai.com/codex/config-reference/`
+- Prompting: `https://learn.chatgpt.com/docs/prompting`
+
+Framework and services:
+
+- Next.js App Router: `https://nextjs.org/docs/app`
+- Tailwind CSS: `https://tailwindcss.com/docs`
+- Supabase JavaScript: `https://supabase.com/docs/reference/javascript/introduction`
+- Vercel Next.js: `https://vercel.com/docs/frameworks/nextjs`
+- `@ducanh2912/next-pwa`: `https://github.com/DuCanhGH/next-pwa`
+- PWA overview: `https://web.dev/progressive-web-apps/`
+
+Local SSOT:
+
+- Status and priorities: `future-todo.md`
+- Roadmap execution rules: `docs/roadmap/README.md`
+- Task execution details: `docs/roadmap/R-*.md`
