@@ -1,0 +1,180 @@
+.picker {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.inputWrap {
+  min-height: 48px;
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) 20px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  color: var(--text-tertiary);
+}
+
+.inputWrap:focus-within {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus-ring, var(--accent-primary)) 24%, transparent);
+}
+
+.inputWrap input {
+  width: 100%;
+  min-height: 46px;
+  border: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 16px;
+  outline: none;
+}
+
+.helpText {
+  color: var(--text-tertiary);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.selectedCustomer,
+.successMessage {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: var(--radius-md);
+  background: var(--accent-light);
+  color: var(--accent-primary);
+  padding: 9px 12px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.successMessage {
+  margin: 0;
+  font-weight: 700;
+}
+
+.statePanel,
+.errorPanel {
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: var(--radius-md);
+  padding: 12px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.statePanel {
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+}
+
+.errorPanel {
+  align-items: flex-start;
+  background: var(--status-danger-light);
+  color: var(--status-danger);
+}
+
+.errorPanel button {
+  min-height: 44px;
+  color: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.popover {
+  position: absolute;
+  top: 76px;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  overflow: hidden;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  box-shadow: 0 14px 30px #1a191824;
+}
+
+.resultSummary {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-tertiary);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.listbox {
+  max-height: min(280px, 38vh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.listbox li {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 12px;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.listbox li[aria-selected='true'],
+.activeOption {
+  background: var(--accent-light);
+  color: var(--accent-primary);
+}
+
+.emptyState {
+  padding: 16px 12px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.emptyState button,
+.quickCreateButton {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: var(--accent-primary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.emptyState button {
+  margin-top: 8px;
+  border: 1px solid var(--accent-primary);
+  border-radius: var(--radius-md);
+}
+
+.quickCreateButton {
+  border-top: 1px solid var(--border-subtle);
+}
+
+@media (max-width: 380px) {
+  .listbox {
+    max-height: 220px;
+  }
+}

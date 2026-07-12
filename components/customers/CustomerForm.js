@@ -34,7 +34,9 @@ export function CustomerForm({
   onSubmit,
   onCancel,
   onOpenDuplicates,
+  onSelectDuplicateCandidate,
   onDirtyChange,
+  autoFocusName = false,
 }) {
   const baseline = useMemo(
     () => getInitialValues(initialValues),
@@ -235,6 +237,7 @@ export function CustomerForm({
             autoComplete="name"
             maxLength={80}
             disabled={isSubmitting}
+            autoFocus={autoFocusName}
             aria-invalid={Boolean(errors.name)}
             aria-describedby={errors.name ? 'customer-name-error' : undefined}
           />
@@ -306,22 +309,39 @@ export function CustomerForm({
             <ul className={styles.candidateList}>
               {duplicateState.candidates.slice(0, 3).map((candidate) => (
                 <li key={getCandidateId(candidate)}>
-                  <span>{candidate.name || '이름 없는 고객'}</span>
-                  <span>예약 {candidate.appointment_count ?? 0}건</span>
+                  <div className={styles.candidateInfo}>
+                    <span>{candidate.name || '이름 없는 고객'}</span>
+                    <span>예약 {candidate.appointment_count ?? 0}건</span>
+                  </div>
+                  {onSelectDuplicateCandidate ? (
+                    <button
+                      type="button"
+                      className={styles.selectCandidateButton}
+                      onClick={() => onSelectDuplicateCandidate({
+                        id: getCandidateId(candidate),
+                        name: candidate.name || '이름 없는 고객',
+                      })}
+                      disabled={isSubmitting}
+                    >
+                      이 고객 선택
+                    </button>
+                  ) : null}
                 </li>
               ))}
             </ul>
-            <Link
-              href="/customers/duplicates"
-              prefetch={false}
-              className={`${styles.compareLink} min-h-[44px] focus-visible:outline-2 focus-visible:outline-offset-2`}
-              onClick={(event) => {
-                event.preventDefault();
-                onOpenDuplicates();
-              }}
-            >
-              <Search size={18} aria-hidden="true" /> 중복 고객 비교 화면 열기
-            </Link>
+            {onOpenDuplicates ? (
+              <Link
+                href="/customers/duplicates"
+                prefetch={false}
+                className={`${styles.compareLink} min-h-[44px] focus-visible:outline-2 focus-visible:outline-offset-2`}
+                onClick={(event) => {
+                  event.preventDefault();
+                  onOpenDuplicates();
+                }}
+              >
+                <Search size={18} aria-hidden="true" /> 중복 고객 비교 화면 열기
+              </Link>
+            ) : null}
             <label className={styles.acknowledgeRow}>
               <input
                 type="checkbox"

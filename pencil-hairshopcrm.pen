@@ -17079,6 +17079,3228 @@
           "fontWeight": "normal"
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "VIBfU",
+      "x": 9262,
+      "y": 1180,
+      "name": "R-13 / 고객 검색 기본",
+      "width": 430,
+      "height": 1080,
+      "fill": "#F5F4F1",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "MzvHG",
+          "x": 0,
+          "y": 0,
+          "name": "Header",
+          "width": 430,
+          "height": 80,
+          "padding": [
+            12,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "L5q1V0",
+              "name": "CloseButton",
+              "width": 44,
+              "height": 44,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "fTjUY",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "x",
+                  "library": "lucide",
+                  "fill": "#6B6966"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "u2b27J",
+              "fill": "#1A1918",
+              "content": "새 예약",
+              "fontFamily": "Outfit",
+              "fontSize": 26,
+              "fontWeight": "700",
+              "letterSpacing": -0.5
+            },
+            {
+              "type": "frame",
+              "id": "KTFT0",
+              "width": 44,
+              "height": 44
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "vQAox",
+          "x": 0,
+          "y": 92,
+          "name": "Content",
+          "width": 430,
+          "height": 840,
+          "layout": "vertical",
+          "gap": 20,
+          "padding": [
+            0,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "rCCVN",
+              "name": "FormCard",
+              "width": 382,
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#1A191808",
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "blur": 12
+              },
+              "layout": "vertical",
+              "gap": 20,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "VlgUU",
+                  "name": "CustomerField",
+                  "width": 350,
+                  "height": 78,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "X8BcN",
+                      "fill": "#6B6966",
+                      "content": "고객 선택",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "E0hcx",
+                      "name": "CustomerInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "tByyb",
+                          "fill": "#1A1918",
+                          "content": "김철수",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "S1jwl3",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "chevron-down",
+                          "library": "lucide",
+                          "fill": "#9C9894"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "YmkWp",
+                  "name": "DateField",
+                  "width": 350,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "wCjeu",
+                      "fill": "#6B6966",
+                      "content": "예약 날짜 (휴무일 선택 불가)",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "wvgBR",
+                      "name": "DateInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "NURke",
+                          "fill": "#1A1918",
+                          "content": "2026-02-13",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "TReut",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "calendar",
+                          "library": "lucide",
+                          "fill": "#9C9894"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "i7wWv",
+                      "fill": "#9C9894",
+                      "content": "휴무일은 달력에서 비활성화됩니다.",
+                      "fontFamily": "Outfit",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "ku1Ss",
+                  "name": "TimeField",
+                  "width": 350,
+                  "height": 78,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "j453uh",
+                      "fill": "#6B6966",
+                      "content": "예약 시간",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "JDqsL",
+                      "name": "TimeInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "FxbKm",
+                          "fill": "#1A1918",
+                          "content": "10:00",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "GCVJ3",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "clock",
+                          "library": "lucide",
+                          "fill": "#9C9894"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "pugON",
+                  "name": "ServiceField",
+                  "width": 350,
+                  "height": 78,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "TE9Fa",
+                      "fill": "#6B6966",
+                      "content": "서비스 마스터",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "TeZz4",
+                      "name": "ServiceInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "layout": "vertical",
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "N2yD4",
+                          "fill": "#1A1918",
+                          "content": "여성 커트 · 25,000원",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Cn91G",
+                  "name": "DurationField",
+                  "width": 350,
+                  "height": 78,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "PlSYh",
+                      "fill": "#6B6966",
+                      "content": "예상 소요시간",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "I0HvI",
+                      "name": "DurationInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "S1EOUj",
+                          "fill": "#1A1918",
+                          "content": "1시간",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "NPxMT",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "chevron-down",
+                          "library": "lucide",
+                          "fill": "#9C9894"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "GElES",
+                  "name": "MemoField",
+                  "width": 350,
+                  "height": 120,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "jv3aR",
+                      "fill": "#9C9894",
+                      "content": "메모 (선택)",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "bOh0y",
+                      "name": "MemoInput",
+                      "width": 350,
+                      "height": 84,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "layout": "vertical",
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "DBvhe",
+                          "fill": "#9C9894",
+                          "content": "특이사항 입력",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "e8YUU0",
+              "name": "SubmitButton",
+              "width": 350,
+              "height": 56,
+              "fill": "#3D8A5A",
+              "cornerRadius": 16,
+              "gap": 10,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "THUKG",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "check",
+                  "library": "lucide",
+                  "fill": "#FFFFFF"
+                },
+                {
+                  "type": "text",
+                  "id": "kXbDT",
+                  "fill": "#FFFFFF",
+                  "content": "예약 등록 · 25,000원",
+                  "fontFamily": "Outfit",
+                  "fontSize": 17,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "sRY2G",
+          "x": 24,
+          "y": 92,
+          "name": "R13 Customer Search Default",
+          "width": 382,
+          "height": 170,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": "#DEDAD4",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "gap": 8,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "k4gU9Q",
+              "name": "Customer Search Label",
+              "fill": "#1A1918",
+              "content": "고객 검색",
+              "fontFamily": "Outfit",
+              "fontSize": 13,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "JaOfS",
+              "name": "Customer Combobox 44",
+              "fill": "#3D8A5A",
+              "content": "⌕  고객 이름을 검색하세요",
+              "fontFamily": "Outfit",
+              "fontSize": 15,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "W0TpFc",
+              "name": "Search Helper",
+              "fill": "#6B6966",
+              "content": "활성 고객의 이름으로 검색합니다.",
+              "fontFamily": "Outfit",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "MHRnI",
+      "x": 9772,
+      "y": 1180,
+      "name": "R-13 / 고객 검색 결과",
+      "width": 430,
+      "height": 1080,
+      "fill": "#F5F4F1",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "ekbEM",
+          "x": 0,
+          "y": 0,
+          "name": "Header",
+          "width": 430,
+          "height": 80,
+          "padding": [
+            12,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "P3kqg",
+              "name": "CloseButton",
+              "width": 44,
+              "height": 44,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "XKXQo",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "x",
+                  "library": "lucide",
+                  "fill": "#6B6966"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "LQTuO",
+              "fill": "#1A1918",
+              "content": "새 예약",
+              "fontFamily": "Outfit",
+              "fontSize": 26,
+              "fontWeight": "700",
+              "letterSpacing": -0.5
+            },
+            {
+              "type": "frame",
+              "id": "p5kvs8",
+              "width": 44,
+              "height": 44
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "DxTQY",
+          "x": 0,
+          "y": 92,
+          "name": "Content",
+          "width": 430,
+          "height": 840,
+          "layout": "vertical",
+          "gap": 20,
+          "padding": [
+            0,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "xBB8q",
+              "name": "FormCard",
+              "width": 382,
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#1A191808",
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "blur": 12
+              },
+              "layout": "vertical",
+              "gap": 20,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "oOFsu",
+                  "name": "CustomerField",
+                  "width": 350,
+                  "height": 78,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "luEf7",
+                      "fill": "#6B6966",
+                      "content": "고객 선택",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "aGrPV",
+                      "name": "CustomerInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "E7amPn",
+                          "fill": "#1A1918",
+                          "content": "김철수",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "RkrtA",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "chevron-down",
+                          "library": "lucide",
+                          "fill": "#9C9894"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "WA8kd",
+                  "name": "DateField",
+                  "width": 350,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Iwu2G",
+                      "fill": "#6B6966",
+                      "content": "예약 날짜 (휴무일 선택 불가)",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "YTYy2",
+                      "name": "DateInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "n5efR4",
+                          "fill": "#1A1918",
+                          "content": "2026-02-13",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "Zi7kG",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "calendar",
+                          "library": "lucide",
+                          "fill": "#9C9894"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "CQ45K",
+                      "fill": "#9C9894",
+                      "content": "휴무일은 달력에서 비활성화됩니다.",
+                      "fontFamily": "Outfit",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "zLDRp",
+                  "name": "TimeField",
+                  "width": 350,
+                  "height": 78,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "PZb9O",
+                      "fill": "#6B6966",
+                      "content": "예약 시간",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "hjHe5",
+                      "name": "TimeInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "fWx3C",
+                          "fill": "#1A1918",
+                          "content": "10:00",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "K0q2P1",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "clock",
+                          "library": "lucide",
+                          "fill": "#9C9894"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "DSODk",
+                  "name": "ServiceField",
+                  "width": 350,
+                  "height": 78,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Lascq",
+                      "fill": "#6B6966",
+                      "content": "서비스 마스터",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "XDF3Y",
+                      "name": "ServiceInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "layout": "vertical",
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "nFrI7",
+                          "fill": "#1A1918",
+                          "content": "여성 커트 · 25,000원",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "tzZvE",
+                  "name": "DurationField",
+                  "width": 350,
+                  "height": 78,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "pXhOL",
+                      "fill": "#6B6966",
+                      "content": "예상 소요시간",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "YaCV6",
+                      "name": "DurationInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Yxncx",
+                          "fill": "#1A1918",
+                          "content": "1시간",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "jjp5w",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "chevron-down",
+                          "library": "lucide",
+                          "fill": "#9C9894"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "exzOd",
+                  "name": "MemoField",
+                  "width": 350,
+                  "height": 120,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "W4ipO",
+                      "fill": "#9C9894",
+                      "content": "메모 (선택)",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Rh9TJ",
+                      "name": "MemoInput",
+                      "width": 350,
+                      "height": 84,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "layout": "vertical",
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "l1czGJ",
+                          "fill": "#9C9894",
+                          "content": "특이사항 입력",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "b8yuqC",
+              "name": "SubmitButton",
+              "width": 350,
+              "height": 56,
+              "fill": "#3D8A5A",
+              "cornerRadius": 16,
+              "gap": 10,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "n48neB",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "check",
+                  "library": "lucide",
+                  "fill": "#FFFFFF"
+                },
+                {
+                  "type": "text",
+                  "id": "GnsSh",
+                  "fill": "#FFFFFF",
+                  "content": "예약 등록 · 25,000원",
+                  "fontFamily": "Outfit",
+                  "fontSize": 17,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "muwhr",
+          "x": 24,
+          "y": 92,
+          "name": "R13 Customer Search Results",
+          "width": 382,
+          "height": 260,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": "#DEDAD4",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "gap": 8,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "PuLgw",
+              "name": "Results Search Label",
+              "fill": "#1A1918",
+              "content": "고객 검색",
+              "fontFamily": "Outfit",
+              "fontSize": 13,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "NcOJG",
+              "name": "Results Search Field",
+              "fill": "#1A1918",
+              "content": "⌕  김",
+              "fontFamily": "Outfit",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "aCpGx",
+              "name": "Results Count",
+              "fill": "#6B6966",
+              "content": "‘김’ 검색 결과 3명",
+              "fontFamily": "Outfit",
+              "fontSize": 12,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "q7ubIJ",
+              "name": "Selected Result",
+              "fill": "#3D8A5A",
+              "content": "✓  김하늘   선택됨",
+              "fontFamily": "Outfit",
+              "fontSize": 15,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "niY3F",
+              "name": "Second Result",
+              "fill": "#1A1918",
+              "content": "김민지",
+              "fontFamily": "Outfit",
+              "fontSize": 15,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "t4fhR",
+              "name": "Third Result",
+              "fill": "#1A1918",
+              "content": "김서준",
+              "fontFamily": "Outfit",
+              "fontSize": 15,
+              "fontWeight": "600"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "ImrTz",
+      "x": 10282,
+      "y": 1180,
+      "name": "R-13 / 검색 결과 없음",
+      "width": 430,
+      "height": 1080,
+      "fill": "#F5F4F1",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "Qr9OP",
+          "x": 0,
+          "y": 0,
+          "name": "Header",
+          "width": 430,
+          "height": 80,
+          "padding": [
+            12,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "JJHHA",
+              "name": "CloseButton",
+              "width": 44,
+              "height": 44,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "s1JtX",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "x",
+                  "library": "lucide",
+                  "fill": "#6B6966"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "JT8fr",
+              "fill": "#1A1918",
+              "content": "새 예약",
+              "fontFamily": "Outfit",
+              "fontSize": 26,
+              "fontWeight": "700",
+              "letterSpacing": -0.5
+            },
+            {
+              "type": "frame",
+              "id": "jMUFE",
+              "width": 44,
+              "height": 44
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "a4fyN5",
+          "x": 0,
+          "y": 92,
+          "name": "Content",
+          "width": 430,
+          "height": 840,
+          "layout": "vertical",
+          "gap": 20,
+          "padding": [
+            0,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "yKbRq",
+              "name": "FormCard",
+              "width": 382,
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#1A191808",
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "blur": 12
+              },
+              "layout": "vertical",
+              "gap": 20,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "eyPk5",
+                  "name": "CustomerField",
+                  "width": 350,
+                  "height": 78,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "D80rS4",
+                      "fill": "#6B6966",
+                      "content": "고객 선택",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "MkZX0",
+                      "name": "CustomerInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "DEchA",
+                          "fill": "#1A1918",
+                          "content": "김철수",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "GjaqU",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "chevron-down",
+                          "library": "lucide",
+                          "fill": "#9C9894"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Fls2d",
+                  "name": "DateField",
+                  "width": 350,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "kooi8",
+                      "fill": "#6B6966",
+                      "content": "예약 날짜 (휴무일 선택 불가)",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "cXpxT",
+                      "name": "DateInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "eJeIq",
+                          "fill": "#1A1918",
+                          "content": "2026-02-13",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "DlFW4",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "calendar",
+                          "library": "lucide",
+                          "fill": "#9C9894"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "Q9lbU",
+                      "fill": "#9C9894",
+                      "content": "휴무일은 달력에서 비활성화됩니다.",
+                      "fontFamily": "Outfit",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "mgWti",
+                  "name": "TimeField",
+                  "width": 350,
+                  "height": 78,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "T4eKED",
+                      "fill": "#6B6966",
+                      "content": "예약 시간",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "yfcir",
+                      "name": "TimeInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "rAKfQ",
+                          "fill": "#1A1918",
+                          "content": "10:00",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "sXAhq",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "clock",
+                          "library": "lucide",
+                          "fill": "#9C9894"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "wCQSM",
+                  "name": "ServiceField",
+                  "width": 350,
+                  "height": 78,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "KlD3q",
+                      "fill": "#6B6966",
+                      "content": "서비스 마스터",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Y5nybd",
+                      "name": "ServiceInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "layout": "vertical",
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "QT2ss",
+                          "fill": "#1A1918",
+                          "content": "여성 커트 · 25,000원",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "MNCe1",
+                  "name": "DurationField",
+                  "width": 350,
+                  "height": 78,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "T4iVNG",
+                      "fill": "#6B6966",
+                      "content": "예상 소요시간",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "LFO1k",
+                      "name": "DurationInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "jpYsH",
+                          "fill": "#1A1918",
+                          "content": "1시간",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "rgziy",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "chevron-down",
+                          "library": "lucide",
+                          "fill": "#9C9894"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Otzwe",
+                  "name": "MemoField",
+                  "width": 350,
+                  "height": 120,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "zXF9G",
+                      "fill": "#9C9894",
+                      "content": "메모 (선택)",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "wKTrE",
+                      "name": "MemoInput",
+                      "width": 350,
+                      "height": 84,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "layout": "vertical",
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "oKBep",
+                          "fill": "#9C9894",
+                          "content": "특이사항 입력",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "jLQxo",
+              "name": "SubmitButton",
+              "width": 350,
+              "height": 56,
+              "fill": "#3D8A5A",
+              "cornerRadius": 16,
+              "gap": 10,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "gRrxe",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "check",
+                  "library": "lucide",
+                  "fill": "#FFFFFF"
+                },
+                {
+                  "type": "text",
+                  "id": "j7vtm",
+                  "fill": "#FFFFFF",
+                  "content": "예약 등록 · 25,000원",
+                  "fontFamily": "Outfit",
+                  "fontSize": 17,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "oJt6T",
+          "x": 24,
+          "y": 92,
+          "name": "R13 Customer Search Empty",
+          "width": 382,
+          "height": 230,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": "#DEDAD4",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "VK1AE",
+              "name": "Empty Search Label",
+              "fill": "#1A1918",
+              "content": "고객 검색",
+              "fontFamily": "Outfit",
+              "fontSize": 13,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "e6Zp85",
+              "name": "Empty Search Field",
+              "fill": "#1A1918",
+              "content": "⌕  박새봄",
+              "fontFamily": "Outfit",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "cuXVP",
+              "name": "Empty Search Title",
+              "fill": "#1A1918",
+              "content": "일치하는 활성 고객이 없습니다",
+              "fontFamily": "Outfit",
+              "fontSize": 15,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "HG27h",
+              "name": "Empty Search Description",
+              "fill": "#6B6966",
+              "content": "예약 화면을 유지한 채 새 고객을 등록할 수 있어요.",
+              "fontFamily": "Outfit",
+              "fontSize": 13
+            },
+            {
+              "type": "text",
+              "id": "oABnX",
+              "name": "Empty Quick Create CTA",
+              "fill": "#3D8A5A",
+              "content": "+  ‘박새봄’ 고객 빠르게 등록",
+              "fontFamily": "Outfit",
+              "fontSize": 15,
+              "fontWeight": "600"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "oOlpJ",
+      "x": 10792,
+      "y": 1180,
+      "name": "R-13 / 고객 빠른 등록",
+      "width": 430,
+      "height": 1080,
+      "fill": "#F5F4F1",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "LIqGO",
+          "x": 0,
+          "y": 0,
+          "name": "Header",
+          "width": 430,
+          "height": 80,
+          "padding": [
+            12,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "Dl0BY",
+              "name": "CloseButton",
+              "width": 44,
+              "height": 44,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "VuGWf",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "x",
+                  "library": "lucide",
+                  "fill": "#6B6966"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "S3NVu",
+              "fill": "#1A1918",
+              "content": "새 예약",
+              "fontFamily": "Outfit",
+              "fontSize": 26,
+              "fontWeight": "700",
+              "letterSpacing": -0.5
+            },
+            {
+              "type": "frame",
+              "id": "ArSNu",
+              "width": 44,
+              "height": 44
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "lt7XJ",
+          "x": 0,
+          "y": 92,
+          "name": "Content",
+          "width": 430,
+          "height": 840,
+          "layout": "vertical",
+          "gap": 20,
+          "padding": [
+            0,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "eLGJM",
+              "name": "FormCard",
+              "width": 382,
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#1A191808",
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "blur": 12
+              },
+              "layout": "vertical",
+              "gap": 20,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Lc2zJ",
+                  "name": "CustomerField",
+                  "width": 350,
+                  "height": 78,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "BKX03",
+                      "fill": "#6B6966",
+                      "content": "고객 선택",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "C4LfQ",
+                      "name": "CustomerInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "J327R",
+                          "fill": "#1A1918",
+                          "content": "김철수",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "uNfdz",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "chevron-down",
+                          "library": "lucide",
+                          "fill": "#9C9894"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "A33IqH",
+                  "name": "DateField",
+                  "width": 350,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "gM5Mr",
+                      "fill": "#6B6966",
+                      "content": "예약 날짜 (휴무일 선택 불가)",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "wcdzH",
+                      "name": "DateInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "zcuzW",
+                          "fill": "#1A1918",
+                          "content": "2026-02-13",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "WvHiE",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "calendar",
+                          "library": "lucide",
+                          "fill": "#9C9894"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "yN0X8",
+                      "fill": "#9C9894",
+                      "content": "휴무일은 달력에서 비활성화됩니다.",
+                      "fontFamily": "Outfit",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "f68XC4",
+                  "name": "TimeField",
+                  "width": 350,
+                  "height": 78,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "qKxop",
+                      "fill": "#6B6966",
+                      "content": "예약 시간",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "SqGY4",
+                      "name": "TimeInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "ZVm3C",
+                          "fill": "#1A1918",
+                          "content": "10:00",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "gKwjg",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "clock",
+                          "library": "lucide",
+                          "fill": "#9C9894"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "k7Wc2x",
+                  "name": "ServiceField",
+                  "width": 350,
+                  "height": 78,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "svDsz",
+                      "fill": "#6B6966",
+                      "content": "서비스 마스터",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "jGZ4m",
+                      "name": "ServiceInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "layout": "vertical",
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "oTmRs",
+                          "fill": "#1A1918",
+                          "content": "여성 커트 · 25,000원",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Qg4jq",
+                  "name": "DurationField",
+                  "width": 350,
+                  "height": 78,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "NlpE2",
+                      "fill": "#6B6966",
+                      "content": "예상 소요시간",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "y88Hd",
+                      "name": "DurationInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "wYULM",
+                          "fill": "#1A1918",
+                          "content": "1시간",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "QztIt",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "chevron-down",
+                          "library": "lucide",
+                          "fill": "#9C9894"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "E2Gme",
+                  "name": "MemoField",
+                  "width": 350,
+                  "height": 120,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "zlcni",
+                      "fill": "#9C9894",
+                      "content": "메모 (선택)",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "qCD10",
+                      "name": "MemoInput",
+                      "width": 350,
+                      "height": 84,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "layout": "vertical",
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "I3bBYy",
+                          "fill": "#9C9894",
+                          "content": "특이사항 입력",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "gSVQA",
+              "name": "SubmitButton",
+              "width": 350,
+              "height": 56,
+              "fill": "#3D8A5A",
+              "cornerRadius": 16,
+              "gap": 10,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "NLSFJ",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "check",
+                  "library": "lucide",
+                  "fill": "#FFFFFF"
+                },
+                {
+                  "type": "text",
+                  "id": "abqQ6",
+                  "fill": "#FFFFFF",
+                  "content": "예약 등록 · 25,000원",
+                  "fontFamily": "Outfit",
+                  "fontSize": 17,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "id": "Q3vU8",
+          "x": 0,
+          "y": -50,
+          "name": "Quick Create Scrim",
+          "fill": "#1A191866",
+          "width": 430,
+          "height": 1080
+        },
+        {
+          "type": "frame",
+          "id": "N05js",
+          "x": 0,
+          "y": 300,
+          "name": "R13 Quick Create Bottom Sheet",
+          "width": 430,
+          "height": 730,
+          "fill": "#FFFFFF",
+          "cornerRadius": [
+            24,
+            24,
+            0,
+            0
+          ],
+          "layout": "vertical",
+          "gap": 14,
+          "padding": [
+            18,
+            24,
+            34,
+            24
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "txYPB",
+              "name": "Quick Create Grabber",
+              "fill": "#DEDAD4",
+              "content": "━━━━",
+              "fontFamily": "Outfit",
+              "fontSize": 16
+            },
+            {
+              "type": "text",
+              "id": "S3gchg",
+              "name": "Quick Create Title",
+              "fill": "#1A1918",
+              "content": "새 고객 빠른 등록",
+              "fontFamily": "Outfit",
+              "fontSize": 22,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "kjSpB",
+              "name": "Quick Create Draft Notice",
+              "fill": "#3D8A5A",
+              "content": "입력 중인 예약 내용은 그대로 유지됩니다.",
+              "fontFamily": "Outfit",
+              "fontSize": 13
+            },
+            {
+              "type": "text",
+              "id": "O8GYo",
+              "name": "Quick Create Name Field",
+              "fill": "#1A1918",
+              "content": "이름 *  ·  박새봄",
+              "fontFamily": "Outfit",
+              "fontSize": 15,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "fVOpY",
+              "name": "Quick Create Phone Field",
+              "fill": "#1A1918",
+              "content": "전화번호 (선택)  ·  010-1234-5678",
+              "fontFamily": "Outfit",
+              "fontSize": 15,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "H6LKka",
+              "name": "Quick Create Memo Field",
+              "fill": "#6B6966",
+              "content": "메모 (선택)  ·  고객 특이사항",
+              "fontFamily": "Outfit",
+              "fontSize": 15
+            },
+            {
+              "type": "text",
+              "id": "tTJuG",
+              "name": "Quick Create Cancel CTA",
+              "fill": "#6B6966",
+              "content": "취소",
+              "fontFamily": "Outfit",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "G4LK1L",
+              "name": "Quick Create Save CTA",
+              "fill": "#3D8A5A",
+              "content": "고객 등록하고 선택",
+              "fontFamily": "Outfit",
+              "fontSize": 16,
+              "fontWeight": "700"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Fefoe",
+      "x": 11302,
+      "y": 1180,
+      "name": "R-13 / 중복 전화번호 경고",
+      "width": 430,
+      "height": 1080,
+      "fill": "#F5F4F1",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "qXCix",
+          "x": 0,
+          "y": 0,
+          "name": "Header",
+          "width": 430,
+          "height": 80,
+          "padding": [
+            12,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "E5XfR",
+              "name": "CloseButton",
+              "width": 44,
+              "height": 44,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "jzmF9",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "x",
+                  "library": "lucide",
+                  "fill": "#6B6966"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "G25wq",
+              "fill": "#1A1918",
+              "content": "새 예약",
+              "fontFamily": "Outfit",
+              "fontSize": 26,
+              "fontWeight": "700",
+              "letterSpacing": -0.5
+            },
+            {
+              "type": "frame",
+              "id": "nQ25c",
+              "width": 44,
+              "height": 44
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "e41KY0",
+          "x": 0,
+          "y": 92,
+          "name": "Content",
+          "width": 430,
+          "height": 840,
+          "layout": "vertical",
+          "gap": 20,
+          "padding": [
+            0,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "ktpOQ",
+              "name": "FormCard",
+              "width": 382,
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#1A191808",
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "blur": 12
+              },
+              "layout": "vertical",
+              "gap": 20,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "J1hQl",
+                  "name": "CustomerField",
+                  "width": 350,
+                  "height": 78,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "v0ew7F",
+                      "fill": "#6B6966",
+                      "content": "고객 선택",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "i9aRB",
+                      "name": "CustomerInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Rh2Ij",
+                          "fill": "#1A1918",
+                          "content": "김철수",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "B63kp",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "chevron-down",
+                          "library": "lucide",
+                          "fill": "#9C9894"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "eA8Rk",
+                  "name": "DateField",
+                  "width": 350,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "MYCrL",
+                      "fill": "#6B6966",
+                      "content": "예약 날짜 (휴무일 선택 불가)",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "U4uRNr",
+                      "name": "DateInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "HaCzw",
+                          "fill": "#1A1918",
+                          "content": "2026-02-13",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "CTcC3",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "calendar",
+                          "library": "lucide",
+                          "fill": "#9C9894"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "mxEX1",
+                      "fill": "#9C9894",
+                      "content": "휴무일은 달력에서 비활성화됩니다.",
+                      "fontFamily": "Outfit",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "lfbN1",
+                  "name": "TimeField",
+                  "width": 350,
+                  "height": 78,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "hWZaj",
+                      "fill": "#6B6966",
+                      "content": "예약 시간",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "F3KQSf",
+                      "name": "TimeInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "nfeIM",
+                          "fill": "#1A1918",
+                          "content": "10:00",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "aNATf",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "clock",
+                          "library": "lucide",
+                          "fill": "#9C9894"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "KFmda",
+                  "name": "ServiceField",
+                  "width": 350,
+                  "height": 78,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "F9Kls",
+                      "fill": "#6B6966",
+                      "content": "서비스 마스터",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ST4U7",
+                      "name": "ServiceInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "layout": "vertical",
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "aaAwc",
+                          "fill": "#1A1918",
+                          "content": "여성 커트 · 25,000원",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "jqUJb",
+                  "name": "DurationField",
+                  "width": 350,
+                  "height": 78,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "WJ5aR",
+                      "fill": "#6B6966",
+                      "content": "예상 소요시간",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "HIB9x",
+                      "name": "DurationInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "xPUm7",
+                          "fill": "#1A1918",
+                          "content": "1시간",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "i4CAE",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "chevron-down",
+                          "library": "lucide",
+                          "fill": "#9C9894"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "z4MOs",
+                  "name": "MemoField",
+                  "width": 350,
+                  "height": 120,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "mA1VA",
+                      "fill": "#9C9894",
+                      "content": "메모 (선택)",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "MROus",
+                      "name": "MemoInput",
+                      "width": 350,
+                      "height": 84,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "layout": "vertical",
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "KeyqD",
+                          "fill": "#9C9894",
+                          "content": "특이사항 입력",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "l5t4G",
+              "name": "SubmitButton",
+              "width": 350,
+              "height": 56,
+              "fill": "#3D8A5A",
+              "cornerRadius": 16,
+              "gap": 10,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "i3Sww",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "check",
+                  "library": "lucide",
+                  "fill": "#FFFFFF"
+                },
+                {
+                  "type": "text",
+                  "id": "x8XHTs",
+                  "fill": "#FFFFFF",
+                  "content": "예약 등록 · 25,000원",
+                  "fontFamily": "Outfit",
+                  "fontSize": 17,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "id": "Ihrmz",
+          "x": 0,
+          "y": -50,
+          "name": "Duplicate Warning Scrim",
+          "fill": "#1A191866",
+          "width": 430,
+          "height": 1080
+        },
+        {
+          "type": "frame",
+          "id": "A899Q",
+          "x": 0,
+          "y": 300,
+          "name": "R13 Duplicate Warning Sheet",
+          "width": 430,
+          "height": 730,
+          "fill": "#FFFFFF",
+          "cornerRadius": [
+            24,
+            24,
+            0,
+            0
+          ],
+          "layout": "vertical",
+          "gap": 14,
+          "padding": [
+            18,
+            24,
+            34,
+            24
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "i0lJB",
+              "name": "Duplicate Warning Grabber",
+              "fill": "#DEDAD4",
+              "content": "━━━━",
+              "fontFamily": "Outfit",
+              "fontSize": 16
+            },
+            {
+              "type": "text",
+              "id": "Npf5C",
+              "name": "Duplicate Warning Title",
+              "fill": "#9A5A2B",
+              "content": "같은 전화번호의 고객이 있습니다",
+              "fontFamily": "Outfit",
+              "fontSize": 21,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "nLEGQ",
+              "name": "Duplicate Warning Description",
+              "fill": "#6B6966",
+              "content": "기존 고객인지 확인해 주세요. 예약 작성 내용은 유지됩니다.",
+              "fontFamily": "Outfit",
+              "fontSize": 13
+            },
+            {
+              "type": "text",
+              "id": "HlXxS",
+              "name": "Duplicate Candidate",
+              "fill": "#1A1918",
+              "content": "김하늘   ·   예약 4건",
+              "fontFamily": "Outfit",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "D7x4na",
+              "name": "Select Existing Customer CTA",
+              "fill": "#3D8A5A",
+              "content": "✓  이 고객을 예약 고객으로 선택",
+              "fontFamily": "Outfit",
+              "fontSize": 15,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "jlFXY",
+              "name": "Duplicate Acknowledgement",
+              "fill": "#1A1918",
+              "content": "□ 동일 번호를 함께 사용하는 별도 고객임을 확인했습니다.",
+              "fontFamily": "Outfit",
+              "fontSize": 14
+            },
+            {
+              "type": "text",
+              "id": "IdC8X",
+              "name": "Duplicate Cancel CTA",
+              "fill": "#6B6966",
+              "content": "취소",
+              "fontFamily": "Outfit",
+              "fontSize": 16,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "MAasq",
+              "name": "Duplicate Continue CTA",
+              "fill": "#9A5A2B",
+              "content": "별도 고객으로 등록",
+              "fontFamily": "Outfit",
+              "fontSize": 16,
+              "fontWeight": "700"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "ZLQe1",
+      "x": 11812,
+      "y": 1180,
+      "name": "R-13 / 등록 후 자동 선택",
+      "width": 430,
+      "height": 1080,
+      "fill": "#F5F4F1",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "D2RC0N",
+          "x": 0,
+          "y": 0,
+          "name": "Header",
+          "width": 430,
+          "height": 80,
+          "padding": [
+            12,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "oeAZ2",
+              "name": "CloseButton",
+              "width": 44,
+              "height": 44,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "tbyli",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "x",
+                  "library": "lucide",
+                  "fill": "#6B6966"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "z0GSA",
+              "fill": "#1A1918",
+              "content": "새 예약",
+              "fontFamily": "Outfit",
+              "fontSize": 26,
+              "fontWeight": "700",
+              "letterSpacing": -0.5
+            },
+            {
+              "type": "frame",
+              "id": "XQ8Zr",
+              "width": 44,
+              "height": 44
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Z9Rqi2",
+          "x": 0,
+          "y": 92,
+          "name": "Content",
+          "width": 430,
+          "height": 840,
+          "layout": "vertical",
+          "gap": 20,
+          "padding": [
+            0,
+            24
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "J0PQsP",
+              "name": "FormCard",
+              "width": 382,
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#1A191808",
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "blur": 12
+              },
+              "layout": "vertical",
+              "gap": 20,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Zwizt",
+                  "name": "CustomerField",
+                  "width": 350,
+                  "height": 78,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Hn770",
+                      "fill": "#6B6966",
+                      "content": "고객 선택",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "M8ipj0",
+                      "name": "CustomerInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "zcqie",
+                          "fill": "#1A1918",
+                          "content": "김철수",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "jCMvL",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "chevron-down",
+                          "library": "lucide",
+                          "fill": "#9C9894"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "TKWYq",
+                  "name": "DateField",
+                  "width": 350,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "PxaKL",
+                      "fill": "#6B6966",
+                      "content": "예약 날짜 (휴무일 선택 불가)",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "IamJd",
+                      "name": "DateInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "yzkVq",
+                          "fill": "#1A1918",
+                          "content": "2026-02-13",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "XTDMH",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "calendar",
+                          "library": "lucide",
+                          "fill": "#9C9894"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "L0okiy",
+                      "fill": "#9C9894",
+                      "content": "휴무일은 달력에서 비활성화됩니다.",
+                      "fontFamily": "Outfit",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "RmskU",
+                  "name": "TimeField",
+                  "width": 350,
+                  "height": 78,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "zf4i0",
+                      "fill": "#6B6966",
+                      "content": "예약 시간",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "tit1a",
+                      "name": "TimeInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "rwVyz",
+                          "fill": "#1A1918",
+                          "content": "10:00",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "pzbj4",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "clock",
+                          "library": "lucide",
+                          "fill": "#9C9894"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "lKdDe",
+                  "name": "ServiceField",
+                  "width": 350,
+                  "height": 78,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "kotsR",
+                      "fill": "#6B6966",
+                      "content": "서비스 마스터",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "J4gyV",
+                      "name": "ServiceInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "layout": "vertical",
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "eGwnk",
+                          "fill": "#1A1918",
+                          "content": "여성 커트 · 25,000원",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "H1W7gp",
+                  "name": "DurationField",
+                  "width": 350,
+                  "height": 78,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "bHdKz",
+                      "fill": "#6B6966",
+                      "content": "예상 소요시간",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Ad3H4",
+                      "name": "DurationInput",
+                      "width": 350,
+                      "height": 48,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "P944k",
+                          "fill": "#1A1918",
+                          "content": "1시간",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "pSgiY",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "chevron-down",
+                          "library": "lucide",
+                          "fill": "#9C9894"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "VSmeE",
+                  "name": "MemoField",
+                  "width": 350,
+                  "height": 120,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "gR0mz",
+                      "fill": "#9C9894",
+                      "content": "메모 (선택)",
+                      "fontFamily": "Outfit",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "KJUt0",
+                      "name": "MemoInput",
+                      "width": 350,
+                      "height": 84,
+                      "fill": "#F5F4F1",
+                      "cornerRadius": 12,
+                      "layout": "vertical",
+                      "padding": [
+                        12,
+                        16
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "k6dblW",
+                          "fill": "#9C9894",
+                          "content": "특이사항 입력",
+                          "fontFamily": "Outfit",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "oj5JO",
+              "name": "SubmitButton",
+              "width": 350,
+              "height": 56,
+              "fill": "#3D8A5A",
+              "cornerRadius": 16,
+              "gap": 10,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "LsABi",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "check",
+                  "library": "lucide",
+                  "fill": "#FFFFFF"
+                },
+                {
+                  "type": "text",
+                  "id": "TpgTH",
+                  "fill": "#FFFFFF",
+                  "content": "예약 등록 · 25,000원",
+                  "fontFamily": "Outfit",
+                  "fontSize": 17,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "RdSRh",
+          "x": 24,
+          "y": 92,
+          "name": "R13 Customer Auto Selected",
+          "width": 382,
+          "height": 230,
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": "#3D8A5A",
+          "strokeWidth": 2,
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "c1GrNq",
+              "name": "Auto Selected Label",
+              "fill": "#1A1918",
+              "content": "고객 검색",
+              "fontFamily": "Outfit",
+              "fontSize": 13,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "hgcMI",
+              "name": "Auto Selected Customer",
+              "fill": "#3D8A5A",
+              "content": "✓  박새봄",
+              "fontFamily": "Outfit",
+              "fontSize": 17,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "AOI2u",
+              "name": "Auto Selected Success",
+              "fill": "#3D8A5A",
+              "content": "새 고객을 등록하고 예약 고객으로 선택했습니다.",
+              "fontFamily": "Outfit",
+              "fontSize": 13
+            },
+            {
+              "type": "text",
+              "id": "b6dtc",
+              "name": "Auto Selected Change CTA",
+              "fill": "#6B6966",
+              "content": "다른 고객 검색",
+              "fontFamily": "Outfit",
+              "fontSize": 14,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "gBB3L",
+              "name": "Auto Selected Draft Kept",
+              "fill": "#6B6966",
+              "content": "날짜 · 시간 · 서비스 · 가격 · 메모 유지됨",
+              "fontFamily": "Outfit",
+              "fontSize": 12,
+              "fontWeight": "600"
+            }
+          ]
+        }
+      ]
     }
   ],
   "variables": {
