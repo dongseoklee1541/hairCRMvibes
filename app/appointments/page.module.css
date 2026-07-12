@@ -8,8 +8,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 44px;
+  min-height: 44px;
   color: var(--text-secondary);
-  padding: 4px;
+  border-radius: 50%;
 }
 
 .calendarCard {
@@ -38,11 +40,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 40px;
+  min-height: 44px;
   font-size: 14px;
   font-weight: 500;
   border-radius: 50%;
   transition: all var(--transition-fast);
+}
+
+.priceText {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .dayCell:not(:disabled):hover {
@@ -220,6 +228,13 @@
   outline: none;
 }
 
+.fieldHint {
+  color: var(--text-tertiary);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
 .editField textarea {
   padding-top: 10px;
   resize: vertical;
@@ -229,6 +244,7 @@
 .editActions {
   display: flex;
   justify-content: flex-end;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
@@ -248,7 +264,17 @@
   color: #fff;
 }
 
-@media (max-width: 380px) {
+@media (max-width: 387px) {
+  .calendarCard {
+    margin-inline: calc(0px - var(--space-lg));
+    padding-inline: max(6px, calc((100vw - 308px) / 2));
+    border-radius: 0;
+  }
+
+  .calendarRow {
+    grid-template-columns: repeat(7, minmax(44px, 1fr));
+  }
+
   .apptRow {
     gap: 10px;
     padding: 14px 12px;

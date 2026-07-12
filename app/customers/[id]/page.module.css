@@ -310,6 +310,15 @@
   font-size: 11px;
 }
 
+.historyInfo .historyPrice {
+  color: var(--text-secondary);
+  font-weight: 700;
+}
+
+.historyInfo .historyMemo {
+  color: var(--text-tertiary);
+}
+
 .appointmentBadge {
   min-height: 24px;
   padding: 3px 8px;
@@ -595,6 +604,7 @@
 }
 
 .historyForm input,
+.historyForm select,
 .historyForm textarea,
 .dialogBody input,
 .dialogBody textarea {
@@ -616,11 +626,24 @@
 }
 
 .historyForm input:focus,
+.historyForm select:focus,
 .historyForm textarea:focus,
 .dialogBody input:focus,
 .dialogBody textarea:focus {
   border-color: var(--accent-primary);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus-ring, var(--accent-primary)) 24%, transparent);
+}
+
+.historyForm input[readonly] {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+
+.fieldHint {
+  color: var(--text-tertiary);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.5;
 }
 
 .sheetPrimaryButton,

@@ -104,47 +104,144 @@
 }
 
 .serviceRow {
+  border-radius: 12px;
+  background: var(--bg-primary);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.serviceRowInactive {
+  background: var(--disabled-bg);
+}
+
+.serviceSummary {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.serviceSummary > div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.serviceSummary strong {
+  overflow: hidden;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.serviceSummary div > span {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.serviceSummary div > .inactiveText {
+  color: var(--disabled-text);
+}
+
+.durationBadge {
+  flex: 0 0 auto;
+  min-height: 30px;
+  border-radius: 999px;
+  background: var(--accent-light);
+  color: var(--accent-primary);
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .serviceInputs {
-  flex: 1;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 128px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
+}
+
+.serviceField {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.serviceField input,
+.serviceField select {
+  min-width: 0;
+  width: 100%;
+}
+
+.serviceNameField {
+  grid-column: 1 / -1;
 }
 
 .serviceActions {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 6px;
 }
 
 .iconButton,
 .addButton {
-  width: 44px;
-  min-width: 44px;
-  height: 44px;
+  min-height: 44px;
   border-radius: 12px;
   background: var(--bg-primary);
   color: var(--text-secondary);
+  padding: 0 14px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.serviceRow .iconButton {
+  background: var(--bg-surface);
+}
+
+.deactivateButton {
+  color: var(--status-danger);
+}
+
+.reactivateButton {
+  background: var(--accent-light) !important;
+  color: var(--accent-primary);
 }
 
 .addButton {
+  grid-column: 1 / -1;
+  width: 100%;
   background: var(--accent-primary);
   color: #fff;
 }
 
 .addServiceRow {
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 12px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 128px 44px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
-  align-items: center;
+}
+
+.addServiceRow h3 {
+  grid-column: 1 / -1;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .actions {
@@ -237,23 +334,26 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   color: var(--text-tertiary);
   font-size: 13px;
+  line-height: 1.5;
+  padding: 12px;
+  text-align: center;
 }
 
 @media (max-width: 380px) {
-  .splitRow,
-  .serviceInputs,
-  .addServiceRow {
+  .splitRow {
     grid-template-columns: 1fr;
   }
 
-  .serviceRow {
-    align-items: stretch;
-    flex-direction: column;
+  .serviceActions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .serviceActions {
-    justify-content: flex-end;
+  .serviceActions .iconButton {
+    width: 100%;
+    padding: 0 8px;
   }
 }

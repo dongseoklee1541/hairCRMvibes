@@ -13,8 +13,8 @@
 ## 현재 구현 근거
 - `/stats`는 브라우저에서 해당 월 `appointments.*`와 `customers(id, name)`을 조회한 뒤 JavaScript로 건수·완료율·취소율·최근 고객을 계산합니다.
 - 현재 `appointments` status는 `confirmed`, `completed`, `cancelled` 세 값뿐이며 `no-show` 상태는 없습니다.
-- 현재 예약에는 가격 snapshot이 없어 과거 매출과 객단가를 신뢰성 있게 계산할 수 없습니다.
-- 따라서 R-08 완료와 snapshot 검증이 R-09 구현의 필수 선행조건입니다.
+- Production과 `origin/main`에는 아직 가격 snapshot이 없어 과거 매출과 객단가를 신뢰성 있게 계산할 수 없습니다. R-08 release candidate branch에는 컬럼과 저장 경계가 로컬 검증됐지만 main/live에는 적용되지 않았습니다.
+- 따라서 R-08 Production 완료와 live snapshot 검증이 R-09 구현의 필수 선행조건입니다.
 
 ## 지표 계약
 
@@ -37,7 +37,8 @@
 ### 가격 데이터 품질
 - 가격 미설정 완료 예약 건수와 완료 예약 대비 비율을 별도 지표로 제공합니다.
 - 과거 예약에 현재 서비스 가격을 대입하거나 이름으로 추정 매칭하지 않습니다.
-- R-08 도입 이후 신규 완료 예약에서 가격 미설정이 생기면 snapshot 저장 경계의 회귀로 취급합니다.
+- R-08 도입 이후 가격 미설정 완료 예약은 데이터 품질 지표로 분리하고 조사하되, 서비스 가격 자체가 미설정이거나 완료 이력을 마스터 없이 직접 입력한 정상 허용 사례일 수 있으므로 자동으로 snapshot 회귀로 단정하지 않습니다.
+- 필요하면 `service_id IS NULL`과 `service_id IS NOT NULL AND price_snapshot_krw IS NULL`을 보조 분류해 자유입력 이력과 마스터 가격 미설정을 구분합니다.
 
 ### 재방문율
 - 권장 정의: 선택한 KST 기간 내 완료 예약이 1건 이상인 고유 고객을 분모로 하고, 같은 기간 완료 예약이 2건 이상인 고객을 분자로 합니다.
@@ -83,5 +84,5 @@
 
 ## 선행조건과 다음 단계
 - R-04 KST 날짜 유틸은 main에 반영됐습니다.
-- R-08 완료와 `price_snapshot_krw` 저장 경계 검증 전에는 R-09 구현을 시작하지 않습니다.
+- main에 통합되지 않은 release candidate만으로 R-08 완료를 간주하지 않습니다. R-08 Production 완료와 `price_snapshot_krw` live 저장 경계 검증 전에는 R-09 구현을 시작하지 않습니다.
 - 구현 시작 시 remote `main` SHA를 재확인하고 최신 `origin/main`에서 `codex/r09-stats-advanced` clean worktree를 별도로 만듭니다.

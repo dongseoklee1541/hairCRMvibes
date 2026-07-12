@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { AlertCircle, Clock, Loader2, Plus, Save, Trash2 } from 'lucide-react';
+import { AlertCircle, Clock, Loader2, Plus, Power, RotateCcw, Save } from 'lucide-react';
 import AuthGate from '@/components/AuthGate';
 import ClosedDayConflictSheet from '@/components/settings/ClosedDayConflictSheet';
 import { supabase } from '@/lib/supabase';
@@ -37,6 +37,31 @@ const WEEKDAY_OPTIONS = [
 ];
 
 const SLOT_OPTIONS = [5, 10, 15, 20, 30, 45, 60];
+const MAX_KRW_INTEGER = 2_147_483_647;
+
+function parsePriceKrw(value) {
+  const normalized = String(value ?? '').trim();
+  if (!normalized) {
+    return { value: null, error: '' };
+  }
+
+  const price = Number(normalized);
+  if (!Number.isInteger(price) || price < 0 || price > MAX_KRW_INTEGER) {
+    return { value: null, error: '가격은 0 이상의 정수 원 단위로 입력해주세요.' };
+  }
+
+  return { value: price, error: '' };
+}
+
+function formatPriceKrw(value) {
+  if (value === null || value === undefined || value === '') {
+    return '가격 미설정';
+  }
+  if (Number(value) === 0) {
+    return '0원(무료)';
+  }
+  return `${Number(value).toLocaleString('ko-KR')}원`;
+}
 
 function normalizeTimeValue(value, fallback = '') {
   if (!value) return fallback;
@@ -90,7 +115,8 @@ function SettingsPageContent() {
   const [removeEndDate, setRemoveEndDate] = useState(today);
 
   const [operationSettings, setOperationSettings] = useState({
-    default_service_name: '커트',
+    default_service_id: '',
+    default_service_name: '',
     default_duration_minutes: 60,
     appointment_slot_minutes: 30,
   });
@@ -98,6 +124,7 @@ function SettingsPageContent() {
   const [serviceDefaults, setServiceDefaults] = useState([]);
   const [newService, setNewService] = useState({
     name: '',
+    price_krw: '',
     default_duration_minutes: 60,
   });
 
@@ -131,7 +158,7 @@ function SettingsPageContent() {
       ] = await Promise.all([
         supabase
           .from('salon_operation_settings')
-          .select('default_service_name, default_duration_minutes, appointment_slot_minutes')
+          .select('default_service_id, default_service_name, default_duration_minutes, appointment_slot_minutes')
           .eq('id', true)
           .maybeSingle(),
         supabase
@@ -140,8 +167,8 @@ function SettingsPageContent() {
           .order('weekday', { ascending: true }),
         supabase
           .from('salon_service_defaults')
-          .select('id, name, default_duration_minutes, is_active, sort_order')
-          .eq('is_active', true)
+          .select('id, name, price_krw, default_duration_minutes, is_active, sort_order')
+          .order('is_active', { ascending: false })
           .order('sort_order', { ascending: true })
           .order('name', { ascending: true }),
       ]);
@@ -152,7 +179,8 @@ function SettingsPageContent() {
 
       if (operationResult.data) {
         setOperationSettings({
-          default_service_name: operationResult.data.default_service_name || '커트',
+          default_service_id: operationResult.data.default_service_id || '',
+          default_service_name: operationResult.data.default_service_name || '',
           default_duration_minutes: operationResult.data.default_duration_minutes || 60,
           appointment_slot_minutes: operationResult.data.appointment_slot_minutes || 30,
         });
@@ -213,20 +241,40 @@ function SettingsPageContent() {
   const handleSaveOperationSettings = async () => {
     const defaultDuration = Number(operationSettings.default_duration_minutes);
     const slotMinutes = Number(operationSettings.appointment_slot_minutes);
+    const selectedService = serviceDefaults.find(
+      (service) => service.id === operationSettings.default_service_id
+    );
 
-    if (!operationSettings.default_service_name.trim()) {
-      setSettingsFeedback('기본 시술명을 입력해주세요.');
+    if (!selectedService || !selectedService.is_active) {
+      setSettingsFeedback('활성 서비스 중 예약 기본 서비스를 선택해주세요.');
+      return;
+    }
+
+    if (!selectedService.name.trim()) {
+      setSettingsFeedback('선택한 서비스명을 먼저 저장해주세요.');
       return;
     }
 
     try {
       setSavingOperation(true);
+      const { data: persistedService, error: serviceError } = await supabase
+        .from('salon_service_defaults')
+        .select('id, name, is_active')
+        .eq('id', selectedService.id)
+        .maybeSingle();
+
+      if (serviceError) throw serviceError;
+      if (!persistedService?.is_active) {
+        throw new Error('선택한 서비스가 비활성 상태입니다. 다른 서비스를 선택해주세요.');
+      }
+
       const { error } = await supabase
         .from('salon_operation_settings')
         .upsert(
           {
             id: true,
-            default_service_name: operationSettings.default_service_name.trim(),
+            default_service_id: persistedService.id,
+            default_service_name: persistedService.name.trim(),
             default_duration_minutes: defaultDuration,
             appointment_slot_minutes: slotMinutes,
           },
@@ -289,7 +337,13 @@ function SettingsPageContent() {
 
   const handleSaveServiceDefault = async (service) => {
     if (!service.name.trim()) {
-      setSettingsFeedback('시술명을 입력해주세요.');
+      setSettingsFeedback('서비스명을 입력해주세요.');
+      return;
+    }
+
+    const priceResult = parsePriceKrw(service.price_krw);
+    if (priceResult.error) {
+      setSettingsFeedback(`${service.name.trim()}: ${priceResult.error}`);
       return;
     }
 
@@ -299,18 +353,19 @@ function SettingsPageContent() {
         .from('salon_service_defaults')
         .update({
           name: service.name.trim(),
+          price_krw: priceResult.value,
           default_duration_minutes: Number(service.default_duration_minutes),
-          is_active: true,
+          is_active: service.is_active,
           sort_order: service.sort_order || 0,
         })
         .eq('id', service.id);
 
       if (error) throw error;
-      setSettingsFeedback(`${service.name.trim()} 기본 시술이 저장되었습니다.`);
+      setSettingsFeedback(`${service.name.trim()} 서비스가 저장되었습니다.`);
       await fetchSettings();
     } catch (error) {
-      console.error('기본 시술 저장 오류:', error);
-      setSettingsFeedback(error?.message || '기본 시술 저장 중 오류가 발생했습니다.');
+      console.error('서비스 저장 오류:', error);
+      setSettingsFeedback(error?.message || '서비스 저장 중 오류가 발생했습니다.');
     } finally {
       setSavingServices(false);
     }
@@ -318,7 +373,13 @@ function SettingsPageContent() {
 
   const handleAddServiceDefault = async () => {
     if (!newService.name.trim()) {
-      setSettingsFeedback('추가할 시술명을 입력해주세요.');
+      setSettingsFeedback('추가할 서비스명을 입력해주세요.');
+      return;
+    }
+
+    const priceResult = parsePriceKrw(newService.price_krw);
+    if (priceResult.error) {
+      setSettingsFeedback(priceResult.error);
       return;
     }
 
@@ -333,40 +394,54 @@ function SettingsPageContent() {
         .from('salon_service_defaults')
         .insert({
           name: newService.name.trim(),
+          price_krw: priceResult.value,
           default_duration_minutes: Number(newService.default_duration_minutes),
           sort_order: nextSortOrder,
           is_active: true,
         });
 
       if (error) throw error;
-      setNewService({ name: '', default_duration_minutes: 60 });
-      setSettingsFeedback('기본 시술이 추가되었습니다.');
+      setNewService({ name: '', price_krw: '', default_duration_minutes: 60 });
+      setSettingsFeedback('서비스가 추가되었습니다.');
       await fetchSettings();
     } catch (error) {
-      console.error('기본 시술 추가 오류:', error);
-      setSettingsFeedback(error?.message || '기본 시술 추가 중 오류가 발생했습니다.');
+      console.error('서비스 추가 오류:', error);
+      setSettingsFeedback(error?.message || '서비스 추가 중 오류가 발생했습니다.');
     } finally {
       setSavingServices(false);
     }
   };
 
-  const handleDeleteServiceDefault = async (service) => {
-    const shouldDelete = window.confirm(`${service.name} 기본 시술을 삭제할까요?`);
-    if (!shouldDelete) return;
+  const handleToggleServiceDefault = async (service) => {
+    if (service.is_active) {
+      if (operationSettings.default_service_id === service.id) {
+        setSettingsFeedback(
+          '예약 기본 서비스를 다른 활성 서비스로 변경해 저장한 뒤 비활성화해주세요.'
+        );
+        return;
+      }
+
+      const shouldDeactivate = window.confirm(
+        `${service.name} 서비스를 비활성화할까요?\n기존 예약의 서비스와 가격 기록은 유지됩니다.`
+      );
+      if (!shouldDeactivate) return;
+    }
 
     try {
       setSavingServices(true);
       const { error } = await supabase
         .from('salon_service_defaults')
-        .delete()
+        .update({ is_active: !service.is_active })
         .eq('id', service.id);
 
       if (error) throw error;
-      setSettingsFeedback('기본 시술이 삭제되었습니다.');
+      setSettingsFeedback(
+        service.is_active ? `${service.name} 서비스가 비활성화되었습니다.` : `${service.name} 서비스가 재활성화되었습니다.`
+      );
       await fetchSettings();
     } catch (error) {
-      console.error('기본 시술 삭제 오류:', error);
-      setSettingsFeedback(error?.message || '기본 시술 삭제 중 오류가 발생했습니다.');
+      console.error('서비스 활성 상태 변경 오류:', error);
+      setSettingsFeedback(error?.message || '서비스 활성 상태 변경 중 오류가 발생했습니다.');
     } finally {
       setSavingServices(false);
     }
@@ -630,32 +705,50 @@ function SettingsPageContent() {
     <div className="page-content" style={{ paddingTop: 12 }}>
       <header className={styles.header}>
         <h1 className="heading-xl">설정</h1>
-        <p className="caption">영업시간, 기본 시술, 휴무일을 관리합니다.</p>
+        <p className="caption">영업시간, 서비스 마스터, 휴무일을 관리합니다.</p>
       </header>
 
       <section className={`card ${styles.card}`}>
         <div className="section-header">
           <div>
-            <h2 className="heading-md">기본 예약값</h2>
-            <p className="caption">새 예약 화면에서 사용할 기본 시술과 시간 단위입니다.</p>
+            <h2 className="heading-md">예약 기본 서비스</h2>
+            <p className="caption">새 예약에서 먼저 선택할 서비스와 시간 단위입니다.</p>
           </div>
           {loadingSettings ? <Loader2 size={18} className="animate-spin text-tertiary" /> : null}
         </div>
 
-        <div className={styles.splitRow}>
-          <div className="form-group">
-            <label className="form-label">기본 시술명</label>
-            <div className="form-input">
-              <input
-                value={operationSettings.default_service_name}
-                onChange={(e) =>
-                  setOperationSettings((prev) => ({ ...prev, default_service_name: e.target.value }))
-                }
-                disabled={loadingSettings || savingOperation}
-              />
-            </div>
+        <div className="form-group">
+          <label className="form-label">예약 기본 서비스</label>
+          <div className="form-input">
+            <select
+              value={operationSettings.default_service_id}
+              onChange={(e) => {
+                const selectedService = serviceDefaults.find(
+                  (service) => service.id === e.target.value
+                );
+                setOperationSettings((prev) => ({
+                  ...prev,
+                  default_service_id: selectedService?.id || '',
+                  default_service_name: selectedService?.name || prev.default_service_name,
+                }));
+              }}
+              disabled={loadingSettings || savingOperation}
+              className="w-full h-full bg-transparent appearance-none"
+            >
+              <option value="">활성 서비스를 선택해주세요</option>
+              {serviceDefaults.map((service) => (
+                <option key={service.id} value={service.id} disabled={!service.is_active}>
+                  {service.name}{service.is_active ? '' : ' (비활성)'}
+                </option>
+              ))}
+            </select>
           </div>
+          <p className={styles.policyText}>
+            이름으로 자동 연결하지 않습니다. 선택한 서비스 ID와 현재 이름을 함께 저장합니다.
+          </p>
+        </div>
 
+        <div className={styles.splitRow}>
           <div className="form-group">
             <label className="form-label">기본 소요시간</label>
             <div className="form-input">
@@ -678,29 +771,29 @@ function SettingsPageContent() {
               </select>
             </div>
           </div>
-        </div>
 
-        <div className="form-group">
-          <label className="form-label">예약 슬롯 간격</label>
-          <div className="form-input">
-            <select
-              value={operationSettings.appointment_slot_minutes}
-              onChange={(e) =>
-                setOperationSettings((prev) => ({
-                  ...prev,
-                  appointment_slot_minutes: Number(e.target.value),
-                }))
-              }
-              disabled={loadingSettings || savingOperation}
-              className="w-full h-full bg-transparent appearance-none"
-            >
-              {SLOT_OPTIONS.map((minutes) => (
-                <option key={minutes} value={minutes}>
-                  {minutes}분
-                </option>
-              ))}
-            </select>
-            <Clock size={18} color="var(--text-tertiary)" />
+          <div className="form-group">
+            <label className="form-label">예약 슬롯 간격</label>
+            <div className="form-input">
+              <select
+                value={operationSettings.appointment_slot_minutes}
+                onChange={(e) =>
+                  setOperationSettings((prev) => ({
+                    ...prev,
+                    appointment_slot_minutes: Number(e.target.value),
+                  }))
+                }
+                disabled={loadingSettings || savingOperation}
+                className="w-full h-full bg-transparent appearance-none"
+              >
+                {SLOT_OPTIONS.map((minutes) => (
+                  <option key={minutes} value={minutes}>
+                    {minutes}분
+                  </option>
+                ))}
+              </select>
+              <Clock size={18} color="var(--text-tertiary)" />
+            </div>
           </div>
         </div>
 
@@ -791,44 +884,88 @@ function SettingsPageContent() {
       <section className={`card ${styles.card}`}>
         <div className="section-header">
           <div>
-            <h2 className="heading-md">기본 시술</h2>
-            <p className="caption">예약 생성에서 빠르게 선택할 시술 목록입니다.</p>
+            <h2 className="heading-md">서비스 마스터</h2>
+            <p className="caption">가격 미설정과 0원은 서로 다르게 저장됩니다.</p>
           </div>
-          <span className="badge badge-green">{serviceDefaults.length}건</span>
+          <span className="badge badge-green">
+            {serviceDefaults.filter((service) => service.is_active).length}/{serviceDefaults.length} 활성
+          </span>
         </div>
 
         <div className={styles.serviceList}>
-          {serviceDefaults.length === 0 ? (
-            <div className={styles.empty}>등록된 기본 시술이 없습니다.</div>
+          {loadingSettings ? (
+            <div className={styles.empty} role="status">
+              <Loader2 size={18} className="animate-spin" />
+              <span>서비스를 불러오는 중입니다.</span>
+            </div>
+          ) : serviceDefaults.length === 0 ? (
+            <div className={styles.empty}>등록된 서비스가 없습니다. 아래에서 첫 서비스를 추가해주세요.</div>
           ) : (
             serviceDefaults.map((service) => (
-              <div key={service.id} className={styles.serviceRow}>
+              <div
+                key={service.id}
+                className={`${styles.serviceRow} ${!service.is_active ? styles.serviceRowInactive : ''}`}
+              >
+                <div className={styles.serviceSummary}>
+                  <div>
+                    <strong>{service.name || '이름 없는 서비스'}</strong>
+                    <span className={!service.is_active ? styles.inactiveText : undefined}>
+                      {service.is_active ? '활성' : '비활성'} · {formatPriceKrw(service.price_krw)}
+                    </span>
+                  </div>
+                  <span className={styles.durationBadge}>
+                    {formatDurationMinutes(service.default_duration_minutes)}
+                  </span>
+                </div>
                 <div className={styles.serviceInputs}>
-                  <div className="form-input">
-                    <input
-                      value={service.name}
-                      onChange={(e) => updateServiceDefault(service.id, { name: e.target.value })}
-                      disabled={loadingSettings || savingServices}
-                    />
-                  </div>
-                  <div className="form-input">
-                    <select
-                      value={service.default_duration_minutes}
-                      onChange={(e) =>
-                        updateServiceDefault(service.id, {
-                          default_duration_minutes: Number(e.target.value),
-                        })
-                      }
-                      disabled={loadingSettings || savingServices}
-                      className="w-full h-full bg-transparent appearance-none"
-                    >
-                      {DURATION_MINUTE_OPTIONS.map((minutes) => (
-                        <option key={minutes} value={minutes}>
-                          {formatDurationMinutes(minutes)}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                  <label className={`${styles.serviceField} ${styles.serviceNameField}`}>
+                    <span>서비스명</span>
+                    <div className="form-input">
+                      <input
+                        value={service.name}
+                        onChange={(e) => updateServiceDefault(service.id, { name: e.target.value })}
+                        disabled={loadingSettings || savingServices}
+                      />
+                    </div>
+                  </label>
+                  <label className={styles.serviceField}>
+                    <span>가격 (원)</span>
+                    <div className="form-input">
+                      <input
+                        type="number"
+                        min="0"
+                        max={MAX_KRW_INTEGER}
+                        step="1"
+                        inputMode="numeric"
+                        placeholder="미설정"
+                        value={service.price_krw ?? ''}
+                        onChange={(e) => updateServiceDefault(service.id, { price_krw: e.target.value })}
+                        disabled={loadingSettings || savingServices}
+                        aria-label={`${service.name} 가격`}
+                      />
+                    </div>
+                  </label>
+                  <label className={styles.serviceField}>
+                    <span>기본 소요시간</span>
+                    <div className="form-input">
+                      <select
+                        value={service.default_duration_minutes}
+                        onChange={(e) =>
+                          updateServiceDefault(service.id, {
+                            default_duration_minutes: Number(e.target.value),
+                          })
+                        }
+                        disabled={loadingSettings || savingServices}
+                        className="w-full h-full bg-transparent appearance-none"
+                      >
+                        {DURATION_MINUTE_OPTIONS.map((minutes) => (
+                          <option key={minutes} value={minutes}>
+                            {formatDurationMinutes(minutes)}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </label>
                 </div>
                 <div className={styles.serviceActions}>
                   <button
@@ -839,15 +976,17 @@ function SettingsPageContent() {
                     aria-label={`${service.name} 저장`}
                   >
                     <Save size={16} />
+                    <span>저장</span>
                   </button>
                   <button
                     type="button"
-                    className={styles.iconButton}
-                    onClick={() => handleDeleteServiceDefault(service)}
+                    className={`${styles.iconButton} ${service.is_active ? styles.deactivateButton : styles.reactivateButton}`}
+                    onClick={() => handleToggleServiceDefault(service)}
                     disabled={savingServices}
-                    aria-label={`${service.name} 삭제`}
+                    aria-label={`${service.name} ${service.is_active ? '비활성화' : '재활성화'}`}
                   >
-                    <Trash2 size={16} />
+                    {service.is_active ? <Power size={16} /> : <RotateCcw size={16} />}
+                    <span>{service.is_active ? '비활성화' : '재활성화'}</span>
                   </button>
                 </div>
               </div>
@@ -856,47 +995,74 @@ function SettingsPageContent() {
         </div>
 
         <div className={styles.addServiceRow}>
-          <div className="form-input">
-            <input
-              placeholder="시술명"
-              value={newService.name}
-              onChange={(e) => setNewService((prev) => ({ ...prev, name: e.target.value }))}
-              disabled={savingServices}
-            />
-          </div>
-          <div className="form-input">
-            <select
-              value={newService.default_duration_minutes}
-              onChange={(e) =>
-                setNewService((prev) => ({
-                  ...prev,
-                  default_duration_minutes: Number(e.target.value),
-                }))
-              }
-              disabled={savingServices}
-              className="w-full h-full bg-transparent appearance-none"
-            >
-              {DURATION_MINUTE_OPTIONS.map((minutes) => (
-                <option key={minutes} value={minutes}>
-                  {formatDurationMinutes(minutes)}
-                </option>
-              ))}
-            </select>
-          </div>
+          <h3>새 서비스 추가</h3>
+          <label className={`${styles.serviceField} ${styles.serviceNameField}`}>
+            <span>서비스명</span>
+            <div className="form-input">
+              <input
+                placeholder="예: 여성 커트"
+                value={newService.name}
+                onChange={(e) => setNewService((prev) => ({ ...prev, name: e.target.value }))}
+                disabled={savingServices}
+              />
+            </div>
+          </label>
+          <label className={styles.serviceField}>
+            <span>가격 (원)</span>
+            <div className="form-input">
+              <input
+                type="number"
+                min="0"
+                max={MAX_KRW_INTEGER}
+                step="1"
+                inputMode="numeric"
+                placeholder="미설정"
+                value={newService.price_krw}
+                onChange={(e) => setNewService((prev) => ({ ...prev, price_krw: e.target.value }))}
+                disabled={savingServices}
+              />
+            </div>
+          </label>
+          <label className={styles.serviceField}>
+            <span>기본 소요시간</span>
+            <div className="form-input">
+              <select
+                value={newService.default_duration_minutes}
+                onChange={(e) =>
+                  setNewService((prev) => ({
+                    ...prev,
+                    default_duration_minutes: Number(e.target.value),
+                  }))
+                }
+                disabled={savingServices}
+                className="w-full h-full bg-transparent appearance-none"
+              >
+                {DURATION_MINUTE_OPTIONS.map((minutes) => (
+                  <option key={minutes} value={minutes}>
+                    {formatDurationMinutes(minutes)}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </label>
           <button
             type="button"
             className={styles.addButton}
             onClick={handleAddServiceDefault}
             disabled={savingServices}
-            aria-label="기본 시술 추가"
+            aria-label="서비스 추가"
           >
             {savingServices ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
+            <span>서비스 추가</span>
           </button>
         </div>
+        <p className={styles.policyText}>
+          사용한 서비스는 삭제하지 않고 비활성화합니다. 기존 예약의 당시 서비스명과 가격은 유지됩니다.
+        </p>
       </section>
 
       {settingsFeedback ? (
-        <div className={styles.feedbackBox}>
+        <div className={styles.feedbackBox} role="status" aria-live="polite">
           <AlertCircle size={16} />
           <span>{settingsFeedback}</span>
         </div>
