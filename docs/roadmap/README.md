@@ -38,7 +38,7 @@
 | 8 | `20260707161054_phase1_function_privilege_hardening.sql` | search path/anon execute hardening |
 | 9 | `20260711110928_r07_customer_lifecycle_dedupe.sql` | 고객 archive/anonymize, 중복 후보, 원자적 merge/undo |
 | 10 | `20260712093510_r08_service_master.sql` | 서비스 가격·활성 기본 서비스·예약 snapshot·trigger/RLS; live 적용·검증 완료 |
-| 11 | `20260712124959_r09_stats_advanced.sql` | KST 기간 통계 aggregate RPC·owner/staff role check·explicit EXECUTE; local replay 완료, live 적용 대기 |
+| 11 | `20260712124959_r09_stats_advanced.sql` | KST 기간 통계 aggregate RPC·owner/staff role check·explicit EXECUTE; live 적용·ACL 검증 완료 |
 
 2026-07-12 production 작업에서 1~3번의 live 객체 동등성을 다시 확인한 뒤 SQL을 재실행하지 않고 migration history만 `applied`로 repair했습니다. 이어 9번 R-07과 10번 R-08을 적용했습니다. R-08 connector 적용 직후 생성된 실행시각 version은 SQL 재실행 없이 local filename version `20260712093510`으로 history만 교정했고, 현재 live/local migration version 10개가 일치합니다. 4~8번 live history name에는 repair 전 timestamp suffix가 남아 있어 filename stem까지 같은 `exact match`는 아니며, R-07/R-08 row는 각각 `r07_customer_lifecycle_dedupe`, `r08_service_master`입니다.
 
@@ -85,7 +85,7 @@ R-07 release 세션에서 catalog/ACL/RPC 29개 계약과 실제 owner/staff/ano
 | R-07 | [R-07-customer-edit-delete-dedupe.md](./R-07-customer-edit-delete-dedupe.md) | Done (production deployed; public endpoint rechecked) |
 | R-08 | [R-08-service-master.md](./R-08-service-master.md) | Done (production deployed; live transactional smoke verified) |
 | R-13 | [R-13-appointment-customer-search-quick-create.md](./R-13-appointment-customer-search-quick-create.md) | Done (production deployed; public/PWA smoke verified) |
-| R-09 | [R-09-stats-advanced.md](./R-09-stats-advanced.md) | Ready for PR (local SQL/UI/Pencil/PWA verified; live pending) |
+| R-09 | [R-09-stats-advanced.md](./R-09-stats-advanced.md) | Done (production deployed; exact live migration/ACL/PWA verified) |
 
 R-07 로컬 완료 게이트에는 등록·편집 미저장 상태의 브라우저 Back/Forward·내부 이동 확인, 제출 중 dirty 유지·지연 응답 stale route 차단, 저장 성공 시 대화상자 0건, 홈 390×844·360×800 지속 콘솔 0건, 새 브라우저 컨텍스트의 PWA/offline 재검증이 포함됩니다. Production release에서는 canonical PWA 핵심 자산과 Cron/DB/runtime log 경계를 추가 확인했습니다.
 
@@ -95,12 +95,12 @@ R-13은 R-09보다 먼저 수행하는 P1 작업입니다. 활성 고객 `id,nam
 
 R-13은 PR #18 merge `main@f904bcf`로 Production에 배포됐습니다. deployment `dpl_5VemJYn7XhZAorkpEaHBNZN9x85o`가 READY이고 canonical alias가 연결됐으며, `/appointments/new`와 R-13 chunk, 로그인 redirect, manifest/SW/offline/favicon/192·512 icon 200 및 console 0건을 비로그인·비변경 smoke로 확인했습니다. 고객·예약 API와 실데이터는 건드리지 않았습니다.
 
-R-09는 `origin/main@a360cea` 기반 별도 worktree에서 aggregate RPC, 기간 통계 UI, Pencil 6개 상태를 구현했습니다. forward 11개와 `schema.sql` 양 경로에서 R-07/R-08/R-09 SQL 회귀, 390×844·360×800 mobile mock, production-mode PWA/offline을 통과했으며 live migration과 Production release는 PR checks/migration diff 이후 단계입니다.
+R-09는 `origin/main@a360cea` 기반 별도 worktree에서 aggregate RPC, 기간 통계 UI, Pencil 6개 상태를 구현했습니다. forward 11개와 `schema.sql` 양 경로 R-07/R-08/R-09 SQL 회귀, 390×844·360×800 mobile mock, production-mode PWA/offline을 통과했습니다. PR #20 merge `main@b63f9a3`, exact 11번째 live migration, RPC catalog/ACL, Production deployment `dpl_FBDsYn26v2ZXiJthe5z97vsJDwk2`와 canonical 공개/PWA/offline 검증까지 완료했습니다.
 
 ## Phase 2 착수 기준
 - R-06/R-07은 재구현하지 않습니다. 실기기 install/standalone/SW update와 post-deploy authenticated browser 검증은 완료 근거와 분리한 후속 운영 작업입니다.
 - R-08은 `/Users/idongseog/workspace/hairCRMvibes-r08-service-master` clean worktree에서 구현한 뒤 PR #16 merge `main@01440b6`, live migration 10개와 Production 배포까지 완료했습니다. 기존 R-07 checkout과 미추적 산출물은 변경하지 않았습니다.
-- R-09 local 구현·검증은 `codex/r09-stats-advanced`에서 완료됐습니다. Draft PR checks와 migration diff 확인 후 main merge, 11번째 live migration, Production 공개/PWA smoke를 순서대로 진행합니다.
+- R-09는 PR #20 merge, exact 11번째 live migration과 Production 공개/PWA smoke까지 완료했습니다. 다음 기능 우선순위는 별도 Plan 승인을 전제로 R-10 권한관리 UI입니다.
 - Preview가 Production Supabase를 공유한다는 문서와 Preview env 제거 인계 기록이 충돌합니다. Vercel connector로 현재 설정을 확인하지 못했으므로 `확인 필요`이며, 확인 전 Preview 로그인·실데이터 smoke는 금지합니다.
 
 ## 실행 프롬프트

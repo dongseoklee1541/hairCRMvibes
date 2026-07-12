@@ -1,10 +1,18 @@
 # R-09 Stats Advanced
 
 ## 상태
-- Ready for PR (local implementation and verification complete; live migration/Production release pending)
+- Done (PR merged; exact live migration and Production release verified)
 - 구현 브랜치: `codex/r09-stats-advanced`
 - 기준: `origin/main@a360cea279abd250670dfd47ca6e8cd213b7131c`
 - 최종 업데이트: 2026-07-12
+
+## Release 결과
+- PR #20이 Vercel checks 성공 후 merge됐고 `main@b63f9a3771409776593c6ad61727e24c68082186`이 되었습니다.
+- Supabase live history는 local filename과 같은 11번째 `20260712124959_r09_stats_advanced`입니다. connector 적용 시 생성된 실행시각 version은 SQL 재실행 없이 history만 local version으로 교정했습니다.
+- live 함수는 `SECURITY INVOKER`, `STABLE`, 빈 `search_path`, authenticated EXECUTE 허용, anon EXECUTE 차단, PUBLIC 차단을 catalog에서 확인했습니다.
+- Vercel Production deployment `dpl_FBDsYn26v2ZXiJthe5z97vsJDwk2`가 merge SHA로 READY이고 `hair-cr-mvibes.vercel.app` canonical alias가 연결됐습니다.
+- canonical `/stats` 비로그인 `/login?from=%2Fstats` redirect와 root/login/manifest/SW/offline/favicon/192·512 icon 200, SW active/controller, 미캐시 URL offline fallback, console error/warning 0건을 확인했습니다.
+- Cron 무인증 경계는 `401 + application/json + no-store`로 유지됩니다. Production 고객·예약 fixture나 실제 데이터 RPC smoke는 수행하지 않았습니다.
 
 ## 구현 결과
 - `/stats`의 `appointments.*`, `customers(id, name)`, 브라우저 원본 집계를 제거하고 `get_stats_summary(p_start_date, p_end_date)` RPC 한 번으로 교체했습니다.
@@ -78,8 +86,8 @@
 - 애플리케이션은 이 변경 commit을 revert합니다.
 - DB는 `supabase/rollbacks/20260712124959_r09_stats_advanced.down.sql`을 수동 검토 후 실행해 grant를 회수하고 함수만 drop합니다. 데이터 변경·backfill이 없어 row rollback은 없습니다.
 
-## Release gate 및 남은 리스크
-- Draft PR checks와 migration diff를 먼저 확인한 뒤 main merge, live migration, Production deploy 순서로 진행합니다.
-- live 적용 전까지 live DB migration은 기존 10개이며 RPC는 존재하지 않습니다. Preview Supabase 격리는 문서 충돌로 `확인 필요`이고 Preview 실데이터 smoke는 금지합니다.
-- Production/Preview 테스트 고객·예약은 생성하지 않습니다. live 후에는 migration version, 함수 catalog/ACL과 canonical 공개/PWA 자산만 비식별·비변경 방식으로 확인합니다.
+## 남은 리스크
+- Preview Supabase 격리는 문서 충돌로 `확인 필요`이며 확인 전 Preview 로그인·실데이터 smoke는 금지합니다.
+- Production/Preview 테스트 고객·예약은 생성하지 않았고, live owner/staff 실제 데이터 집계 브라우저 smoke도 개인정보 보호를 위해 생략했습니다. SQL role fixture와 catalog/ACL로 권한 계약을 검증했습니다.
+- advisor에는 기존 GraphQL authenticated table 노출, `rls_auto_enable`, SECURITY DEFINER RPC, leaked-password protection, 미사용/누락 index와 중복 permissive policy 항목이 남습니다. R-09 함수 자체에 대한 신규 advisor 항목은 없습니다.
 - 실기기 install/standalone/SW update는 기존 R-06 후속 운영 범위로 유지합니다.

@@ -47,7 +47,7 @@
 | R-07 | Done (production deployed; public endpoint rechecked) | release 세션에서 실제 owner/staff/anon Data API/RPC 106개·fixture residue 0건과 `main@16157f89976e41f5218377712d5d77026bc14417` Production 배포를 확인했습니다. 이번 감사에서 live migration version 9개, RPC 7개·audit table 2개, 고객 5건·예약 6건 기준선과 canonical 공개/PWA 자산 200·Cron 무인증 401을 재확인 | 승인 Cron 200·DB probe·Runtime log와 post-deploy 실제 browser owner/staff는 이번 감사에서 재실행하지 않음. Preview 환경, 실기기 install/standalone/SW update, `prefetch={false}` 체감 속도는 후속 작업 |
 | R-08 | Done (production deployed; live transactional smoke verified) | PR #16 merge `main@01440b6`, exact 10번째 live migration `20260712093510_r08_service_master`, 기존 서비스 4건·예약 7건 no-backfill, live owner/staff/anon·snapshot transaction smoke와 synthetic residue 0건을 확인했습니다. Vercel Production deployment `6N4gbJURzr8GX4omNErBZEA8VRzQ` 성공, canonical 공개 route/PWA asset과 R-08 bundle marker도 확인했습니다. | 실제 로그인 owner/staff browser smoke, Preview Supabase 격리, 초기 서비스 가격·기본 서비스 운영 입력은 비차단 후속 검증으로 추적 |
 | R-13 | Done (production deployed; public/PWA smoke verified) | PR #18 merge `main@f904bcf`, Vercel Production deployment `dpl_5VemJYn7XhZAorkpEaHBNZN9x85o`, canonical `/appointments/new`·로그인 redirect·manifest/SW/offline/favicon/192·512 icon HTTP 200과 console 0건을 확인했습니다. 로컬에서는 Pencil 6개 상태, 390×844·360×800 mock 검색·중복·성공/실패/취소 draft 보존과 `customers?select=id,name` 최소 조회를 검증했습니다. | 실제 owner/staff 로그인·모바일 실기기 IME/standalone은 후속 운영 검증. Preview 격리 확인 전 실데이터 smoke 금지 |
-| R-09 | Ready for PR (local verified; live pending) | `get_stats_summary(date,date)` aggregate RPC와 raw appointment/customer 제거 UI를 구현했습니다. Pencil 6개 상태·hash 저장, forward 11개/schema 양 경로 R-07/R-08/R-09 SQL 회귀, residue 0건, build, 390×844·360×800, production-mode PWA/offline을 통과했습니다. | Draft PR checks와 migration diff 확인 후 main merge, 11번째 live migration, Production deploy·canonical 공개/PWA 비변경 smoke 진행 |
+| R-09 | Done (production deployed; exact live migration/ACL/PWA verified) | PR #20 merge `main@b63f9a3`, exact 11번째 live migration `20260712124959_r09_stats_advanced`, RPC invoker/stable/search_path/ACL, Vercel deployment `dpl_FBDsYn26v2ZXiJthe5z97vsJDwk2`, canonical redirect·PWA assets·offline fallback을 확인했습니다. local Pencil/SQL/build/mobile 검증과 synthetic residue 0 근거도 유지합니다. | Preview 격리, live authenticated 실제 데이터 smoke, 실기기 install/standalone은 후속 운영 검증. 다음 기능은 별도 Plan 승인을 거쳐 R-10 착수 |
 
 ## Phase 1 live 검증 요약 (2026-07-08)
 - Supabase 프로젝트 `burtyhairCRM`은 `ACTIVE_HEALTHY` 상태였고, Phase 1 migration 5개(`r01`, `r02`, `r05`, `r03`, `phase1_function_privilege_hardening`)를 live DB에 적용했습니다.
@@ -85,13 +85,13 @@
 - `R-07` 고객 정보 편집·삭제 + 중복고객 처리: Production DB·배포·canonical PWA/Cron/DB smoke Done, 실제 browser owner/staff 재검증 대기
 - `R-08` 서비스 마스터(가격/기본 소요시간): Production DB·배포·live transactional smoke Done
 - `R-13` 예약 고객 검색·빠른 등록: Production 배포·canonical 공개/PWA smoke Done
-- `R-09` 통계 고도화(매출/객단가/재방문율): local 구현·검증 완료, PR/live/Production release 대기
+- `R-09` 통계 고도화(매출/객단가/재방문율): PR/live/Production release Done
 
 ### Phase 2 기능 착수 기준 (2026-07-12 감사)
 - R-06/R-07은 재구현하지 않습니다. 미완료 실기기/browser/Preview 검증은 기능 완료 근거와 분리한 후속 운영 작업으로 추적합니다.
 - R-08은 `origin/main@a7a4186e76c9225c9273fa8474cea27440d36d40`에서 시작해 PR #16 merge `main@01440b6c4e3386c26a60ba786dacc90fa6d95223`, exact 10번째 live migration, Production 배포와 live transaction smoke까지 완료했습니다. 기존 worktree와 미추적 산출물은 삭제·이동·stage하지 않았습니다.
-- R-13은 `origin/main@bbcb47b`에서 별도 clean worktree로 구현한 뒤 PR #18 merge `main@f904bcf`와 Production 배포·공개/PWA smoke까지 완료했습니다. R-09 시작 시 최신 `origin/main`을 재확인하고 `codex/r09-stats-advanced` clean worktree를 별도로 만듭니다.
-- R-09는 `origin/main@a360cea`에서 별도 clean worktree로 구현했고, raw row 브라우저 집계를 최소 aggregate RPC로 교체했습니다. PR checks/migration diff 보고 전에는 live migration이나 Production deploy를 진행하지 않습니다.
+- R-13은 `origin/main@bbcb47b`에서 별도 clean worktree로 구현한 뒤 PR #18 merge `main@f904bcf`와 Production 배포·공개/PWA smoke까지 완료했습니다. 이어 R-09도 별도 clean worktree에서 구현해 PR #20 merge와 Production release까지 완료했습니다.
+- R-09는 `origin/main@a360cea`에서 별도 clean worktree로 구현했고 PR #20 merge `main@b63f9a3`, exact 11번째 live migration, Production canonical 공개/PWA smoke까지 완료했습니다.
 
 ### Phase 3 (P2 확장)
 - `R-10` 권한관리 UI(직원 초대/권한변경)
@@ -137,5 +137,5 @@
 - R-07 Production release 기록: 애플리케이션 `main@16157f8`, Vercel deployment `5z5MKHSAyxtLrRt6ACF3UZtLBGh7` Promote, 실제 role smoke 106개/residue 0건, 승인 Cron 200·DB probe·Runtime log 0건. 이번 감사에서 secret 기반 검증은 재실행하지 않음
 - R-08 Production 기록: PR #16 merge `main@01440b6`, live migration `20260712093510_r08_service_master`, 고객 5건·예약 7건·서비스 4건 기준선과 기존 snapshot NULL 보존, live transactional role/snapshot smoke·residue 0건, Vercel deployment `6N4gbJURzr8GX4omNErBZEA8VRzQ`, canonical R-08 bundle/PWA/Cron 공개 경계를 확인
 - R-13 release 기록: PR #18 merge `main@f904bcf`, Vercel deployment `dpl_5VemJYn7XhZAorkpEaHBNZN9x85o` READY 및 canonical alias 연결, `/appointments/new` R-13 chunk·로그인 redirect·manifest/SW/offline/favicon/192·512 icon HTTP 200·console 0건 확인. Supabase 요청과 실데이터 smoke는 수행하지 않음
-- R-09 local 기록: `origin/main@a360cea` 기반 `codex/r09-stats-advanced`, Pencil 6개 상태/hash 변경, migration 11개/schema 양 경로 SQL 회귀·residue 0, build와 mobile/PWA 검증 완료. live migration/Production은 PR gate 이후
+- R-09 release 기록: PR #20 merge `main@b63f9a3`, exact live migration `20260712124959_r09_stats_advanced`, RPC ACL 계약, Vercel deployment `dpl_FBDsYn26v2ZXiJthe5z97vsJDwk2` READY/canonical 연결, 공개 PWA/offline/Cron 무인증 경계 확인. 실제 고객·예약 fixture와 authenticated live 데이터 smoke는 수행하지 않음
 - 확인 필요: Preview Supabase 환경 격리의 현재 설정
