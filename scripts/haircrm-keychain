@@ -1,0 +1,570 @@
+#!/bin/zsh -f
+
+emulate -LR zsh
+unsetopt XTRACE VERBOSE
+setopt ERR_EXIT NO_UNSET PIPE_FAIL
+umask 077
+ulimit -c 0 2>/dev/null || true
+
+readonly SECURITY_BIN='/usr/bin/security'
+readonly GREP_BIN='/usr/bin/grep'
+readonly CURL_BIN='/usr/bin/curl'
+readonly CAT_BIN='/bin/cat'
+readonly OPENSSL_BIN='/usr/bin/openssl'
+readonly MKTEMP_BIN='/usr/bin/mktemp'
+readonly UNLINK_BIN='/bin/unlink'
+readonly PSQL_BIN='/opt/homebrew/opt/postgresql@17/bin/psql'
+readonly LOGIN_KEYCHAIN="$HOME/Library/Keychains/login.keychain-db"
+readonly SUPABASE_CA_SHA256='807025ad50d4ed219d2c9c7d299c004f824eb00cf7f65afef607d07b72e6cafa'
+readonly PROD_DB_CONNINFO='host=aws-1-ap-northeast-2.pooler.supabase.com port=5432 user=postgres.skcujebqxjvmzmaiddvb dbname=postgres sslmode=verify-full require_auth=scram-sha-256 passfile=/dev/null connect_timeout=10'
+
+typeset -g TARGET_ALIAS=''
+typeset -g TARGET_SERVICE=''
+typeset -g TARGET_ACCOUNT=''
+typeset -g SECRET_VALUE=''
+typeset -g TEMP_CA_FILE=''
+typeset -g TEMP_HTTP_BODY=''
+typeset -g TEMP_STORE_SERVICE=''
+typeset -g TEMP_STORE_ACCOUNT=''
+typeset -g TEMP_STORE_MARKER=''
+typeset -gi TEMP_STORE_CREATED=0
+
+usage() {
+  cat <<'USAGE'
+Usage:
+  scripts/haircrm-keychain status <alias>
+  scripts/haircrm-keychain store <alias>
+  scripts/haircrm-keychain probe <alias> [--repeat 1..10]
+  scripts/haircrm-keychain delete <alias> --confirm <alias>
+  scripts/haircrm-keychain db-probe
+  scripts/haircrm-keychain cron-request <approved Vercel URL>
+  scripts/haircrm-keychain self-test
+
+Aliases:
+  prod-db
+  vercel-cron
+  r07-temp:<run-id>:<slot>
+
+R-07 slots:
+  owner-email, owner-password, staff-email, staff-password,
+  supabase-secret-key
+USAGE
+}
+
+die() {
+  print -u2 -r -- "error: $*"
+  exit 2
+}
+
+clear_secret() {
+  SECRET_VALUE=''
+  unset SECRET_VALUE
+  typeset -g SECRET_VALUE=''
+}
+
+cleanup_temp_ca() {
+  if [[ -n "$TEMP_CA_FILE" && -e "$TEMP_CA_FILE" ]]; then
+    "$UNLINK_BIN" "$TEMP_CA_FILE" >/dev/null 2>&1 || return 1
+  fi
+  TEMP_CA_FILE=''
+}
+
+cleanup_temp_http_body() {
+  if [[ -n "$TEMP_HTTP_BODY" && -e "$TEMP_HTTP_BODY" ]]; then
+    "$UNLINK_BIN" "$TEMP_HTTP_BODY" >/dev/null 2>&1 || return 1
+  fi
+  TEMP_HTTP_BODY=''
+}
+
+cleanup_temp_store() {
+  local lookup_exit=0
+  clear_secret
+  if (( TEMP_STORE_CREATED == 1 )); then
+    if "$SECURITY_BIN" find-generic-password \
+      -s "$TEMP_STORE_SERVICE" \
+      -a "$TEMP_STORE_ACCOUNT" \
+      -j "$TEMP_STORE_MARKER" \
+      "$LOGIN_KEYCHAIN" >/dev/null 2>&1; then
+      "$SECURITY_BIN" delete-generic-password \
+        -s "$TEMP_STORE_SERVICE" \
+        -a "$TEMP_STORE_ACCOUNT" \
+        -j "$TEMP_STORE_MARKER" \
+        "$LOGIN_KEYCHAIN" >/dev/null 2>&1 || return 1
+
+      if "$SECURITY_BIN" find-generic-password \
+        -s "$TEMP_STORE_SERVICE" \
+        -a "$TEMP_STORE_ACCOUNT" \
+        -j "$TEMP_STORE_MARKER" \
+        "$LOGIN_KEYCHAIN" >/dev/null 2>&1; then
+        return 1
+      else
+        lookup_exit=$?
+        (( lookup_exit == 44 )) || return 1
+      fi
+    else
+      lookup_exit=$?
+      (( lookup_exit == 44 )) || return 1
+    fi
+  fi
+  TEMP_STORE_SERVICE=''
+  TEMP_STORE_ACCOUNT=''
+  TEMP_STORE_MARKER=''
+  TEMP_STORE_CREATED=0
+}
+
+TRAPEXIT() {
+  cleanup_temp_store || print -u2 -r -- 'error: exact Keychain rollback cleanup failed'
+  cleanup_temp_http_body || print -u2 -r -- 'error: temporary Cron response cleanup failed'
+  cleanup_temp_ca || print -u2 -r -- 'error: temporary Supabase CA cleanup failed'
+}
+
+TRAPINT() { exit 130 }
+TRAPTERM() { exit 143 }
+TRAPHUP() { exit 129 }
+
+write_supabase_ca() {
+  local destination="$1"
+  "$CAT_BIN" > "$destination" <<'CERTIFICATE'
+-----BEGIN CERTIFICATE-----
+MIIDxDCCAqygAwIBAgIUbLxMod62P2ktCiAkxnKJwtE9VPYwDQYJKoZIhvcNAQEL
+BQAwazELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5l
+dyBDYXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJh
+c2UgUm9vdCAyMDIxIENBMB4XDTIxMDQyODEwNTY1M1oXDTMxMDQyNjEwNTY1M1ow
+azELMAkGA1UEBhMCVVMxEDAOBgNVBAgMB0RlbHdhcmUxEzARBgNVBAcMCk5ldyBD
+YXN0bGUxFTATBgNVBAoMDFN1cGFiYXNlIEluYzEeMBwGA1UEAwwVU3VwYWJhc2Ug
+Um9vdCAyMDIxIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqQXW
+QyHOB+qR2GJobCq/CBmQ40G0oDmCC3mzVnn8sv4XNeWtE5XcEL0uVih7Jo4Dkx1Q
+DmGHBH1zDfgs2qXiLb6xpw/CKQPypZW1JssOTMIfQppNQ87K75Ya0p25Y3ePS2t2
+GtvHxNjUV6kjOZjEn2yWEcBdpOVCUYBVFBNMB4YBHkNRDa/+S4uywAoaTWnCJLUi
+cvTlHmMw6xSQQn1UfRQHk50DMCEJ7Cy1RxrZJrkXXRP3LqQL2ijJ6F4yMfh+Gyb4
+O4XajoVj/+R4GwywKYrrS8PrSNtwxr5StlQO8zIQUSMiq26wM8mgELFlS/32Uclt
+NaQ1xBRizkzpZct9DwIDAQABo2AwXjALBgNVHQ8EBAMCAQYwHQYDVR0OBBYEFKjX
+uXY32CztkhImng4yJNUtaUYsMB8GA1UdIwQYMBaAFKjXuXY32CztkhImng4yJNUt
+aUYsMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAB8spzNn+4VU
+tVxbdMaX+39Z50sc7uATmus16jmmHjhIHz+l/9GlJ5KqAMOx26mPZgfzG7oneL2b
+VW+WgYUkTT3XEPFWnTp2RJwQao8/tYPXWEJDc0WVQHrpmnWOFKU/d3MqBgBm5y+6
+jB81TU/RG2rVerPDWP+1MMcNNy0491CTL5XQZ7JfDJJ9CCmXSdtTl4uUQnSuv/Qx
+Cea13BX2ZgJc7Au30vihLhub52De4P/4gonKsNHYdbWjg7OWKwNv/zitGDVDB9Y2
+CMTyZKG3XEu5Ghl1LEnI3QmEKsqaCLv12BnVjbkSeZsMnevJPs1Ye6TjjJwdik5P
+o/bKiIz+Fq8=
+-----END CERTIFICATE-----
+CERTIFICATE
+}
+
+assert_login_keychain_default() {
+  local default_keychain=''
+  default_keychain=$("$SECURITY_BIN" default-keychain -d user)
+  default_keychain="${default_keychain#*\"}"
+  default_keychain="${default_keychain%%\"*}"
+
+  [[ "$default_keychain" == "$LOGIN_KEYCHAIN" ]] \
+    || die 'the user default Keychain is not the expected login.keychain-db'
+}
+
+resolve_alias() {
+  local alias_name="$1"
+  local prefix='r07-temp:'
+
+  [[ "$alias_name" != *$'\n'* && "$alias_name" != *$'\r'* && "$alias_name" != *$'\t'* ]] \
+    || die 'alias contains a control character'
+
+  TARGET_ALIAS="$alias_name"
+  case "$alias_name" in
+    prod-db)
+      TARGET_SERVICE='hairCRMvibes-supabase-db'
+      TARGET_ACCOUNT='idongseog'
+      return
+      ;;
+    vercel-cron)
+      TARGET_SERVICE='hairCRMvibes-vercel-cron-secret'
+      TARGET_ACCOUNT='production'
+      return
+      ;;
+  esac
+
+  [[ "$alias_name" == ${prefix}* ]] || die "unsupported alias: $alias_name"
+
+  local remainder="${alias_name#$prefix}"
+  local run_id="${remainder%%:*}"
+  local slot="${remainder#*:}"
+
+  [[ "$remainder" == *:* && "$slot" != *:* ]] || die 'invalid R-07 alias shape'
+  print -r -- "$run_id" | "$GREP_BIN" -Eq '^r07prod-[0-9]{8}T[0-9]{6}Z-[0-9a-f]{6}$' \
+    || die 'invalid R-07 run id'
+
+  case "$slot" in
+    owner-email|owner-password|staff-email|staff-password|supabase-secret-key) ;;
+    *) die "unsupported R-07 slot: $slot" ;;
+  esac
+
+  TARGET_SERVICE='hairCRMvibes-r07-prod-smoke'
+  TARGET_ACCOUNT="${run_id}:${slot}"
+}
+
+keychain_item_exists() {
+  local service="$1"
+  local account="$2"
+  local label="$3"
+  local exit_code=0
+  if "$SECURITY_BIN" find-generic-password \
+    -s "$service" \
+    -a "$account" \
+    "$LOGIN_KEYCHAIN" >/dev/null 2>&1; then
+    return 0
+  else
+    exit_code=$?
+  fi
+
+  (( exit_code == 44 )) && return 1
+  die "Keychain lookup failed with status $exit_code: $label"
+}
+
+item_exists() {
+  keychain_item_exists "$TARGET_SERVICE" "$TARGET_ACCOUNT" "$TARGET_ALIAS"
+}
+
+validate_secret_shape() {
+  local secret_length=${#SECRET_VALUE}
+  (( secret_length >= 1 && secret_length <= 127 )) \
+    || die "Keychain value length is unsupported: $TARGET_ALIAS"
+  [[ "$SECRET_VALUE" != *$'\n'* && "$SECRET_VALUE" != *$'\r'* ]] \
+    || die "Keychain value contains a line break: $TARGET_ALIAS"
+
+  if [[ "$TARGET_ALIAS" == 'vercel-cron' ]]; then
+    (( secret_length == 64 )) && [[ "$SECRET_VALUE" != *[^0-9a-f]* ]] \
+      || die 'vercel-cron must be a 64-character lowercase hex token'
+  fi
+}
+
+read_keychain_secret() {
+  if ! SECRET_VALUE=$("$SECURITY_BIN" find-generic-password \
+    -s "$TARGET_SERVICE" \
+    -a "$TARGET_ACCOUNT" \
+    -w \
+    "$LOGIN_KEYCHAIN"); then
+    clear_secret
+    die "Keychain read failed: $TARGET_ALIAS"
+  fi
+  [[ -n "$SECRET_VALUE" ]] || {
+    clear_secret
+    die "Keychain item is empty: $TARGET_ALIAS"
+  }
+  validate_secret_shape
+}
+
+command_status() {
+  (( $# == 1 )) || die 'status requires exactly one alias'
+  resolve_alias "$1"
+
+  if item_exists; then
+    print -r -- "present: $TARGET_ALIAS"
+  else
+    print -r -- "absent: $TARGET_ALIAS"
+    return 1
+  fi
+}
+
+command_store() {
+  (( $# == 1 )) || die 'store requires exactly one alias'
+  local alias_name="$1"
+  resolve_alias "$alias_name"
+
+  item_exists && die "item already exists; rotation is not supported by this wrapper: $alias_name"
+
+  TEMP_STORE_SERVICE="$TARGET_SERVICE"
+  TEMP_STORE_ACCOUNT="$TARGET_ACCOUNT"
+  TEMP_STORE_MARKER="haircrm-store-${UID}-${$}-${RANDOM}"
+  TEMP_STORE_CREATED=1
+
+  if ! "$SECURITY_BIN" add-generic-password \
+    -a "$TARGET_ACCOUNT" \
+    -s "$TARGET_SERVICE" \
+    -j "$TEMP_STORE_MARKER" \
+    -T "$SECURITY_BIN" \
+    -w >/dev/null; then
+    die "Keychain write failed: $alias_name"
+  fi
+
+  item_exists || die "Keychain write verification failed: $alias_name"
+  read_keychain_secret
+  clear_secret
+  TEMP_STORE_CREATED=0
+  TEMP_STORE_SERVICE=''
+  TEMP_STORE_ACCOUNT=''
+  TEMP_STORE_MARKER=''
+  print -r -- "stored: $alias_name"
+}
+
+command_probe() {
+  (( $# == 1 || $# == 3 )) || die 'probe arguments are invalid'
+  local alias_name="$1"
+  local repeat_count=1
+  resolve_alias "$alias_name"
+
+  if (( $# == 3 )); then
+    [[ "$2" == '--repeat' ]] || die 'probe repeat requires --repeat'
+    print -r -- "$3" | "$GREP_BIN" -Eq '^(10|[1-9])$' || die 'repeat must be between 1 and 10'
+    repeat_count="$3"
+  fi
+
+  local baseline=''
+  local index
+  for (( index = 1; index <= repeat_count; index++ )); do
+    read_keychain_secret
+    if (( index == 1 )); then
+      baseline="$SECRET_VALUE"
+    else
+      [[ "$SECRET_VALUE" == "$baseline" ]] || {
+        clear_secret
+        baseline=''
+        die "Keychain value changed during probe: $alias_name"
+      }
+    fi
+    clear_secret
+  done
+  baseline=''
+
+  print -r -- "probe-ok: $alias_name repeat=$repeat_count"
+}
+
+command_delete() {
+  (( $# == 3 )) || die 'delete requires: <alias> --confirm <same-alias>'
+  local alias_name="$1"
+  [[ "$2" == '--confirm' && "$3" == "$alias_name" ]] \
+    || die 'delete confirmation must repeat the exact alias'
+  resolve_alias "$alias_name"
+
+  item_exists || die "cannot delete an absent item: $alias_name"
+  "$SECURITY_BIN" delete-generic-password \
+    -s "$TARGET_SERVICE" \
+    -a "$TARGET_ACCOUNT" \
+    "$LOGIN_KEYCHAIN" >/dev/null
+
+  item_exists && die "Keychain delete verification failed: $alias_name"
+  print -r -- "deleted: $alias_name"
+}
+
+command_db_probe() {
+  (( $# == 0 )) || die 'db-probe takes no arguments'
+  [[ -x "$PSQL_BIN" ]] || die "approved psql binary is unavailable: $PSQL_BIN"
+
+  local ca_fingerprint=''
+  local db_conninfo=''
+
+  TEMP_CA_FILE=$("$MKTEMP_BIN" '/tmp/haircrm-supabase-ca.XXXXXX')
+  write_supabase_ca "$TEMP_CA_FILE"
+  ca_fingerprint=$("$OPENSSL_BIN" x509 -in "$TEMP_CA_FILE" -noout -fingerprint -sha256)
+  ca_fingerprint="${ca_fingerprint#*=}"
+  ca_fingerprint="${ca_fingerprint//:/}"
+  ca_fingerprint="${(L)ca_fingerprint}"
+  [[ "$ca_fingerprint" == "$SUPABASE_CA_SHA256" ]] \
+    || die 'embedded Supabase CA fingerprint verification failed'
+  ca_fingerprint=''
+  db_conninfo="${PROD_DB_CONNINFO} sslrootcert=${TEMP_CA_FILE}"
+
+  resolve_alias 'prod-db'
+  read_keychain_secret
+
+  local exit_code=0
+  local probe_output=''
+  if probe_output=$(
+    unset PGAPPNAME PGCHANNELBINDING PGCLIENTENCODING PGCONNECT_TIMEOUT PGDATABASE
+    unset PGGSSLIB PGHOST PGHOSTADDR PGLOADBALANCEHOSTS PGOPTIONS PGPASSFILE PGPASSWORD
+    unset PGPORT PGREQUIREAUTH PGSERVICE PGSERVICEFILE PGSSLCERT PGSSLCOMPRESSION
+    unset PGSSLCRL PGSSLCRLDIR PGSSLKEY PGSSLMAXPROTOCOLVERSION PGSSLMINPROTOCOLVERSION
+    unset PGSSLMODE PGSSLNEGOTIATION PGSSLROOTCERT PGSSLSNI PGTARGETSESSIONATTRS PGUSER
+    unset PSQLRC
+    unset DYLD_FALLBACK_FRAMEWORK_PATH DYLD_FALLBACK_LIBRARY_PATH DYLD_FRAMEWORK_PATH
+    unset DYLD_INSERT_LIBRARIES DYLD_LIBRARY_PATH SSLKEYLOGFILE
+    export PGPASSWORD="$SECRET_VALUE"
+    export PSQL_HISTORY='/dev/null'
+    "$PSQL_BIN" \
+      --no-psqlrc \
+      --no-password \
+      --tuples-only \
+      --no-align \
+      --set ON_ERROR_STOP=1 \
+      --dbname "$db_conninfo" \
+      --command 'select 1;'
+  ); then
+    exit_code=0
+  else
+    exit_code=$?
+  fi
+  clear_secret
+  cleanup_temp_ca || die 'temporary Supabase CA cleanup failed'
+  [[ -z "$TEMP_CA_FILE" ]] || die 'temporary Supabase CA cleanup state is inconsistent'
+  (( exit_code == 0 )) || return "$exit_code"
+  [[ "$probe_output" == '1' ]] || die 'Production DB probe returned an unexpected result'
+  probe_output=''
+  print -r -- 'db-probe-ok: select-1=1'
+}
+
+command_cron_request() {
+  (( $# == 1 )) || die 'cron-request requires exactly one URL'
+  local url="$1"
+  [[ "$url" == 'https://hair-cr-mvibes.vercel.app/api/cron/supabase-keepalive' ]] \
+    || die 'cron-request URL is outside the approved host/path allowlist'
+
+  resolve_alias 'vercel-cron'
+  read_keychain_secret
+
+  local curl_exit=0
+  local response_metadata=''
+  local response_body=''
+  local http_status=''
+  local content_type=''
+
+  TEMP_HTTP_BODY=$("$MKTEMP_BIN" '/tmp/haircrm-cron-body.XXXXXX')
+  if response_metadata=$(
+    unset ALL_PROXY CURL_CA_BUNDLE HTTPS_PROXY HTTP_PROXY NO_PROXY SSL_CERT_DIR SSL_CERT_FILE
+    unset all_proxy https_proxy http_proxy no_proxy SSLKEYLOGFILE
+    print -r -- "Authorization: Bearer ${SECRET_VALUE}" | "$CURL_BIN" \
+      -q \
+      --silent \
+      --show-error \
+      --connect-timeout 10 \
+      --max-time 30 \
+      --max-filesize 1024 \
+      --noproxy '*' \
+      --proto '=https' \
+      --header @- \
+      --output "$TEMP_HTTP_BODY" \
+      --write-out $'%{http_code}\n%{content_type}' \
+      --url "$url"
+  ); then
+    curl_exit=0
+  else
+    curl_exit=$?
+  fi
+  clear_secret
+
+  [[ "$response_metadata" == *$'\n'* ]] || {
+    cleanup_temp_http_body || die 'temporary Cron response cleanup failed'
+    (( curl_exit == 0 )) || die "Cron request transport failed with curl status $curl_exit"
+    die 'Cron response metadata is malformed'
+  }
+  http_status="${response_metadata%%$'\n'*}"
+  content_type="${response_metadata#*$'\n'}"
+  response_metadata=''
+
+  if [[ "$http_status" == [1-5][0-9][0-9] && "$http_status" != '200' ]]; then
+    cleanup_temp_http_body || die 'temporary Cron response cleanup failed'
+    die "Cron request returned HTTP $http_status"
+  fi
+  if (( curl_exit != 0 )); then
+    cleanup_temp_http_body || die 'temporary Cron response cleanup failed'
+    die "Cron request transport failed with curl status $curl_exit"
+  fi
+  [[ "$http_status" == '200' ]] || {
+    cleanup_temp_http_body || die 'temporary Cron response cleanup failed'
+    die 'Cron response HTTP status is malformed'
+  }
+  if [[ "$content_type" != 'application/json' && "$content_type" != 'application/json;'* ]]; then
+    cleanup_temp_http_body || die 'temporary Cron response cleanup failed'
+    die 'Cron response content type is not application/json'
+  fi
+  content_type=''
+
+  if ! response_body=$("$CAT_BIN" "$TEMP_HTTP_BODY"); then
+    cleanup_temp_http_body || die 'temporary Cron response cleanup failed'
+    die 'Cron response body could not be read'
+  fi
+  cleanup_temp_http_body || die 'temporary Cron response cleanup failed'
+  [[ "$response_body" == '{"ok":true}' ]] || {
+    response_body=''
+    die 'Cron response body is not the expected success payload'
+  }
+  response_body=''
+  print -r -- 'cron-request-ok: status=200 payload=ok'
+}
+
+command_self_test() {
+  (( $# == 0 )) || die 'self-test takes no arguments'
+
+  local canary_service='hairCRMvibes-keychain-canary'
+  local canary_account="self-test-${UID}"
+  local canary_value='haircrm-keychain-public-canary-v1'
+  local observed=''
+  local canary_created=0
+  local index
+
+  cleanup_canary() {
+    if (( canary_created == 1 )); then
+      "$SECURITY_BIN" delete-generic-password \
+        -s "$canary_service" \
+        -a "$canary_account" \
+        "$LOGIN_KEYCHAIN" >/dev/null 2>&1 || true
+      canary_created=0
+    fi
+  }
+
+  trap cleanup_canary EXIT
+  trap 'cleanup_canary; exit 130' INT TERM HUP
+
+  if keychain_item_exists "$canary_service" "$canary_account" 'self-test-canary'; then
+    observed=$("$SECURITY_BIN" find-generic-password \
+      -s "$canary_service" \
+      -a "$canary_account" \
+      -w \
+      "$LOGIN_KEYCHAIN")
+    [[ "$observed" == "$canary_value" ]] \
+      || die 'reserved self-test account contains an unexpected value'
+    observed=''
+    "$SECURITY_BIN" delete-generic-password \
+      -s "$canary_service" \
+      -a "$canary_account" \
+      "$LOGIN_KEYCHAIN" >/dev/null
+  fi
+
+  "$SECURITY_BIN" add-generic-password \
+    -a "$canary_account" \
+    -s "$canary_service" \
+    -T "$SECURITY_BIN" \
+    -w "$canary_value" >/dev/null
+  canary_created=1
+
+  for (( index = 1; index <= 10; index++ )); do
+    observed=$("$SECURITY_BIN" find-generic-password \
+      -s "$canary_service" \
+      -a "$canary_account" \
+      -w \
+      "$LOGIN_KEYCHAIN")
+    [[ "$observed" == "$canary_value" ]] || die 'self-test read mismatch'
+    observed=''
+  done
+  canary_value=''
+
+  cleanup_canary
+  if keychain_item_exists "$canary_service" "$canary_account" 'self-test-canary'; then
+    die 'self-test canary cleanup failed'
+  fi
+
+  trap - EXIT INT TERM HUP
+  print -r -- 'self-test-ok: repeated-read=10 cleanup=ok'
+}
+
+(( $# >= 1 )) || {
+  usage
+  exit 2
+}
+
+command_name="$1"
+shift
+
+case "$command_name" in
+  help|-h|--help) usage ;;
+  *)
+    assert_login_keychain_default
+    case "$command_name" in
+      status) command_status "$@" ;;
+      store) command_store "$@" ;;
+      probe) command_probe "$@" ;;
+      delete) command_delete "$@" ;;
+      db-probe) command_db_probe "$@" ;;
+      cron-request) command_cron_request "$@" ;;
+      self-test) command_self_test "$@" ;;
+      *) die "unknown command: $command_name" ;;
+    esac
+    ;;
+esac
