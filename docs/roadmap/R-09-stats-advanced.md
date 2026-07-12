@@ -2,7 +2,7 @@
 
 ## 상태
 - Planned (metric contract prepared; implementation not started)
-- 구현 브랜치: `codex/r09-stats-advanced` (R-08 완료 후 최신 `origin/main`에서 별도 clean worktree로 생성)
+- 구현 브랜치: `codex/r09-stats-advanced` (최신 `origin/main`에서 별도 clean worktree로 생성)
 - 최종 업데이트: 2026-07-12
 
 ## 목표
@@ -13,8 +13,9 @@
 ## 현재 구현 근거
 - `/stats`는 브라우저에서 해당 월 `appointments.*`와 `customers(id, name)`을 조회한 뒤 JavaScript로 건수·완료율·취소율·최근 고객을 계산합니다.
 - 현재 `appointments` status는 `confirmed`, `completed`, `cancelled` 세 값뿐이며 `no-show` 상태는 없습니다.
-- Production과 `origin/main`에는 아직 가격 snapshot이 없어 과거 매출과 객단가를 신뢰성 있게 계산할 수 없습니다. R-08 release candidate branch에는 컬럼과 저장 경계가 로컬 검증됐지만 main/live에는 적용되지 않았습니다.
-- 따라서 R-08 Production 완료와 live snapshot 검증이 R-09 구현의 필수 선행조건입니다.
+- R-08 가격 snapshot 컬럼과 저장 경계는 `main@01440b6`과 live migration 10개에 반영됐고, live transactional role/snapshot smoke를 통과했습니다.
+- 기존 서비스 4건과 예약 7건은 no-backfill 원칙에 따라 가격·서비스 FK가 NULL입니다. R-09는 이를 데이터 품질 상태로 처리하며 현재 가격으로 추정하지 않습니다.
+- R-08 Production 선행조건은 충족됐고, 재방문율 세부 사업 정의와 owner/staff 통계 권한 매트릭스가 R-09 구현 전 결정 항목입니다.
 
 ## 지표 계약
 
@@ -84,5 +85,5 @@
 
 ## 선행조건과 다음 단계
 - R-04 KST 날짜 유틸은 main에 반영됐습니다.
-- main에 통합되지 않은 release candidate만으로 R-08 완료를 간주하지 않습니다. R-08 Production 완료와 `price_snapshot_krw` live 저장 경계 검증 전에는 R-09 구현을 시작하지 않습니다.
+- R-08 Production 완료와 `price_snapshot_krw` live 저장 경계 검증을 마쳤습니다.
 - 구현 시작 시 remote `main` SHA를 재확인하고 최신 `origin/main`에서 `codex/r09-stats-advanced` clean worktree를 별도로 만듭니다.

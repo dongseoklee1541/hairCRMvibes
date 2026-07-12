@@ -1,11 +1,11 @@
 # Phase 2 Execution Prompt
 
-아래 프롬프트는 R-08 release candidate의 Ready PR 통합·release 준비를 새 Codex 세션에서 이어갈 때 사용합니다.
+아래 프롬프트는 R-08 Production 완료 이후 R-09 통계 고도화를 별도 작업으로 시작할 때 사용합니다.
 
 ```text
-/goal codex/r08-service-master의 Ready PR #16을 재감사하고 merge·release 순서를 확정합니다. R-09는 착수하지 않습니다.
+/goal R-08 Production 완료 근거를 재확인하고 R-09 통계 고도화의 데이터·권한·KST 집계 계약을 확정한 뒤 구현합니다. R-06~R-08은 재구현하지 않습니다.
 
-작업 디렉터리: /Users/idongseog/workspace/hairCRMvibes-r08-service-master
+읽기 전용 착수 디렉터리: /Users/idongseog/workspace/hairCRMvibes
 
 반드시 먼저 읽으세요.
 
@@ -19,57 +19,50 @@
 - docs/operations/supabase-free-keepalive.md
 - docs/operations/local-keychain-secrets.md
 
-2026-07-12 인계 기준은 다음과 같지만, 시작할 때 읽기 전용으로 재확인하세요.
+2026-07-12 release 기록은 다음과 같지만, 시작할 때 GitHub·Supabase·canonical public endpoint에서 읽기 전용으로 재확인하세요.
 
-- PR #15는 merge됐고 최신 origin/main은 a7a4186e76c9225c9273fa8474cea27440d36d40입니다.
-- Production 애플리케이션 release는 여전히 main@16157f89976e41f5218377712d5d77026bc14417입니다. PR #14/#15는 문서 변경이므로 구분합니다.
-- R-08 branch는 codex/r08-service-master이며 위 origin/main SHA에서 만든 clean worktree입니다.
-- R-08 branch는 Ready PR #16으로 게시됐습니다. commit·push·PR 상태는 GitHub에서 읽기 전용으로 재확인하고 기존 worktree나 검증 산출물을 버리거나 새 branch/worktree로 다시 만들지 마세요.
-- live Supabase migration은 9개입니다. 20260712093510_r08_service_master.sql은 로컬 10번째 후보이며 live에 적용하지 않았습니다.
-- Production/Preview 배포, 환경변수 변경, 실제 로그인·고객·예약 데이터 smoke를 수행하지 않았습니다.
-- Preview Supabase 격리는 기존 공유 기록과 env 제거 인계가 충돌해 계속 확인 필요입니다.
+- R-08 PR #16은 merge됐고 애플리케이션 release는 `main@01440b6c4e3386c26a60ba786dacc90fa6d95223`입니다.
+- Supabase live migration은 local filename과 같은 `20260712093510_r08_service_master`를 포함한 10개입니다.
+- live R-08 컬럼 4개, trigger 함수 3개, snapshot/default guard, FK/index, explicit grant/RLS를 확인했습니다.
+- 기존 고객 5건·예약 7건·서비스 4건의 서비스 가격/default/service FK/price snapshot은 no-backfill 원칙에 따라 NULL로 유지됐습니다.
+- `supabase/tests/r08_service_master.sql`을 live 단일 transaction에서 실행해 owner/staff/anon, 0원/NULL, snapshot 불변, hard delete, 상태 전환과 기본 서비스 guard를 검증했고 synthetic residue는 0건입니다.
+- Vercel Production deployment `6N4gbJURzr8GX4omNErBZEA8VRzQ`가 성공했고 canonical 공개 route/PWA asset 200, Cron 무인증 401, 네 route의 R-08 bundle marker를 확인했습니다.
+- Vercel connector 계정에서 대상 프로젝트가 보이지 않아 환경변수·Runtime log는 확인하지 않았습니다. Chrome fallback이나 설정 변경을 시도하지 마세요.
+- 실제 로그인 owner/staff browser smoke와 Preview Supabase 격리는 후속 운영 검증이며 R-09 코드 착수의 blocker는 아닙니다.
+- 기존 R-07/R-08 checkout과 모든 `.playwright-cli/`, `output/playwright/**`, `supabase/.temp/`, disposable DB 디렉터리는 삭제·이동·stage하지 마세요.
 
-현재 R-08 로컬 구현 범위:
+첫 응답에서는 파일·Git index·브랜치·worktree·원격·DB·Vercel을 변경하지 말고 AGENTS.md 형식의 Implementation Plan만 제시하세요. 승인 후 최신 `origin/main`에서 `codex/r09-stats-advanced` branch와 별도 clean worktree를 만들고 아래 범위만 진행하세요.
 
-- salon_service_defaults.price_krw nullable integer KRW; NULL과 0원 구분
-- salon_operation_settings.default_service_id nullable active-service FK; 이름 추정 backfill 없음
-- appointments.service_id, price_snapshot_krw nullable snapshot 컬럼; 기존 service/duration_minutes 유지
-- DB BEFORE trigger 기반 이름·가격 snapshot, 활성 서비스, 연결 해제, 신규 상태, 기본 서비스 invariant 강제
-- owner create/update/deactivate/reactivate, staff read, authenticated hard delete 차단, anon 차단
-- 설정·새 예약·예약 수정·고객 완료 이력 UI와 pencil-hairshopcrm.pen 4개 R-08 frame
-- migration, 수동 rollback, schema.sql, supabase/tests/r08_service_master.sql
-- future-todo.md와 roadmap SSOT의 local verified/release pending 경계
+Goals:
+- 브라우저가 `appointments.*`와 고객명을 대량 조회해 집계하는 현재 `/stats` 구조를 aggregate RPC 또는 최소 권한 `security_invoker` view 기반으로 교체
+- 사용자 선택 KST 시작일·종료일을 서버 집계 경계로 사용
+- 매출, 유상 완료 예약 객단가, 가격 미설정 완료 예약 품질 지표, 재방문율을 문서 계약대로 구현
+- owner/staff/anon 권한과 반환 column을 최소화하고 고객 이름·전화번호·메모·원본 예약 목록을 통계 응답에서 제외
+- Pencil SSOT를 먼저 갱신하고 390x844·360x800에서 loading/error/empty/partial-quality 상태를 검증
 
-로컬 검증 인계:
+Metric contract:
+- 매출: `status='completed' AND price_snapshot_krw IS NOT NULL`만 합산. 0원은 합계에 포함하되 유상 객단가에서는 제외
+- 객단가: `status='completed' AND price_snapshot_krw > 0`인 유상 완료 예약 매출 합계 / 해당 예약 건수
+- 가격 미설정: completed이면서 `price_snapshot_krw IS NULL`인 건수와 비율을 별도 표시하고 추정 backfill 금지
+- no-show: 현재 상태에 없으므로 신설하거나 임의 집계하지 않음
+- 재방문율 권장안: 선택 KST 기간 내 완료 예약 고객 중 같은 기간 완료 예약 2건 이상 고객 비율. 첫 방문 제외·관찰 기간은 사업 결정 사항으로 명시
+- 시술별 집계: 예약 당시 text `service`와 `price_snapshot_krw` snapshot 기준. 현재 master 이름·가격으로 과거 재분류 금지
 
-- PostgreSQL 17에서 migration 10개 fresh replay, R-07/R-08 smoke, rollback/reapply 통과
-- migration 1~9에 synthetic legacy fixture를 넣은 뒤 10번째 후보를 적용해 서비스/가격/default FK 무추정 backfill 확인
-- migration DB와 schema.sql fresh DB public catalog semantic diff 0
-- 기본값 변경과 서비스 비활성화의 2-session 경쟁을 양쪽 선행 순서로 각 3회 실행해 FINAL_INVARIANT_OK 확인
-- bundled Node npm run build 성공, lint/typecheck script는 없음
-- 합성 Auth/Data API만 사용한 Production 모드 Playwright 390x844/360x800 smoke와 console 0건
-- 360px 달력 day cell 44x44 실측
-- PWA service worker active, offline fallback, manifest/SW/offline/icons 200, 민감 document/data cache 0건
-- Pencil R-08 frame 4개 layout problem 0건과 .pen hash 변경
+Implementation decisions required in Plan:
+1. aggregate RPC 권장안과 `security_invoker` view 대안 비교
+2. owner 전용 매출인지 owner/staff 공통인지 권한 매트릭스 확정
+3. KST inclusive date 범위와 empty denominator 처리
+4. SQL fixture에서 completed/confirmed/cancelled × 양수/0/NULL 가격, 재방문 0/1/2회 경계 검증
+5. PUBLIC·anon execute 회수, `auth.uid()`/role 검사, 고정 `search_path`, 최소 반환 column 검증
+6. 현재 `/stats` raw query 제거와 mobile UI/Pencil before-after 검증
+7. migration/schema/rollback 동기화, fresh replay, R-07/R-08 회귀, build/PWA/cache 검증
 
-안전 경계:
+Non-Goals:
+- 기존 서비스·예약 가격 또는 service_id 추정 backfill
+- no-show 신설, 할인/쿠폰/부가세/환불/원가/이익/다중통화
+- 고객별 원본·이름·전화번호·메모를 통계 API/UI에 제공
+- R-08 서비스 마스터 재구현 또는 live 실데이터 변경
+- Preview/Production 환경변수·Keychain·Vercel 설정 변경
 
-- 기존 R-07 checkout과 모든 worktree의 .playwright-cli/, output/playwright/**, supabase/.temp/를 삭제·이동·stage하지 마세요.
-- 현재 R-08 worktree의 새 Playwright/Pencil 산출물도 검증 근거이므로 정리하지 마세요. stage 대상은 명시적으로 allowlist를 확정합니다.
-- 다른 세션이 같은 R-08 worktree를 변경 중이면 쓰기를 중단하고 충돌 여부부터 확인하세요.
-- Preview/Production 환경변수, Keychain, Vercel 설정, live DB, 실제 고객·예약 데이터에 접근하거나 변경하지 마세요.
-- R-06/R-07을 재구현하지 말고 R-09 기능·aggregate RPC/UI를 시작하지 마세요.
-
-첫 응답에서는 파일·Git index·원격·DB·Vercel을 변경하지 말고 AGENTS.md 형식의 Implementation Plan만 제시하세요. Plan에는 다음을 포함하세요.
-
-1. 현재 git status/diff, open Ready PR, origin/main base와 PR head SHA를 확인하는 방법
-2. migration/schema/rollback/RLS/trigger/writer 계약 재리뷰와 no-backfill 근거 확인
-3. fresh replay, R-07/R-08, rollback/reapply, schema semantic diff 재현 범위
-4. build, 390x844/360x800, PWA/offline/cache, Pencil persistence 재확인 범위
-5. SSOT의 release candidate·integration/live pending과 live 9개 경계를 유지하는 방법
-6. PR review/merge, live migration, Production deploy를 서로 분리하는 승인·rollback 계획
-7. R-08 Production 완료 전 R-09 미착수를 유지하는 방법
-
-문서와 구현의 불일치를 발견하면 local verified를 유지하지 말고 사실대로 In Progress와 blocker를 기록하세요.
-PR merge/live migration/Production deploy는 각각 승인된 범위 밖에서 실행하지 마세요.
+문서와 실제 근거가 충돌하면 R-09를 구현하지 말고 blocker와 `확인 필요`를 먼저 SSOT에 기록하세요. stage/commit/push/PR/merge/live migration/deploy는 승인된 범위와 검증 gate를 분리하세요.
 ```

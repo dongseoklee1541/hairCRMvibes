@@ -1,9 +1,9 @@
 # R-08 Service Master
 
 ## 상태
-- Release Candidate (PR #16 Ready; live pending)
+- Done (production deployed; live transactional smoke verified)
 - 구현 브랜치: `codex/r08-service-master`, base `origin/main@a7a4186e76c9225c9273fa8474cea27440d36d40` (PR #15 merge)
-- 통합 PR: PR #16 Ready. live migration·Production 배포·실사용자 smoke는 수행하지 않았습니다.
+- 통합 PR: PR #16 merge `main@01440b6c4e3386c26a60ba786dacc90fa6d95223`
 - 최종 업데이트: 2026-07-12
 
 ## 목표
@@ -59,12 +59,12 @@
 - `/appointments`: 서비스를 실제로 변경할 때만 `service_id`를 보내고 A→B→A 복귀 시 원래 snapshot을 복원합니다.
 - `/customers/[id]`: 완료 이력을 활성 마스터로 기록하거나, 서비스 ID와 가격이 없는 자유입력 이력으로 기록할 수 있습니다.
 
-## Non-Goals
+## 구현·release Non-Goals
 - 기존 예약 가격·서비스 ID 추정 또는 매출 backfill
 - 할인/쿠폰/부가세/원가/다중통화/결제·정산 기능
 - R-09 통계 UI 또는 aggregate RPC 구현
 - 새 `services` 테이블의 선제 생성
-- live Supabase migration, Production/Preview 배포·환경변수 변경, 실제 로그인·실데이터 smoke
+- Preview 배포·환경변수 변경, 실제 로그인·실데이터 smoke
 
 ## 로컬 검증 결과
 - PostgreSQL 17 disposable DB에서 forward migration 10개 fresh replay, R-07/R-08 smoke, R-08 rollback/reapply를 통과했습니다.
@@ -77,8 +77,18 @@
 - PWA는 활성 service worker, offline fallback, manifest/SW/offline/icons HTTP 200, Supabase/API/고객·예약 document cache 0건을 확인했습니다.
 - Pencil SSOT에는 설정, 새 예약, 예약 수정, 완료 이력 4개 R-08 frame을 반영했고 각 frame의 layout problem 0건과 `.pen` hash 변경을 확인했습니다.
 
+## Production 검증 결과
+- PR #16은 merge commit `01440b6c4e3386c26a60ba786dacc90fa6d95223`으로 main에 통합됐습니다.
+- live migration은 local filename과 같은 `20260712093510_r08_service_master`를 포함한 10개입니다. connector가 처음 생성한 실행시각 version은 SQL 재실행 없이 해당 단일 history row만 local version으로 교정했습니다.
+- live에는 R-08 컬럼 4개, trigger 함수 3개, snapshot/default guard trigger와 FK/index가 존재합니다. 함수는 `SECURITY INVOKER`, `search_path=public`, anon/authenticated 직접 EXECUTE 차단 상태입니다.
+- 기존 고객 5건·예약 7건·서비스 4건에서 서비스 가격, 기본 서비스 ID, 예약 서비스 ID·가격 snapshot은 모두 NULL로 유지돼 추정 backfill이 없었습니다.
+- `supabase/tests/r08_service_master.sql`을 live 단일 transaction으로 실행해 owner/staff/anon, hard delete, snapshot, 0원/NULL, 상태 전환, FK와 기본 서비스 guard를 검증했고 전체 fixture를 rollback했습니다. synthetic auth/customer/service/appointment residue는 모두 0건입니다.
+- advisor에는 R-08로 새로 생긴 security warning이 없습니다. singleton 설정 FK의 미인덱스와 새 appointment 서비스 index 미사용은 초기 상태의 performance INFO로 후속 관찰하며, 기존 서비스 manage/read 중복 policy warning은 R-08 정책 분리 후 제거됐습니다.
+- Vercel Production deployment `6N4gbJURzr8GX4omNErBZEA8VRzQ`가 merge SHA로 성공했습니다. canonical `/`, `/settings`, `/appointments/new`, manifest/SW/offline/favicon/192·512 icon은 200, Cron 무인증은 401이며 네 route의 JS bundle에서 R-08 고유 marker를 확인했습니다.
+- Vercel connector 계정에는 대상 프로젝트가 표시되지 않아 환경변수·Runtime log는 확인하지 않았고 Chrome fallback이나 설정 변경도 수행하지 않았습니다.
+
 ## 완료 경계와 다음 단계
-- 로컬 구현·검증 게이트는 충족했지만 main에 아직 통합되지 않았고 live migration은 9개이므로 `Done`으로 표시하지 않습니다.
-- Production 완료는 PR #16 merge, 10번째 live migration, Production 배포, owner/staff 권한·예약 snapshot smoke가 끝난 뒤에만 확정합니다.
+- main 통합, exact live migration, Production 배포, live transactional owner/staff/anon·snapshot smoke와 public bundle 검증을 완료해 R-08을 `Done`으로 확정합니다.
+- 실제 로그인 owner/staff browser smoke와 Preview Supabase 격리 확인은 완료 근거와 분리한 후속 운영 검증입니다.
 - 기본 서비스 invariant의 순차 회귀와 2-session 경쟁은 통과했습니다. 더 큰 동시 부하 시험은 Production 완료 필수조건이 아니라 후속 성능 검증으로 분리합니다.
-- R-08 Production 완료와 가격 snapshot live 검증 전에는 R-09를 구현하지 않습니다.
+- R-09는 최신 `origin/main`의 별도 clean worktree와 Plan에서 시작합니다.
