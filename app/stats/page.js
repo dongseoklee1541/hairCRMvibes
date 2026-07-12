@@ -1,309 +1,322 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import Link from 'next/link';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  TrendingUp,
-  TrendingDown,
-  Calendar,
-  ChevronRight,
-  User,
-  Loader2,
+  AlertCircle,
   BarChart3,
+  CalendarDays,
+  CheckCircle2,
+  Loader2,
+  RefreshCw,
+  UsersRound,
+  WalletCards,
+  X,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import {
+  differenceInDateKeys,
+  formatKoreanShortDate,
   getKstMonthRange,
-  getRelativeKstDateLabel,
   getTodayKstCalendarParts,
-  getTodayKstDateKey,
 } from '@/lib/dateTime';
 import styles from './page.module.css';
 
-function formatRelativeDate(dateStr) {
-  return getRelativeKstDateLabel(dateStr);
+const currencyFormatter = new Intl.NumberFormat('ko-KR');
+
+function getInitialRange() {
+  const today = getTodayKstCalendarParts();
+  const { startDate, endDate } = getKstMonthRange(today.year, today.monthIndex);
+  return { startDate, endDate };
+}
+
+function formatCurrency(value) {
+  return `${currencyFormatter.format(Number(value) || 0)}원`;
+}
+
+function formatNullableCurrency(value) {
+  return value === null || value === undefined ? '데이터 없음' : formatCurrency(value);
+}
+
+function formatNullableRate(value) {
+  return value === null || value === undefined ? '데이터 없음' : `${Number(value).toFixed(1)}%`;
+}
+
+function normalizeSummary(data) {
+  if (Array.isArray(data)) return data[0] ?? null;
+  return data ?? null;
+}
+
+function validateRange({ startDate, endDate }) {
+  if (!startDate || !endDate) return '시작일과 종료일을 모두 선택해 주세요.';
+  if (endDate < startDate) return '종료일은 시작일보다 빠를 수 없습니다.';
+  if (differenceInDateKeys(endDate, startDate) > 365) {
+    return '조회 기간은 시작일과 종료일을 포함해 최대 366일입니다.';
+  }
+  return '';
 }
 
 export default function StatsPage() {
-  const [appointments, setAppointments] = useState([]);
-  const [activeCustomerCount, setActiveCustomerCount] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const initialRangeRef = useRef(getInitialRange());
+  const requestSequenceRef = useRef(0);
+  const [appliedRange, setAppliedRange] = useState(initialRangeRef.current);
+  const [draftRange, setDraftRange] = useState(initialRangeRef.current);
+  const [summary, setSummary] = useState(null);
+  const [status, setStatus] = useState('loading');
+  const [requestError, setRequestError] = useState('');
+  const [formError, setFormError] = useState('');
+  const [isPeriodOpen, setIsPeriodOpen] = useState(false);
 
-  const today = getTodayKstCalendarParts();
-  const currentMonth = today.monthIndex;
-  const currentYear = today.year;
-  const monthLabel = `${today.month}월`;
+  const fetchSummary = useCallback(async (range) => {
+    const requestId = ++requestSequenceRef.current;
+    setStatus('loading');
+    setRequestError('');
 
-  const fetchData = useCallback(async () => {
-    try {
-      setLoading(true);
-
-      // 이번 달 시작/끝 날짜
-      const { startDate: firstDay, endDate: lastDay } = getKstMonthRange(currentYear, currentMonth);
-
-      // 이번 달 예약 가져오기
-      const { data: apptData, error: apptError } = await supabase
-        .from('appointments')
-        .select('*, customers(id, name)')
-        .gte('date', firstDay)
-        .lte('date', lastDay)
-        .order('date', { ascending: false });
-
-      if (apptError) throw apptError;
-
-      // 보관되지 않은 활성 고객 수만 집계합니다. 과거 예약의 고객 join은 위 쿼리에서 유지합니다.
-      const { count: customerCount, error: custError } = await supabase
-        .from('customers')
-        .select('*', { count: 'exact', head: true })
-        .is('archived_at', null);
-
-      if (custError) throw custError;
-
-      setAppointments(apptData || []);
-      setActiveCustomerCount(customerCount || 0);
-    } catch (error) {
-      console.error('Error fetching stats:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, [currentYear, currentMonth]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  // ── 통계 계산 ──
-  const stats = useMemo(() => {
-    const todayKey = getTodayKstDateKey();
-    const todayAppts = appointments.filter((a) => a.date === todayKey);
-    const completed = appointments.filter((a) => a.status === 'completed');
-    const cancelled = appointments.filter((a) => a.status === 'cancelled');
-
-    // 이번 달 고유 고객 수
-    const uniqueCustomerIds = new Set(appointments.map((a) => a.customer_id));
-
-    const completionRate =
-      appointments.length > 0
-        ? Math.round((completed.length / appointments.length) * 100)
-        : 0;
-    const cancellationRate =
-      appointments.length > 0
-        ? Math.round((cancelled.length / appointments.length) * 100)
-        : 0;
-
-    // 서비스별 통계
-    const serviceMap = {};
-    appointments.forEach((a) => {
-      const svc = a.service || '기타';
-      serviceMap[svc] = (serviceMap[svc] || 0) + 1;
+    const { data, error } = await supabase.rpc('get_stats_summary', {
+      p_start_date: range.startDate,
+      p_end_date: range.endDate,
     });
 
-    const serviceRanking = Object.entries(serviceMap)
-      .map(([name, count]) => ({
-        name,
-        count,
-        percentage: Math.round((count / appointments.length) * 100),
-      }))
-      .sort((a, b) => b.count - a.count);
+    if (requestId !== requestSequenceRef.current) return;
 
-    // 최근 완료된 예약 (고객 포함)
-    const recentVisits = appointments
-      .filter((a) => a.status === 'completed' && a.customers)
-      .sort((a, b) => b.date.localeCompare(a.date))
-      .slice(0, 5);
+    if (error) {
+      console.error('Error fetching stats summary:', error);
+      setSummary(null);
+      setRequestError('통계를 불러오지 못했습니다. 연결 상태를 확인하고 다시 시도해 주세요.');
+      setStatus('error');
+      return;
+    }
 
-    return {
-      todayCount: todayAppts.length,
-      monthlyCustomers: uniqueCustomerIds.size,
-      completionRate,
-      cancellationRate,
-      serviceRanking,
-      recentVisits,
-      totalAppointments: appointments.length,
+    const nextSummary = normalizeSummary(data);
+    if (!nextSummary) {
+      setSummary(null);
+      setRequestError('통계 응답을 확인할 수 없습니다. 잠시 후 다시 시도해 주세요.');
+      setStatus('error');
+      return;
+    }
+
+    setSummary(nextSummary);
+    setStatus('success');
+  }, []);
+
+  useEffect(() => {
+    fetchSummary(initialRangeRef.current);
+    return () => {
+      requestSequenceRef.current += 1;
     };
-  }, [appointments]);
+  }, [fetchSummary]);
 
-  const rankStyles = [styles.rank1, styles.rank2, styles.rank3];
-  const barColors = ['var(--accent-primary)', 'var(--accent-warm)', 'var(--text-tertiary)'];
+  const openPeriodSheet = () => {
+    setDraftRange(appliedRange);
+    setFormError('');
+    setIsPeriodOpen(true);
+  };
 
-  if (loading) {
-    return (
-      <>
-        <header className={styles.header}>
-          <div>
-            <h1 className="heading-xl">통계</h1>
-          </div>
-        </header>
-        <div className="page-content">
-          <div className="flex-center" style={{ padding: '80px 0' }}>
-            <Loader2 size={28} className="animate-spin text-tertiary" />
-          </div>
-        </div>
-      </>
-    );
-  }
+  const closePeriodSheet = () => {
+    setFormError('');
+    setIsPeriodOpen(false);
+  };
+
+  const applyPeriod = (event) => {
+    event.preventDefault();
+    const validationError = validateRange(draftRange);
+    if (validationError) {
+      setFormError(validationError);
+      return;
+    }
+
+    const nextRange = { ...draftRange };
+    setAppliedRange(nextRange);
+    setIsPeriodOpen(false);
+    setFormError('');
+    fetchSummary(nextRange);
+  };
+
+  const retry = () => fetchSummary(appliedRange);
+  const completedCount = Number(summary?.completed_count || 0);
+  const missingPriceCount = Number(summary?.missing_price_completed_count || 0);
+  const zeroPriceCount = Number(summary?.zero_price_completed_count || 0);
+  const services = Array.isArray(summary?.service_breakdown) ? summary.service_breakdown : [];
+  const isEmpty = status === 'success' && completedCount === 0;
 
   return (
     <>
-      {/* Header */}
       <header className={styles.header}>
-        <h1 className="heading-xl">통계</h1>
-        <div className={styles.periodButton}>
-          <Calendar size={16} />
-          <span>{monthLabel}</span>
+        <div>
+          <h1 className="heading-xl">통계</h1>
+          <p className={styles.headerHint}>완료된 예약 기준</p>
         </div>
+        <button
+          type="button"
+          className={styles.periodButton}
+          onClick={openPeriodSheet}
+          aria-haspopup="dialog"
+        >
+          <CalendarDays size={17} aria-hidden="true" />
+          <span>{formatKoreanShortDate(appliedRange.startDate)}–{formatKoreanShortDate(appliedRange.endDate)}</span>
+        </button>
       </header>
 
-      <div className="page-content">
-        {/* KPI Cards */}
-        <div className={styles.kpiGrid}>
-          <div
-            className={styles.kpiCard}
-            style={{ animationDelay: '0s' }}
-          >
-            <span className={styles.kpiLabel}>오늘 예약</span>
-            <span className={styles.kpiValue}>{stats.todayCount}건</span>
-            <div className={`${styles.kpiChange} ${styles.kpiChangePositive}`}>
-              <TrendingUp size={14} />
-              <span>오늘</span>
-            </div>
-          </div>
+      <main className="page-content" aria-busy={status === 'loading'}>
+        {status === 'loading' && (
+          <section className={styles.stateCard} aria-live="polite">
+            <Loader2 size={30} className={styles.spinner} aria-hidden="true" />
+            <h2 className="heading-md">통계를 집계하고 있어요</h2>
+            <p className="body-sm text-tertiary">선택한 기간의 완료 예약만 안전하게 계산합니다.</p>
+          </section>
+        )}
 
-          <div
-            className={styles.kpiCard}
-            style={{ animationDelay: '0.05s' }}
-          >
-            <span className={styles.kpiLabel}>활성 고객</span>
-            <span className={styles.kpiValue}>{activeCustomerCount}명</span>
-            <div className={`${styles.kpiChange} ${styles.kpiChangePositive}`}>
-              <TrendingUp size={14} />
-              <span>이번달 {stats.monthlyCustomers}명 방문</span>
-            </div>
-          </div>
+        {status === 'error' && (
+          <section className={`${styles.stateCard} ${styles.errorCard}`} role="alert">
+            <AlertCircle size={34} aria-hidden="true" />
+            <h2 className="heading-md">통계를 불러오지 못했어요</h2>
+            <p className="body-sm">{requestError}</p>
+            <button type="button" className={styles.retryButton} onClick={retry}>
+              <RefreshCw size={17} aria-hidden="true" />
+              다시 시도
+            </button>
+          </section>
+        )}
 
-          <div
-            className={styles.kpiCard}
-            style={{ animationDelay: '0.1s' }}
-          >
-            <span className={styles.kpiLabel}>완료율</span>
-            <span className={styles.kpiValue}>{stats.completionRate}%</span>
-            <div className={styles.progressBar}>
-              <div
-                className={`${styles.progressFill} ${styles.progressGreen}`}
-                style={{ width: `${stats.completionRate}%` }}
-              />
-            </div>
-          </div>
+        {isEmpty && (
+          <section className={styles.stateCard} aria-live="polite">
+            <BarChart3 size={36} className={styles.emptyIcon} aria-hidden="true" />
+            <h2 className="heading-md">완료된 예약이 없습니다</h2>
+            <p className="body-sm text-tertiary">기간을 바꾸거나 예약 상태를 확인해 주세요.</p>
+            <button type="button" className={styles.secondaryButton} onClick={openPeriodSheet}>
+              <CalendarDays size={17} aria-hidden="true" />
+              기간 다시 선택
+            </button>
+          </section>
+        )}
 
-          <div
-            className={styles.kpiCard}
-            style={{ animationDelay: '0.15s' }}
-          >
-            <span className={styles.kpiLabel}>취소율</span>
-            <span className={styles.kpiValue}>{stats.cancellationRate}%</span>
-            <div className={styles.progressBar}>
-              <div
-                className={`${styles.progressFill} ${styles.progressRed}`}
-                style={{ width: `${stats.cancellationRate}%` }}
-              />
-            </div>
-          </div>
-        </div>
+        {status === 'success' && !isEmpty && summary && (
+          <>
+            <section className={styles.kpiGrid} aria-label="핵심 통계">
+              <article className={`${styles.kpiCard} ${styles.kpiPrimary}`}>
+                <span className={styles.kpiIcon}><WalletCards size={18} aria-hidden="true" /></span>
+                <span className={styles.kpiLabel}>매출 합계</span>
+                <strong className={styles.kpiValue}>{formatCurrency(summary.revenue_krw)}</strong>
+                <span className={styles.kpiMeta}>가격 입력 완료 건 합계</span>
+              </article>
 
-        {/* Popular Services */}
-        <section>
-          <div className={styles.sectionHeader}>
-            <h2 className="heading-md">인기 서비스</h2>
-          </div>
-          <div className={styles.serviceList} style={{ marginTop: 16 }}>
-            {stats.serviceRanking.length === 0 ? (
-              <div className={styles.emptyState}>
-                <BarChart3 size={32} className={styles.emptyIcon} />
-                <p className="body-sm text-tertiary">아직 서비스 기록이 없습니다.</p>
-              </div>
-            ) : (
-              stats.serviceRanking.slice(0, 5).map((svc, idx) => (
-                <div
-                  key={svc.name}
-                  className={styles.serviceItem}
-                  style={{ animationDelay: `${0.2 + idx * 0.05}s` }}
-                >
-                  <div className={`${styles.serviceRank} ${rankStyles[idx] || styles.rank3}`}>
-                    {idx + 1}
-                  </div>
-                  <div className={styles.serviceInfo}>
-                    <span className={styles.serviceName}>{svc.name}</span>
-                    <span className={styles.serviceCount}>
-                      {svc.count}건 · 전체의 {svc.percentage}%
-                    </span>
-                  </div>
-                  <div className={styles.serviceMiniBar}>
-                    <div
-                      className={styles.serviceMiniBarFill}
-                      style={{
-                        width: `${svc.percentage}%`,
-                        background: barColors[idx] || barColors[2],
-                      }}
-                    />
-                  </div>
+              <article className={styles.kpiCard}>
+                <span className={styles.kpiLabel}>유료 객단가</span>
+                <strong className={styles.kpiValue}>{formatNullableCurrency(summary.average_ticket_krw)}</strong>
+                <span className={styles.kpiMeta}>유료 완료 {Number(summary.paid_completed_count || 0)}건 기준</span>
+              </article>
+
+              <article className={styles.kpiCard}>
+                <span className={styles.kpiLabel}>완료 예약</span>
+                <strong className={styles.kpiValue}>{completedCount}건</strong>
+                <span className={styles.kpiMeta}>선택 기간 내 완료 처리</span>
+              </article>
+
+              <article className={styles.kpiCard}>
+                <span className={styles.kpiLabel}>재방문 고객률</span>
+                <strong className={styles.kpiValue}>{formatNullableRate(summary.repeat_rate)}</strong>
+                <span className={styles.kpiMeta}>
+                  {Number(summary.repeat_customer_count || 0)}명 / {Number(summary.completed_customer_count || 0)}명
+                </span>
+              </article>
+            </section>
+
+            {missingPriceCount > 0 ? (
+              <section className={styles.qualityWarning} role="status">
+                <AlertCircle size={20} aria-hidden="true" />
+                <div>
+                  <strong>가격 미입력 {missingPriceCount}건은 매출에서 제외됐어요</strong>
+                  <p>
+                    전체 완료의 {formatNullableRate(summary.missing_price_rate)} · 서비스 미연결 {Number(summary.missing_price_without_service_count || 0)}건,
+                    연결 서비스 가격 미입력 {Number(summary.missing_price_with_service_count || 0)}건
+                  </p>
                 </div>
-              ))
-            )}
-          </div>
-        </section>
-
-        {/* Recent Visits */}
-        <section>
-          <div className={styles.sectionHeader}>
-            <h2 className="heading-md">최근 방문 고객</h2>
-          </div>
-          <div className={styles.customerList} style={{ marginTop: 16 }}>
-            {stats.recentVisits.length === 0 ? (
-              <div className={styles.emptyState}>
-                <User size={32} className={styles.emptyIcon} />
-                <p className="body-sm text-tertiary">최근 방문 기록이 없습니다.</p>
-              </div>
+              </section>
             ) : (
-              stats.recentVisits.map((appt, idx) => (
-                <Link
-                  key={appt.id}
-                  href={`/customers/${appt.customer_id}`}
-                  className={styles.customerItem}
-                  style={{ animationDelay: `${0.3 + idx * 0.05}s` }}
-                >
-                  <div
-                    className={styles.customerAvatar}
-                    style={{
-                      background:
-                        idx % 2 === 0
-                          ? 'var(--accent-light)'
-                          : 'var(--accent-warm-light)',
-                    }}
-                  >
-                    <User
-                      size={20}
-                      color={
-                        idx % 2 === 0
-                          ? 'var(--accent-primary)'
-                          : 'var(--accent-warm)'
-                      }
-                    />
-                  </div>
-                  <div className={styles.customerInfo}>
-                    <span className={styles.customerName}>
-                      {appt.customers?.name}
-                    </span>
-                    <span className={styles.customerService}>
-                      {appt.service} · {formatRelativeDate(appt.date)}
-                    </span>
-                  </div>
-                  <ChevronRight size={16} className="text-tertiary" />
-                </Link>
-              ))
+              <section className={styles.qualityComplete} role="status">
+                <CheckCircle2 size={19} aria-hidden="true" />
+                <span>완료 예약의 가격 데이터가 모두 입력되어 있습니다.</span>
+              </section>
             )}
-          </div>
-        </section>
-      </div>
+
+            {zeroPriceCount > 0 && (
+              <p className={styles.zeroPriceNote}>0원 완료 {zeroPriceCount}건은 무료 서비스로 구분하며 유료 객단가에서 제외합니다.</p>
+            )}
+
+            <section>
+              <div className={styles.sectionHeader}>
+                <div>
+                  <h2 className="heading-md">서비스별 성과</h2>
+                  <p className={styles.sectionHint}>완료 건수 상위 5개</p>
+                </div>
+                <UsersRound size={20} className={styles.sectionIcon} aria-hidden="true" />
+              </div>
+              <div className={styles.serviceList}>
+                {services.map((service, index) => (
+                  <article className={styles.serviceItem} key={`${service.service_name}-${index}`}>
+                    <span className={styles.serviceRank}>{index + 1}</span>
+                    <div className={styles.serviceInfo}>
+                      <strong>{service.service_name}</strong>
+                      <span>{Number(service.completed_count || 0)}건 · 매출 {formatCurrency(service.revenue_krw)}</span>
+                    </div>
+                    <div className={styles.serviceMetric}>
+                      <span>유료 객단가</span>
+                      <strong>{formatNullableCurrency(service.average_ticket_krw)}</strong>
+                      {Number(service.missing_price_count || 0) > 0 && (
+                        <em>가격 미입력 {Number(service.missing_price_count)}건</em>
+                      )}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          </>
+        )}
+      </main>
+
+      {isPeriodOpen && (
+        <div className={styles.sheetBackdrop} onMouseDown={closePeriodSheet}>
+          <section
+            className={styles.periodSheet}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="period-sheet-title"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <div className={styles.sheetHandle} aria-hidden="true" />
+            <div className={styles.sheetHeader}>
+              <div>
+                <h2 id="period-sheet-title" className="heading-md">조회 기간 선택</h2>
+                <p className={styles.sheetHint}>한국 표준시 기준 · 최대 366일</p>
+              </div>
+              <button type="button" className={styles.closeButton} onClick={closePeriodSheet} aria-label="기간 선택 닫기">
+                <X size={22} aria-hidden="true" />
+              </button>
+            </div>
+            <form onSubmit={applyPeriod} noValidate>
+              <div className={styles.dateFields}>
+                <label>
+                  <span>시작일</span>
+                  <input
+                    type="date"
+                    value={draftRange.startDate}
+                    onChange={(event) => setDraftRange((current) => ({ ...current, startDate: event.target.value }))}
+                  />
+                </label>
+                <label>
+                  <span>종료일</span>
+                  <input
+                    type="date"
+                    value={draftRange.endDate}
+                    onChange={(event) => setDraftRange((current) => ({ ...current, endDate: event.target.value }))}
+                  />
+                </label>
+              </div>
+              {formError && <p className={styles.formError} role="alert">{formError}</p>}
+              <button type="submit" className={styles.applyButton}>이 기간으로 조회</button>
+            </form>
+          </section>
+        </div>
+      )}
     </>
   );
 }
