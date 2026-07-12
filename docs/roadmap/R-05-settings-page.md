@@ -3,7 +3,7 @@
 ## 상태
 - Done (live verified)
 - 브랜치: `feature/r02-appointment-edit-status` (Phase 1 통합 브랜치)
-- 최종 업데이트: 2026-07-11
+- 최종 업데이트: 2026-07-12
 
 ## 목표
 - 설정 페이지에서 영업시간, 기본 시술, 기본 소요시간을 관리합니다.
@@ -59,4 +59,4 @@
 ## 남은 리스크
 - staff의 `/settings` UI 접근 차단 화면은 이번 세션에서 별도 browser session으로 재검증하지 않았습니다. DB RLS write 차단은 live로 확인했습니다.
 - settings 관련 select 정책은 Supabase advisor에서 multiple permissive policy 경고가 남습니다. 동작 문제는 아니지만 정책 수를 줄이는 후속 정리가 가능합니다.
-- PWA cache가 설정 변경 후 오래된 값을 보여주는지 여부는 R-06 서비스워커/캐시 전략 검증 범위입니다.
+- R-06에서 설정 문서를 NetworkOnly로 고정하고 Cache Storage의 설정 문서 0건을 확인했습니다. 실제 설치본의 service worker update와 고정 URL precache 갱신은 R-06 후속 검증으로 유지합니다.

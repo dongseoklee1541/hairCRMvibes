@@ -63,9 +63,9 @@
 - Pencil 최종 export: `output/playwright/r06-pwa-completion/pencil-verified/mLNRr.png`
 
 ## Production 자산 smoke (2026-07-12)
-- release 기준은 `main@16157f89976e41f5218377712d5d77026bc14417`, canonical은 `https://hair-cr-mvibes.vercel.app`입니다.
-- `/`, `/login`, `/manifest.json`, `/sw.js`, `/offline.html`, `/favicon.ico`, `/icons/icon-192.png`, `/icons/icon-512.png`가 모두 HTTP 200을 반환했습니다.
-- keepalive route는 서비스워커 cache 대상이 아니며 무인증 401, 승인 호출 200, `Cache-Control: no-store`를 확인했습니다.
+- Production 애플리케이션 release 기준은 PR #13 merge `main@16157f89976e41f5218377712d5d77026bc14417`, 2026-07-12 감사 착수 baseline은 PR #14 merge `origin/main@2f915c2e8f7ec7e736a6ee4c315caa03113416ab`입니다. PR #14는 Markdown만 변경했습니다.
+- 이번 문서 감사에서 canonical `https://hair-cr-mvibes.vercel.app`의 `/`, `/login`, `/manifest.json`, `/sw.js`, `/offline.html`, `/favicon.ico`, `/icons/icon-192.png`, `/icons/icon-512.png`가 모두 HTTP 200을 반환함을 재확인했습니다.
+- keepalive route는 이번 감사에서도 무인증 401과 `Cache-Control: no-store`를 반환했습니다. 승인 호출 200은 release 세션 기록이며 이번에는 secret을 사용해 재실행하지 않았습니다.
 - 이번 확인은 Production 자산·route smoke입니다. 실제 설치 prompt, standalone display mode, 기존 설치본의 service worker update UX는 아직 실기기에서 재검증하지 않았습니다.
 
 ## 남은 리스크
