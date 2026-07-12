@@ -3,7 +3,7 @@
 ## 상태
 - Done (live verified)
 - 브랜치: `feature/r02-appointment-edit-status`
-- 최종 업데이트: 2026-07-11
+- 최종 업데이트: 2026-07-12
 
 ## 목표
 - 예약 상세/리스트에서 예약 수정, 취소, 완료/확정 상태 변경을 할 수 있게 합니다.
@@ -63,4 +63,4 @@
 ## 남은 작업
 - 취소 reason 입력은 현재 browser prompt 기반입니다. 기능은 검증됐지만 모바일 UX polish 시 modal/form 컴포넌트로 전환하는 편이 낫습니다.
 - R-03 guard와의 결합은 live smoke로 확인했지만, 예약 수정 시 다양한 edge duration/service 조합은 후속 regression suite로 자동화해야 합니다.
-- PWA install/offline/cache 검증은 R-06 범위로 남깁니다.
+- R-06의 offline/cache 구현과 민감 문서 cache 0건 검증은 완료됐습니다. 실제 기기 install prompt/standalone/기존 설치본 SW update는 R-06의 후속 운영 검증으로 남깁니다.

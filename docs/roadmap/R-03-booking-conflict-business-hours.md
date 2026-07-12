@@ -1,9 +1,9 @@
 # R-03 Booking Conflict And Business Hours
 
 ## 상태
-- Done (live verified)
+- Done (live + fresh replay verified)
 - 브랜치: `feature/r02-appointment-edit-status` (Phase 1 통합 브랜치)
-- 최종 업데이트: 2026-07-11
+- 최종 업데이트: 2026-07-12
 
 ## 목표
 - 같은 시간대의 확정 예약 중복 저장을 DB 레벨에서 차단합니다.

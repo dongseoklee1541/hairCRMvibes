@@ -1,14 +1,15 @@
 # R-07 Customer Edit Delete Dedupe
 
 ## 상태
-- Done (production deployed and verified)
+- Done (production deployed; public endpoint rechecked)
 - 브랜치: `feature/r07-customer-edit-delete-dedupe`
 - 기반 commit: `1ca4494` (`feat(pwa): complete R-06 offline experience`)
 - 최초 R-07 구현 commit: `a2249d7` (`feat(customers): complete R-07 lifecycle and dedupe`)
 - 호환성 보완 commit: `a6551a8` (`fix(customers): preserve legacy memo update compatibility`)
 - Production 검증 기록 commit: `ae7ac3e` (`docs(roadmap): record R-07 production verification`)
 - Keychain 운영 보완 commit: `c8e2307` (`chore(ops): add allowlisted Keychain helper`)
-- release merge: PR #12·#13, `main@16157f89976e41f5218377712d5d77026bc14417`
+- Production 애플리케이션 release: PR #12·#13, `main@16157f89976e41f5218377712d5d77026bc14417`
+- 현재 문서 SSOT: release 기록 문서 PR #14, `origin/main@2f915c2e8f7ec7e736a6ee4c315caa03113416ab`
 - 최종 업데이트: 2026-07-12
 
 ## 목표
@@ -101,26 +102,27 @@
 - PWA cache: `output/playwright/r07-customer-edit-delete-dedupe/20260711_r07_pwa_cache_audit_390x844.png`
 - Pencil: `output/playwright/r07-customer-edit-delete-dedupe/pencil-verified/20260711_r07_merge_result_pencil.png`
 
-## Production DB 검증 (2026-07-12)
-- Phase 1 genesis/기존 R-03 세 version은 SQL을 재실행하지 않고 migration history만 `applied`로 repair했습니다. 이어 `20260711110928_r07_customer_lifecycle_dedupe.sql` 한 개만 migration으로 적용했고, live history 9개가 로컬 forward migration 9개와 exact match임을 확인했습니다.
-- R-07 history row는 name `r07_customer_lifecycle_dedupe`, statements 94개이며 production project는 적용 후에도 `ACTIVE_HEALTHY`를 유지했습니다.
+## Production DB 검증과 현재 감사 (2026-07-12)
+- release 세션에서 Phase 1 genesis/기존 R-03 세 version은 SQL을 재실행하지 않고 migration history만 `applied`로 repair했고 `20260711110928_r07_customer_lifecycle_dedupe.sql` 한 개만 적용했습니다.
+- 이번 감사에서 production project `ACTIVE_HEALTHY`, live/local migration version 9개 일치를 재확인했습니다. 4~8번 live history name에는 repair 전 timestamp suffix가 남아 있으므로 local filename stem까지 같은 `exact match`로 표현하지 않습니다. R-07 history name은 `r07_customer_lifecycle_dedupe`이며 statements 94개는 release 세션 기록입니다.
+- live catalog에서 lifecycle/dedupe RPC 7개와 signature를 확인했습니다. `archive_customer`, `restore_customer`, `anonymize_customer`, `merge_customers`, `undo_customer_merge`는 `SECURITY DEFINER`, `find_customer_duplicates`, `list_customer_duplicate_candidates`는 `SECURITY INVOKER`이고 모두 authenticated EXECUTE=true, anon=false입니다.
+- `customer_merge_events`, `customer_merge_appointment_moves` 두 audit table은 live에 존재하고 RLS가 활성화되어 있습니다. 비식별 count는 고객 5건, 예약 6건, merge event/move 각 0건이며 행·ID·이름·전화번호는 조회하지 않았습니다.
 - 실제 QA owner/staff Auth 세션과 세션 없는 anon client로 Data API/RPC smoke 106개를 통과했습니다. credential, 실제 Auth ID, 고객 이름·전화번호는 출력하지 않았습니다.
 - owner는 기본정보 편집·전화 정규화·서버 `updated_at`, archive/restore, irreversible anonymize, 예약 이력 보존, 정상 merge/audit/undo를 통과했습니다. self/unrelated/archived/anonymized merge, 중복 undo, 고객·예약 hard delete는 의도한 SQLSTATE로 차단됐습니다.
 - staff는 active 고객 등록·편집과 exact phone/name 후보 조회를 통과했고 lifecycle/merge/undo/hard delete는 차단됐습니다. merge audit 두 테이블은 owner-only RLS로 0건을 반환했습니다.
 - anon은 고객 CRUD, audit 조회, lifecycle/dedupe RPC 7개가 모두 차단됐습니다. authenticated RPC EXECUTE 7/7, anon EXECUTE 0/7, 예약 FK `RESTRICT`, audit RLS 2/2도 적용 후 재확인했습니다.
 - smoke fixture는 고유 run tag와 DB 반환 synthetic ID에만 한정했습니다. 첫 cleanup scope assertion이 공백/대소문자 synthetic 이름을 보수적으로 거부해 삭제 전 중단됐고, 동일 ID 집합의 assertion만 보완해 고객 8건·예약 2건·event/mapping 각 1건을 정리했습니다. 최종 residue는 네 테이블 모두 0건이고 production 총계는 smoke 전 baseline과 일치함을 확인했습니다.
 - 최신 point-in-time Advisor는 Security WARN 20건, Performance 17건(4 WARN·13 INFO)입니다. Security의 R-07 증가분은 owner-only 내부 검증을 가진 authenticated `SECURITY DEFINER` RPC 5개와 RLS owner-only audit table GraphQL 노출 2개이며 실제 owner/staff/anon smoke와 exact ACL로 의도된 경계를 확인했습니다. 나머지 hardening과 performance 항목은 R-07과 분리한 backlog로 유지합니다.
-- stacked PR #9~#12와 Keychain 운영 보완 PR #13은 모두 Vercel checks를 통과하고 `main`에 merge됐습니다.
+- stacked PR #9~#12와 Keychain 운영 보완 PR #13은 애플리케이션 release에 포함됐습니다. release 기록 문서 PR #14도 merge됐고 현재 열린 PR은 0건입니다.
 
 ## Production release 결과 (2026-07-12)
 - release 기준은 `main@16157f89976e41f5218377712d5d77026bc14417`입니다. Vercel deployment `5z5MKHSAyxtLrRt6ACF3UZtLBGh7`은 build 성공 후 `Staged` 상태였고, custom domain 할당이 생략돼 Dashboard에서 정확한 merge SHA를 Promote했습니다.
-- canonical `https://hair-cr-mvibes.vercel.app`은 해당 deployment의 `Current` domain입니다. `/`, `/login`, `/manifest.json`, `/sw.js`, `/offline.html`, favicon과 192/512 icon이 모두 HTTP 200을 반환했습니다.
-- Production에는 `SUPABASE_SECRET_KEY`, `CRON_SECRET`이 Sensitive 변수로 존재합니다. Cron Jobs는 Enabled이고 `/api/cron/supabase-keepalive`가 `17 3 * * *`로 등록됐습니다.
-- keepalive는 무인증 `401 + application/json + no-store`, Keychain 승인 호출 `200 + {"ok":true}`를 통과했습니다. Production DB `select 1`도 성공했고 임시 CA/Cron response residue는 0건입니다.
-- Vercel Runtime Logs에서 release smoke 요청의 Warning/Error/Fatal은 각각 0건이었습니다. rollback은 필요하지 않았습니다.
+- release 세션에서 canonical `https://hair-cr-mvibes.vercel.app`을 해당 deployment의 `Current` domain으로 확인했습니다. 이번 감사에서도 `/`, `/login`, `/manifest.json`, `/sw.js`, `/offline.html`, favicon과 192/512 icon이 모두 HTTP 200을 반환했습니다.
+- release 세션 기록상 Production에는 `SUPABASE_SECRET_KEY`, `CRON_SECRET`이 Sensitive 변수로 존재하고 Cron Jobs는 Enabled, `/api/cron/supabase-keepalive`는 `17 3 * * *`로 등록됐습니다. 이번 감사에서는 Vercel connector로 현재 project setting을 조회할 수 없었습니다.
+- keepalive 무인증 `401 + application/json + no-store`는 이번 감사에서 재확인했습니다. Keychain 승인 호출 `200 + {"ok":true}`, Production DB `select 1`, 임시 residue 0건, Runtime Warning/Error/Fatal 0건은 재실행하지 않고 release 세션 근거로 유지합니다. rollback은 필요하지 않았습니다.
 
 ## 남은 리스크
-- Vercel public Supabase env 2개는 각각 Development/Preview/Production을 target하며 세 environment가 동일 Production Supabase 값 세트를 공유합니다. Preview가 Production Supabase를 공유하므로 격리 전 Preview 실제 로그인·데이터 smoke는 금지합니다.
+- Preview가 Production Supabase 값을 공유한다는 기존 문서와 Preview 환경변수를 제거했다는 작업 인계 기록이 충돌합니다. 이번 감사에서 Vercel connector의 project 목록이 비어 있고 환경변수 target/scope를 값 없이 조회하는 수단도 없어 현재 설정은 `확인 필요`입니다. 확인 전 Preview 실제 로그인·데이터 smoke는 금지합니다.
 - 최신 Advisor의 GraphQL/`SECURITY DEFINER`, leaked-password protection, unindexed FK/unused index/multiple permissive policy는 별도 hardening backlog입니다. 실제 권한 회귀는 발견되지 않았지만 설정·성능 개선과 R-07 release를 섞어 즉시 변경하지 않습니다.
 - audit event는 개인정보 snapshot을 남기지 않으므로 비식별화 이후 당시 이름/전화번호를 복구하는 용도로 사용할 수 없습니다. 이는 의도된 privacy 경계입니다.
 - production DB owner/staff/anon 검증은 완료됐습니다. 이번 release에서는 canonical public/PWA/Cron/DB smoke만 반복했으므로 실제 browser owner/staff 시나리오와 install/standalone/service worker update는 후속 검증으로 유지합니다.
