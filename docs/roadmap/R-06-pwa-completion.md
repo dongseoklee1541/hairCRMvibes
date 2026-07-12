@@ -1,9 +1,9 @@
 # R-06 PWA Completion
 
 ## 상태
-- Done (local verified; production smoke pending)
+- Done (production asset smoke verified; install/standalone/update pending)
 - 브랜치: `feature/r06-pwa-completion`
-- 최종 업데이트: 2026-07-11
+- 최종 업데이트: 2026-07-12
 
 ## 목표
 - `next-pwa` 기반 설치 가능 PWA 구성을 완성합니다.
@@ -11,8 +11,8 @@
 - 모바일 재방문 경험과 오프라인/저속 네트워크 상태의 사용자 피드백을 개선합니다.
 
 ## 선행조건
-- Phase 1과 keepalive 커밋 위에 stacked branch로 구현했습니다. main 반영 전에는 R-06만 독립 병합하지 않습니다.
-- Supabase Free keepalive는 `feature/ops-supabase-keepalive`에서 로컬 구현됐으며 production 환경변수/배포/cron 실행 검증은 별도 운영 게이트입니다.
+- Phase 1과 keepalive 커밋 위에 stacked branch로 구현했고 PR #11을 통해 `main`에 반영했습니다.
+- Supabase Free keepalive도 PR #10으로 `main`에 반영됐으며 Production 환경변수·Cron Jobs·실행 검증을 완료했습니다.
 - keepalive route는 `no-store`이며 서비스워커 `/api/**` NetworkOnly 규칙으로 Cache Storage에서 제외했습니다.
 - CRM 데이터 최신성과 개인정보 보호를 우선해 문서/Supabase/API/나머지 런타임 요청을 모두 NetworkOnly로 고정했습니다.
 - 정적 JS/CSS/font, offline fallback, manifest, favicon, 192/512 아이콘만 precache합니다.
@@ -37,7 +37,8 @@
 - [x] `npm audit` 8건(critical 1/high 2/moderate 5)에서 0건으로 감소
 - [x] Pencil SSOT 변경의 실제 `.pen` 파일 persistence 확인
 - [x] 정적 document fallback으로 hydration `#418` 및 실패한 RSC fetch console error 제거
-- [ ] Vercel production 배포 후 install prompt/standalone/서비스워커 update 확인
+- [x] Vercel Production의 manifest/SW/offline/favicon/192·512 icon HTTP 200 확인
+- [ ] 실제 기기의 install prompt/standalone/서비스워커 update 확인
 
 ## 검증 계획
 - bundled Node `npm run build`: 통과
@@ -61,6 +62,12 @@
 - Pencil 최종 export: `output/playwright/r06-pwa-completion/pencil-verified/m2vOg.png`
 - Pencil 최종 export: `output/playwright/r06-pwa-completion/pencil-verified/mLNRr.png`
 
+## Production 자산 smoke (2026-07-12)
+- release 기준은 `main@16157f89976e41f5218377712d5d77026bc14417`, canonical은 `https://hair-cr-mvibes.vercel.app`입니다.
+- `/`, `/login`, `/manifest.json`, `/sw.js`, `/offline.html`, `/favicon.ico`, `/icons/icon-192.png`, `/icons/icon-512.png`가 모두 HTTP 200을 반환했습니다.
+- keepalive route는 서비스워커 cache 대상이 아니며 무인증 401, 승인 호출 200, `Cache-Control: no-store`를 확인했습니다.
+- 이번 확인은 Production 자산·route smoke입니다. 실제 설치 prompt, standalone display mode, 기존 설치본의 service worker update UX는 아직 실기기에서 재검증하지 않았습니다.
+
 ## 남은 리스크
 - `npm audit`는 8건에서 0건으로 감소했습니다. `npm audit fix --force`는 사용하지 않았고 Next.js major도 유지했습니다.
 - `serialize-javascript@7.0.5` override는 상위 declared range 밖입니다. 현재 install/tree/build/SW 생성은 통과했지만 상위 패키지 업데이트 시 override 필요성과 호환성을 다시 확인해야 합니다.
@@ -69,3 +76,4 @@
 - manifest/favicon/icons의 `revision: null` precache 항목은 URL이 고정된 자산의 갱신 위험이 있습니다. offline fallback은 next-pwa가 build-ID revision으로 자동 관리하도록 분리했습니다.
 - precache된 route별 JS는 실행 코드만 포함하며 고객/예약 레코드는 포함하지 않습니다. 향후 정적 번들에 민감한 상수를 추가하지 않아야 합니다.
 - Vercel Hobby의 비상업적 사용 제한과 Supabase Free의 자동 일시정지 가능성은 PWA 구현으로 해소되지 않음
+- 실제 기기의 install prompt/standalone/service worker update와 고정 URL `revision: null` 자산 갱신은 후속 검증으로 유지합니다.
