@@ -9,7 +9,7 @@
 - Production 검증 기록 commit: `ae7ac3e` (`docs(roadmap): record R-07 production verification`)
 - Keychain 운영 보완 commit: `c8e2307` (`chore(ops): add allowlisted Keychain helper`)
 - Production 애플리케이션 release: PR #12·#13, `main@16157f89976e41f5218377712d5d77026bc14417`
-- 현재 문서 SSOT: release 기록 문서 PR #14, `origin/main@2f915c2e8f7ec7e736a6ee4c315caa03113416ab`
+- 2026-07-12 감사 착수 baseline: release 기록 문서 PR #14, `origin/main@2f915c2e8f7ec7e736a6ee4c315caa03113416ab`
 - 최종 업데이트: 2026-07-12
 
 ## 목표
@@ -113,7 +113,7 @@
 - anon은 고객 CRUD, audit 조회, lifecycle/dedupe RPC 7개가 모두 차단됐습니다. authenticated RPC EXECUTE 7/7, anon EXECUTE 0/7, 예약 FK `RESTRICT`, audit RLS 2/2도 적용 후 재확인했습니다.
 - smoke fixture는 고유 run tag와 DB 반환 synthetic ID에만 한정했습니다. 첫 cleanup scope assertion이 공백/대소문자 synthetic 이름을 보수적으로 거부해 삭제 전 중단됐고, 동일 ID 집합의 assertion만 보완해 고객 8건·예약 2건·event/mapping 각 1건을 정리했습니다. 최종 residue는 네 테이블 모두 0건이고 production 총계는 smoke 전 baseline과 일치함을 확인했습니다.
 - 최신 point-in-time Advisor는 Security WARN 20건, Performance 17건(4 WARN·13 INFO)입니다. Security의 R-07 증가분은 owner-only 내부 검증을 가진 authenticated `SECURITY DEFINER` RPC 5개와 RLS owner-only audit table GraphQL 노출 2개이며 실제 owner/staff/anon smoke와 exact ACL로 의도된 경계를 확인했습니다. 나머지 hardening과 performance 항목은 R-07과 분리한 backlog로 유지합니다.
-- stacked PR #9~#12와 Keychain 운영 보완 PR #13은 애플리케이션 release에 포함됐습니다. release 기록 문서 PR #14도 merge됐고 현재 열린 PR은 0건입니다.
+- stacked PR #9~#12와 Keychain 운영 보완 PR #13은 애플리케이션 release에 포함됐습니다. release 기록 문서 PR #14도 merge됐고 감사 착수 시 열린 PR은 0건이었습니다.
 
 ## Production release 결과 (2026-07-12)
 - release 기준은 `main@16157f89976e41f5218377712d5d77026bc14417`입니다. Vercel deployment `5z5MKHSAyxtLrRt6ACF3UZtLBGh7`은 build 성공 후 `Staged` 상태였고, custom domain 할당이 생략돼 Dashboard에서 정확한 merge SHA를 Promote했습니다.

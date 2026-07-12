@@ -14,7 +14,7 @@
 ## Phase 1 검증 기준
 - 기준일: 2026-07-12
 - Production 애플리케이션 release 기준: PR #13 merge `main@16157f89976e41f5218377712d5d77026bc14417`
-- 현재 문서 SSOT 기준: PR #14 merge `origin/main@2f915c2e8f7ec7e736a6ee4c315caa03113416ab`. PR #14는 Markdown만 변경했으므로 애플리케이션 release SHA와 구분합니다.
+- 2026-07-12 감사 착수 baseline: PR #14 merge `origin/main@2f915c2e8f7ec7e736a6ee4c315caa03113416ab`. PR #14는 Markdown만 변경했으므로 애플리케이션 release SHA와 구분합니다.
 - release 세션의 live Supabase migration/RLS/RPC/R-03 smoke, R-02 Playwright mobile smoke, Pencil R-02 `snapshot_layout`/export, `npm run build`, `git diff --check`, Vercel Production canonical smoke를 완료 근거로 사용합니다. 이번 감사에서는 현재 GitHub/Supabase catalog와 canonical 공개 endpoint만 읽기 전용으로 재확인했습니다.
 - Fresh DB 정책은 A안을 선택했습니다. `20260219000000_phase1_genesis_baseline.sql`을 포함한 forward migration 8개를 disposable PostgreSQL 17에서 전체 replay했고, 핵심 객체/RLS/RPC/예약 guard를 검증했습니다.
 - migration replay 결과와 `schema.sql` snapshot을 별도 DB에 적용해 public schema 의미 구성을 비교했으며 semantic diff가 없습니다.
@@ -70,7 +70,7 @@ R-07 release 세션에서 catalog/ACL/RPC 29개 계약과 실제 owner/staff/ano
 
 ## Phase 1 통합 및 release 결과
 - Phase 1/R-02, Ops, R-06, R-07 stacked PR #9~#12와 Keychain 운영 보완 PR #13을 모두 `main`에 merge했습니다. Production 애플리케이션 release 기준은 `main@16157f89976e41f5218377712d5d77026bc14417`입니다.
-- release 기록 문서 PR #14도 merge됐으며 현재 문서 SSOT는 `origin/main@2f915c2e8f7ec7e736a6ee4c315caa03113416ab`입니다. 현재 열린 PR은 0건입니다.
+- release 기록 문서 PR #14도 merge됐으며 2026-07-12 감사 착수 baseline은 `origin/main@2f915c2e8f7ec7e736a6ee4c315caa03113416ab`입니다. 감사 착수 시 열린 PR은 0건이었습니다.
 - Vercel `main` auto-deploy는 merge SHA의 Production build를 성공시켰지만 custom domain 할당은 `Staged` 상태에서 생략됐습니다. deployment `5z5MKHSAyxtLrRt6ACF3UZtLBGh7`을 명시적으로 Promote해 `hair-cr-mvibes.vercel.app`을 갱신했습니다.
 - release 세션 기록상 Production에는 `SUPABASE_SECRET_KEY`, `CRON_SECRET`이 Sensitive 변수로 존재하고 Cron Jobs는 Enabled, `/api/cron/supabase-keepalive`는 `17 3 * * *`로 등록됐습니다.
 - 이번 감사에서 canonical 홈페이지·로그인·PWA 핵심 자산 200과 Cron 무인증 401/no-store를 재확인했습니다. 승인 200, DB `select 1`, Runtime Warning/Error/Fatal 0건은 secret을 사용하지 않는 이번 범위에서 재실행하지 않았습니다.

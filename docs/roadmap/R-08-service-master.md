@@ -2,7 +2,7 @@
 
 ## 상태
 - Planned (data contract prepared; implementation not started)
-- 구현 브랜치: `feature/r08-service-master` (착수 시 최신 `origin/main`에서 새 clean worktree로 생성)
+- 구현 브랜치: `codex/r08-service-master` (착수 시 최신 `origin/main`에서 새 clean worktree로 생성)
 - 최종 업데이트: 2026-07-12
 
 ## 목표
@@ -80,5 +80,5 @@
 
 ## 선행조건과 다음 단계
 - R-05는 main에 반영되어 있고 기존 서비스 기본값 모델과 UI가 존재합니다.
-- 구현 시작 전에 remote `main` SHA를 재확인하고 최신 `origin/main`에서 `feature/r08-service-master` clean worktree를 만듭니다.
+- 구현 시작 전에 remote `main` SHA를 재확인하고 최신 `origin/main`에서 `codex/r08-service-master` clean worktree를 만듭니다.
 - R-08 완료와 가격 snapshot 검증 전에는 R-09를 구현하지 않습니다.

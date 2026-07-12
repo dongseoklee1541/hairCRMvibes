@@ -2,7 +2,7 @@
 
 ## 상태
 - Planned (metric contract prepared; implementation not started)
-- 구현 브랜치: `feature/r09-stats-advanced` (R-08 완료 후 최신 `origin/main`에서 별도 clean worktree로 생성)
+- 구현 브랜치: `codex/r09-stats-advanced` (R-08 완료 후 최신 `origin/main`에서 별도 clean worktree로 생성)
 - 최종 업데이트: 2026-07-12
 
 ## 목표
@@ -84,4 +84,4 @@
 ## 선행조건과 다음 단계
 - R-04 KST 날짜 유틸은 main에 반영됐습니다.
 - R-08 완료와 `price_snapshot_krw` 저장 경계 검증 전에는 R-09 구현을 시작하지 않습니다.
-- 구현 시작 시 remote `main` SHA를 재확인하고 최신 `origin/main`에서 `feature/r09-stats-advanced` clean worktree를 별도로 만듭니다.
+- 구현 시작 시 remote `main` SHA를 재확인하고 최신 `origin/main`에서 `codex/r09-stats-advanced` clean worktree를 별도로 만듭니다.

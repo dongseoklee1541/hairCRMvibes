@@ -22,8 +22,8 @@
 2026-07-12 문서 감사 기준 참고값은 다음과 같지만, 시작할 때 모두 읽기 전용으로 재확인하세요.
 
 - Production 애플리케이션 release: main@16157f89976e41f5218377712d5d77026bc14417
-- 최신 문서 포함 origin/main: 2f915c2e8f7ec7e736a6ee4c315caa03113416ab
-- GitHub PR #9~#14 merge, 열린 PR 0건
+- 감사 착수 당시 문서 포함 origin/main: 2f915c2e8f7ec7e736a6ee4c315caa03113416ab
+- 감사 착수 당시 GitHub PR #9~#14 merge, 열린 PR 0건
 - Supabase migration version 9개, R-07 RPC 7개와 audit table 2개 확인
 - R-06: 기능·Production 공개 자산 smoke Done, 실기기 install/standalone/SW update 대기
 - R-07: Production DB·애플리케이션 release Done, post-deploy authenticated browser 재검증 대기
@@ -33,7 +33,7 @@
 안전 경계:
 
 - 현재 checkout이 오래된 R-07 브랜치이고 `.playwright-cli/`, `output/playwright/**`, `supabase/.temp/`가 남아 있으면 삭제·이동·stage하지 마세요.
-- 최신 remote main SHA를 확인하고, 승인 후 그 SHA의 `origin/main`에서 새 `feature/r08-service-master` 브랜치와 clean worktree를 만드세요. 승인 전에는 브랜치/worktree를 생성·전환하지 마세요.
+- 최신 remote main SHA를 확인하고, 승인 후 그 SHA의 `origin/main`에서 새 `codex/r08-service-master` 브랜치와 clean worktree를 만드세요. 승인 전에는 브랜치/worktree를 생성·전환하지 마세요.
 - 다른 세션이 같은 checkout이나 DB/Vercel을 변경 중이면 이 세션은 읽기 전용 준비만 하고 충돌 가능 작업을 중단하세요.
 - Preview Supabase 환경은 기존 공유 기록과 env 제거 인계 기록이 충돌해 현재 `확인 필요`입니다. 설정이 직접 확인되기 전 Preview 로그인·실데이터 smoke를 하지 마세요.
 - Production/Preview 환경변수, Keychain, Vercel 설정, 실제 고객·예약 데이터는 별도 승인 없이 조회·변경하지 마세요.

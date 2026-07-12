@@ -63,7 +63,7 @@
 
 ## Phase 1 통합 및 Production release 메모 (2026-07-12)
 - Phase 1/R-02, Ops, R-06, R-07 stacked PR #9~#12와 Keychain 운영 보완 PR #13을 `main`에 순서대로 merge했습니다. Production 애플리케이션 release 기준은 PR #13 merge `main@16157f89976e41f5218377712d5d77026bc14417`입니다.
-- Production release 기록 문서 PR #14도 merge됐으며 현재 문서 SSOT 기준은 `origin/main@2f915c2e8f7ec7e736a6ee4c315caa03113416ab`입니다. PR #14는 Markdown만 변경했으므로 애플리케이션 release SHA와 구분합니다.
+- Production release 기록 문서 PR #14도 merge됐으며 2026-07-12 감사 착수 baseline은 `origin/main@2f915c2e8f7ec7e736a6ee4c315caa03113416ab`입니다. PR #14는 Markdown만 변경했으므로 애플리케이션 release SHA와 구분합니다.
 - Vercel Production deployment `5z5MKHSAyxtLrRt6ACF3UZtLBGh7`은 build 성공 후 `Staged` 상태로 custom domain 할당이 생략돼, 정확한 merge SHA를 Dashboard에서 Promote했습니다. canonical `https://hair-cr-mvibes.vercel.app`이 새 deployment의 `Current` domain임을 확인했습니다.
 - migration baseline A안의 disposable fresh replay, Phase 1 history repair, R-07 production migration, 실제 role smoke, Production build/deploy와 canonical PWA/Cron/DB smoke까지 release 세션에서 완료했습니다. 이번 문서 감사에서는 canonical 공개/PWA 자산 200과 Cron 무인증 401만 현재 상태로 재확인했으며 승인 Cron 200·DB probe·Runtime log는 과거 release 근거로 유지합니다.
 
@@ -126,6 +126,6 @@
 
 ## 마지막 업데이트
 - 작성일: 2026-07-12
-- 현재 직접 확인: GitHub PR #9~#14 merge·열린 PR 0건·`origin/main@2f915c2e8f7ec7e736a6ee4c315caa03113416ab`, Supabase migration version 9개·R-07 RPC 7개/audit table 2개·고객 5건/예약 6건 비식별 count, canonical 공개/PWA 자산 200·Cron 무인증 401
+- 2026-07-12 감사 착수 시 직접 확인: GitHub PR #9~#14 merge·열린 PR 0건·`origin/main@2f915c2e8f7ec7e736a6ee4c315caa03113416ab`, Supabase migration version 9개·R-07 RPC 7개/audit table 2개·고객 5건/예약 6건 비식별 count, canonical 공개/PWA 자산 200·Cron 무인증 401
 - Production release 기록: 애플리케이션 `main@16157f8`, Vercel deployment `5z5MKHSAyxtLrRt6ACF3UZtLBGh7` Promote, 실제 role smoke 106개/residue 0건, 승인 Cron 200·DB probe·Runtime log 0건. 이번 감사에서 secret 기반 검증은 재실행하지 않음
 - 확인 필요: Preview Supabase 환경 격리의 현재 설정
