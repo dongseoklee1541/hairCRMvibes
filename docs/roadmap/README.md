@@ -81,7 +81,7 @@ R-07 release 세션에서 catalog/ACL/RPC 29개 계약과 실제 owner/staff/ano
 | --- | --- | --- |
 | R-06 | [R-06-pwa-completion.md](./R-06-pwa-completion.md) | Done (production asset smoke verified; install/standalone/update pending) |
 | R-07 | [R-07-customer-edit-delete-dedupe.md](./R-07-customer-edit-delete-dedupe.md) | Done (production deployed; public endpoint rechecked) |
-| R-08 | [R-08-service-master.md](./R-08-service-master.md) | Release Candidate (Draft PR #16; live pending) |
+| R-08 | [R-08-service-master.md](./R-08-service-master.md) | Release Candidate (PR #16 Ready; live pending) |
 | R-09 | [R-09-stats-advanced.md](./R-09-stats-advanced.md) | Planned (metric contract prepared; implementation not started) |
 
 R-07 로컬 완료 게이트에는 등록·편집 미저장 상태의 브라우저 Back/Forward·내부 이동 확인, 제출 중 dirty 유지·지연 응답 stale route 차단, 저장 성공 시 대화상자 0건, 홈 390×844·360×800 지속 콘솔 0건, 새 브라우저 컨텍스트의 PWA/offline 재검증이 포함됩니다. Production release에서는 canonical PWA 핵심 자산과 Cron/DB/runtime log 경계를 추가 확인했습니다.
@@ -91,7 +91,7 @@ R-08은 기존 `salon_service_defaults` 확장, 로컬 10번째 migration 후보
 ## Phase 2 착수 기준
 - R-06/R-07은 재구현하지 않습니다. 실기기 install/standalone/SW update와 post-deploy authenticated browser 검증은 완료 근거와 분리한 후속 운영 작업입니다.
 - R-08은 `origin/main@a7a4186e76c9225c9273fa8474cea27440d36d40`에서 `/Users/idongseog/workspace/hairCRMvibes-r08-service-master` clean worktree와 `codex/r08-service-master` 브랜치를 만들어 로컬 구현·통합 검증을 마쳤습니다. 기존 R-07 checkout과 미추적 산출물은 변경하지 않았습니다.
-- 현재 다음 단계는 R-08 Draft PR #16 review/merge와 별도 live migration·배포 release 검증입니다. 이를 마치기 전에는 R-09를 구현하지 않습니다.
+- 현재 다음 단계는 R-08 PR #16 merge와 별도 live migration·배포 release 검증입니다. 이를 마치기 전에는 R-09를 구현하지 않습니다.
 - Preview가 Production Supabase를 공유한다는 문서와 Preview env 제거 인계 기록이 충돌합니다. Vercel connector로 현재 설정을 확인하지 못했으므로 `확인 필요`이며, 확인 전 Preview 로그인·실데이터 smoke는 금지합니다.
 
 ## 실행 프롬프트

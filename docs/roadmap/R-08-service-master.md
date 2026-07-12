@@ -1,9 +1,9 @@
 # R-08 Service Master
 
 ## 상태
-- Release Candidate (Draft PR #16; live pending)
+- Release Candidate (PR #16 Ready; live pending)
 - 구현 브랜치: `codex/r08-service-master`, base `origin/main@a7a4186e76c9225c9273fa8474cea27440d36d40` (PR #15 merge)
-- 통합 PR: Draft PR #16. live migration·Production 배포·실사용자 smoke는 수행하지 않았습니다.
+- 통합 PR: PR #16 Ready. live migration·Production 배포·실사용자 smoke는 수행하지 않았습니다.
 - 최종 업데이트: 2026-07-12
 
 ## 목표
@@ -79,6 +79,6 @@
 
 ## 완료 경계와 다음 단계
 - 로컬 구현·검증 게이트는 충족했지만 main에 아직 통합되지 않았고 live migration은 9개이므로 `Done`으로 표시하지 않습니다.
-- Production 완료는 draft PR review/merge, 10번째 live migration, Production 배포, owner/staff 권한·예약 snapshot smoke가 끝난 뒤에만 확정합니다.
+- Production 완료는 PR #16 merge, 10번째 live migration, Production 배포, owner/staff 권한·예약 snapshot smoke가 끝난 뒤에만 확정합니다.
 - 기본 서비스 invariant의 순차 회귀와 2-session 경쟁은 통과했습니다. 더 큰 동시 부하 시험은 Production 완료 필수조건이 아니라 후속 성능 검증으로 분리합니다.
 - R-08 Production 완료와 가격 snapshot live 검증 전에는 R-09를 구현하지 않습니다.
