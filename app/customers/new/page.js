@@ -5,20 +5,10 @@ import { useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { CustomerForm } from '@/components/customers/CustomerForm';
 import { useUnsavedChangesGuard } from '@/components/customers/useUnsavedChangesGuard';
+import { createCustomer, getCustomerCreateErrorMessage } from '@/lib/customerCreate';
 import { supabase } from '@/lib/supabase';
 import styles from './page.module.css';
 
-function getCreateErrorMessage(error) {
-  if (!navigator.onLine) {
-    return '오프라인에서는 고객을 등록할 수 없습니다. 연결을 확인한 뒤 다시 시도해주세요.';
-  }
-
-  if (error?.code === '42501') {
-    return '고객을 등록할 권한이 없습니다. 관리자에게 권한을 확인해주세요.';
-  }
-
-  return '고객을 등록하지 못했습니다. 잠시 후 다시 시도해주세요.';
-}
 export default function NewCustomerPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -56,13 +46,7 @@ export default function NewCustomerPage() {
       setSubmitError('');
 
       try {
-        const { data, error } = await supabase
-          .from('customers')
-          .insert({ name, phone: phone || null, memo: memo || null })
-          .select('id')
-          .single();
-
-        if (error) throw error;
+        const data = await createCustomer(supabase, { name, phone, memo });
 
         setIsDirty(false);
         requestNavigation(() => {
@@ -70,7 +54,7 @@ export default function NewCustomerPage() {
           router.refresh();
         }, { prompt: false });
       } catch (error) {
-        setSubmitError(getCreateErrorMessage(error));
+        setSubmitError(getCustomerCreateErrorMessage(error, navigator.onLine));
       } finally {
         setIsSubmitting(false);
       }

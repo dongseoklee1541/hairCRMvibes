@@ -86,4 +86,5 @@
 ## 선행조건과 다음 단계
 - R-04 KST 날짜 유틸은 main에 반영됐습니다.
 - R-08 Production 완료와 `price_snapshot_krw` live 저장 경계 검증을 마쳤습니다.
-- 구현 시작 시 remote `main` SHA를 재확인하고 최신 `origin/main`에서 `codex/r09-stats-advanced` clean worktree를 별도로 만듭니다.
+- R-13 예약 고객 검색·빠른 등록을 R-09보다 먼저 구현·검증했습니다. R-13은 고객 선택 UX만 변경하며 이 문서의 집계 정의를 변경하지 않습니다.
+- 구현 시작 시 R-13 merge가 포함된 remote `main` SHA를 재확인하고 최신 `origin/main`에서 `codex/r09-stats-advanced` clean worktree를 별도로 만듭니다.

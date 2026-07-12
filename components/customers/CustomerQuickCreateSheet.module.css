@@ -1,0 +1,76 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: #1a191866;
+}
+
+.sheet {
+  width: min(100%, 430px);
+  max-height: min(88dvh, 780px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 24px 24px 0 0;
+  background: var(--bg-primary);
+  box-shadow: 0 -10px 30px #1a191824;
+}
+
+.grabber {
+  width: 56px;
+  height: 5px;
+  flex: 0 0 auto;
+  margin: 10px auto 4px;
+  border-radius: var(--radius-full);
+  background: var(--border-default);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 20px;
+}
+
+.header h2 {
+  color: var(--text-primary);
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.header p {
+  margin-top: 3px;
+  color: var(--accent-primary);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.closeButton {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+}
+
+.scrollArea {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 4px 20px calc(16px + env(safe-area-inset-bottom, 0px));
+}
+
+@media (max-width: 359px) {
+  .header,
+  .scrollArea {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}

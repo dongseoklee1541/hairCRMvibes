@@ -1,10 +1,12 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { X, ChevronDown, Check, Clock, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import AppointmentDatePicker from '@/components/appointments/AppointmentDatePicker';
+import { AppointmentCustomerPicker } from '@/components/appointments/AppointmentCustomerPicker';
+import { CustomerQuickCreateSheet } from '@/components/customers/CustomerQuickCreateSheet';
 import { addDaysToDateKey, getTodayKstDateKey, getWeekdayFromDateKey } from '@/lib/dateTime';
 import {
   buildClosedDateSet,
@@ -30,6 +32,7 @@ function NewAppointmentForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const customerIdFromQuery = searchParams.get('customerId');
+  const customerPickerRef = useRef(null);
   
   const [loading, setLoading] = useState(false);
   const [fetchingCustomers, setFetchingCustomers] = useState(true);
@@ -39,6 +42,8 @@ function NewAppointmentForm() {
   const [closedDaysError, setClosedDaysError] = useState('');
   const [settingsError, setSettingsError] = useState('');
   const [customers, setCustomers] = useState([]);
+  const [quickCreateName, setQuickCreateName] = useState(null);
+  const [customerSuccessMessage, setCustomerSuccessMessage] = useState('');
   const [closedDateSet, setClosedDateSet] = useState(new Set());
   const [serviceDefaults, setServiceDefaults] = useState([]);
   const [businessHours, setBusinessHours] = useState([]);
@@ -86,8 +91,11 @@ function NewAppointmentForm() {
       
       // 쿼리 파라미터로 고객 ID가 넘어온 경우 자동 선택
       const requestedCustomer = data?.find((customer) => customer.id === customerIdFromQuery);
-      const nextCustomerId = requestedCustomer?.id || data?.[0]?.id || '';
-      setFormData((prev) => ({ ...prev, customer_id: nextCustomerId }));
+      setFormData((prev) => {
+        const currentCustomer = data?.find((customer) => customer.id === prev.customer_id);
+        const nextCustomerId = currentCustomer?.id || requestedCustomer?.id || data?.[0]?.id || '';
+        return { ...prev, customer_id: nextCustomerId };
+      });
     } catch (error) {
       console.error('Error fetching customers:', error);
       setCustomers([]);
@@ -207,6 +215,21 @@ function NewAppointmentForm() {
       duration_minutes: matchedService?.default_duration_minutes || prev.duration_minutes,
     }));
   };
+
+  const focusCustomerPicker = useCallback(() => {
+    requestAnimationFrame(() => customerPickerRef.current?.focus());
+  }, []);
+
+  const addAndSelectCustomer = useCallback((customer, message) => {
+    setCustomers((current) => {
+      const withoutDuplicate = current.filter((item) => item.id !== customer.id);
+      return [...withoutDuplicate, customer].sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+    });
+    setFormData((current) => ({ ...current, customer_id: customer.id }));
+    setCustomerSuccessMessage(message);
+    setQuickCreateName(null);
+    focusCustomerPicker();
+  }, [focusCustomerPicker]);
 
   const selectedService = useMemo(
     () => serviceDefaults.find((service) => service.id === formData.service_id) || null,
@@ -328,33 +351,21 @@ function NewAppointmentForm() {
 
       <form onSubmit={handleSubmit} className={styles.formContainer}>
         <div className={`card ${styles.formCard}`}>
-          {/* Customer */}
-          <div className="form-group">
-            <label className="form-label">고객 선택</label>
-            <div className="form-input">
-              <select 
-                value={formData.customer_id} 
-                onChange={(e) => setFormData({...formData, customer_id: e.target.value})}
-                disabled={loading || fetchingCustomers || Boolean(customerError)}
-                className="w-full h-full bg-transparent appearance-none"
-                style={{ border: 'none', background: 'none' }}
-              >
-                {fetchingCustomers ? (
-                  <option>로딩 중...</option>
-                ) : customerError ? (
-                  <option value="">고객 목록 조회 실패</option>
-                ) : customers.length === 0 ? (
-                  <option value="">예약 가능한 고객이 없습니다</option>
-                ) : (
-                  customers.map(c => (
-                    <option key={c.id} value={c.id}>{c.name}</option>
-                  ))
-                )}
-              </select>
-              <ChevronDown size={18} color="var(--text-tertiary)" />
-            </div>
-            {customerError ? <p className={styles.inlineError}>{customerError}</p> : null}
-          </div>
+          <AppointmentCustomerPicker
+            ref={customerPickerRef}
+            customers={customers}
+            value={formData.customer_id}
+            onChange={(customerId) => {
+              setFormData((current) => ({ ...current, customer_id: customerId }));
+              setCustomerSuccessMessage('');
+            }}
+            onQuickCreate={(name) => setQuickCreateName(name)}
+            onRetry={fetchCustomers}
+            loading={fetchingCustomers}
+            error={customerError}
+            disabled={loading}
+            successMessage={customerSuccessMessage}
+          />
 
           {/* Date */}
           <div className="form-group">
@@ -505,6 +516,23 @@ function NewAppointmentForm() {
           )}
         </button>
       </form>
+      {quickCreateName !== null ? (
+        <CustomerQuickCreateSheet
+          initialName={quickCreateName}
+          onClose={() => {
+            setQuickCreateName(null);
+            focusCustomerPicker();
+          }}
+          onCreated={(customer) => addAndSelectCustomer(
+            customer,
+            `${customer.name} 고객을 등록하고 예약 고객으로 선택했습니다.`
+          )}
+          onSelectExisting={(customer) => addAndSelectCustomer(
+            customer,
+            `${customer.name} 기존 고객을 예약 고객으로 선택했습니다.`
+          )}
+        />
+      ) : null}
     </div>
   );
 }
