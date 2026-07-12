@@ -13,6 +13,12 @@
 # testing
 /coverage
 
+# local agent/browser and Supabase CLI state
+.playwright-cli/
+supabase/.temp/
+output/playwright/**/console-*.log
+output/playwright/**/page-*.yml
+
 # next.js
 /.next/
 /out/
