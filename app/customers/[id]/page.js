@@ -31,6 +31,7 @@ import {
   getWeekdayLabelFromDateKey,
   KOREAN_WEEKDAYS_LONG,
 } from '@/lib/dateTime';
+import { formatDurationMinutes } from '@/lib/appointmentRules';
 import styles from './page.module.css';
 
 function formatDate(date) {
@@ -39,6 +40,12 @@ function formatDate(date) {
     day: getWeekdayLabelFromDateKey(date, KOREAN_WEEKDAYS_LONG),
   };
 }
+
+function formatPriceKrw(value) {
+  if (value === null || value === undefined) return '가격 미설정';
+  return `${new Intl.NumberFormat('ko-KR').format(Number(value))}원`;
+}
+
 function getLifecycleStatus(customer) {
   if (customer.anonymized_at) return { label: '비식별화', tone: 'danger' };
   if (customer.merged_into_customer_id) return { label: '병합 원본', tone: 'warning' };
@@ -60,6 +67,9 @@ function getLifecycleErrorMessage(error) {
 
 function getAppointmentErrorMessage(error) {
   if (!navigator.onLine) return '오프라인에서는 시술 이력을 추가할 수 없습니다.';
+  if (error?.code === '55000' && error?.message?.includes('서비스')) {
+    return '선택한 서비스가 비활성화되었습니다. 목록을 새로고침한 뒤 다시 선택해주세요.';
+  }
   if (error?.code === '55000' || error?.code === '23514') {
     return '보관되거나 병합된 고객에게는 새 시술 이력을 추가할 수 없습니다.';
   }
@@ -80,6 +90,9 @@ export default function CustomerDetailPage() {
   const historySavingRef = useRef(false);
   const [customer, setCustomer] = useState(null);
   const [history, setHistory] = useState([]);
+  const [serviceDefaults, setServiceDefaults] = useState([]);
+  const [servicesLoading, setServicesLoading] = useState(true);
+  const [servicesError, setServicesError] = useState('');
   const [status, setStatus] = useState('loading');
   const [loadError, setLoadError] = useState('');
   const [feedback, setFeedback] = useState('');
@@ -94,7 +107,9 @@ export default function CustomerDetailPage() {
   const [historyForm, setHistoryForm] = useState({
     date: getTodayKstDateKey(),
     time: '10:00',
+    service_id: '',
     service: '',
+    duration_minutes: null,
     memo: '',
   });
 
@@ -125,7 +140,7 @@ export default function CustomerDetailPage() {
 
       const { data: historyData, error: historyQueryError } = await supabase
         .from('appointments')
-        .select('id,date,time,service,memo,status')
+        .select('id,date,time,service,memo,status,service_id,duration_minutes,price_snapshot_krw')
         .eq('customer_id', customerId)
         .order('date', { ascending: false })
         .order('time', { ascending: false });
@@ -147,9 +162,35 @@ export default function CustomerDetailPage() {
     }
   }, [customerId]);
 
+  const fetchServiceDefaults = useCallback(async () => {
+    try {
+      setServicesLoading(true);
+      setServicesError('');
+      const { data, error } = await supabase
+        .from('salon_service_defaults')
+        .select('id,name,default_duration_minutes,price_krw')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true })
+        .order('name', { ascending: true });
+
+      if (error) throw error;
+      setServiceDefaults(data || []);
+    } catch (error) {
+      console.error('활성 서비스 조회 오류:', error);
+      setServiceDefaults([]);
+      setServicesError('활성 서비스를 불러오지 못했습니다. 시술명을 직접 입력해주세요.');
+    } finally {
+      setServicesLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  useEffect(() => {
+    fetchServiceDefaults();
+  }, [fetchServiceDefaults]);
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -293,8 +334,39 @@ export default function CustomerDetailPage() {
   const openHistorySheet = (event) => {
     dialogTriggerRef.current = event.currentTarget;
     setHistoryError('');
-    setHistoryForm({ date: getTodayKstDateKey(), time: '10:00', service: '', memo: '' });
+    setHistoryForm({
+      date: getTodayKstDateKey(),
+      time: '10:00',
+      service_id: '',
+      service: '',
+      duration_minutes: null,
+      memo: '',
+    });
     setShowHistorySheet(true);
+  };
+
+  const handleHistoryServiceChange = (serviceId) => {
+    setHistoryError('');
+
+    if (!serviceId) {
+      setHistoryForm((current) => ({
+        ...current,
+        service_id: '',
+        service: '',
+        duration_minutes: null,
+      }));
+      return;
+    }
+
+    const service = serviceDefaults.find((item) => item.id === serviceId);
+    if (!service) return;
+
+    setHistoryForm((current) => ({
+      ...current,
+      service_id: service.id,
+      service: service.name,
+      duration_minutes: service.default_duration_minutes,
+    }));
   };
 
   const handleHistorySubmit = async (event) => {
@@ -310,14 +382,25 @@ export default function CustomerDetailPage() {
     setHistoryError('');
 
     try {
-      const { error } = await supabase.from('appointments').insert({
+      const payload = {
         customer_id: customerId,
         date: historyForm.date,
         time: historyForm.time,
         service,
         memo: historyForm.memo.trim() || null,
         status: 'completed',
-      });
+      };
+
+      if (historyForm.service_id) {
+        payload.service_id = historyForm.service_id;
+        payload.duration_minutes = historyForm.duration_minutes;
+        payload.duration = formatDurationMinutes(historyForm.duration_minutes);
+      } else {
+        payload.service_id = null;
+        payload.price_snapshot_krw = null;
+      }
+
+      const { error } = await supabase.from('appointments').insert(payload);
 
       if (error) throw error;
 
@@ -326,6 +409,9 @@ export default function CustomerDetailPage() {
       await fetchData();
     } catch (error) {
       setHistoryError(getAppointmentErrorMessage(error));
+      if (error?.code === '55000' && error?.message?.includes('서비스')) {
+        await fetchServiceDefaults();
+      }
     } finally {
       setHistorySaving(false);
     }
@@ -498,7 +584,8 @@ export default function CustomerDetailPage() {
                   <span className={styles.historyDivider} aria-hidden="true" />
                   <div className={styles.historyInfo}>
                     <h3>{item.service}</h3>
-                    {item.memo && <p>{item.memo}</p>}
+                    <p className={styles.historyPrice}>{formatPriceKrw(item.price_snapshot_krw)}</p>
+                    {item.memo && <p className={styles.historyMemo}>{item.memo}</p>}
                   </div>
                   <span className={`${styles.appointmentBadge} ${styles[`appointment${item.status}`]}`}>
                     {item.status === 'completed' ? '완료' : item.status === 'cancelled' ? '취소' : '예약'}
@@ -657,6 +744,28 @@ export default function CustomerDetailPage() {
                 </label>
               </div>
               <label>
+                <span><Scissors size={15} aria-hidden="true" /> 서비스 마스터 (선택)</span>
+                <select
+                  value={historyForm.service_id}
+                  onChange={(event) => handleHistoryServiceChange(event.target.value)}
+                  disabled={historySaving || servicesLoading}
+                >
+                  <option value="">시술명 직접 입력 · 가격 미설정</option>
+                  {serviceDefaults.map((service) => (
+                    <option key={service.id} value={service.id}>
+                      {service.name} · {formatPriceKrw(service.price_krw)}
+                    </option>
+                  ))}
+                </select>
+                <small className={styles.fieldHint}>
+                  {servicesLoading
+                    ? '활성 서비스를 불러오는 중입니다.'
+                    : servicesError || (serviceDefaults.length === 0
+                      ? '활성 서비스가 없습니다. 시술명을 직접 입력해주세요.'
+                      : '마스터를 선택하면 현재 가격과 기본 시간을 완료 이력에 기록합니다.')}
+                </small>
+              </label>
+              <label>
                 <span><Scissors size={15} aria-hidden="true" /> 시술명</span>
                 <input
                   value={historyForm.service}
@@ -667,8 +776,14 @@ export default function CustomerDetailPage() {
                   placeholder="예: 커트, 염색, 펌"
                   maxLength={100}
                   disabled={historySaving}
+                  readOnly={Boolean(historyForm.service_id)}
                   required
                 />
+                {historyForm.service_id && (
+                  <small className={styles.fieldHint}>
+                    {formatDurationMinutes(historyForm.duration_minutes)} · 서비스 이름과 가격은 DB에서 snapshot으로 확정됩니다.
+                  </small>
+                )}
               </label>
               <label>
                 <span><FileText size={15} aria-hidden="true" /> 메모 (선택)</span>

@@ -39,6 +39,13 @@ const STATUS_LABELS = {
   cancelled: '취소',
 };
 
+const LEGACY_SERVICE_VALUE = '__current_service_snapshot__';
+
+function formatPriceKrw(value) {
+  if (value === null || value === undefined) return '가격 미설정';
+  return `${new Intl.NumberFormat('ko-KR').format(Number(value))}원`;
+}
+
 function getStatusClassName(status) {
   if (status === 'completed') return styles.statusCompleted;
   if (status === 'cancelled') return styles.statusCancelled;
@@ -59,6 +66,9 @@ export default function AppointmentsPage() {
   const [loading, setLoading] = useState(true);
   const [dailyAppts, setDailyAppts] = useState([]);
   const [monthHasAppts, setMonthHasAppts] = useState(new Set());
+  const [serviceDefaults, setServiceDefaults] = useState([]);
+  const [servicesLoading, setServicesLoading] = useState(true);
+  const [servicesError, setServicesError] = useState('');
   const [actionMessage, setActionMessage] = useState('');
   const [statusSavingId, setStatusSavingId] = useState(null);
   const [editSavingId, setEditSavingId] = useState(null);
@@ -67,7 +77,14 @@ export default function AppointmentsPage() {
     date: '',
     time: '',
     service: '',
+    selected_service_id: LEGACY_SERVICE_VALUE,
+    service_changed: false,
+    price_snapshot_krw: null,
     duration_minutes: 60,
+    original_service_id: LEGACY_SERVICE_VALUE,
+    original_service_name: '',
+    original_price_snapshot_krw: null,
+    original_duration_minutes: 60,
     memo: '',
   });
 
@@ -117,6 +134,28 @@ export default function AppointmentsPage() {
     }
   }, [year, month, selectedDay]);
 
+  const fetchServiceDefaults = useCallback(async () => {
+    try {
+      setServicesLoading(true);
+      setServicesError('');
+      const { data, error } = await supabase
+        .from('salon_service_defaults')
+        .select('id, name, default_duration_minutes, price_krw')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true })
+        .order('name', { ascending: true });
+
+      if (error) throw error;
+      setServiceDefaults(data || []);
+    } catch (error) {
+      console.error('Error fetching active services:', error);
+      setServiceDefaults([]);
+      setServicesError('활성 서비스를 불러오지 못했습니다. 현재 시술 기록은 그대로 저장할 수 있습니다.');
+    } finally {
+      setServicesLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchMonthData();
   }, [fetchMonthData]);
@@ -124,6 +163,10 @@ export default function AppointmentsPage() {
   useEffect(() => {
     fetchDailyData();
   }, [fetchDailyData]);
+
+  useEffect(() => {
+    fetchServiceDefaults();
+  }, [fetchServiceDefaults]);
 
   const prevMonth = () => {
     if (month === 0) { setYear(year - 1); setMonth(11); }
@@ -142,13 +185,25 @@ export default function AppointmentsPage() {
   };
 
   const startEditingAppointment = (appointment) => {
+    const originalServiceId = appointment.service_id || LEGACY_SERVICE_VALUE;
+    const originalServiceName = appointment.service || '';
+    const originalPriceSnapshotKrw = appointment.price_snapshot_krw ?? null;
+    const originalDurationMinutes = resolveAppointmentDurationMinutes(appointment, 60);
+
     setActionMessage('');
     setEditingAppointmentId(appointment.id);
     setEditForm({
       date: appointment.date || formatDateKey(year, month, selectedDay),
       time: normalizeTimeValue(appointment.time),
-      service: appointment.service || '',
-      duration_minutes: resolveAppointmentDurationMinutes(appointment, 60),
+      service: originalServiceName,
+      selected_service_id: originalServiceId,
+      service_changed: false,
+      price_snapshot_krw: originalPriceSnapshotKrw,
+      duration_minutes: originalDurationMinutes,
+      original_service_id: originalServiceId,
+      original_service_name: originalServiceName,
+      original_price_snapshot_krw: originalPriceSnapshotKrw,
+      original_duration_minutes: originalDurationMinutes,
       memo: appointment.memo || '',
     });
   };
@@ -159,8 +214,42 @@ export default function AppointmentsPage() {
       date: '',
       time: '',
       service: '',
+      selected_service_id: LEGACY_SERVICE_VALUE,
+      service_changed: false,
+      price_snapshot_krw: null,
       duration_minutes: 60,
+      original_service_id: LEGACY_SERVICE_VALUE,
+      original_service_name: '',
+      original_price_snapshot_krw: null,
+      original_duration_minutes: 60,
       memo: '',
+    });
+  };
+
+  const handleEditServiceChange = (serviceId) => {
+    setEditForm((prev) => {
+      if (serviceId === prev.original_service_id) {
+        return {
+          ...prev,
+          selected_service_id: prev.original_service_id,
+          service: prev.original_service_name,
+          service_changed: false,
+          price_snapshot_krw: prev.original_price_snapshot_krw,
+          duration_minutes: prev.original_duration_minutes,
+        };
+      }
+
+      const service = serviceDefaults.find((item) => item.id === serviceId);
+      if (!service) return prev;
+
+      return {
+        ...prev,
+        selected_service_id: service.id,
+        service: service.name,
+        service_changed: true,
+        price_snapshot_krw: service.price_krw ?? null,
+        duration_minutes: service.default_duration_minutes || prev.duration_minutes,
+      };
     });
   };
 
@@ -201,6 +290,11 @@ export default function AppointmentsPage() {
       return;
     }
 
+    if (editForm.service_changed && editForm.selected_service_id === LEGACY_SERVICE_VALUE) {
+      setActionMessage('변경할 활성 서비스를 선택해주세요.');
+      return;
+    }
+
     const durationMinutes = Number(editForm.duration_minutes);
     if (!Number.isFinite(durationMinutes) || durationMinutes <= 0) {
       setActionMessage('소요시간을 확인해주세요.');
@@ -210,16 +304,22 @@ export default function AppointmentsPage() {
     try {
       setActionMessage('');
       setEditSavingId(appointment.id);
+      const updatePayload = {
+        date: editForm.date,
+        time: editForm.time,
+        duration: formatDurationMinutes(durationMinutes),
+        duration_minutes: durationMinutes,
+        memo: editForm.memo.trim() || null,
+      };
+
+      if (editForm.service_changed) {
+        updatePayload.service_id = editForm.selected_service_id;
+        updatePayload.service = editForm.service.trim();
+      }
+
       const { error } = await supabase
         .from('appointments')
-        .update({
-          date: editForm.date,
-          time: editForm.time,
-          service: editForm.service.trim(),
-          duration: formatDurationMinutes(durationMinutes),
-          duration_minutes: durationMinutes,
-          memo: editForm.memo.trim() || null,
-        })
+        .update(updatePayload)
         .eq('id', appointment.id);
 
       if (error) throw error;
@@ -229,7 +329,12 @@ export default function AppointmentsPage() {
       await refreshAppointments();
     } catch (error) {
       console.error('Error updating appointment:', error);
-      setActionMessage(error?.message || '예약 수정 중 오류가 발생했습니다.');
+      if (error?.code === '55000' && error?.message?.includes('서비스')) {
+        setActionMessage('선택한 서비스가 비활성화되었습니다. 다시 선택해주세요.');
+        await fetchServiceDefaults();
+      } else {
+        setActionMessage(error?.message || '예약 수정 중 오류가 발생했습니다.');
+      }
     } finally {
       setEditSavingId(null);
     }
@@ -392,6 +497,7 @@ export default function AppointmentsPage() {
                           </span>
                         </div>
                         <span className="caption">약 {formatDurationMinutes(durationMinutes) || appt.duration || '미정'} 예상</span>
+                        <span className={styles.priceText}>{formatPriceKrw(appt.price_snapshot_krw)}</span>
                         {appt.memo ? <span className="caption">{appt.memo}</span> : null}
                         <div className={styles.apptActions}>
                           {status !== 'completed' ? (
@@ -463,11 +569,29 @@ export default function AppointmentsPage() {
                           </label>
                           <label className={styles.editField}>
                             <span>시술</span>
-                            <input
-                              value={editForm.service}
-                              onChange={(event) => setEditForm((prev) => ({ ...prev, service: event.target.value }))}
-                              disabled={isBusy}
-                            />
+                            <select
+                              value={editForm.selected_service_id}
+                              onChange={(event) => handleEditServiceChange(event.target.value)}
+                              disabled={isBusy || servicesLoading}
+                            >
+                              {!serviceDefaults.some((service) => service.id === editForm.original_service_id) ? (
+                                <option value={editForm.original_service_id}>
+                                  {editForm.original_service_name || '기존 시술'} · 현재 기록 유지
+                                </option>
+                              ) : null}
+                              {serviceDefaults.map((service) => (
+                                <option key={service.id} value={service.id}>
+                                  {service.name} · {formatPriceKrw(service.price_krw)}
+                                </option>
+                              ))}
+                            </select>
+                            <small className={styles.fieldHint}>
+                              {servicesLoading
+                                ? '활성 서비스를 불러오는 중입니다.'
+                                : servicesError || (serviceDefaults.length === 0
+                                  ? '활성 서비스가 없어 현재 시술 기록을 그대로 유지합니다.'
+                                  : `${formatPriceKrw(editForm.price_snapshot_krw)} · 재선택할 때만 예약 snapshot이 변경됩니다.`)}
+                            </small>
                           </label>
                           <label className={styles.editField}>
                             <span>소요시간</span>
