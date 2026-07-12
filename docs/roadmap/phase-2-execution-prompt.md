@@ -23,7 +23,7 @@
 2026-07-12 release 기록은 다음과 같지만, 시작할 때 GitHub·Supabase·canonical public endpoint에서 읽기 전용으로 재확인하세요.
 
 - R-08 PR #16은 merge됐고 애플리케이션 release는 `main@01440b6c4e3386c26a60ba786dacc90fa6d95223`입니다.
-- R-13은 `origin/main@bbcb47b` 기준 clean branch에서 이름 combobox·R-07 공통 빠른 등록·예약 draft 보존을 구현하고 local mock/Pencil/PWA 검증을 완료했습니다. 시작 시 R-13 PR merge SHA와 `main` 포함 여부를 재확인하고, 미포함이면 R-09를 시작하지 마세요.
+- R-13은 PR #18 merge `main@f904bcfe676e73e4f629eef6e1003a186a7bbec9`와 Vercel Production deployment `dpl_5VemJYn7XhZAorkpEaHBNZN9x85o`를 완료했습니다. canonical `/appointments/new`·R-13 chunk·로그인 redirect·manifest/SW/offline/favicon/icon 200과 console 0건을 비로그인·비변경 smoke로 확인했습니다. 시작 시 이 merge가 최신 `origin/main`에 포함됐는지 재확인하세요.
 - Supabase live migration은 local filename과 같은 `20260712093510_r08_service_master`를 포함한 10개입니다.
 - live R-08 컬럼 4개, trigger 함수 3개, snapshot/default guard, FK/index, explicit grant/RLS를 확인했습니다.
 - 기존 고객 5건·예약 7건·서비스 4건의 서비스 가격/default/service FK/price snapshot은 no-backfill 원칙에 따라 NULL로 유지됐습니다.
