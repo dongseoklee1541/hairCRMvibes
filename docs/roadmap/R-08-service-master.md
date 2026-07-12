@@ -1,9 +1,9 @@
 # R-08 Service Master
 
 ## 상태
-- Release Candidate (local verified; integration/live pending)
+- Release Candidate (Draft PR #16; live pending)
 - 구현 브랜치: `codex/r08-service-master`, base `origin/main@a7a4186e76c9225c9273fa8474cea27440d36d40` (PR #15 merge)
-- Git 통합 상태는 이 브랜치의 open PR을 기준으로 확인합니다. live migration·Production 배포·실사용자 smoke는 수행하지 않았습니다.
+- 통합 PR: Draft PR #16. live migration·Production 배포·실사용자 smoke는 수행하지 않았습니다.
 - 최종 업데이트: 2026-07-12
 
 ## 목표

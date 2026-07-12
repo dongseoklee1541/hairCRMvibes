@@ -3,7 +3,7 @@
 아래 프롬프트는 R-08 release candidate의 draft PR 통합·release 준비를 새 Codex 세션에서 이어갈 때 사용합니다.
 
 ```text
-/goal codex/r08-service-master와 연결된 open draft PR을 재감사하고 merge-ready 여부를 확정합니다. R-09는 착수하지 않습니다.
+/goal codex/r08-service-master의 Draft PR #16을 재감사하고 merge-ready 여부를 확정합니다. R-09는 착수하지 않습니다.
 
 작업 디렉터리: /Users/idongseog/workspace/hairCRMvibes-r08-service-master
 
@@ -24,7 +24,7 @@
 - PR #15는 merge됐고 최신 origin/main은 a7a4186e76c9225c9273fa8474cea27440d36d40입니다.
 - Production 애플리케이션 release는 여전히 main@16157f89976e41f5218377712d5d77026bc14417입니다. PR #14/#15는 문서 변경이므로 구분합니다.
 - R-08 branch는 codex/r08-service-master이며 위 origin/main SHA에서 만든 clean worktree입니다.
-- R-08 branch의 commit·push·open PR 상태는 GitHub에서 읽기 전용으로 재확인하세요. 기존 worktree나 검증 산출물을 버리거나 새 branch/worktree로 다시 만들지 마세요.
+- R-08 branch는 Draft PR #16으로 게시됐습니다. commit·push·PR 상태는 GitHub에서 읽기 전용으로 재확인하고 기존 worktree나 검증 산출물을 버리거나 새 branch/worktree로 다시 만들지 마세요.
 - live Supabase migration은 9개입니다. 20260712093510_r08_service_master.sql은 로컬 10번째 후보이며 live에 적용하지 않았습니다.
 - Production/Preview 배포, 환경변수 변경, 실제 로그인·고객·예약 데이터 smoke를 수행하지 않았습니다.
 - Preview Supabase 격리는 기존 공유 기록과 env 제거 인계가 충돌해 계속 확인 필요입니다.
