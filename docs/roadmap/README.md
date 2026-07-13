@@ -12,8 +12,8 @@
 | R-02 | [R-02-appointment-edit-cancel-status.md](./R-02-appointment-edit-cancel-status.md) | Done (live verified) |
 
 ## Phase 1 검증 기준
-- 기준일: 2026-07-12
-- 현재 Production 애플리케이션 release 기준: R-12 PR #22 merge `main@7a107c434f272bf33b0a35c7db6fba36e33b1946`
+- 기준일: 2026-07-13
+- 현재 Production 애플리케이션 release 기준: R-14 구현 PR #25 merge `main@cdabf40982c1b8d2dcc196bacc116b3d399efa15` (구현 commit `c7eaaabaabb47cbe4b11fabb6aaaccc1c428cb67`; 이후 문서 동기화 PR은 docs-only 변경으로 구분)
 - 2026-07-12 감사 착수 baseline은 PR #14 merge `2f915c2e8f7ec7e736a6ee4c315caa03113416ab`이었고, 감사 문서 PR #15 merge 후 최신 `origin/main`은 `a7a4186e76c9225c9273fa8474cea27440d36d40`입니다. 두 PR은 문서만 변경했으므로 Production 애플리케이션 release SHA와 구분합니다.
 - release 세션의 live Supabase migration/RLS/RPC/R-03 smoke, R-02 Playwright mobile smoke, Pencil R-02 `snapshot_layout`/export, `npm run build`, `git diff --check`, Vercel Production canonical smoke를 완료 근거로 사용합니다. 이번 감사에서는 현재 GitHub/Supabase catalog와 canonical 공개 endpoint만 읽기 전용으로 재확인했습니다.
 - Fresh DB 정책은 A안을 선택했습니다. `20260219000000_phase1_genesis_baseline.sql`을 포함한 forward migration 8개를 disposable PostgreSQL 17에서 전체 replay했고, 핵심 객체/RLS/RPC/예약 guard를 검증했습니다.
@@ -86,7 +86,7 @@ R-07 release 세션에서 catalog/ACL/RPC 29개 계약과 실제 owner/staff/ano
 | R-08 | [R-08-service-master.md](./R-08-service-master.md) | Done (production deployed; live transactional smoke verified) |
 | R-13 | [R-13-appointment-customer-search-quick-create.md](./R-13-appointment-customer-search-quick-create.md) | Done (production deployed; public/PWA smoke verified) |
 | R-09 | [R-09-stats-advanced.md](./R-09-stats-advanced.md) | Done (production deployed; exact live migration/ACL/PWA verified) |
-| R-14 | [R-14-easy-usability-foundation.md](./R-14-easy-usability-foundation.md) | In Progress (구현 완료 · 대표 사용자 검증 대기) |
+| R-14 | [R-14-easy-usability-foundation.md](./R-14-easy-usability-foundation.md) | In Progress (구현 완료 · 대표 사용자 검증 대기; PR #25 merge `main@cdabf409`, Production deployment `5424206017` success, canonical 공개/PWA 자산 200·R-14 bundle marker, Cron 무인증 `401/no-store`, CSV export `dataset=customers` 무인증 `401/private/no-store` 확인; 실제 고객·예약 데이터 미조회·미변경) |
 
 R-07 로컬 완료 게이트에는 등록·편집 미저장 상태의 브라우저 Back/Forward·내부 이동 확인, 제출 중 dirty 유지·지연 응답 stale route 차단, 저장 성공 시 대화상자 0건, 홈 390×844·360×800 지속 콘솔 0건, 새 브라우저 컨텍스트의 PWA/offline 재검증이 포함됩니다. Production release에서는 canonical PWA 핵심 자산과 Cron/DB/runtime log 경계를 추가 확인했습니다.
 

@@ -130,7 +130,7 @@
 - 브랜치/작업트리: `codex/r14-easy-usability-foundation` / `/Users/idongseog/workspace/hairCRMvibes-r14-easy-usability`
 - 구현: 공통 가독성·포커스·탭바, 홈, 예약 목록·상태, 새 예약 폼, 고객 상세를 정비했습니다.
 - 유지: Supabase 조회·저장 payload, RLS/Auth 역할, migration/schema, KST 날짜, PWA runtime cache 전략은 변경하지 않았습니다.
-- Git/배포: 아래 근거는 배포 전 로컬 검증 기준입니다. PR, merge SHA, Vercel Production과 canonical 검증 결과는 배포 완료 후 별도 release 기록으로 동기화합니다.
+- Git/배포: 구현 commit과 로컬 검증 이후 Production release 결과는 아래 `Production release record`에 동기화합니다.
 
 ### Pencil SSOT
 - 저장 전 SHA-256: `4bcb62cb825c95ce6b72e30023fdda903ea626ee760656ae7ea7c07d4da395c8`
@@ -147,7 +147,19 @@
 - 홈 empty/error, 예약 empty/error, 새 예약 service error + disabled CTA, 고객 상세 error를 390×844에서 검증했습니다. 상태 화면도 가로 overflow와 44px 미만 요소가 없었고, 실패 상태의 503 console 항목은 의도적으로 주입한 API 오류입니다.
 - 새 예약 메모 포커스에서 뷰포트를 390×524와 360×480으로 줄여 가상 키보드 상황을 모사했습니다. 두 경우 모두 포커스 영역이 visual viewport 안에 남고 가로 overflow가 없었습니다.
 - Production service worker는 `activated`/controlled였고 precache 47개 중 Auth·고객·예약 민감 cache entry는 0개였습니다. `/appointments` 오프라인 탐색은 `/offline.html`로 전환됐고 합성 고객·시술 문구와 console 문제가 없었습니다.
-- 실제 고객·예약 데이터, Supabase 원격 프로젝트, Preview/Production은 사용하거나 변경하지 않았습니다.
+- 실제 고객·예약 데이터는 조회하거나 변경하지 않았습니다. Production 확인은 고객·예약 데이터가 아닌 공개/PWA 자산과 비인증 경계만 대상으로 했습니다.
+
+### Production release record (2026-07-13)
+- 구현 commit: `c7eaaabaabb47cbe4b11fabb6aaaccc1c428cb67`
+- 애플리케이션 release PR: [#25](https://github.com/dongseoklee1541/hairCRMvibes/pull/25)
+- `main` merge SHA: `cdabf40982c1b8d2dcc196bacc116b3d399efa15`
+- GitHub Production deployment record: `5424206017` (`success`)
+- canonical: `https://hair-cr-mvibes.vercel.app`
+- 공개/PWA 자산은 HTTP `200`이며 R-14 bundle marker를 확인했습니다.
+- Cron 무인증 요청은 `401` 및 `no-store`를 반환했습니다.
+- CSV export 무인증 `dataset=customers` 요청은 `401`, `private`, `no-store`를 반환했습니다.
+- 실제 고객·예약 데이터는 조회하거나 변경하지 않았습니다.
+- 대표 사용자 검증은 수행하지 않았습니다. 따라서 R-14는 `In Progress (구현 완료 · 대표 사용자 검증 대기)`를 유지하며 `Done`으로 변경하지 않습니다.
 
 ### Before/After 스크린샷
 모든 고객·예약 정보는 합성 데이터입니다.
