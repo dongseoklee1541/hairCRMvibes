@@ -7,8 +7,14 @@
 
 .label {
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 700;
+}
+
+.label span {
+  margin-left: 4px;
+  color: var(--accent-primary);
+  font-size: 14px;
 }
 
 .inputWrap {
@@ -40,9 +46,9 @@
 }
 
 .helpText {
-  color: var(--text-tertiary);
-  font-size: 11px;
-  line-height: 1.4;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.55;
 }
 
 .selectedCustomer,
@@ -55,7 +61,7 @@
   background: var(--accent-light);
   color: var(--accent-primary);
   padding: 9px 12px;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.4;
 }
 
@@ -72,7 +78,7 @@
   gap: 10px;
   border-radius: var(--radius-md);
   padding: 12px;
-  font-size: 13px;
+  font-size: 16px;
   line-height: 1.45;
 }
 
@@ -97,7 +103,7 @@
 
 .popover {
   position: absolute;
-  top: 76px;
+  top: 100px;
   left: 0;
   right: 0;
   z-index: 40;
@@ -112,7 +118,7 @@
   padding: 10px 12px;
   border-bottom: 1px solid var(--border-subtle);
   color: var(--text-tertiary);
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -123,7 +129,7 @@
 }
 
 .listbox li {
-  min-height: 48px;
+  min-height: 52px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -131,7 +137,7 @@
   padding: 9px 12px;
   color: var(--text-primary);
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   text-align: left;
 }
@@ -145,7 +151,7 @@
 .emptyState {
   padding: 16px 12px;
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.45;
   text-align: center;
 }
@@ -159,7 +165,7 @@
   justify-content: center;
   gap: 7px;
   color: var(--accent-primary);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 700;
 }
 

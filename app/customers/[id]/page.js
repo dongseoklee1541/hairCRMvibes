@@ -47,7 +47,7 @@ function formatPriceKrw(value) {
 }
 
 function getLifecycleStatus(customer) {
-  if (customer.anonymized_at) return { label: '비식별화', tone: 'danger' };
+  if (customer.anonymized_at) return { label: '익명 처리됨', tone: 'danger' };
   if (customer.merged_into_customer_id) return { label: '병합 원본', tone: 'warning' };
   if (customer.archived_at) return { label: '보관됨', tone: 'warning' };
   return { label: '활성', tone: 'success' };
@@ -312,7 +312,7 @@ export default function CustomerDetailPage() {
         anonymize: {
           name: 'anonymize_customer',
           params: { p_customer_id: customerId },
-          success: '고객 개인정보를 비식별화했습니다. 예약 이력은 유지됩니다.',
+          success: '고객 개인정보를 익명 처리했습니다. 예약 이력은 유지됩니다.',
         },
       }[action];
 
@@ -516,7 +516,7 @@ export default function CustomerDetailPage() {
           <Archive size={23} aria-hidden="true" />
           <div>
             <h2 id="read-only-title">
-              {isAnonymized ? '개인정보 비식별화 완료' : isMerged ? '병합된 원본 고객' : '보관 고객'}
+              {isAnonymized ? '개인정보 익명 처리 완료' : isMerged ? '병합된 원본 고객' : '보관 고객'}
             </h2>
             <p>
               {isAnonymized
@@ -635,12 +635,12 @@ export default function CustomerDetailPage() {
             <ShieldAlert size={20} aria-hidden="true" />
             <div>
               <strong>원장 전용 기능입니다</strong>
-              <p>직원은 기본 정보와 시술 이력을 관리할 수 있지만 보관·병합·비식별화는 실행할 수 없습니다.</p>
+              <p>직원은 기본 정보와 시술 이력을 관리할 수 있지만 보관·병합·개인정보 익명 처리는 실행할 수 없습니다.</p>
             </div>
           </div>
         ) : isAnonymized ? (
           <div className={styles.permissionCard}>
-            <ShieldAlert size={20} aria-hidden="true" /> 비식별화된 개인정보는 복구할 수 없습니다.
+            <ShieldAlert size={20} aria-hidden="true" /> 익명 처리한 개인정보는 되돌릴 수 없습니다.
           </div>
         ) : isMerged ? (
           <div className={styles.permissionCard}>
@@ -685,7 +685,7 @@ export default function CustomerDetailPage() {
               }}
               disabled={actionLoading}
             >
-              <Trash2 size={19} aria-hidden="true" /> 개인정보 비식별화
+              <Trash2 size={19} aria-hidden="true" /> 개인정보 익명 처리
             </button>
           </div>
         )}
@@ -744,7 +744,7 @@ export default function CustomerDetailPage() {
                 </label>
               </div>
               <label>
-                <span><Scissors size={15} aria-hidden="true" /> 서비스 마스터 (선택)</span>
+                <span><Scissors size={15} aria-hidden="true" /> 등록된 시술 선택 (선택)</span>
                 <select
                   value={historyForm.service_id}
                   onChange={(event) => handleHistoryServiceChange(event.target.value)}
@@ -762,7 +762,7 @@ export default function CustomerDetailPage() {
                     ? '활성 서비스를 불러오는 중입니다.'
                     : servicesError || (serviceDefaults.length === 0
                       ? '활성 서비스가 없습니다. 시술명을 직접 입력해주세요.'
-                      : '마스터를 선택하면 현재 가격과 기본 시간을 완료 이력에 기록합니다.')}
+                      : '시술을 선택하면 현재 가격과 기본 시간을 완료 이력에 기록합니다.')}
                 </small>
               </label>
               <label>
@@ -781,7 +781,7 @@ export default function CustomerDetailPage() {
                 />
                 {historyForm.service_id && (
                   <small className={styles.fieldHint}>
-                    {formatDurationMinutes(historyForm.duration_minutes)} · 서비스 이름과 가격은 DB에서 snapshot으로 확정됩니다.
+                    {formatDurationMinutes(historyForm.duration_minutes)} · 선택한 시술명과 금액은 이 이력에 그대로 보관됩니다.
                   </small>
                 )}
               </label>
@@ -825,7 +825,7 @@ export default function CustomerDetailPage() {
                   {activeDialog === 'archive' ? <Archive size={23} /> : <ShieldAlert size={23} />}
                 </span>
                 <h2 id="lifecycle-dialog-title" className="heading-md">
-                  {activeDialog === 'archive' ? '고객을 보관할까요?' : '개인정보를 비식별화할까요?'}
+                  {activeDialog === 'archive' ? '고객을 보관할까요?' : '개인정보를 익명 처리할까요?'}
                 </h2>
               </div>
               <button
@@ -862,7 +862,7 @@ export default function CustomerDetailPage() {
                   이름은 ‘삭제된 고객’으로 바뀌고 전화번호와 메모는 영구 제거됩니다. 예약 이력은 고객 키와 함께 보존되며 개인정보는 복구할 수 없습니다.
                 </p>
                 <label>
-                  <span>계속하려면 ‘비식별화’를 입력해주세요.</span>
+                  <span>되돌릴 수 없습니다. 계속하려면 ‘익명 처리’를 입력해주세요.</span>
                   <input
                     value={anonymizeConfirmation}
                     onChange={(event) => setAnonymizeConfirmation(event.target.value)}
@@ -890,11 +890,11 @@ export default function CustomerDetailPage() {
                 onClick={() => runLifecycleAction(activeDialog)}
                 disabled={
                   actionLoading ||
-                  (activeDialog === 'anonymize' && anonymizeConfirmation.trim() !== '비식별화')
+                  (activeDialog === 'anonymize' && anonymizeConfirmation.trim() !== '익명 처리')
                 }
               >
                 {actionLoading && <Loader2 size={19} className="animate-spin" />}
-                {actionLoading ? '처리 중' : activeDialog === 'archive' ? '보관하기' : '영구 비식별화'}
+                {actionLoading ? '처리 중' : activeDialog === 'archive' ? '보관하기' : '영구 익명 처리'}
               </button>
             </div>
           </section>
