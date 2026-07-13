@@ -60,7 +60,7 @@
 | R-13 | Done (production deployed; public/PWA smoke verified) | PR #18 merge `main@f904bcf`, Vercel Production deployment `dpl_5VemJYn7XhZAorkpEaHBNZN9x85o`, canonical `/appointments/new`·로그인 redirect·manifest/SW/offline/favicon/192·512 icon HTTP 200과 console 0건을 확인했습니다. 로컬에서는 Pencil 6개 상태, 390×844·360×800 mock 검색·중복·성공/실패/취소 draft 보존과 `customers?select=id,name` 최소 조회를 검증했습니다. | 실제 owner/staff 로그인·모바일 실기기 IME/standalone은 후속 운영 검증. 전용 Preview synthetic 데이터만 사용하고 Production 데이터 smoke는 별도 승인 전 금지 |
 | R-09 | Done (production deployed; exact live migration/ACL/PWA verified) | PR #20 merge `main@b63f9a3`, exact 11번째 live migration `20260712124959_r09_stats_advanced`, RPC invoker/stable/search_path/ACL, Vercel deployment `dpl_FBDsYn26v2ZXiJthe5z97vsJDwk2`, canonical redirect·PWA assets·offline fallback을 확인했습니다. local Pencil/SQL/build/mobile 검증과 synthetic residue 0 근거도 유지합니다. | live authenticated 실제 데이터 smoke와 실기기 install/standalone은 후속 운영 검증. R-10/R-11은 별도 작업으로 유지 |
 | R-12 | Done (production deployed; Preview role/PWA + Production public/API boundary verified) | PR #22 merge `main@7a107c4`, Vercel deployment `FxRGiDSgHQFXARsc2mUyCrsydtY8`, canonical R-12 설정 chunk·공개/PWA 자산·무인증 export `401 + no-store`를 확인했습니다. Node tests 10/10·100,005행과 전용 Preview anon 401/staff 403/owner 고객·예약 200, 모바일 UI/PWA cache, residue 0 근거를 유지합니다. Production DB는 비식별 count/RLS/grant/residue만 배포 전후 재확인했습니다. | 모바일·Safari Blob fallback 메모리, Vercel 함수 실행시간, 다중 페이지 비-snapshot 특성은 운영 규모 부하 검증 필요. Production 실제 owner CSV 생성은 개인정보 보관 책임 때문에 의도적으로 미실행 |
-| R-14 | Planned | 50~60대 여성 사용자를 위한 공통 가독성·조작성 개선 범위와 완료 기준을 `docs/roadmap/R-14-easy-usability-foundation.md`에 정의 | Pencil SSOT에서 핵심 화면의 before/after와 상태를 먼저 설계하고 별도 Implementation Plan 승인 후 구현 |
+| R-14 | In Progress (구현 완료 · 대표 사용자 검증 대기) | Pencil Before/After 4쌍·상태 매트릭스와 공통/홈/예약/새 예약/고객 상세 코드를 구현했습니다. production build, 합성 390×844·360×800 정상 화면, empty/error/disabled, 키보드 축소, PWA NetworkOnly·민감 cache 0건을 검증했습니다. | 실제 50~60대 여성 대표 사용자 2명에게 고객 찾기·새 예약 등록·예약 확인/상태 변경 과제를 관찰하고 막힘·오조작·용어 이해·완료 확신을 기록한 뒤 `Done` 여부 판단 |
 
 ## Phase 1 live 검증 요약 (2026-07-08)
 - Supabase 프로젝트 `burtyhairCRM`은 `ACTIVE_HEALTHY` 상태였고, Phase 1 migration 5개(`r01`, `r02`, `r05`, `r03`, `phase1_function_privilege_hardening`)를 live DB에 적용했습니다.
@@ -99,7 +99,7 @@
 - `R-08` 서비스 마스터(가격/기본 소요시간): Production DB·배포·live transactional smoke Done
 - `R-13` 예약 고객 검색·빠른 등록: Production 배포·canonical 공개/PWA smoke Done
 - `R-09` 통계 고도화(매출/객단가/재방문율): PR/live/Production release Done
-- `R-14` 쉬운 사용성 1차: Planned. 가독성·조작성 공통 기반을 먼저 개선하고 번호 미배정 후보 3개는 사용자 검증 뒤 승격 여부 판단
+- `R-14` 쉬운 사용성 1차: 구현 완료·대표 사용자 검증 대기. 번호 미배정 후보 3개는 실제 사용자 관찰 뒤 승격 여부 판단
 
 ### Phase 2 기능 착수 기준 (2026-07-12 감사)
 - R-06/R-07은 재구현하지 않습니다. 미완료 실기기/browser/Preview 검증은 기능 완료 근거와 분리한 후속 운영 작업으로 추적합니다.
@@ -158,4 +158,4 @@
 - R-12 기록: `origin/main@07eefe8` 기반 `codex/r12-csv-backup`, Pencil 설정 카드, owner-only 고객/예약 스트리밍 CSV, Node tests 10/10·100,005행, build, 전용 Preview synthetic 390×844·360×800, PWA NetworkOnly·민감 응답 cache 0건 확인
 - 전용 `burtyhairCRM-preview`에 forward migration 11개를 replay하고 synthetic anon/staff/owner 실제 handler smoke에서 401/403/고객 200/예약 200과 CSV 계약을 확인. Vercel Preview deployment `EXjXJCPCCjNJ3gPZgPLsntu71Cb7`, 실제 owner/staff UI, 390×844·360×800/PWA cache를 검증하고 users/identities/profiles/customers/appointments/sessions/refresh tokens residue 0을 확인
 - R-12 Production release: PR #22 merge `main@7a107c4`, Vercel deployment `FxRGiDSgHQFXARsc2mUyCrsydtY8`, canonical 공개/PWA 200·설정 chunk marker·무인증 export `401 + no-store`를 확인. Production DB는 고객 6·예약 7·profile 2, RLS 9/9, 핵심 grant 3/3, residue 0의 비식별 상태만 재확인했으며 실제 owner CSV는 생성하지 않음
-- R-14를 정식 `Planned` 업무로 추가하고, 오늘 예약 중심 홈·지난 시술 그대로 재예약·예약 등록 완료 확인 강화는 번호 미배정 후보 문서로 분리했습니다. 기존 완료 상태는 R-01~R-09, R-12, R-13의 저장소 내 검증 근거와 동기화했습니다.
+- R-14 Pencil SSOT, 공통/핵심 4화면 코드, production build, 합성 모바일·상태·키보드·PWA cache 검증을 완료했습니다. 실제 대표 사용자 2명 관찰은 미수행이므로 `Done` 대신 `In Progress (구현 완료 · 대표 사용자 검증 대기)`를 유지합니다.

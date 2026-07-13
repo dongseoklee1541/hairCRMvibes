@@ -19,7 +19,7 @@ import { getPhoneDigits } from '@/lib/customerPhone';
 import styles from './page.module.css';
 
 function getCustomerStatus(customer) {
-  if (customer.anonymized_at) return '비식별화';
+  if (customer.anonymized_at) return '익명 처리됨';
   if (customer.merged_into_customer_id) return '병합됨';
   if (customer.archived_at) return '보관됨';
   return '활성';
@@ -125,17 +125,17 @@ export default function HomePage() {
             href="/customers/duplicates"
             prefetch={false}
             className={`${styles.headerButton} min-h-[44px] focus-visible:outline-2 focus-visible:outline-offset-2`}
-            aria-label="중복 고객 확인"
           >
             <Users size={20} aria-hidden="true" />
+            <span>중복 고객 확인</span>
           </Link>
           <Link
             href="/customers/new"
             prefetch={false}
             className={`${styles.headerButton} ${styles.headerButtonPrimary} min-h-[44px] focus-visible:outline-2 focus-visible:outline-offset-2`}
-            aria-label="새 고객 등록"
           >
             <UserPlus size={20} aria-hidden="true" />
+            <span>새 고객 등록</span>
           </Link>
         </div>
       </header>

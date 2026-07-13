@@ -64,6 +64,7 @@ export default function AppointmentsPage() {
   const [selectedDay, setSelectedDay] = useState(today.day);
   
   const [loading, setLoading] = useState(true);
+  const [dailyError, setDailyError] = useState('');
   const [dailyAppts, setDailyAppts] = useState([]);
   const [monthHasAppts, setMonthHasAppts] = useState(new Set());
   const [serviceDefaults, setServiceDefaults] = useState([]);
@@ -114,6 +115,7 @@ export default function AppointmentsPage() {
   const fetchDailyData = useCallback(async () => {
     try {
       setLoading(true);
+      setDailyError('');
       const selectedDateKey = formatDateKey(year, month, selectedDay);
       
       const { data, error } = await supabase
@@ -129,6 +131,12 @@ export default function AppointmentsPage() {
       setDailyAppts(data || []);
     } catch (error) {
       console.error('Error fetching daily appts:', error);
+      setDailyAppts([]);
+      setDailyError(
+        navigator.onLine
+          ? '예약을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.'
+          : '오프라인에서는 예약을 불러올 수 없습니다. 연결을 확인해주세요.'
+      );
     } finally {
       setLoading(false);
     }
@@ -365,23 +373,27 @@ export default function AppointmentsPage() {
   return (
     <>
       <div className="page-content" style={{ paddingTop: 12 }}>
-        {/* Header */}
         <div className={styles.header}>
-          <div className="flex-row gap-md">
-            <button onClick={prevMonth} className={styles.navBtn}>
-              <ChevronLeft size={22} />
-            </button>
-            <h1 className="heading-lg">{year}년 {month + 1}월</h1>
-            <button onClick={nextMonth} className={styles.navBtn}>
-              <ChevronRight size={22} />
-            </button>
+          <div className={styles.headerTitle}>
+            <h1 className="heading-xl">예약 관리</h1>
+            <p>날짜를 선택해 예약을 확인하고 상태를 변경하세요.</p>
           </div>
-          <Link href="/appointments/new" className="btn-icon btn-icon-primary">
-            <Plus size={20} />
+          <Link href="/appointments/new" className={styles.newAppointmentButton}>
+            <Plus size={20} aria-hidden="true" />
+            <span>새 예약</span>
           </Link>
         </div>
 
-        {/* Calendar Card */}
+        <nav className={styles.monthNavigation} aria-label="예약 달력 월 이동">
+          <button type="button" onClick={prevMonth} className={styles.navBtn} aria-label="이전 달">
+            <ChevronLeft size={22} aria-hidden="true" />
+          </button>
+          <h2 className="heading-lg" aria-live="polite">{year}년 {month + 1}월</h2>
+          <button type="button" onClick={nextMonth} className={styles.navBtn} aria-label="다음 달">
+            <ChevronRight size={22} aria-hidden="true" />
+          </button>
+        </nav>
+
         <div className={`card ${styles.calendarCard}`}>
           {/* Day Headers */}
           <div className={styles.calendarRow}>
@@ -408,9 +420,12 @@ export default function AppointmentsPage() {
                 return (
                   <button
                     key={di}
+                    type="button"
                     className={`${styles.dayCell} ${day === selectedDay ? styles.daySelected : ''} ${isToday(day) && day !== selectedDay ? styles.dayToday : ''}`}
                     onClick={() => day && setSelectedDay(day)}
                     disabled={!day}
+                    aria-label={day ? `${year}년 ${month + 1}월 ${day}일${hasAppt ? ', 예약 있음' : ''}` : undefined}
+                    aria-pressed={day ? day === selectedDay : undefined}
                   >
                     <span
                       style={{
@@ -443,8 +458,7 @@ export default function AppointmentsPage() {
           ))}
         </div>
 
-        {/* Daily Appointments */}
-        <section>
+        <section className={styles.dailySection}>
           <div className="section-header">
             <h2 className="heading-md">
               {month + 1}월 {selectedDay}일 ({dayName}) 예약
@@ -452,19 +466,28 @@ export default function AppointmentsPage() {
             {!loading && <span className="badge badge-green">{dailyAppts.length}건</span>}
           </div>
           {actionMessage ? (
-            <div className={styles.feedbackBox}>
+            <div className={styles.feedbackBox} role="status" aria-live="polite">
               {actionMessage}
             </div>
           ) : null}
 
           <div className="card" style={{ marginTop: 16, overflow: 'hidden' }}>
             {loading ? (
-              <div className="flex-center" style={{ padding: 40 }}>
-                <Loader2 size={24} className="animate-spin text-tertiary" />
+              <div className={styles.loadingState} role="status">
+                <Loader2 size={24} className="animate-spin text-tertiary" aria-hidden="true" />
+                <p>선택한 날짜의 예약을 불러오는 중입니다.</p>
+              </div>
+            ) : dailyError ? (
+              <div className={styles.errorState} role="alert">
+                <p>{dailyError}</p>
+                <button type="button" onClick={fetchDailyData}>
+                  다시 시도
+                </button>
               </div>
             ) : dailyAppts.length === 0 ? (
               <div className={styles.emptyState}>
-                <p className="body-sm text-tertiary">예약이 없습니다</p>
+                <p>선택한 날짜에 예약이 없습니다.</p>
+                <Link href="/appointments/new">새 예약 등록</Link>
               </div>
             ) : (
               dailyAppts.map((appt, i) => {
@@ -590,7 +613,7 @@ export default function AppointmentsPage() {
                                 ? '활성 서비스를 불러오는 중입니다.'
                                 : servicesError || (serviceDefaults.length === 0
                                   ? '활성 서비스가 없어 현재 시술 기록을 그대로 유지합니다.'
-                                  : `${formatPriceKrw(editForm.price_snapshot_krw)} · 재선택할 때만 예약 snapshot이 변경됩니다.`)}
+                                  : `${formatPriceKrw(editForm.price_snapshot_krw)} · 시술을 다시 선택할 때만 이 예약의 시술명과 금액이 바뀝니다.`)}
                             </small>
                           </label>
                           <label className={styles.editField}>

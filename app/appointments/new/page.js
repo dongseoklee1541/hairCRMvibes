@@ -194,7 +194,7 @@ function NewAppointmentForm() {
       console.error('Error fetching appointment settings:', error);
       setServiceDefaults([]);
       setFormData((prev) => ({ ...prev, service_id: '', service: '' }));
-      setSettingsError('서비스 마스터를 불러오지 못했습니다. 예약을 등록할 수 없습니다.');
+      setSettingsError('시술 목록을 불러오지 못했습니다. 예약을 등록할 수 없습니다.');
     } finally {
       setFetchingSettings(false);
     }
@@ -284,11 +284,11 @@ function NewAppointmentForm() {
       return;
     }
     if (settingsError || serviceDefaults.length === 0) {
-      setSubmitMessage('활성 서비스가 없어 예약을 등록할 수 없습니다. 설정에서 서비스를 준비해주세요.');
+      setSubmitMessage('예약 가능한 시술이 없습니다. 설정에서 시술을 준비한 뒤 다시 시도해주세요.');
       return;
     }
     if (!selectedService || !formData.service_id) {
-      setSubmitMessage('활성 서비스를 선택해주세요.');
+      setSubmitMessage('예약할 시술을 선택해주세요.');
       return;
     }
     if (!formData.customer_id || !formData.date || !formData.time || !formData.service) {
@@ -334,22 +334,24 @@ function NewAppointmentForm() {
 
   return (
     <div className="page-content" style={{ paddingTop: 12 }}>
-      {/* Header */}
       <div className={styles.header}>
+        <div className={styles.headerTitle}>
+          <h1 className="heading-xl">새 예약</h1>
+          <p>고객과 날짜, 시술을 순서대로 선택하세요.</p>
+        </div>
         <button
           type="button"
           onClick={() => router.back()}
-          className="btn-icon"
+          className={styles.closeButton}
           disabled={loading}
           aria-label="새 예약 닫기"
         >
           <X size={22} color="var(--text-primary)" aria-hidden="true" />
+          <span>닫기</span>
         </button>
-        <h1 className="heading-md">새 예약</h1>
-        <div style={{ width: 44 }} aria-hidden="true" />
       </div>
 
-      <form onSubmit={handleSubmit} className={styles.formContainer}>
+      <form onSubmit={handleSubmit} className={styles.formContainer} aria-busy={loading}>
         <div className={`card ${styles.formCard}`}>
           <AppointmentCustomerPicker
             ref={customerPickerRef}
@@ -369,8 +371,9 @@ function NewAppointmentForm() {
 
           {/* Date */}
           <div className="form-group">
-            <label className="form-label">예약 날짜</label>
+            <label className="form-label" htmlFor="appointment-date">예약 날짜 <span className={styles.requiredText}>필수</span></label>
             <AppointmentDatePicker
+                id="appointment-date"
                 value={formData.date} 
                 onChange={(nextDate) => setFormData({ ...formData, date: nextDate })}
                 disabled={loading || fetchingClosedDays}
@@ -385,9 +388,10 @@ function NewAppointmentForm() {
 
           {/* Time */}
           <div className="form-group">
-            <label className="form-label">예약 시간</label>
+            <label className="form-label" htmlFor="appointment-time">예약 시간 <span className={styles.requiredText}>필수</span></label>
             <div className="form-input">
               <input 
+                id="appointment-time"
                 type="time" 
                 value={formData.time} 
                 onChange={(e) => setFormData({...formData, time: e.target.value})} 
@@ -399,11 +403,11 @@ function NewAppointmentForm() {
 
           {/* Service */}
           <div className="form-group">
-            <label className="form-label">서비스 마스터</label>
+            <label className="form-label" htmlFor="appointment-service">시술 선택 <span className={styles.requiredText}>필수</span></label>
             {fetchingSettings ? (
               <div className={styles.serviceState} role="status">
                 <Loader2 size={18} className="animate-spin" />
-                <span>활성 서비스를 불러오는 중입니다.</span>
+                <span>예약 가능한 시술을 불러오는 중입니다.</span>
               </div>
             ) : settingsError ? (
               <div className={styles.serviceStateError} role="alert">
@@ -411,12 +415,13 @@ function NewAppointmentForm() {
               </div>
             ) : serviceDefaults.length === 0 ? (
               <div className={styles.serviceStateError} role="alert">
-                활성 서비스가 없습니다. 설정에서 서비스를 추가하거나 재활성화한 뒤 예약해주세요.
+                예약 가능한 시술이 없습니다. 설정에서 시술을 추가하거나 다시 활성화한 뒤 예약해주세요.
               </div>
             ) : (
               <>
                 <div className="form-input">
                   <select
+                    id="appointment-service"
                     value={formData.service_id}
                     onChange={(e) => handleServiceChange(e.target.value)}
                     disabled={loading}
@@ -436,11 +441,11 @@ function NewAppointmentForm() {
                   role="status"
                   aria-live="polite"
                 >
-                  <span>예약 가격</span>
+                  <span>선택한 예약 금액</span>
                   <strong>{formatPriceKrw(selectedService?.price_krw)}</strong>
                 </div>
                 <p className={styles.dateHelp}>
-                  DB가 선택 시점의 서비스명과 가격을 예약 snapshot으로 저장합니다.
+                  선택한 시술명과 금액은 이 예약에 그대로 보관됩니다.
                 </p>
               </>
             )}
@@ -448,9 +453,10 @@ function NewAppointmentForm() {
 
           {/* Duration */}
           <div className="form-group">
-            <label className="form-label">예상 소요시간</label>
+            <label className="form-label" htmlFor="appointment-duration">시술 시간 <span className={styles.requiredText}>필수</span></label>
             <div className="form-input">
               <select
+                id="appointment-duration"
                 value={formData.duration_minutes}
                 onChange={(e) => setFormData({...formData, duration_minutes: Number(e.target.value)})}
                 disabled={loading || fetchingSettings || !selectedService}
@@ -465,15 +471,16 @@ function NewAppointmentForm() {
               <ChevronDown size={18} color="var(--text-tertiary)" />
             </div>
             <p className={styles.dateHelp}>
-              서비스 기본값으로 시작하며 직접 선택한 시간은 예약별 값으로 유지됩니다. · 슬롯 {operationSettings.appointment_slot_minutes}분
+              기본 시술 시간으로 시작합니다. 필요하면 이 예약에 맞게 바꿀 수 있습니다. (시간 간격 {operationSettings.appointment_slot_minutes}분)
             </p>
           </div>
 
           {/* Memo */}
           <div className="form-group">
-            <label className="form-label" style={{ color: 'var(--text-tertiary)' }}>메모 (선택)</label>
+            <label className="form-label" htmlFor="appointment-memo" style={{ color: 'var(--text-tertiary)' }}>메모 (선택)</label>
             <div className="form-input form-textarea">
               <textarea
+                id="appointment-memo"
                 placeholder="특이사항 입력"
                 value={formData.memo}
                 onChange={(e) => setFormData({...formData, memo: e.target.value})}
@@ -484,7 +491,7 @@ function NewAppointmentForm() {
         </div>
 
         {submitMessage ? (
-          <div className={styles.submitMessage}>
+          <div className={styles.submitMessage} role="alert">
             {submitMessage}
           </div>
         ) : null}
@@ -505,13 +512,14 @@ function NewAppointmentForm() {
           }
         >
           {loading ? (
-            <Loader2 size={20} className="animate-spin" />
+            <>
+              <Loader2 size={20} className="animate-spin" aria-hidden="true" />
+              <span>등록 중...</span>
+            </>
           ) : (
             <>
-              <Check size={20} />
-              <span>
-                예약 등록{selectedService ? ` · ${formatPriceKrw(selectedService.price_krw)}` : ''}
-              </span>
+              <Check size={20} aria-hidden="true" />
+              <span>예약 등록</span>
             </>
           )}
         </button>
@@ -541,7 +549,8 @@ export default function NewAppointmentPage() {
   return (
     <Suspense fallback={
       <div className="page-content flex-center" style={{ height: '80vh' }}>
-        <Loader2 size={32} className="animate-spin text-tertiary" />
+        <Loader2 size={32} className="animate-spin text-tertiary" aria-hidden="true" />
+        <p className="body-md text-secondary">예약 화면을 준비하는 중입니다.</p>
       </div>
     }>
       <NewAppointmentForm />
