@@ -53,6 +53,7 @@ openssl rand -hex 32
 - R-10의 `GET /api/staff`, `POST /api/staff/invitations`만 Auth 사용자 식별/초대를 위해 Admin client를 사용합니다. 응답에는 마스킹된 email만 포함하고 raw email·token·secret은 기록하지 않습니다.
 - `PATCH /api/staff/[userId]/role`은 caller access token과 owner-only `change_staff_role` RPC만 사용합니다.
 - Supabase Auth Site URL은 현재 `http://localhost:3000`, Redirect URL은 0개로 확인됐습니다. canonical `/invite/accept` 허용 전에는 Production 초대 수락 링크를 완료할 수 없으며, 외부 Auth URL 설정은 별도 release gate입니다.
+- 전용 Preview Supabase와 Vercel Preview 공개 URL/key 격리는 R-12에서 완료됐지만, R-10 Admin route용 Preview server secret은 이번 범위에서 추가·변경·검증하지 않았습니다. 실제 Preview/Production 초대는 모두 금지합니다.
 
 ## 배포 후 검증
 

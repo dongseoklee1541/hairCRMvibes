@@ -3,7 +3,9 @@
 ## 상태
 - In Progress (local implementation verified; Draft PR merge-blocked)
 - 구현 브랜치: `codex/r10-role-management`
-- 기준: `origin/main@b2258844642fae0d7a5f07798a95c9a3091cd502`
+- 최초 구현 기준: `origin/main@b2258844642fae0d7a5f07798a95c9a3091cd502`
+- 최신 통합 기준: `origin/main@ec8bff1873a11f618087620156a8e463f39f9fb4`
+- Draft PR: [#26](https://github.com/dongseoklee1541/hairCRMvibes/pull/26)
 - 최종 업데이트: 2026-07-13
 
 ## 목표
@@ -30,7 +32,7 @@
 - live Auth 사용자 2명, profile 2명, owner 1명, staff 1명, profile 누락 0명이며 읽기 전용 aggregate만 확인했습니다.
 - Vercel project `hair-cr-mvibes`의 `SUPABASE_SECRET_KEY`는 값 확인 없이 `Sensitive / Production`으로 존재함을 확인했습니다.
 - Supabase Auth Site URL은 `http://localhost:3000`, Redirect URL은 0개입니다. 실제 Production 초대 수락 경로는 현재 설정으로 완료할 수 없으므로 외부 Auth URL 변경 전 release blocker입니다.
-- Preview Supabase 격리는 계속 `확인 필요`이며 실제 Preview/Production 초대·로그인·역할 변경 smoke는 금지합니다.
+- 전용 `burtyhairCRM-preview` 프로젝트와 Vercel Preview 공개 URL/key 격리는 R-12에서 완료됐습니다. 다만 R-10 Admin 경로의 Preview server secret은 이번 범위에서 추가·변경·검증하지 않았고 실제 Preview/Production 초대·로그인·역할 변경 smoke도 수행하지 않습니다.
 
 ## UI/Pencil 범위
 - `/settings`에 권한관리 진입점을 두고 상세 화면은 `/settings/team`으로 분리합니다.
@@ -38,7 +40,7 @@
 - 390×844와 360×800, 44×44px touch target, safe-area, keyboard/focus/aria-live를 검증합니다.
 - before 캡처는 `output/playwright/r10-role-management/20260713_r10_settings_before_390x844.png`와 `20260713_r10_settings_before_360x800.png`입니다.
 - after 캡처는 같은 디렉터리의 `20260713_r10_settings_after_*`, `20260713_r10_team_after_*`, `20260713_r10_role_confirmation_after_390x844.png`, `20260713_r10_forbidden_after_390x844.png`입니다.
-- Pencil node는 직원 목록 `qupvk`, 초대 상태 `UwRep`, 역할 변경 `uAdC5`, 시스템 상태 `Nabfm`이며 네 node 모두 layout problem 0건입니다. 파일 hash는 `9b4f4b0ad1b07b92b10d296aefd109cfd72597ef`에서 `c2dff27286addba3c990040bd68a06bcbe9be51a`로 변경됐습니다.
+- Pencil node는 직원 목록 `qupvk`, 초대 상태 `UwRep`, 역할 변경 `uAdC5`, 시스템 상태 `Nabfm`이며 최신 main 통합·비활성 초안 제거 뒤 네 node 모두 layout problem 0건입니다. R-12 설정 `rYt9h`와 `DataBackupCard` `mVQYv`도 같은 SSOT에 보존됐습니다. 파일 hash는 최초 `9b4f4b0ad1b07b92b10d296aefd109cfd72597ef`, R-10 설계 저장 `c2dff27286addba3c990040bd68a06bcbe9be51a`, 최신 main 통합·초안 정리 저장 `140b7833a1a1eec4a0a93843919fbde13722a8e3` 순으로 변경됐습니다.
 
 ## 검증 결과
 - PostgreSQL 17 disposable DB에서 forward migration 12/12와 R-07/R-08/R-09/R-10 회귀를 통과했습니다. 별도 `schema.sql` replay와 R-10 test도 통과했고 migration의 R-10 구간과 snapshot 마지막 447행이 일치합니다.
@@ -47,6 +49,13 @@
 - 두 mobile viewport에서 목록·초대 validation/success·역할 confirmation/change·loading/empty/error/retry·staff forbidden·profileless·anon redirect·초대 수락/로그아웃을 확인했습니다. dialog focus trap, Escape, focus restore, body scroll 복원, 44px touch target과 수평 overflow 0건도 통과했습니다.
 - Production-mode local PWA에서 SW activated/controller, offline fallback, online revisit, console error 0건, API/Supabase/document response cache 0건을 확인했습니다. manifest/SW/offline/icon 192·512는 HTTP 200입니다.
 - `npm run build`, `git diff --check`, 브라우저 bundle secret scan을 통과했습니다. 실제 Auth 사용자·초대·역할·고객·예약 데이터는 변경하지 않았습니다.
+- 최신 main 통합에서 R-12 `DataBackupCard`와 R-10 진입점을 함께 보존했습니다. 통합 후 R-10 서버 계약 14/14, R-12 CSV 10/10, 무환경·synthetic-env production build, 390×844·360×800 모바일 캡처와 PWA offline/revisit를 다시 통과했습니다. 두 viewport 모두 수평 overflow와 console error가 없고 API/Supabase/설정·초대 문서 cache는 0건입니다.
+
+## Draft PR checks와 migration diff
+- Draft PR #26의 `Vercel`, `Vercel Preview Comments` checks는 통과했습니다.
+- Production은 기존 migration 11개가 R-09까지 존재하고, R-10 audit table과 RPC 3개는 없습니다.
+- 전용 Preview도 R-09까지 11개만 존재하고 R-10 객체는 없습니다. Preview의 migration version은 connector 적용 시각이지만 이름/순서는 기존 11개와 대응합니다.
+- 따라서 현재 migration diff는 local-only `20260712153420_r10_role_management.sql` 1개이며 live migration은 실행하지 않았습니다.
 
 ## merge 전 미해결 설계
 - 현재 승인안은 invitation pending/outbox ledger를 두지 않습니다. 따라서 신규 이메일의 동시 동일 `requestId` 두 요청이 `findRequest`와 Admin invite 사이를 함께 통과하는 check-then-act 경합은 DB transaction으로 원자 차단할 수 없습니다.
