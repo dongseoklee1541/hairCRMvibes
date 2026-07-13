@@ -1,7 +1,7 @@
 # R-10 Role Management
 
 ## 상태
-- In Progress (A′ local implementation/verification complete; new-head PR checks pending; live/release gates remain)
+- In Progress (A′ local implementation/verification and new-head PR checks complete; live/release gates remain)
 - 구현 브랜치: `codex/r10-role-management`
 - 최초 구현 기준: `origin/main@b2258844642fae0d7a5f07798a95c9a3091cd502`
 - 최신 통합 기준: `origin/main@a85c3f7597a0a326844f639da757d6d3f5f4c8bc`
@@ -54,7 +54,7 @@
 - 기존 최신 main 통합에서 R-14 사용성 변경, R-12 `DataBackupCard`, R-10 진입점을 함께 보존했습니다. A′에서는 390×844·360×800의 `unknown` 안내 상태를 추가 검증해 수평 overflow 0건, 모든 주요 touch target 44px 이상, 일반 page load console 0건을 확인했습니다. 실제 409 mock에는 Chromium의 예상 resource error 1건만 있고 app exception은 없습니다. 캡처는 `output/playwright/r10-role-management/20260714_r10_invitation_unknown_{before,after}_{390x844,360x800}.png`이며 synthetic masked data만 사용했습니다.
 
 ## Draft PR checks와 migration diff
-- A′ 이전 Draft PR #26 head `0d14192`에서는 `Vercel`, `Vercel Preview Comments` checks와 GitHub `CLEAN/MERGEABLE`을 확인했습니다. A′ commit/push 뒤 새 head의 실제 `origin/main` conflict preflight와 checks를 다시 확인하기 전까지 이 근거를 신규 변경에 확장하지 않습니다.
+- A′ 구현 commit `726e1b8`을 push한 뒤 최신 `origin/main@a85c3f7`이 HEAD ancestor(`0 behind / 6 ahead`)임을 확인했고 `git merge-tree --write-tree HEAD origin/main`이 충돌 없이 tree를 생성했습니다. Draft PR #26의 새 head에서 `Vercel`, `Vercel Preview Comments` checks가 통과했고 GitHub `CLEAN/MERGEABLE`을 확인했습니다.
 - 2026-07-14 읽기 전용 재확인에서 Production은 R-09까지 11개 migration만 존재하며 R-10 role audit/table/RPC와 private invitation ledger/RPC가 모두 없습니다.
 - 전용 Preview도 R-09까지 11개만 존재하고 R-10 public/private 객체가 없습니다. Preview의 migration version은 connector 적용 시각이지만 이름/순서는 기존 11개와 대응합니다.
 - 따라서 현재 migration diff는 local-only R-10 migration 2개(`20260712153420`, `20260713143746`)이며 live migration은 실행하지 않았습니다.
