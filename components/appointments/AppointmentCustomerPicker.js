@@ -113,7 +113,7 @@ export const AppointmentCustomerPicker = forwardRef(function AppointmentCustomer
       }}
     >
       <label className={styles.label} htmlFor="appointment-customer-search">
-        고객 검색
+        고객 검색 <span>필수</span>
       </label>
       <div className={styles.inputWrap}>
         <Search size={19} aria-hidden="true" />
@@ -147,7 +147,7 @@ export const AppointmentCustomerPicker = forwardRef(function AppointmentCustomer
       </div>
 
       <p id="appointment-customer-help" className={styles.helpText}>
-        활성 고객의 이름으로 검색합니다. 전화번호는 조회하지 않습니다.
+        예약할 고객의 이름을 입력하세요. 전화번호는 검색하지 않습니다.
       </p>
 
       {selectedCustomer ? (

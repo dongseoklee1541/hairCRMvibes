@@ -26,8 +26,9 @@ R-10 Draft PR #26의 merge/release blocker를 별도 승인 아래 해소할 때
 현재 기준:
 - Draft PR #26: https://github.com/dongseoklee1541/hairCRMvibes/pull/26
 - 브랜치: `codex/r10-role-management`
-- 통합 base: `origin/main@ec8bff1873a11f618087620156a8e463f39f9fb4`
-- Vercel checks와 Preview Comments check 통과
+- 통합 base: `origin/main@a85c3f7597a0a326844f639da757d6d3f5f4c8bc`
+- 직전 원격 head `f2e2d42`의 Vercel checks와 Preview Comments check 통과; 최신 main 통합 head는 push 후 checks와 non-DIRTY 상태 재확인 필요
+- 실제 latest-main merge에서 source/docs는 자동 병합됐고 `pencil-hairshopcrm.pen`만 충돌했습니다. Pencil SSOT에서 R-10/R-12/R-14 node 공존과 layout problem 0건으로 해소했습니다.
 - Production/Preview는 R-09까지 11개 migration만 존재하고 R-10 table/RPC는 없음
 - 실제 Auth 사용자·초대·역할 변경, live migration, Production deploy는 수행하지 않음
 - 전용 Preview Supabase와 공개 URL/key 격리는 완료됐지만 R-10 Admin route용 Preview server secret은 미변경·미검증
@@ -64,7 +65,7 @@ Non-Goals:
 - 고객·예약 데이터 변경
 - PWA cache 전략 변경
 - 기존 미추적 산출물 정리
-- R-11/R-14 구현
+- R-11 구현 / R-14 추가 변경·대표 사용자 검증
 
 최신 origin/main, PR #26 diff/checks, worktree와 병행 세션, Production/Preview migration 및 Auth URL metadata를 모두 읽기 전용으로 재확인한 뒤 Plan을 작성하세요.
 ```

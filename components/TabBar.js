@@ -48,7 +48,11 @@ export default function TabBar() {
   }
 
   return (
-    <nav className="tab-bar" style={{ gridTemplateColumns: `repeat(${tabs.length}, 1fr)` }}>
+    <nav
+      className="tab-bar"
+      aria-label="주요 메뉴"
+      style={{ gridTemplateColumns: `repeat(${tabs.length}, 1fr)` }}
+    >
       {tabs.map(({ href, label, icon: Icon }) => {
         const isActive =
           href === '/'
@@ -61,8 +65,9 @@ export default function TabBar() {
             href={href}
             prefetch={false}
             className={`tab-item ${isActive ? 'active' : ''}`}
+            aria-current={isActive ? 'page' : undefined}
           >
-            <Icon size={22} strokeWidth={isActive ? 2.2 : 1.8} />
+            <Icon size={24} strokeWidth={isActive ? 2.2 : 1.8} aria-hidden="true" />
             <span>{label}</span>
           </Link>
         );

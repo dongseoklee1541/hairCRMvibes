@@ -1,7 +1,43 @@
 .header {
   display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.headerTitle {
+  min-width: 0;
+}
+
+.headerTitle p {
+  max-width: 230px;
+  margin-top: 4px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.newAppointmentButton {
+  display: inline-flex;
+  min-height: 52px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 14px;
+  border-radius: var(--radius-md);
+  background: var(--accent-primary);
+  color: #fff;
+  box-shadow: var(--shadow-button);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.monthNavigation {
+  display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
 }
 
 .navBtn {
@@ -12,6 +48,10 @@
   min-height: 44px;
   color: var(--text-secondary);
   border-radius: 50%;
+}
+
+.navBtn:disabled {
+  color: var(--disabled-text);
 }
 
 .calendarCard {
@@ -31,7 +71,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
   padding: 4px 0 8px;
 }
@@ -41,7 +81,7 @@
   align-items: center;
   justify-content: center;
   min-height: 44px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   border-radius: 50%;
   transition: all var(--transition-fast);
@@ -49,7 +89,7 @@
 
 .priceText {
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
 }
 
@@ -67,8 +107,50 @@
 }
 
 .emptyState {
-  padding: 32px;
+  display: flex;
+  min-height: 168px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 28px;
+  color: var(--text-secondary);
+  font-size: 16px;
   text-align: center;
+}
+
+.emptyState a,
+.errorState button {
+  display: inline-flex;
+  min-height: 52px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 18px;
+  border-radius: var(--radius-md);
+  background: var(--accent-primary);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.loadingState,
+.errorState {
+  display: flex;
+  min-height: 168px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 28px;
+  color: var(--text-secondary);
+  font-size: 16px;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.errorState {
+  background: var(--status-danger-light);
+  color: var(--status-danger);
 }
 
 .feedbackBox {
@@ -77,7 +159,7 @@
   border-radius: 8px;
   background: rgba(42, 157, 143, 0.1);
   color: var(--accent-primary);
-  font-size: 13px;
+  font-size: 16px;
   line-height: 1.4;
 }
 
@@ -90,7 +172,8 @@
   display: flex;
   align-items: flex-start;
   gap: 14px;
-  padding: 14px 16px;
+  min-height: 96px;
+  padding: 16px;
 }
 
 .accentBar {
@@ -127,10 +210,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 24px;
+  min-height: 28px;
   padding: 0 8px;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   line-height: 1;
   white-space: nowrap;
@@ -164,9 +247,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px;
+  min-height: 52px;
   border-radius: 8px;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 700;
   transition: all var(--transition-fast);
 }
@@ -209,7 +292,7 @@
   gap: 6px;
   min-width: 0;
   color: var(--text-tertiary);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
 }
 
@@ -217,12 +300,12 @@
 .editField select,
 .editField textarea {
   width: 100%;
-  min-height: 44px;
+  min-height: 48px;
   border: 1px solid var(--border-subtle);
   border-radius: 8px;
   background: var(--bg-primary);
   color: var(--text-primary);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   padding: 0 12px;
   outline: none;
@@ -230,7 +313,7 @@
 
 .fieldHint {
   color: var(--text-tertiary);
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 500;
   line-height: 1.45;
 }
@@ -266,7 +349,7 @@
 
 @media (max-width: 387px) {
   .calendarCard {
-    margin-inline: calc(0px - var(--space-lg));
+    margin-inline: calc(0px - var(--page-gutter));
     padding-inline: max(6px, calc((100vw - 308px) / 2));
     border-radius: 0;
   }
@@ -278,6 +361,15 @@
   .apptRow {
     gap: 10px;
     padding: 14px 12px;
+  }
+
+  .headerTitle p {
+    max-width: 200px;
+  }
+
+  .newAppointmentButton {
+    padding-inline: 12px;
+    font-size: 14px;
   }
 
   .apptTime {

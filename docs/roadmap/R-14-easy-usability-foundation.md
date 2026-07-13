@@ -1,7 +1,7 @@
 # R-14 쉬운 사용성 1차
 
 ## 상태
-- Planned
+- In Progress (구현 완료 · 대표 사용자 검증 대기)
 - 우선순위: P1
 - 정식 ID: `R-14`
 - 주요 사용자 가정: 스마트폰으로 살롱 업무를 처리하는 50~60대 여성
@@ -122,3 +122,59 @@
 - 이 문서: 브랜치/PR/merge SHA, Pencil 근거, 실행 명령, 모바일 결과, 대표 사용자 결과, 스크린샷, 남은 위험
 
 세 위치가 같은 완료 근거를 가리키기 전에는 R-14를 `Done`으로 표시하지 않습니다.
+
+## 2026-07-13 구현 및 검증 기록
+
+### 실행 범위
+- 기준: `origin/main@ec8bff1873a11f618087620156a8e463f39f9fb4`
+- 브랜치/작업트리: `codex/r14-easy-usability-foundation` / `/Users/idongseog/workspace/hairCRMvibes-r14-easy-usability`
+- 구현: 공통 가독성·포커스·탭바, 홈, 예약 목록·상태, 새 예약 폼, 고객 상세를 정비했습니다.
+- 유지: Supabase 조회·저장 payload, RLS/Auth 역할, migration/schema, KST 날짜, PWA runtime cache 전략은 변경하지 않았습니다.
+- Git/배포: 구현 commit과 로컬 검증 이후 Production release 결과는 아래 `Production release record`에 동기화합니다.
+
+### Pencil SSOT
+- 저장 전 SHA-256: `4bcb62cb825c95ce6b72e30023fdda903ea626ee760656ae7ea7c07d4da395c8`
+- 저장 후 SHA-256: `ee3aa659662ef54d1dd4c085d28a009666cc121a3a4c634523a72432a8e28b33`
+- Before/After node: 홈 `L8H49G`/`AXhKf`, 예약 `u192T8`/`cbVN7`, 새 예약 `ijcLf`/`I1Zx5d`, 고객 상세 `f4UdzF`/`gRWiu`
+- 공통 상태 node: `p3oLwb` (loading/error/empty/disabled)
+- After 4개와 상태 매트릭스 모두 `snapshot_layout(problemsOnly)`에서 `No layout problems.`를 확인했습니다.
+- PNG export: `output/playwright/r14-easy-usability/pencil-verified/`
+
+### 코드·모바일·PWA
+- `npm ci`: 439 packages, audit 취약점 0건
+- `NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321 NEXT_PUBLIC_SUPABASE_ANON_KEY=synthetic-anon-key npm run build`: Next.js 15.5.20 production build 성공, 13개 route 생성, 신규 relevant warning 0건
+- 합성 데이터 정상 화면 4개를 390×844와 360×800에서 검증했습니다. 8개 화면 모두 가로 overflow 0, 44×44px 미만 상호작용 요소 0, console warning/error 0이었습니다.
+- 홈 empty/error, 예약 empty/error, 새 예약 service error + disabled CTA, 고객 상세 error를 390×844에서 검증했습니다. 상태 화면도 가로 overflow와 44px 미만 요소가 없었고, 실패 상태의 503 console 항목은 의도적으로 주입한 API 오류입니다.
+- 새 예약 메모 포커스에서 뷰포트를 390×524와 360×480으로 줄여 가상 키보드 상황을 모사했습니다. 두 경우 모두 포커스 영역이 visual viewport 안에 남고 가로 overflow가 없었습니다.
+- Production service worker는 `activated`/controlled였고 precache 47개 중 Auth·고객·예약 민감 cache entry는 0개였습니다. `/appointments` 오프라인 탐색은 `/offline.html`로 전환됐고 합성 고객·시술 문구와 console 문제가 없었습니다.
+- 실제 고객·예약 데이터는 조회하거나 변경하지 않았습니다. Production 확인은 고객·예약 데이터가 아닌 공개/PWA 자산과 비인증 경계만 대상으로 했습니다.
+
+### Production release record (2026-07-13)
+- 구현 commit: `c7eaaabaabb47cbe4b11fabb6aaaccc1c428cb67`
+- 애플리케이션 release PR: [#25](https://github.com/dongseoklee1541/hairCRMvibes/pull/25)
+- `main` merge SHA: `cdabf40982c1b8d2dcc196bacc116b3d399efa15`
+- GitHub Production deployment record: `5424206017` (`success`)
+- canonical: `https://hair-cr-mvibes.vercel.app`
+- 공개/PWA 자산은 HTTP `200`이며 R-14 bundle marker를 확인했습니다.
+- Cron 무인증 요청은 `401` 및 `no-store`를 반환했습니다.
+- CSV export 무인증 `dataset=customers` 요청은 `401`, `private`, `no-store`를 반환했습니다.
+- 실제 고객·예약 데이터는 조회하거나 변경하지 않았습니다.
+- 대표 사용자 검증은 수행하지 않았습니다. 따라서 R-14는 `In Progress (구현 완료 · 대표 사용자 검증 대기)`를 유지하며 `Done`으로 변경하지 않습니다.
+
+### Before/After 스크린샷
+모든 고객·예약 정보는 합성 데이터입니다.
+
+| 화면 | 390×844 | 360×800 |
+| --- | --- | --- |
+| 홈 | `20260713_r14_home_390x844_before.png` / `20260713_r14_home_390x844_after.png` | `20260713_r14_home_360x800_before.png` / `20260713_r14_home_360x800_after.png` |
+| 예약 | `20260713_r14_appointments_390x844_before.png` / `20260713_r14_appointments_390x844_after.png` | `20260713_r14_appointments_360x800_before.png` / `20260713_r14_appointments_360x800_after.png` |
+| 새 예약 | `20260713_r14_appointment-new_390x844_before.png` / `20260713_r14_appointment-new_390x844_after.png` | `20260713_r14_appointment-new_360x800_before.png` / `20260713_r14_appointment-new_360x800_after.png` |
+| 고객 상세 | `20260713_r14_customer-detail_390x844_before.png` / `20260713_r14_customer-detail_390x844_after.png` | `20260713_r14_customer-detail_360x800_before.png` / `20260713_r14_customer-detail_360x800_after.png` |
+
+공통 경로: `output/playwright/r14-easy-usability/`. Empty/error/disabled, 키보드 축소, 오프라인 fallback 캡처도 같은 폴더에 있습니다.
+
+### 대표 사용자 검증과 남은 게이트
+- 실제 50~60대 여성 대표 사용자 2명에 대한 관찰 검증은 수행하지 못했습니다.
+- 고객 찾기, 새 예약 등록, 예약 확인 또는 상태 변경 과제의 막힌 위치·오조작·이해하지 못한 용어·완료 확신을 실제 사용자와 기록해야 합니다.
+- 모바일 실기기 IME, standalone, 서비스워커 update는 이번 합성 브라우저 검증에 포함되지 않았습니다.
+- 따라서 현재 상태는 `구현 완료 · 대표 사용자 검증 대기`이며 R-14를 `Done`으로 표시하지 않습니다.
