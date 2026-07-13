@@ -14,6 +14,8 @@
 /coverage
 
 # local agent/browser and Supabase CLI state
+/.codex/
+/.omx/
 .playwright-cli/
 supabase/.temp/
 output/playwright/**/console-*.log
