@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test": "npm run test:node && npm run test:race",
+    "test:node": "NODE_OPTIONS=--disable-warning=MODULE_TYPELESS_PACKAGE_JSON node --test tests/date-time.test.mjs tests/appointment-rules.test.mjs tests/csv-export.test.mjs",
+    "test:race": "jest --runInBand --runTestsByPath tests/appointments-page-race.test.jsx"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.95.3",
@@ -17,6 +20,10 @@
   "devDependencies": {
     "@ducanh2912/next-pwa": "^10.2.9",
     "@tailwindcss/postcss": "4.3.2",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.2",
+    "jest": "^30.4.2",
+    "jest-environment-jsdom": "^30.4.1",
     "tailwindcss": "4.3.2"
   },
   "overrides": {
