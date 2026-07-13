@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import {
   CheckCircle2,
@@ -88,11 +88,15 @@ export default function AppointmentsPage() {
     original_duration_minutes: 60,
     memo: '',
   });
+  const monthRequestIdRef = useRef(0);
+  const dailyRequestIdRef = useRef(0);
 
   const daysInMonth = getDaysInKstMonth(year, month);
   const firstDay = getFirstWeekdayOfKstMonth(year, month);
 
   const fetchMonthData = useCallback(async () => {
+    const requestId = ++monthRequestIdRef.current;
+
     try {
       const startDate = formatDateKey(year, month, 1);
       const endDate = formatDateKey(year, month, daysInMonth);
@@ -104,15 +108,20 @@ export default function AppointmentsPage() {
         .lte('date', endDate);
         
       if (error) throw error;
+
+      if (requestId !== monthRequestIdRef.current) return;
       
       const apptDates = new Set(data?.map(a => a.date));
       setMonthHasAppts(apptDates);
     } catch (error) {
+      if (requestId !== monthRequestIdRef.current) return;
       console.error('Error fetching month appts:', error);
     }
   }, [year, month, daysInMonth]);
 
   const fetchDailyData = useCallback(async () => {
+    const requestId = ++dailyRequestIdRef.current;
+
     try {
       setLoading(true);
       setDailyError('');
@@ -128,8 +137,10 @@ export default function AppointmentsPage() {
         .order('time');
         
       if (error) throw error;
+      if (requestId !== dailyRequestIdRef.current) return;
       setDailyAppts(data || []);
     } catch (error) {
+      if (requestId !== dailyRequestIdRef.current) return;
       console.error('Error fetching daily appts:', error);
       setDailyAppts([]);
       setDailyError(
@@ -138,7 +149,9 @@ export default function AppointmentsPage() {
           : '오프라인에서는 예약을 불러올 수 없습니다. 연결을 확인해주세요.'
       );
     } finally {
-      setLoading(false);
+      if (requestId === dailyRequestIdRef.current) {
+        setLoading(false);
+      }
     }
   }, [year, month, selectedDay]);
 
@@ -166,10 +179,18 @@ export default function AppointmentsPage() {
 
   useEffect(() => {
     fetchMonthData();
+
+    return () => {
+      monthRequestIdRef.current += 1;
+    };
   }, [fetchMonthData]);
 
   useEffect(() => {
     fetchDailyData();
+
+    return () => {
+      dailyRequestIdRef.current += 1;
+    };
   }, [fetchDailyData]);
 
   useEffect(() => {
