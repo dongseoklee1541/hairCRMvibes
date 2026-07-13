@@ -52,7 +52,7 @@
 - 최신 main 통합에서 R-14 사용성 변경, R-12 `DataBackupCard`, R-10 진입점을 함께 보존했습니다. 실제 merge에서 `pencil-hairshopcrm.pen` 충돌 1건을 Pencil 앱/MCP로 해결했고 미해결 충돌 0건과 `git diff --cached --check` 통과를 확인했습니다. 통합 후 R-10 서버 계약 14/14, R-12 CSV 10/10, 무환경·synthetic-env production build, 390×844·360×800 모바일 캡처와 PWA offline/revisit를 다시 통과했습니다. 두 viewport 모두 수평 overflow가 없고 console/page error 0건, API/Supabase/설정·초대 문서 cache 0건입니다.
 
 ## Draft PR checks와 migration diff
-- Draft PR #26의 직전 원격 head `f2e2d42`에서 `Vercel`, `Vercel Preview Comments` checks는 통과했습니다. 최신 main 통합 head는 push 뒤 checks와 non-DIRTY 상태를 다시 확인합니다.
+- Draft PR #26의 최신 main 통합 PR head에서 `Vercel`, `Vercel Preview Comments` checks가 통과했습니다. 기능 통합 merge commit은 `06de442`이며 GitHub `mergeStateStatus=CLEAN`, `mergeable=MERGEABLE`로 main branch 충돌이 없음을 확인했습니다.
 - Production은 기존 migration 11개가 R-09까지 존재하고, R-10 audit table과 RPC 3개는 없습니다.
 - 전용 Preview도 R-09까지 11개만 존재하고 R-10 객체는 없습니다. Preview의 migration version은 connector 적용 시각이지만 이름/순서는 기존 11개와 대응합니다.
 - 따라서 현재 migration diff는 local-only `20260712153420_r10_role_management.sql` 1개이며 live migration은 실행하지 않았습니다.

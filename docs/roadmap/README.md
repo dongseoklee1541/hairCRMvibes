@@ -123,11 +123,11 @@ R-14는 Pencil Before/After 4쌍과 공통 상태 매트릭스, 공통 가독성
 | ID | 문서 | 상태 |
 | --- | --- | --- |
 | R-12 | [R-12-csv-export-backup.md](./R-12-csv-export-backup.md) | Done (production deployed; Preview role/PWA + Production public/API boundary verified) |
-| R-10 | [R-10-role-management.md](./R-10-role-management.md) | In Progress (Draft PR #26; latest main conflict resolved; product/release blockers remain) |
+| R-10 | [R-10-role-management.md](./R-10-role-management.md) | In Progress (Draft PR #26; latest-head checks pass; main conflict resolved; product/release blockers remain) |
 
 R-12는 owner JWT·기존 RLS를 사용하는 스트리밍 Route Handler, 고객/예약 CSV, 명시적 암호화 보관·30일 삭제 확인 UI를 구현했습니다. 전용 Preview에서 anon 401, staff 403, owner 고객·예약 200과 CSV 계약, Vercel branch Preview 실제 owner/staff UI, 390×844·360×800/PWA cache를 검증하고 synthetic residue 0을 확인했습니다. Production 데이터·RLS·service-role·PWA cache 전략은 변경하지 않았습니다.
 
-R-10은 `origin/main@b225884`에서 구현한 뒤 최신 `origin/main@a85c3f7`의 R-14 변경까지 실제 merge로 통합하고 Draft PR #26을 갱신 중입니다. Pencil 충돌 1건은 R-10·R-12·R-14 node를 함께 보존해 해소했고 미해결 Git 충돌은 0건입니다. migration diff는 R-10 local-only 1개이며 Production/Preview에는 R-10 table/RPC가 없습니다. 실제 Auth 사용자·초대·역할은 변경하지 않았습니다. invitation request ledger 부재와 canonical Supabase Auth redirect 미등록은 merge/release blocker입니다.
+R-10은 `origin/main@b225884`에서 구현한 뒤 최신 `origin/main@a85c3f7`의 R-14 변경까지 실제 merge로 통합하고 Draft PR #26을 갱신했습니다. Pencil 충돌 1건은 R-10·R-12·R-14 node를 함께 보존해 해소했고 미해결 Git 충돌은 0건입니다. 최신 PR head의 Vercel checks가 통과했으며 GitHub `CLEAN/MERGEABLE`을 확인했습니다. migration diff는 R-10 local-only 1개이며 Production/Preview에는 R-10 table/RPC가 없습니다. 실제 Auth 사용자·초대·역할은 변경하지 않았습니다. invitation request ledger 부재와 canonical Supabase Auth redirect 미등록은 merge/release blocker입니다.
 
 ## 실행 프롬프트
 - [Phase 2 Execution Prompt](./phase-2-execution-prompt.md)
