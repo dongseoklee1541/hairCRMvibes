@@ -48,7 +48,7 @@
 | R-08 | Done (production deployed; live transactional smoke verified) | PR #16 merge `main@01440b6`, exact 10번째 live migration `20260712093510_r08_service_master`, 기존 서비스 4건·예약 7건 no-backfill, live owner/staff/anon·snapshot transaction smoke와 synthetic residue 0건을 확인했습니다. Vercel Production deployment `6N4gbJURzr8GX4omNErBZEA8VRzQ` 성공, canonical 공개 route/PWA asset과 R-08 bundle marker도 확인했습니다. | 실제 로그인 owner/staff browser smoke와 초기 서비스 가격·기본 서비스 운영 입력은 비차단 후속 검증으로 추적 |
 | R-13 | Done (production deployed; public/PWA smoke verified) | PR #18 merge `main@f904bcf`, Vercel Production deployment `dpl_5VemJYn7XhZAorkpEaHBNZN9x85o`, canonical `/appointments/new`·로그인 redirect·manifest/SW/offline/favicon/192·512 icon HTTP 200과 console 0건을 확인했습니다. 로컬에서는 Pencil 6개 상태, 390×844·360×800 mock 검색·중복·성공/실패/취소 draft 보존과 `customers?select=id,name` 최소 조회를 검증했습니다. | 실제 owner/staff 로그인·모바일 실기기 IME/standalone은 후속 운영 검증. 전용 Preview synthetic 데이터만 사용하고 Production 데이터 smoke는 별도 승인 전 금지 |
 | R-09 | Done (production deployed; exact live migration/ACL/PWA verified) | PR #20 merge `main@b63f9a3`, exact 11번째 live migration `20260712124959_r09_stats_advanced`, RPC invoker/stable/search_path/ACL, Vercel deployment `dpl_FBDsYn26v2ZXiJthe5z97vsJDwk2`, canonical redirect·PWA assets·offline fallback을 확인했습니다. local Pencil/SQL/build/mobile 검증과 synthetic residue 0 근거도 유지합니다. | live authenticated 실제 데이터 smoke와 실기기 install/standalone은 후속 운영 검증. R-10/R-11은 별도 작업으로 유지하고 현재 브랜치는 R-12를 진행 |
-| R-12 | Verified (dedicated Preview integration; branch deployment pending) | owner JWT·기존 RLS만 사용하는 스트리밍 `/api/export`, 고객/예약 CSV, formula injection 방어·no-store, 암호화 보관·30일 삭제 확인 UI를 구현했습니다. Node tests 10/10과 100,005행 스트림을 통과했고 전용 Preview에서 anon 401, staff 403, owner 고객·예약 200과 CSV 계약을 확인했습니다. Production 데이터는 접근하지 않았습니다. | branch Preview의 실제 로그인 390×844·360×800/PWA 검증과 synthetic residue 0 확인 후 Draft PR 마감. 모바일·Safari Blob fallback과 플랫폼 실행시간은 운영 규모 부하 검증 필요 |
+| R-12 | Ready for review (Preview deployed/verified; Draft PR #22) | owner JWT·기존 RLS만 사용하는 스트리밍 `/api/export`, 고객/예약 CSV, formula injection 방어·no-store, 암호화 보관·30일 삭제 확인 UI를 구현했습니다. Node tests 10/10·100,005행, 전용 Preview anon 401/staff 403/owner 고객·예약 200, Vercel owner/staff UI, 390×844·360×800/PWA cache, synthetic residue 0을 확인했습니다. Production 데이터는 접근하지 않았습니다. | 모바일·Safari Blob fallback 메모리와 Vercel 함수 실행시간은 운영 규모 부하 검증 필요. Production 실제 owner 다운로드·main merge·Production 배포는 별도 승인 범위 |
 
 ## Phase 1 live 검증 요약 (2026-07-08)
 - Supabase 프로젝트 `burtyhairCRM`은 `ACTIVE_HEALTHY` 상태였고, Phase 1 migration 5개(`r01`, `r02`, `r05`, `r03`, `phase1_function_privilege_hardening`)를 live DB에 적용했습니다.
@@ -97,7 +97,7 @@
 ### Phase 3 (P2 확장)
 - `R-10` 권한관리 UI(직원 초대/권한변경)
 - `R-11` 알림 자동화(예약 리마인드/재방문)
-- `R-12` CSV 내보내기/백업: 전용 Preview Supabase 통합 완료, branch Preview browser/PWA 검증·release 대기
+- `R-12` CSV 내보내기/백업: 전용 Preview Supabase·Vercel branch·browser/PWA 검증 완료, Draft PR #22 review 대기
 
 ## 선행관계 맵
 - `R-01 -> R-02 -> R-10`
@@ -139,5 +139,5 @@
 - R-08 Production 기록: PR #16 merge `main@01440b6`, live migration `20260712093510_r08_service_master`, 고객 5건·예약 7건·서비스 4건 기준선과 기존 snapshot NULL 보존, live transactional role/snapshot smoke·residue 0건, Vercel deployment `6N4gbJURzr8GX4omNErBZEA8VRzQ`, canonical R-08 bundle/PWA/Cron 공개 경계를 확인
 - R-13 release 기록: PR #18 merge `main@f904bcf`, Vercel deployment `dpl_5VemJYn7XhZAorkpEaHBNZN9x85o` READY 및 canonical alias 연결, `/appointments/new` R-13 chunk·로그인 redirect·manifest/SW/offline/favicon/192·512 icon HTTP 200·console 0건 확인. Supabase 요청과 실데이터 smoke는 수행하지 않음
 - R-09 release 기록: PR #20 merge `main@b63f9a3`, exact live migration `20260712124959_r09_stats_advanced`, RPC ACL 계약, Vercel deployment `dpl_FBDsYn26v2ZXiJthe5z97vsJDwk2` READY/canonical 연결, 공개 PWA/offline/Cron 무인증 경계 확인. 실제 고객·예약 fixture와 authenticated live 데이터 smoke는 수행하지 않음
-- R-12 Preview 기록: `origin/main@07eefe8` 기반 `codex/r12-csv-backup`, Pencil 설정 카드, owner-only 고객/예약 스트리밍 CSV, Node tests 10/10·100,005행, build, 390×844·360×800 mock, PWA NetworkOnly·민감 응답 cache 0건 확인. Production 고객·예약 데이터는 접근하지 않음
-- 전용 `burtyhairCRM-preview`에 forward migration 11개를 replay하고 synthetic anon/staff/owner 실제 handler smoke에서 401/403/고객 200/예약 200과 CSV 계약을 확인. Vercel Preview 공개 URL/key를 분리 설정했고 branch Preview 배포·browser smoke·residue 0 확인은 push 후 수행
+- R-12 Preview 기록: `origin/main@07eefe8` 기반 `codex/r12-csv-backup`, Pencil 설정 카드, owner-only 고객/예약 스트리밍 CSV, Node tests 10/10·100,005행, build, 전용 Preview synthetic 390×844·360×800, PWA NetworkOnly·민감 응답 cache 0건 확인. Production 고객·예약 데이터는 접근하지 않음
+- 전용 `burtyhairCRM-preview`에 forward migration 11개를 replay하고 synthetic anon/staff/owner 실제 handler smoke에서 401/403/고객 200/예약 200과 CSV 계약을 확인. Vercel Preview deployment `EXjXJCPCCjNJ3gPZgPLsntu71Cb7`, 실제 owner/staff UI, 390×844·360×800/PWA cache를 검증하고 users/identities/profiles/customers/appointments/sessions/refresh tokens residue 0을 확인. Draft PR #22 생성

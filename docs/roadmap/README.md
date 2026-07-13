@@ -106,9 +106,9 @@ R-09는 `origin/main@a360cea` 기반 별도 worktree에서 aggregate RPC, 기간
 ## Phase 3
 | ID | 문서 | 상태 |
 | --- | --- | --- |
-| R-12 | [R-12-csv-export-backup.md](./R-12-csv-export-backup.md) | Verified (dedicated Preview integration; branch deployment pending) |
+| R-12 | [R-12-csv-export-backup.md](./R-12-csv-export-backup.md) | Ready for review (Preview deployed/verified; Draft PR #22) |
 
-R-12는 owner JWT·기존 RLS를 사용하는 스트리밍 Route Handler, 고객/예약 CSV, 명시적 암호화 보관·30일 삭제 확인 UI를 구현했습니다. 전용 Preview에서 anon 401, staff 403, owner 고객·예약 200과 CSV 계약을 검증했으며 Production 데이터·RLS·service-role·PWA cache 전략은 변경하지 않았습니다.
+R-12는 owner JWT·기존 RLS를 사용하는 스트리밍 Route Handler, 고객/예약 CSV, 명시적 암호화 보관·30일 삭제 확인 UI를 구현했습니다. 전용 Preview에서 anon 401, staff 403, owner 고객·예약 200과 CSV 계약, Vercel branch Preview 실제 owner/staff UI, 390×844·360×800/PWA cache를 검증하고 synthetic residue 0을 확인했습니다. Production 데이터·RLS·service-role·PWA cache 전략은 변경하지 않았습니다.
 
 ## 실행 프롬프트
 - [Phase 2 Execution Prompt](./phase-2-execution-prompt.md)
