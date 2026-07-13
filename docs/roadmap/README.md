@@ -100,13 +100,14 @@ R-09는 `origin/main@a360cea` 기반 별도 worktree에서 aggregate RPC, 기간
 ## Phase 2 착수 기준
 - R-06/R-07은 재구현하지 않습니다. 실기기 install/standalone/SW update와 post-deploy authenticated browser 검증은 완료 근거와 분리한 후속 운영 작업입니다.
 - R-08은 `/Users/idongseog/workspace/hairCRMvibes-r08-service-master` clean worktree에서 구현한 뒤 PR #16 merge `main@01440b6`, live migration 10개와 Production 배포까지 완료했습니다. 기존 R-07 checkout과 미추적 산출물은 변경하지 않았습니다.
-- R-09는 PR #20 merge, exact 11번째 live migration과 Production 공개/PWA smoke까지 완료했습니다. R-10/R-11은 별도 작업으로 유지하고, 이 브랜치에서는 사용자 선택에 따라 R-12를 진행했습니다.
+- R-09는 PR #20 merge, exact 11번째 live migration과 Production 공개/PWA smoke까지 완료했습니다. R-10/R-11은 별도 작업으로 유지합니다.
 - 2026-07-13 `burtyhairCRM-preview` 전용 Supabase 프로젝트를 만들고 forward migration 11개를 순서대로 replay했습니다. Vercel에는 Preview 범위의 공개 URL/key만 추가했으며 기존 Production/Development 값은 변경하지 않았습니다.
+- R-12는 Preview의 synthetic owner/staff/anon·모바일/PWA 검증 후 PR #22 merge `main@7a107c4`와 Production deployment `FxRGiDSgHQFXARsc2mUyCrsydtY8`까지 완료했습니다. canonical R-12 bundle, 공개/PWA 자산과 무인증 `/api/export`의 `401 + no-store`를 확인했으며 Production 실제 CSV는 생성하지 않았습니다.
 
 ## Phase 3
 | ID | 문서 | 상태 |
 | --- | --- | --- |
-| R-12 | [R-12-csv-export-backup.md](./R-12-csv-export-backup.md) | Ready for review (Preview deployed/verified; Draft PR #22) |
+| R-12 | [R-12-csv-export-backup.md](./R-12-csv-export-backup.md) | Done (production deployed; Preview role/PWA + Production public/API boundary verified) |
 
 R-12는 owner JWT·기존 RLS를 사용하는 스트리밍 Route Handler, 고객/예약 CSV, 명시적 암호화 보관·30일 삭제 확인 UI를 구현했습니다. 전용 Preview에서 anon 401, staff 403, owner 고객·예약 200과 CSV 계약, Vercel branch Preview 실제 owner/staff UI, 390×844·360×800/PWA cache를 검증하고 synthetic residue 0을 확인했습니다. Production 데이터·RLS·service-role·PWA cache 전략은 변경하지 않았습니다.
 

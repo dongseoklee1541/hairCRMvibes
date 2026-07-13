@@ -1,9 +1,9 @@
 # R-12 CSV 내보내기/백업
 
 ## 상태
-- Ready for review (Preview deployed/verified; Draft PR #22)
+- Done (production deployed; Preview role/PWA + Production public/API boundary verified)
 - 구현 브랜치: `codex/r12-csv-backup`
-- 기준: `origin/main@07eefe8f2b0431ec9473bf23bf38170d9ac61157`
+- 병합: PR #22, `main@7a107c434f272bf33b0a35c7db6fba36e33b1946`
 - 최종 업데이트: 2026-07-13
 
 ## 목표와 결과
@@ -70,7 +70,16 @@
 - commit `0680d9f`의 Vercel Preview deployment `EXjXJCPCCjNJ3gPZgPLsntu71Cb7`이 `Ready`이고, branch domain `hair-cr-mvibes-git-codex-r12-c-ddf281-dongseoklee1541s-projects.vercel.app`이 생성됐습니다.
 - 실제 Vercel Preview에서 owner는 `/settings` 데이터 백업 카드와 정책 문구를 확인했고, staff는 `권한 없음` 화면으로 차단됐습니다. 무인증 배포 API는 `401 AUTH_REQUIRED`를 반환했습니다.
 - 검증 후 고정 synthetic appointment/customer/Auth 사용자를 삭제했습니다. users, identities, profiles, customers, appointments, sessions, refresh tokens가 모두 0이고 기본 설정 1건·영업시간 7건·서비스 4건은 유지됨을 확인했습니다.
-- GitHub Draft PR: [#22 R-12 CSV 스트리밍 백업 추가](https://github.com/dongseoklee1541/hairCRMvibes/pull/22)
+- GitHub PR: [#22 R-12 CSV 스트리밍 백업 추가](https://github.com/dongseoklee1541/hairCRMvibes/pull/22), merge commit `7a107c434f272bf33b0a35c7db6fba36e33b1946`
+
+## Production release 근거
+- release 전 코드 리뷰에서 예약 날짜·시간 수정이 offset 페이지 경계를 바꿀 수 있는 위험을 확인했습니다. commit `f72a0ea`에서 예약 CSV 정렬을 변경되지 않는 `created_at`, `id`로 고정하고 회귀 테스트와 비-snapshot 운영 경계를 추가했습니다.
+- `node --test tests/csv-export.test.mjs` 10/10, `npm run build`, `git diff --check`, Vercel Preview 검사를 다시 통과한 뒤 PR #22를 merge commit 방식으로 병합했습니다.
+- merge SHA `7a107c434f272bf33b0a35c7db6fba36e33b1946`의 Vercel Production deployment `FxRGiDSgHQFXARsc2mUyCrsydtY8`이 성공했습니다.
+- canonical `https://hair-cr-mvibes.vercel.app`에서 `/`, `/login`, `/settings`, manifest, service worker, offline fallback, favicon, 192·512 icon이 모두 HTTP 200입니다. 설정 chunk `/_next/static/chunks/app/settings/page-a7fe4951dcbf5793.js`에서 R-12 UI와 `/api/export` marker를 확인했습니다.
+- 배포 전 canonical의 `/api/export`는 `404`였고 배포 후 무인증 고객 요청은 `401 {"error":"AUTH_REQUIRED"}`입니다. 응답의 `private, no-store`, `Vary: Authorization`, `nosniff`, same-origin CORP와 service worker의 `/api/` NetworkOnly 계약을 확인했습니다.
+- Production DB는 배포 전후 고객 6건·예약 7건·profile 2건(owner 1/staff 1), public table/RLS 9/9, 핵심 authenticated SELECT 계약 3/3, synthetic fixture residue 0으로 동일합니다. 행 내용은 읽거나 출력하지 않았고 migration/schema 변경도 없습니다.
+- 실제 Production owner CSV는 생성하지 않았습니다. owner/staff 데이터 경계와 CSV 본문 계약은 완전히 분리된 Preview synthetic 통합 검증을 완료 근거로 사용합니다.
 
 ## 스크린샷
 - before 390×844: `/Users/idongseog/.codex/visualizations/2026/07/13/019f59d5-495d-7680-8dec-3af3a123585c/r12/20260713_settings_r12_before_390x844.png`
@@ -82,7 +91,7 @@
 
 ## Rollback
 - 애플리케이션·설계·문서 파일을 이 변경 commit 단위로 revert합니다.
-- R-12는 신규 migration/schema를 만들지 않았습니다. 애플리케이션 rollback이 필요하면 Vercel Preview 변수 두 개를 제거하고 전용 Preview 프로젝트를 별도 삭제 판단하며 Production 설정은 건드리지 않습니다.
+- R-12는 신규 migration/schema를 만들지 않았습니다. 애플리케이션 rollback은 merge commit `7a107c4`를 revert하고 직전 성공 Production deployment를 canonical에 연결합니다. Preview를 폐기할 때만 Preview 변수 두 개와 전용 Preview 프로젝트의 삭제 여부를 별도 판단하며 Production 설정은 건드리지 않습니다.
 - synthetic 검증 데이터는 정확한 고정 ID로 삭제하고 users/identities/profiles/customers/appointments 잔존 수가 모두 0인지 확인합니다.
 - rollback 뒤 production build를 다시 생성해 service worker precache revision을 갱신합니다.
 
@@ -92,4 +101,4 @@
 - 서버는 페이지 단위로 스트리밍하지만 Vercel 함수 실행 시간과 Supabase/네트워크 지연은 남아 있습니다. 현 데이터 규모를 크게 넘기는 운영 전에는 실제 규모 부하 검증과 필요 시 비동기 export를 별도 설계합니다.
 - File System Access API가 없는 모바일·Safari 계열은 Blob fallback을 사용하므로 매우 큰 파일에서 클라이언트 메모리 사용량이 커질 수 있습니다.
 - 브라우저 다운로드 이후 파일의 암호화·접근통제·삭제주기는 운영자와 기기 정책의 책임이며 애플리케이션이 강제하지 못합니다.
-- Production 실제 owner 다운로드, `main` merge와 Production 배포는 이번 Draft PR 범위에서 수행하지 않았습니다.
+- `main` merge와 Production 배포·공개/API 경계 검증은 완료했습니다. Production 실제 owner 다운로드는 민감정보 파일 생성 책임 때문에 의도적으로 실행하지 않았습니다.
