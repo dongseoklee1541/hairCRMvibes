@@ -1,0 +1,370 @@
+.page {
+  padding-top: 12px;
+  gap: 18px;
+}
+
+.pageHeader {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+}
+
+.pageHeader > div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.backButton {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-card);
+}
+
+.backButton:focus-visible,
+.inviteButton:focus-visible,
+.roleButton:focus-visible,
+.systemState button:focus-visible,
+.emailField:focus-within {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.inviteCard,
+.staffCard {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sectionHeader {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sectionHeader > div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sectionIcon {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  border-radius: 13px;
+  background: var(--accent-light);
+  color: var(--accent-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inviteForm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inviteForm > label {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.emailField {
+  min-height: 48px;
+  border-radius: 13px;
+  background: var(--bg-primary);
+  padding: 0 14px;
+  color: var(--text-tertiary);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.emailField input {
+  min-width: 0;
+  width: 100%;
+  height: 48px;
+  color: var(--text-primary);
+  font-size: 15px;
+}
+
+.emailField input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.inviteButton {
+  min-height: 50px;
+  border-radius: 14px;
+  background: var(--accent-primary);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  box-shadow: var(--shadow-button);
+}
+
+.inviteButton:disabled,
+.roleButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+.feedbackRegion,
+.roleFeedback {
+  min-height: 0;
+}
+
+.feedback {
+  min-height: 44px;
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.feedback svg {
+  flex: 0 0 auto;
+}
+
+.feedback_success {
+  background: var(--status-success-light);
+  color: var(--status-success);
+}
+
+.feedback_pending {
+  background: var(--status-warning-light);
+  color: var(--status-warning-strong);
+}
+
+.feedback_duplicate,
+.feedback_error {
+  background: var(--status-danger-light);
+  color: var(--status-danger);
+}
+
+.listHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ownerCount {
+  min-height: 30px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: var(--accent-light);
+  color: var(--accent-primary);
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.roleFeedback p {
+  min-height: 44px;
+  border-radius: 12px;
+  background: var(--status-success-light);
+  color: var(--status-success);
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.directory {
+  min-height: 160px;
+}
+
+.systemState {
+  min-height: 176px;
+  border-radius: 14px;
+  background: var(--bg-primary);
+  color: var(--text-tertiary);
+  padding: 20px 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.systemState strong {
+  color: var(--text-primary);
+  font-size: 15px;
+}
+
+.systemState span {
+  max-width: 260px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.systemState button {
+  min-width: 132px;
+  min-height: 44px;
+  margin-top: 6px;
+  border-radius: 12px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.staffList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.staffRow {
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  background: var(--bg-primary);
+  padding: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.memberTopLine {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.memberIdentity {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.memberIdentity strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.meBadge,
+.roleBadge,
+.memberMeta > span:first-child {
+  min-height: 26px;
+  border-radius: 999px;
+  padding: 4px 8px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.meBadge {
+  background: var(--status-info-light);
+  color: var(--status-info);
+}
+
+.roleBadge {
+  flex: 0 0 auto;
+}
+
+.roleOwner {
+  background: var(--accent-light);
+  color: var(--accent-primary);
+}
+
+.roleStaff {
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+}
+
+.memberMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  color: var(--text-tertiary);
+  font-size: 11px;
+}
+
+.invite_active {
+  background: var(--status-success-light);
+  color: var(--status-success);
+}
+
+.invite_pending,
+.invite_warning {
+  background: var(--status-warning-light);
+  color: var(--status-warning-strong);
+}
+
+.selfGuard {
+  color: var(--status-warning-strong);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.roleButton {
+  min-height: 44px;
+  border-radius: 12px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+@media (max-width: 380px) {
+  .page {
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+
+  .pageHeader {
+    grid-template-columns: 44px minmax(0, 1fr);
+  }
+
+  .pageHeader h1 {
+    font-size: 23px;
+  }
+
+  .listHeader {
+    align-items: flex-start;
+  }
+
+  .ownerCount {
+    padding-right: 8px;
+    padding-left: 8px;
+  }
+}

@@ -1,7 +1,18 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { AlertCircle, Clock, Loader2, Plus, Power, RotateCcw, Save } from 'lucide-react';
+import Link from 'next/link';
+import {
+  AlertCircle,
+  ChevronRight,
+  Clock,
+  Loader2,
+  Plus,
+  Power,
+  RotateCcw,
+  Save,
+  ShieldCheck,
+} from 'lucide-react';
 import AuthGate from '@/components/AuthGate';
 import ClosedDayConflictSheet from '@/components/settings/ClosedDayConflictSheet';
 import DataBackupCard from '@/components/settings/DataBackupCard';
@@ -706,8 +717,26 @@ function SettingsPageContent() {
     <div className="page-content" style={{ paddingTop: 12 }}>
       <header className={styles.header}>
         <h1 className="heading-xl">설정</h1>
-        <p className="caption">영업시간, 기본 시술, 휴무일과 데이터 백업을 관리합니다.</p>
+        <p className="caption">
+          직원 권한과 영업시간, 기본 시술, 휴무일, 데이터 백업을 관리합니다.
+        </p>
       </header>
+
+      <Link
+        href="/settings/team"
+        prefetch={false}
+        className={`card ${styles.teamEntry}`}
+        aria-label="직원 및 권한 관리로 이동"
+      >
+        <span className={styles.teamEntryIcon} aria-hidden="true">
+          <ShieldCheck size={22} />
+        </span>
+        <span className={styles.teamEntryCopy}>
+          <strong>직원 및 권한 관리</strong>
+          <span>직원을 초대하고 원장·직원 역할을 관리합니다.</span>
+        </span>
+        <ChevronRight size={20} className={styles.teamEntryArrow} aria-hidden="true" />
+      </Link>
 
       <section className={`card ${styles.card}`}>
         <div className="section-header">

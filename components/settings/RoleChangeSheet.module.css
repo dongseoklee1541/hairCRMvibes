@@ -1,0 +1,203 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 260;
+  background: rgba(26, 25, 24, 0.46);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-top: var(--safe-area-top);
+}
+
+.sheet {
+  width: min(430px, 100%);
+  max-height: calc(100dvh - var(--safe-area-top));
+  overflow-y: auto;
+  border-radius: 22px 22px 0 0;
+  background: var(--bg-surface);
+  padding: 10px 20px calc(20px + var(--safe-area-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 -12px 40px rgba(26, 25, 24, 0.16);
+}
+
+.handle {
+  width: 38px;
+  height: 4px;
+  align-self: center;
+  border-radius: 999px;
+  background: var(--border-default);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.header > div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.header p {
+  overflow-wrap: anywhere;
+}
+
+.closeButton {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border-radius: 999px;
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeButton:hover {
+  background: var(--bg-primary);
+}
+
+.closeButton:focus-visible,
+.cancelButton:focus-visible,
+.confirmButton:focus-visible,
+.roleOptions label:focus-within {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.roleFieldset {
+  min-width: 0;
+  border: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.roleFieldset legend {
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.roleOptions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.roleOptions label {
+  min-height: 48px;
+  border: 1px solid var(--border-default);
+  border-radius: 13px;
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.roleOptions input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.roleOptions .roleOptionActive {
+  border-color: var(--accent-primary);
+  background: var(--accent-light);
+  color: var(--accent-primary);
+}
+
+.summary {
+  min-height: 52px;
+  border-radius: 13px;
+  background: var(--bg-primary);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.summary strong {
+  color: var(--accent-primary);
+}
+
+.guardMessage,
+.errorMessage {
+  min-height: 44px;
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.guardMessage {
+  background: var(--status-warning-light);
+  color: var(--status-warning-strong);
+}
+
+.guardMessage svg {
+  flex: 0 0 auto;
+}
+
+.errorMessage {
+  background: var(--status-danger-light);
+  color: var(--status-danger);
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 10px;
+}
+
+.cancelButton,
+.confirmButton {
+  min-height: 52px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.cancelButton {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.confirmButton {
+  background: var(--accent-primary);
+  color: #fff;
+}
+
+.cancelButton:disabled,
+.confirmButton:disabled,
+.closeButton:disabled,
+.roleFieldset:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}

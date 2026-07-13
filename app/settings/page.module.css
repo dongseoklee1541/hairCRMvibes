@@ -4,6 +4,56 @@
   gap: 6px;
 }
 
+.teamEntry {
+  min-height: 76px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  outline: none;
+}
+
+.teamEntry:focus-visible {
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.teamEntryIcon {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border-radius: 14px;
+  background: var(--accent-light);
+  color: var(--accent-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.teamEntryCopy {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.teamEntryCopy strong {
+  color: var(--text-primary);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.teamEntryCopy > span {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.teamEntryArrow {
+  flex: 0 0 auto;
+  color: var(--text-tertiary);
+}
+
 .card {
   padding: 16px;
   display: flex;
