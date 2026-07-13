@@ -19,7 +19,10 @@ import {
 const OWNER_ID = '11111111-1111-4111-8111-111111111111';
 const STAFF_ID = '22222222-2222-4222-8222-222222222222';
 const REQUEST_ID = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+const REQUEST_ID_2 = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
 const EMAIL = 'new.staff@example.com';
+const EMAIL_FINGERPRINT = 'f'.repeat(64);
+const CLAIM_TOKEN = 'cccccccc-cccc-4ccc-8ccc-cccccccccccc';
 
 const tests = [];
 
@@ -54,6 +57,105 @@ function authUser(id, email = EMAIL, confirmed = false) {
     id,
     email,
     email_confirmed_at: confirmed ? '2026-07-13T00:00:00.000Z' : null,
+  };
+}
+
+function createInvitationLedgerHarness() {
+  const rows = new Map();
+
+  const claimInvitation = async ({ emailFingerprint, requestId }) => {
+    const direct = rows.get(requestId);
+    if (direct) {
+      if (direct.email_fingerprint !== emailFingerprint) {
+        throw new StaffManagementError('conflict');
+      }
+      return {
+        ...direct,
+        claim_token: null,
+        acquired: false,
+        replayed: true,
+      };
+    }
+
+    const active = [...rows.values()].find(
+      (row) =>
+        row.email_fingerprint === emailFingerprint &&
+        ['claimed', 'auth_succeeded', 'unknown'].includes(row.state),
+    );
+    if (active) {
+      return {
+        ...active,
+        claim_token: null,
+        acquired: false,
+        replayed: true,
+      };
+    }
+
+    const row = {
+      request_id: requestId,
+      email_fingerprint: emailFingerprint,
+      state: 'claimed',
+      claim_token: CLAIM_TOKEN,
+      auth_user_id: null,
+      failure_code: null,
+    };
+    rows.set(requestId, row);
+    return { ...row, acquired: true, replayed: false };
+  };
+
+  const settleInvitation = async ({
+    authUserId,
+    claimToken,
+    failureCode,
+    nextState,
+    requestId,
+  }) => {
+    const row = rows.get(requestId);
+    assert.ok(row);
+    assert.equal(claimToken, CLAIM_TOKEN);
+    Object.assign(row, {
+      state: nextState,
+      auth_user_id: authUserId,
+      failure_code: failureCode,
+    });
+    return { ...row };
+  };
+
+  const reconcileInvitation = async ({ emailFingerprint, userId }) => {
+    const row = [...rows.values()].find(
+      (candidate) => candidate.email_fingerprint === emailFingerprint,
+    );
+    if (!row) {
+      throw { code: 'P0002', message: '복구할 초대 요청을 찾을 수 없습니다.' };
+    }
+    Object.assign(row, {
+      state: 'provisioned',
+      auth_user_id: userId,
+      failure_code: null,
+    });
+    return { ...row, reconciled: true };
+  };
+
+  return { claimInvitation, reconcileInvitation, rows, settleInvitation };
+}
+
+function invitationDependencies(overrides = {}) {
+  const ledger = overrides.ledger || createInvitationLedgerHarness();
+  return {
+    authorizeOwner: async () => [profile(OWNER_ID, 'owner')],
+    claimInvitation: ledger.claimInvitation,
+    fingerprintEmail: async () => EMAIL_FINGERPRINT,
+    inviteUser: async ({ email }) => authUser(STAFF_ID, email, false),
+    listAuthUsers: async () => [authUser(OWNER_ID, 'owner@example.com', true)],
+    provisionStaff: async () => ({
+      next_role: 'staff',
+      event_type: 'staff_provisioned',
+      applied: true,
+      replayed: false,
+    }),
+    reconcileInvitation: ledger.reconcileInvitation,
+    settleInvitation: ledger.settleInvitation,
+    ...overrides,
   };
 }
 
@@ -178,7 +280,7 @@ test('new invitation provisions initial staff after owner authorization', async 
   const calls = [];
   const result = await inviteStaffMember(
     { email: EMAIL, requestId: REQUEST_ID, redirectTo: 'http://localhost:3000/invite/accept' },
-    {
+    invitationDependencies({
       authorizeOwner: async () => {
         calls.push('authorize');
         return [profile(OWNER_ID, 'owner')];
@@ -203,7 +305,7 @@ test('new invitation provisions initial staff after owner authorization', async 
           replayed: false,
         };
       },
-    },
+    }),
   );
 
   assert.deepEqual(calls, ['authorize', 'list-users', 'invite', 'provision']);
@@ -211,6 +313,7 @@ test('new invitation provisions initial staff after owner authorization', async 
   assert.equal(result.inviteState, 'pending');
   assert.equal(result.staff.emailMasked, 'n***@e***.com');
   assert.equal(JSON.stringify(result).includes(EMAIL), false);
+  assert.equal(JSON.stringify(result).includes(CLAIM_TOKEN), false);
 });
 
 test('confirmed member duplicate stops before invite or provision', async () => {
@@ -219,7 +322,7 @@ test('confirmed member duplicate stops before invite or provision', async () => 
     () =>
       inviteStaffMember(
         { email: EMAIL, requestId: REQUEST_ID, redirectTo: 'http://localhost:3000/invite/accept' },
-        {
+        invitationDependencies({
           authorizeOwner: async () => [profile(STAFF_ID)],
           listAuthUsers: async () => [authUser(STAFF_ID, EMAIL, true)],
           inviteUser: async () => {
@@ -228,7 +331,7 @@ test('confirmed member duplicate stops before invite or provision', async () => 
           provisionStaff: async () => {
             changed = true;
           },
-        },
+        }),
       ),
     'duplicate_invite',
   );
@@ -240,7 +343,7 @@ test('unconfirmed existing user is re-invited with idempotent provisioning', asy
   const existing = authUser(STAFF_ID, EMAIL, false);
   const result = await inviteStaffMember(
     { email: EMAIL, requestId: REQUEST_ID, redirectTo: 'http://localhost:3000/invite/accept' },
-    {
+    invitationDependencies({
       authorizeOwner: async () => [profile(STAFF_ID)],
       listAuthUsers: async () => [existing],
       inviteUser: async () => {
@@ -253,7 +356,7 @@ test('unconfirmed existing user is re-invited with idempotent provisioning', asy
         applied: false,
         replayed: false,
       }),
-    },
+    }),
   );
 
   assert.equal(inviteCount, 1);
@@ -265,7 +368,9 @@ test('failed re-invite replay is reported as unknown instead of false success', 
   let inviteCount = 0;
   let provisionCount = 0;
   const existing = authUser(STAFF_ID, EMAIL, false);
-  const dependencies = {
+  const ledger = createInvitationLedgerHarness();
+  const dependencies = invitationDependencies({
+    ledger,
     authorizeOwner: async () => [profile(STAFF_ID)],
     listAuthUsers: async () => [existing],
     inviteUser: async () => {
@@ -281,7 +386,7 @@ test('failed re-invite replay is reported as unknown instead of false success', 
         replayed: provisionCount > 1,
       };
     },
-  };
+  });
 
   await expectStaffError(
     () =>
@@ -289,24 +394,27 @@ test('failed re-invite replay is reported as unknown instead of false success', 
         { email: EMAIL, requestId: REQUEST_ID, redirectTo: 'http://localhost:3000/invite/accept' },
         dependencies,
       ),
-    'auth_admin_failed',
+    'invitation_outcome_unknown',
   );
 
-  const replay = await inviteStaffMember(
-    { email: EMAIL, requestId: REQUEST_ID, redirectTo: 'http://localhost:3000/invite/accept' },
-    dependencies,
+  await expectStaffError(
+    () =>
+      inviteStaffMember(
+        { email: EMAIL, requestId: REQUEST_ID, redirectTo: 'http://localhost:3000/invite/accept' },
+        dependencies,
+      ),
+    'invitation_outcome_unknown',
   );
-  assert.equal(replay.status, 'invite_state_unknown');
-  assert.equal(replay.inviteState, 'unknown');
   assert.equal(inviteCount, 1);
-  assert.equal(provisionCount, 2);
+  assert.equal(provisionCount, 1);
+  assert.equal(ledger.rows.get(REQUEST_ID).state, 'provisioned');
 });
 
 test('confirmed profileless user is repaired without another invitation', async () => {
   let invited = false;
   const result = await inviteStaffMember(
     { email: EMAIL, requestId: REQUEST_ID, redirectTo: 'http://localhost:3000/invite/accept' },
-    {
+    invitationDependencies({
       authorizeOwner: async () => [],
       listAuthUsers: async () => [authUser(STAFF_ID, EMAIL, true)],
       inviteUser: async () => {
@@ -318,7 +426,7 @@ test('confirmed profileless user is repaired without another invitation', async 
         applied: true,
         replayed: false,
       }),
-    },
+    }),
   );
 
   assert.equal(invited, false);
@@ -326,12 +434,88 @@ test('confirmed profileless user is repaired without another invitation', async 
   assert.equal(result.inviteState, 'accepted');
 });
 
+test('confirmed profileless recovery uses the active canonical ledger request', async () => {
+  const ledger = createInvitationLedgerHarness();
+  const claim = await ledger.claimInvitation({
+    emailFingerprint: EMAIL_FINGERPRINT,
+    requestId: REQUEST_ID,
+  });
+  await ledger.settleInvitation({
+    requestId: REQUEST_ID,
+    claimToken: claim.claim_token,
+    nextState: 'unknown',
+    authUserId: null,
+    failureCode: 'auth_result_unknown',
+  });
+  let invited = false;
+  let provisionedRequestId = null;
+
+  const result = await inviteStaffMember(
+    {
+      email: EMAIL,
+      requestId: REQUEST_ID_2,
+      redirectTo: 'http://localhost:3000/invite/accept',
+    },
+    invitationDependencies({
+      ledger,
+      authorizeOwner: async () => [],
+      listAuthUsers: async () => [authUser(STAFF_ID, EMAIL, true)],
+      inviteUser: async () => {
+        invited = true;
+      },
+      provisionStaff: async ({ requestId }) => {
+        provisionedRequestId = requestId;
+        return {
+          next_role: 'staff',
+          event_type: 'staff_provisioned',
+          applied: true,
+          replayed: false,
+        };
+      },
+    }),
+  );
+
+  assert.equal(result.status, 'repaired');
+  assert.equal(provisionedRequestId, REQUEST_ID);
+  assert.equal(ledger.rows.get(REQUEST_ID).state, 'provisioned');
+  assert.equal(invited, false);
+});
+
+test('mismatched Admin invite email is quarantined as unknown before provisioning', async () => {
+  const ledger = createInvitationLedgerHarness();
+  let provisioned = false;
+
+  await expectStaffError(
+    () =>
+      inviteStaffMember(
+        {
+          email: EMAIL,
+          requestId: REQUEST_ID,
+          redirectTo: 'http://localhost:3000/invite/accept',
+        },
+        invitationDependencies({
+          ledger,
+          inviteUser: async () => authUser(STAFF_ID, 'different.staff@example.com', false),
+          provisionStaff: async () => {
+            provisioned = true;
+          },
+        }),
+      ),
+    'invitation_outcome_unknown',
+  );
+
+  assert.equal(ledger.rows.get(REQUEST_ID).state, 'unknown');
+  assert.equal(provisioned, false);
+});
+
 test('partial invite failure is repairable and retry remains idempotent', async () => {
   const users = [];
   const profiles = [];
   let provisionAttempts = 0;
   let inviteAttempts = 0;
-  const dependencies = {
+  const ledger = createInvitationLedgerHarness();
+  const dependencies = invitationDependencies({
+    ledger,
     authorizeOwner: async () => profiles,
     listAuthUsers: async () => users,
     inviteUser: async ({ email }) => {
@@ -354,7 +538,7 @@ test('partial invite failure is repairable and retry remains idempotent', async 
         replayed: false,
       };
     },
-  };
+  });
 
   await assert.rejects(
     () =>
@@ -385,7 +569,9 @@ test('successful invite replay does not send another Auth email', async () => {
   let inviteAttempts = 0;
   let provisionAttempts = 0;
   let provisioned = false;
-  const dependencies = {
+  const ledger = createInvitationLedgerHarness();
+  const dependencies = invitationDependencies({
+    ledger,
     authorizeOwner: async () => profiles,
     listAuthUsers: async () => users,
     inviteUser: async ({ email }) => {
@@ -414,7 +600,7 @@ test('successful invite replay does not send another Auth email', async () => {
         replayed: false,
       };
     },
-  };
+  });
 
   const payload = {
     email: EMAIL,
@@ -429,7 +615,7 @@ test('successful invite replay does not send another Auth email', async () => {
   assert.equal(retry.applied, false);
   assert.equal(retry.replayed, true);
   assert.equal(inviteAttempts, 1);
-  assert.equal(provisionAttempts, 2);
+  assert.equal(provisionAttempts, 1);
 });
 
 test('used request id is rejected before inviting a different new email', async () => {
@@ -438,9 +624,11 @@ test('used request id is rejected before inviting a different new email', async 
     () =>
       inviteStaffMember(
         { email: EMAIL, requestId: REQUEST_ID, redirectTo: 'http://localhost:3000/invite/accept' },
-        {
+        invitationDependencies({
           authorizeOwner: async () => [profile(OWNER_ID, 'owner')],
-          findRequest: async () => ({ request_id: REQUEST_ID }),
+          claimInvitation: async () => {
+            throw new StaffManagementError('conflict');
+          },
           listAuthUsers: async () => [authUser(OWNER_ID, 'owner@example.com', true)],
           inviteUser: async () => {
             invited = true;
@@ -448,11 +636,115 @@ test('used request id is rejected before inviting a different new email', async 
           provisionStaff: async () => {
             throw new Error('provision must not run');
           },
-        },
+        }),
       ),
     'conflict',
   );
   assert.equal(invited, false);
+});
+
+test('concurrent requests for one active fingerprint call Admin invite at most once', async () => {
+  const ledger = createInvitationLedgerHarness();
+  let inviteAttempts = 0;
+  const dependencies = invitationDependencies({
+    ledger,
+    inviteUser: async ({ email }) => {
+      inviteAttempts += 1;
+      return authUser(STAFF_ID, email, false);
+    },
+  });
+  const redirectTo = 'http://localhost:3000/invite/accept';
+
+  const results = await Promise.allSettled([
+    inviteStaffMember({ email: EMAIL, requestId: REQUEST_ID, redirectTo }, dependencies),
+    inviteStaffMember({ email: EMAIL, requestId: REQUEST_ID_2, redirectTo }, dependencies),
+  ]);
+
+  assert.equal(results.filter((result) => result.status === 'fulfilled').length, 1);
+  const rejected = results.find((result) => result.status === 'rejected');
+  assert.equal(rejected?.reason?.code, 'invitation_in_progress');
+  assert.equal(inviteAttempts, 1);
+  assert.equal(ledger.rows.size, 1);
+});
+
+test('claimed replay is fail-closed and never exposes a claim token', async () => {
+  const ledger = createInvitationLedgerHarness();
+  await ledger.claimInvitation({
+    emailFingerprint: EMAIL_FINGERPRINT,
+    requestId: REQUEST_ID,
+  });
+  let invited = false;
+
+  await expectStaffError(
+    () =>
+      inviteStaffMember(
+        {
+          email: EMAIL,
+          requestId: REQUEST_ID_2,
+          redirectTo: 'http://localhost:3000/invite/accept',
+        },
+        invitationDependencies({
+          ledger,
+          inviteUser: async () => {
+            invited = true;
+          },
+        }),
+      ),
+    'invitation_in_progress',
+  );
+
+  const response = errorResponse(new StaffManagementError('invitation_in_progress'));
+  const body = await response.json();
+  assert.equal(response.status, 409);
+  assert.equal(body.error.retryable, undefined);
+  assert.equal(JSON.stringify(body).includes(CLAIM_TOKEN), false);
+  assert.equal(invited, false);
+});
+
+test('Auth success waits for user visibility without another email attempt', async () => {
+  const ledger = createInvitationLedgerHarness();
+  const claim = await ledger.claimInvitation({
+    emailFingerprint: EMAIL_FINGERPRINT,
+    requestId: REQUEST_ID,
+  });
+  await ledger.settleInvitation({
+    requestId: REQUEST_ID,
+    claimToken: claim.claim_token,
+    nextState: 'auth_succeeded',
+    authUserId: STAFF_ID,
+    failureCode: null,
+  });
+  let invited = false;
+
+  await expectStaffError(
+    () =>
+      inviteStaffMember(
+        {
+          email: EMAIL,
+          requestId: REQUEST_ID,
+          redirectTo: 'http://localhost:3000/invite/accept',
+        },
+        invitationDependencies({
+          ledger,
+          inviteUser: async () => {
+            invited = true;
+          },
+        }),
+      ),
+    'invitation_in_progress',
+  );
+  assert.equal(invited, false);
+});
+
+test('unknown public response is non-retryable and contains no email or token', async () => {
+  const response = errorResponse(new StaffManagementError('invitation_outcome_unknown'));
+  const body = await response.json();
+
+  assert.equal(response.status, 409);
+  assert.equal(body.error.code, 'invitation_outcome_unknown');
+  assert.equal(body.error.retryable, undefined);
+  assert.equal(JSON.stringify(body).includes(EMAIL), false);
+  assert.equal(JSON.stringify(body).includes(CLAIM_TOKEN), false);
 });
 
 test('role changes expose only minimal changed or unchanged state', async () => {

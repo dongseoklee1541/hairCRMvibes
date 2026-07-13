@@ -8,12 +8,15 @@ import {
   validateInvitationPayload,
 } from '../../../../lib/server/staffManagementCore.mjs';
 import {
+  claimStaffInvitation,
   createUserScopedClient,
-  findRoleManagementRequest,
+  fingerprintStaffInvitationEmail,
   inviteAuthUser,
   listAllAuthUsers,
   listStaffProfiles,
   provisionInvitedStaff,
+  reconcileStaffInvitation,
+  settleStaffInvitation,
 } from '../../../../lib/server/staffManagementSupabase.mjs';
 
 export const dynamic = 'force-dynamic';
@@ -29,10 +32,13 @@ export async function POST(request) {
       { ...input, redirectTo },
       {
         authorizeOwner: () => listStaffProfiles(userClient),
-        findRequest: (requestId) => findRoleManagementRequest(userClient, requestId),
+        claimInvitation: (params) => claimStaffInvitation(userClient, params),
+        fingerprintEmail: fingerprintStaffInvitationEmail,
         inviteUser: inviteAuthUser,
         listAuthUsers: listAllAuthUsers,
         provisionStaff: (params) => provisionInvitedStaff(userClient, params),
+        reconcileInvitation: (params) => reconcileStaffInvitation(userClient, params),
+        settleInvitation: (params) => settleStaffInvitation(userClient, params),
       },
     );
 

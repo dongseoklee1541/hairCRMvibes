@@ -25,10 +25,13 @@ const ERROR_MESSAGES = Object.freeze({
   duplicate_invite: '이미 등록되었거나 초대된 직원입니다.',
   forbidden: '직원 권한은 원장 계정만 관리할 수 있습니다.',
   invalid_origin: '현재 주소에서는 초대 요청을 보낼 수 없습니다.',
+  invitation_in_progress: '현재 초대 처리가 진행 중입니다. 잠시 기다린 뒤 직원 목록에서 상태를 확인해주세요.',
+  invitation_outcome_unknown: '초대 메일 전송 결과를 확인할 수 없습니다. 운영 확인 전에는 같은 이메일로 다시 보내지 마세요.',
   last_owner_forbidden: '마지막 원장은 직원으로 변경할 수 없습니다.',
   network_error: '네트워크 연결을 확인한 뒤 다시 시도해주세요.',
   not_found: '대상 직원을 찾을 수 없습니다. 목록을 새로고침해주세요.',
-  partial_failure: '초대 메일은 전송되었지만 직원 권한 등록이 완료되지 않았습니다. 같은 이메일로 다시 시도해주세요.',
+  partial_failure: '초대 메일은 전송되었지만 직원 권한 등록이 완료되지 않았습니다. 다시 제출하면 메일 재전송 없이 권한 등록만 복구합니다.',
+  profile_repair_failed: '기존 계정의 직원 권한 등록이 완료되지 않았습니다. 다시 제출하면 메일을 보내지 않고 권한 등록만 복구합니다.',
   self_demotion_forbidden: '본인 계정의 원장 권한은 변경할 수 없습니다.',
   supabase_not_configured: '직원 권한 관리 서버가 아직 구성되지 않았습니다.',
   unauthorized: '로그인 세션이 만료되었습니다. 다시 로그인해주세요.',
@@ -250,7 +253,7 @@ export default function RoleManagementPanel() {
       } else if (payload.status === 'invite_state_unknown') {
         setInviteFeedback({
           kind: 'pending',
-          message: '이전 재초대의 이메일 전송 결과를 확인할 수 없습니다. 새 요청으로 다시 시도해주세요.',
+          message: '이전 재초대의 이메일 전송 결과를 확인할 수 없습니다. 운영 확인 전에는 같은 이메일로 다시 보내지 마세요.',
         });
       } else {
         setInviteFeedback({
@@ -263,7 +266,16 @@ export default function RoleManagementPanel() {
     } catch (error) {
       const code = getErrorCode(error);
       setInviteFeedback({
-        kind: code === 'duplicate_invite' ? 'duplicate' : code === 'partial_failure' ? 'pending' : 'error',
+        kind: code === 'duplicate_invite'
+          ? 'duplicate'
+          : [
+              'invitation_in_progress',
+              'invitation_outcome_unknown',
+              'partial_failure',
+              'profile_repair_failed',
+            ].includes(code)
+            ? 'pending'
+            : 'error',
         message: getErrorMessage(code),
       });
     } finally {

@@ -148,6 +148,170 @@ begin
   ) = 0 then
     raise exception 'R-10 smoke: role change target row lock이 없습니다.';
   end if;
+
+  if to_regclass('private.staff_invitation_requests') is null then
+    raise exception 'R-10 smoke: private invitation claim ledger가 없습니다.';
+  end if;
+
+  if not exists (
+    select 1
+    from pg_class c
+    where c.oid = 'private.staff_invitation_requests'::regclass
+      and c.relrowsecurity
+  ) then
+    raise exception 'R-10 smoke: private invitation ledger RLS가 활성화되지 않았습니다.';
+  end if;
+
+  if exists (
+    select 1
+    from pg_policy p
+    where p.polrelid = 'private.staff_invitation_requests'::regclass
+  ) then
+    raise exception 'R-10 smoke: no-grant private ledger에 RLS policy가 열려 있습니다.';
+  end if;
+
+  if exists (
+    select 1
+    from pg_constraint c
+    where c.conrelid = 'private.staff_invitation_requests'::regclass
+      and c.contype = 'f'
+  ) then
+    raise exception 'R-10 smoke: invitation ledger UUID에 삭제 가능한 foreign key가 있습니다.';
+  end if;
+
+  if exists (
+    select 1
+    from information_schema.columns c
+    where c.table_schema = 'private'
+      and c.table_name = 'staff_invitation_requests'
+      and c.column_name in ('email', 'raw_email', 'normalized_email')
+  ) then
+    raise exception 'R-10 smoke: invitation ledger에 raw email 컬럼이 포함되었습니다.';
+  end if;
+
+  if not exists (
+    select 1
+    from pg_indexes i
+    where i.schemaname = 'private'
+      and i.tablename = 'staff_invitation_requests'
+      and i.indexname = 'staff_invitation_requests_active_fingerprint_key'
+      and i.indexdef ilike '%unique%email_fingerprint%'
+      and i.indexdef ilike '%claimed%auth_succeeded%unknown%'
+  ) then
+    raise exception 'R-10 smoke: active email fingerprint partial unique index가 없습니다.';
+  end if;
+
+  if has_schema_privilege('anon', 'private', 'USAGE')
+     or has_schema_privilege('authenticated', 'private', 'USAGE')
+     or has_schema_privilege('service_role', 'private', 'USAGE')
+     or has_schema_privilege('anon', 'private', 'CREATE')
+     or has_schema_privilege('authenticated', 'private', 'CREATE')
+     or has_schema_privilege('service_role', 'private', 'CREATE') then
+    raise exception 'R-10 smoke: private schema 권한이 Data API role에 열려 있습니다.';
+  end if;
+
+  if exists (
+    select 1
+    from pg_namespace n
+    cross join lateral aclexplode(coalesce(n.nspacl, acldefault('n', n.nspowner))) acl
+    where n.nspname = 'private'
+      and acl.grantee = 0
+      and acl.privilege_type in ('USAGE', 'CREATE')
+  ) then
+    raise exception 'R-10 smoke: private schema 권한이 PUBLIC에 열려 있습니다.';
+  end if;
+
+  foreach v_privilege in array array[
+    'SELECT', 'INSERT', 'UPDATE', 'DELETE', 'TRUNCATE', 'REFERENCES', 'TRIGGER', 'MAINTAIN'
+  ] loop
+    if has_table_privilege(
+      'anon',
+      'private.staff_invitation_requests'::regclass,
+      v_privilege
+    ) or has_table_privilege(
+      'authenticated',
+      'private.staff_invitation_requests'::regclass,
+      v_privilege
+    ) or has_table_privilege(
+      'service_role',
+      'private.staff_invitation_requests'::regclass,
+      v_privilege
+    ) then
+      raise exception 'R-10 smoke: private ledger % 권한이 Data API role에 열려 있습니다.', v_privilege;
+    end if;
+  end loop;
+
+  if exists (
+    select 1
+    from (
+      values
+        ('public.claim_staff_invitation(uuid,text)'::regprocedure),
+        ('public.settle_staff_invitation(uuid,uuid,text,uuid,text)'::regprocedure),
+        ('public.reconcile_staff_invitation(text,uuid)'::regprocedure)
+    ) as f(function_oid)
+    join pg_proc p on p.oid = f.function_oid
+    where not p.prosecdef
+       or p.provolatile <> 'v'
+       or p.proconfig is distinct from array['search_path=""']
+  ) then
+    raise exception 'R-10 smoke: invitation RPC security definer/volatility/empty search_path 계약이 다릅니다.';
+  end if;
+
+  if exists (
+    select 1
+    from (
+      values
+        ('public.claim_staff_invitation(uuid,text)'::regprocedure),
+        ('public.settle_staff_invitation(uuid,uuid,text,uuid,text)'::regprocedure),
+        ('public.reconcile_staff_invitation(text,uuid)'::regprocedure)
+    ) as f(function_oid)
+    where not has_function_privilege('authenticated', f.function_oid, 'EXECUTE')
+       or has_function_privilege('anon', f.function_oid, 'EXECUTE')
+       or has_function_privilege('service_role', f.function_oid, 'EXECUTE')
+  ) then
+    raise exception 'R-10 smoke: invitation RPC authenticated/anon/service_role EXECUTE 계약이 다릅니다.';
+  end if;
+
+  if exists (
+    select 1
+    from (
+      values
+        ('public.claim_staff_invitation(uuid,text)'::regprocedure),
+        ('public.settle_staff_invitation(uuid,uuid,text,uuid,text)'::regprocedure),
+        ('public.reconcile_staff_invitation(text,uuid)'::regprocedure)
+    ) as f(function_oid)
+    join pg_proc p on p.oid = f.function_oid
+    cross join lateral aclexplode(coalesce(p.proacl, acldefault('f', p.proowner))) acl
+    where acl.grantee = 0
+      and acl.privilege_type = 'EXECUTE'
+  ) then
+    raise exception 'R-10 smoke: invitation RPC EXECUTE가 PUBLIC에 열려 있습니다.';
+  end if;
+
+  if exists (
+    select 1
+    from (
+      values
+        ('public.claim_staff_invitation(uuid,text)'::regprocedure),
+        ('public.settle_staff_invitation(uuid,uuid,text,uuid,text)'::regprocedure),
+        ('public.reconcile_staff_invitation(text,uuid)'::regprocedure)
+    ) as f(function_oid)
+    where position(
+      'pg_catalog.pg_advisory_xact_lock(20260713, 10)'
+      in pg_get_functiondef(f.function_oid)
+    ) = 0
+  ) then
+    raise exception 'R-10 smoke: invitation RPC에 공통 R-10 advisory lock이 없습니다.';
+  end if;
+
+  if pg_get_function_result(
+    'public.settle_staff_invitation(uuid,uuid,text,uuid,text)'::regprocedure
+  ) ilike '%claim_token%'
+     or pg_get_function_result(
+       'public.reconcile_staff_invitation(text,uuid)'::regprocedure
+     ) ilike '%claim_token%' then
+    raise exception 'R-10 smoke: settle/reconcile 응답에 claim token이 노출됩니다.';
+  end if;
 end;
 $$;
 
@@ -294,6 +458,457 @@ begin
   end;
 end;
 $$;
+
+do $$
+declare
+  v_first record;
+  v_replay record;
+  v_canonical record;
+  v_settled record;
+  v_reconciled record;
+  v_failed record;
+  v_reclaimed record;
+  v_stale_claim record;
+  v_first_token uuid;
+  v_failed_token uuid;
+begin
+  select * into strict v_first
+  from public.claim_staff_invitation(
+    'c1000000-0000-0000-0000-000000000001',
+    repeat('1', 64)
+  );
+
+  v_first_token := v_first.claim_token;
+
+  if v_first.request_id <> 'c1000000-0000-0000-0000-000000000001'
+     or v_first.state <> 'claimed'
+     or v_first.claim_token is null
+     or v_first.acquired is not true
+     or v_first.replayed is not false then
+    raise exception 'R-10 smoke: 최초 invitation claim 결과가 다릅니다. result=%', to_jsonb(v_first);
+  end if;
+
+  select * into strict v_replay
+  from public.claim_staff_invitation(
+    'c1000000-0000-0000-0000-000000000001',
+    repeat('1', 64)
+  );
+
+  if v_replay.request_id is distinct from v_first.request_id
+     or v_replay.state <> 'claimed'
+     or v_replay.claim_token is not null
+     or v_replay.acquired is not false
+     or v_replay.replayed is not true then
+    raise exception 'R-10 smoke: 동일 request replay가 claim token을 숨기지 못했습니다.';
+  end if;
+
+  select * into strict v_canonical
+  from public.claim_staff_invitation(
+    'c1000000-0000-0000-0000-000000000002',
+    repeat('1', 64)
+  );
+
+  if v_canonical.request_id is distinct from v_first.request_id
+     or v_canonical.state <> 'claimed'
+     or v_canonical.claim_token is not null
+     or v_canonical.acquired is not false
+     or v_canonical.replayed is not true then
+    raise exception 'R-10 smoke: 같은 active fingerprint가 canonical claim으로 수렴하지 않았습니다.';
+  end if;
+
+  begin
+    perform 1
+    from public.claim_staff_invitation(
+      'c1000000-0000-0000-0000-000000000001',
+      repeat('2', 64)
+    );
+    raise exception 'R-10 smoke: 같은 request ID의 다른 fingerprint가 허용되었습니다.';
+  exception
+    when sqlstate '22023' then null;
+  end;
+
+  begin
+    perform 1
+    from public.claim_staff_invitation(
+      'c1000000-0000-0000-0000-000000000099',
+      'not-a-fingerprint'
+    );
+    raise exception 'R-10 smoke: 잘못된 email fingerprint가 허용되었습니다.';
+  exception
+    when sqlstate '22023' then null;
+  end;
+
+  begin
+    perform 1
+    from public.claim_staff_invitation(
+      'a1000000-0000-0000-0000-000000000001',
+      repeat('6', 64)
+    );
+    raise exception 'R-10 smoke: 기존 역할 관리 event request ID로 신규 claim token이 발급되었습니다.';
+  exception
+    when sqlstate '22023' then null;
+  end;
+
+  begin
+    perform 1
+    from public.settle_staff_invitation(
+      v_first.request_id,
+      'cf000000-0000-0000-0000-000000000001',
+      'auth_succeeded',
+      'a0000000-0000-0000-0000-000000000005',
+      null
+    );
+    raise exception 'R-10 smoke: 잘못된 claim token으로 상태가 변경되었습니다.';
+  exception
+    when sqlstate '42501' then null;
+  end;
+
+  select * into strict v_settled
+  from public.settle_staff_invitation(
+    v_first.request_id,
+    v_first_token,
+    'auth_succeeded',
+    'a0000000-0000-0000-0000-000000000005',
+    null
+  );
+
+  if v_settled.state <> 'auth_succeeded'
+     or v_settled.auth_user_id <> 'a0000000-0000-0000-0000-000000000005'
+     or v_settled.failure_code is not null then
+    raise exception 'R-10 smoke: auth_succeeded settlement 결과가 다릅니다.';
+  end if;
+
+  begin
+    perform 1
+    from public.settle_staff_invitation(
+      v_first.request_id,
+      v_first_token,
+      'provisioned',
+      'a0000000-0000-0000-0000-000000000005',
+      null
+    );
+    raise exception 'R-10 smoke: provisioning audit 없는 provisioned 전이가 허용되었습니다.';
+  exception
+    when sqlstate 'P0002' then null;
+  end;
+
+  perform 1
+  from public.provision_invited_staff(
+    'a0000000-0000-0000-0000-000000000005',
+    v_first.request_id
+  );
+
+  select * into strict v_settled
+  from public.settle_staff_invitation(
+    v_first.request_id,
+    v_first_token,
+    'provisioned',
+    'a0000000-0000-0000-0000-000000000005',
+    null
+  );
+
+  if v_settled.state <> 'provisioned'
+     or v_settled.failure_code is not null then
+    raise exception 'R-10 smoke: audited provisioned settlement 결과가 다릅니다.';
+  end if;
+
+  select * into strict v_replay
+  from public.claim_staff_invitation(
+    v_first.request_id,
+    repeat('1', 64)
+  );
+
+  if v_replay.state <> 'provisioned'
+     or v_replay.claim_token is not null
+     or v_replay.acquired is not false
+     or v_replay.replayed is not true then
+    raise exception 'R-10 smoke: provisioned replay가 token 없이 수렴하지 않았습니다.';
+  end if;
+
+  select * into strict v_first
+  from public.claim_staff_invitation(
+    'c1000000-0000-0000-0000-000000000003',
+    repeat('3', 64)
+  );
+
+  select * into strict v_settled
+  from public.settle_staff_invitation(
+    v_first.request_id,
+    v_first.claim_token,
+    'unknown',
+    null,
+    'auth_result_unknown'
+  );
+
+  if v_settled.state <> 'unknown'
+     or v_settled.failure_code <> 'auth_result_unknown' then
+    raise exception 'R-10 smoke: Auth 결과 불명 상태가 보존되지 않았습니다.';
+  end if;
+
+  begin
+    perform 1
+    from public.reconcile_staff_invitation(
+      repeat('3', 64),
+      'a0000000-0000-0000-0000-000000000005'
+    );
+    raise exception 'R-10 smoke: provisioning audit 없는 reconcile이 허용되었습니다.';
+  exception
+    when sqlstate 'P0002' then null;
+  end;
+
+  perform 1
+  from public.provision_invited_staff(
+    'a0000000-0000-0000-0000-000000000005',
+    'c1000000-0000-0000-0000-000000000003'
+  );
+
+  select * into strict v_reconciled
+  from public.reconcile_staff_invitation(
+    repeat('3', 64),
+    'a0000000-0000-0000-0000-000000000005'
+  );
+
+  if v_reconciled.request_id <> 'c1000000-0000-0000-0000-000000000003'
+     or v_reconciled.state <> 'provisioned'
+     or v_reconciled.auth_user_id <> 'a0000000-0000-0000-0000-000000000005'
+     or v_reconciled.reconciled is not true then
+    raise exception 'R-10 smoke: audited reconcile 결과가 다릅니다.';
+  end if;
+
+  select * into strict v_failed
+  from public.claim_staff_invitation(
+    'c1000000-0000-0000-0000-000000000004',
+    repeat('4', 64)
+  );
+  v_failed_token := v_failed.claim_token;
+
+  perform 1
+  from public.settle_staff_invitation(
+    v_failed.request_id,
+    v_failed_token,
+    'failed_definitive',
+    null,
+    'auth_not_configured'
+  );
+
+  select * into strict v_reclaimed
+  from public.claim_staff_invitation(
+    v_failed.request_id,
+    repeat('4', 64)
+  );
+
+  if v_reclaimed.state <> 'claimed'
+     or v_reclaimed.claim_token is null
+     or v_reclaimed.claim_token = v_failed_token
+     or v_reclaimed.acquired is not true
+     or v_reclaimed.replayed is not true then
+    raise exception 'R-10 smoke: definitive pre-call failure가 새 token으로 재claim되지 않았습니다.';
+  end if;
+
+  perform 1
+  from public.settle_staff_invitation(
+    v_reclaimed.request_id,
+    v_reclaimed.claim_token,
+    'unknown',
+    null,
+    'auth_result_unknown'
+  );
+
+  select * into strict v_failed
+  from public.claim_staff_invitation(
+    'c1000000-0000-0000-0000-000000000007',
+    repeat('7', 64)
+  );
+  v_failed_token := v_failed.claim_token;
+
+  perform 1
+  from public.settle_staff_invitation(
+    v_failed.request_id,
+    v_failed_token,
+    'failed_definitive',
+    null,
+    'auth_not_configured'
+  );
+
+  perform 1
+  from public.provision_invited_staff(
+    'a0000000-0000-0000-0000-000000000005',
+    v_failed.request_id
+  );
+
+  begin
+    perform 1
+    from public.claim_staff_invitation(
+      v_failed.request_id,
+      repeat('7', 64)
+    );
+    raise exception 'R-10 smoke: 역할 관리 event가 생긴 definitive failure에 재claim token이 발급되었습니다.';
+  exception
+    when sqlstate '22023' then null;
+  end;
+
+  select * into strict v_first
+  from public.claim_staff_invitation(
+    'c1000000-0000-0000-0000-000000000008',
+    repeat('8', 64)
+  );
+
+  perform 1
+  from public.settle_staff_invitation(
+    v_first.request_id,
+    v_first.claim_token,
+    'auth_succeeded',
+    'a0000000-0000-0000-0000-000000000005',
+    null
+  );
+
+  begin
+    perform 1
+    from public.settle_staff_invitation(
+      v_first.request_id,
+      v_first.claim_token,
+      'unknown',
+      null,
+      'auth_result_unknown'
+    );
+    raise exception 'R-10 smoke: auth_succeeded target binding이 unknown 전이로 지워졌습니다.';
+  exception
+    when sqlstate '55000' then null;
+  end;
+
+  begin
+    perform 1
+    from public.settle_staff_invitation(
+      v_first.request_id,
+      v_first.claim_token,
+      'auth_succeeded',
+      'a0000000-0000-0000-0000-000000000003',
+      null
+    );
+    raise exception 'R-10 smoke: auth_succeeded request가 다른 Auth 사용자로 재결합되었습니다.';
+  exception
+    when sqlstate '22023' then null;
+  end;
+
+  perform 1
+  from public.provision_invited_staff(
+    'a0000000-0000-0000-0000-000000000005',
+    v_first.request_id
+  );
+
+  perform 1
+  from public.settle_staff_invitation(
+    v_first.request_id,
+    v_first.claim_token,
+    'provisioned',
+    'a0000000-0000-0000-0000-000000000005',
+    null
+  );
+
+  select * into strict v_stale_claim
+  from public.claim_staff_invitation(
+    'c1000000-0000-0000-0000-000000000005',
+    repeat('5', 64)
+  );
+
+  if v_stale_claim.claim_token is null then
+    raise exception 'R-10 smoke: stale 전환 fixture claim이 생성되지 않았습니다.';
+  end if;
+
+  begin
+    perform count(*) from private.staff_invitation_requests;
+    raise exception 'R-10 smoke: authenticated 사용자가 private ledger를 직접 조회했습니다.';
+  exception
+    when insufficient_privilege then null;
+  end;
+end;
+$$;
+
+reset role;
+
+do $$
+begin
+  if exists (
+    select 1
+    from private.staff_invitation_requests r
+    where r.request_id = 'a1000000-0000-0000-0000-000000000001'
+  ) then
+    raise exception 'R-10 smoke: 기존 role event request ID에 ledger row가 생성되었습니다.';
+  end if;
+
+  if (
+    select r.state
+    from private.staff_invitation_requests r
+    where r.request_id = 'c1000000-0000-0000-0000-000000000007'
+  ) is distinct from 'failed_definitive' then
+    raise exception 'R-10 smoke: event 충돌 definitive row가 재claim으로 변경되었습니다.';
+  end if;
+end;
+$$;
+
+update private.staff_invitation_requests r
+set claimed_at = pg_catalog.clock_timestamp() - interval '11 minutes'
+where r.request_id = 'c1000000-0000-0000-0000-000000000005';
+
+set local role authenticated;
+set local "request.jwt.claim.sub" = 'a0000000-0000-0000-0000-000000000001';
+
+do $$
+declare
+  v_stale record;
+  v_canonical record;
+begin
+  select * into strict v_stale
+  from public.claim_staff_invitation(
+    'c1000000-0000-0000-0000-000000000005',
+    repeat('5', 64)
+  );
+
+  if v_stale.state <> 'unknown'
+     or v_stale.failure_code <> 'claim_stale'
+     or v_stale.claim_token is not null
+     or v_stale.acquired is not false
+     or v_stale.replayed is not true then
+    raise exception 'R-10 smoke: 10분 초과 claimed request가 unknown으로 격리되지 않았습니다.';
+  end if;
+
+  select * into strict v_canonical
+  from public.claim_staff_invitation(
+    'c1000000-0000-0000-0000-000000000006',
+    repeat('5', 64)
+  );
+
+  if v_canonical.request_id <> 'c1000000-0000-0000-0000-000000000005'
+     or v_canonical.state <> 'unknown'
+     or v_canonical.failure_code <> 'claim_stale'
+     or v_canonical.claim_token is not null then
+    raise exception 'R-10 smoke: 다른 request ID가 stale canonical row로 수렴하지 않았습니다.';
+  end if;
+end;
+$$;
+
+reset role;
+set local role authenticated;
+set local "request.jwt.claim.sub" = 'a0000000-0000-0000-0000-000000000002';
+
+do $$
+begin
+  begin
+    perform 1
+    from public.claim_staff_invitation(
+      'c1000000-0000-0000-0000-000000000001',
+      repeat('1', 64)
+    );
+    raise exception 'R-10 smoke: 다른 actor가 같은 request ID를 재사용했습니다.';
+  exception
+    when sqlstate '22023' then null;
+  end;
+end;
+$$;
+
+reset role;
+set local role authenticated;
+set local "request.jwt.claim.sub" = 'a0000000-0000-0000-0000-000000000001';
 
 do $$
 declare
@@ -491,7 +1106,7 @@ begin
     when insufficient_privilege then null;
   end;
 
-  if (select count(*) from public.role_management_events) <> 6 then
+  if (select count(*) from public.role_management_events) <> 10 then
     raise exception 'R-10 smoke: 성공/no-op audit 건수가 예상과 다릅니다.';
   end if;
 end;
@@ -506,6 +1121,42 @@ begin
   begin
     perform 1 from public.list_staff_profiles();
     raise exception 'R-10 smoke: staff 직원 목록 조회가 허용되었습니다.';
+  exception
+    when sqlstate '42501' then null;
+  end;
+
+  begin
+    perform 1
+    from public.claim_staff_invitation(
+      'c2000000-0000-0000-0000-000000000001',
+      repeat('a', 64)
+    );
+    raise exception 'R-10 smoke: staff invitation claim이 허용되었습니다.';
+  exception
+    when sqlstate '42501' then null;
+  end;
+
+  begin
+    perform 1
+    from public.settle_staff_invitation(
+      'c1000000-0000-0000-0000-000000000001',
+      'cf000000-0000-0000-0000-000000000002',
+      'unknown',
+      null,
+      'auth_result_unknown'
+    );
+    raise exception 'R-10 smoke: staff invitation settle이 허용되었습니다.';
+  exception
+    when sqlstate '42501' then null;
+  end;
+
+  begin
+    perform 1
+    from public.reconcile_staff_invitation(
+      repeat('1', 64),
+      'a0000000-0000-0000-0000-000000000005'
+    );
+    raise exception 'R-10 smoke: staff invitation reconcile이 허용되었습니다.';
   exception
     when sqlstate '42501' then null;
   end;
@@ -598,6 +1249,87 @@ begin
       'a1000000-0000-0000-0000-000000000024'
     );
     raise exception 'R-10 smoke: anon role change RPC 실행이 허용되었습니다.';
+  exception
+    when insufficient_privilege then null;
+  end;
+
+  begin
+    perform 1
+    from public.claim_staff_invitation(
+      'c3000000-0000-0000-0000-000000000001',
+      repeat('b', 64)
+    );
+    raise exception 'R-10 smoke: anon invitation claim RPC 실행이 허용되었습니다.';
+  exception
+    when insufficient_privilege then null;
+  end;
+
+  begin
+    perform 1
+    from public.settle_staff_invitation(
+      'c1000000-0000-0000-0000-000000000001',
+      'cf000000-0000-0000-0000-000000000003',
+      'unknown',
+      null,
+      'auth_result_unknown'
+    );
+    raise exception 'R-10 smoke: anon invitation settle RPC 실행이 허용되었습니다.';
+  exception
+    when insufficient_privilege then null;
+  end;
+
+  begin
+    perform 1
+    from public.reconcile_staff_invitation(
+      repeat('1', 64),
+      'a0000000-0000-0000-0000-000000000005'
+    );
+    raise exception 'R-10 smoke: anon invitation reconcile RPC 실행이 허용되었습니다.';
+  exception
+    when insufficient_privilege then null;
+  end;
+end;
+$$;
+
+reset role;
+
+set local role service_role;
+set local "request.jwt.claim.sub" = '';
+
+do $$
+begin
+  begin
+    perform 1
+    from public.claim_staff_invitation(
+      'c4000000-0000-0000-0000-000000000001',
+      repeat('c', 64)
+    );
+    raise exception 'R-10 smoke: service_role invitation claim RPC 실행이 허용되었습니다.';
+  exception
+    when insufficient_privilege then null;
+  end;
+
+  begin
+    perform 1
+    from public.settle_staff_invitation(
+      'c1000000-0000-0000-0000-000000000001',
+      'cf000000-0000-0000-0000-000000000004',
+      'unknown',
+      null,
+      'auth_result_unknown'
+    );
+    raise exception 'R-10 smoke: service_role invitation settle RPC 실행이 허용되었습니다.';
+  exception
+    when insufficient_privilege then null;
+  end;
+
+  begin
+    perform 1
+    from public.reconcile_staff_invitation(
+      repeat('1', 64),
+      'a0000000-0000-0000-0000-000000000005'
+    );
+    raise exception 'R-10 smoke: service_role invitation reconcile RPC 실행이 허용되었습니다.';
   exception
     when insufficient_privilege then null;
   end;
