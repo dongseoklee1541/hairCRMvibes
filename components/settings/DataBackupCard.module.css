@@ -1,0 +1,173 @@
+.card {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.headingGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.description {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.warningBox {
+  min-height: 52px;
+  border-radius: var(--radius-md);
+  background: var(--status-warning-light);
+  color: var(--status-warning-strong);
+  padding: 10px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.warningBox svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+}
+
+.acknowledgement {
+  min-height: 56px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.acknowledgement:hover {
+  background: var(--bg-primary);
+}
+
+.acknowledgement:focus-within {
+  border-color: var(--focus-ring);
+  box-shadow: 0 0 0 3px rgba(111, 184, 137, 0.24);
+}
+
+.acknowledgement input {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  accent-color: var(--accent-primary);
+  cursor: pointer;
+}
+
+.acknowledgement input:disabled,
+.acknowledgement:has(input:disabled) {
+  cursor: wait;
+}
+
+.hint {
+  margin-top: -8px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.actionGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.exportButton {
+  width: 100%;
+  min-height: var(--cta-height);
+  border-radius: var(--radius-lg);
+  background: var(--accent-primary);
+  color: #fff;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+  box-shadow: var(--shadow-button);
+  transition: background var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.exportButton:hover:not(:disabled) {
+  background: #357a4e;
+  transform: translateY(-1px);
+}
+
+.exportButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.exportButton:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.exportButton:disabled {
+  background: var(--disabled-bg);
+  color: var(--disabled-text);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.statusRegion {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.statusRegion:empty {
+  display: none;
+}
+
+.successStatus,
+.errorStatus {
+  min-height: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.successStatus:empty,
+.errorStatus:empty {
+  display: none;
+}
+
+.successStatus {
+  color: var(--status-success);
+}
+
+.errorStatus {
+  color: var(--status-danger);
+}
+
+.successStatus svg,
+.errorStatus svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+}
+
+@media (max-width: 380px) {
+  .actionGrid {
+    grid-template-columns: 1fr;
+  }
+}

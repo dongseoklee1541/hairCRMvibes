@@ -44,10 +44,11 @@
 | R-04 | Done (live verified) | 화면별 날짜 key/달력/상대 날짜 계산을 `lib/dateTime.js` KST 유틸로 공통화하고 정적 검색, build, 모바일 `/appointments` smoke 통과 | 실제 자정/월경계 time-travel 자동 테스트는 별도 unit/e2e로 후속 보강 |
 | R-05 | Done (live verified) | `.pen` 설정 UI, owner 설정 조회/저장, 예약 생성 기본값 조회를 구현했고 live owner 설정 write/staff write 차단/anon 차단 smoke 검증 완료 | staff 설정 페이지 UI 라우팅은 후속 browser 검증 대상입니다. 설정·고객·예약 문서 NetworkOnly 및 cache 0건은 R-06에서 확인했고 실기기 SW update는 별도 후속 검증으로 유지 |
 | R-06 | Done (production asset smoke verified) | Next 15.5.20/React 19.0.7, npm audit 0, build·SW·390x844/360x800 정적 offline smoke·민감 문서 cache 0건·Pencil 원본 node 14개/hash 변경·console/RSC 0건에 더해 canonical Production의 manifest/SW/offline/favicon/192·512 icon HTTP 200 확인 | 실제 기기의 install prompt/standalone/서비스워커 update와 고정 URL precache 자산 갱신 정책은 후속 검증 |
-| R-07 | Done (production deployed; public endpoint rechecked) | release 세션에서 실제 owner/staff/anon Data API/RPC 106개·fixture residue 0건과 `main@16157f89976e41f5218377712d5d77026bc14417` Production 배포를 확인했습니다. 이번 감사에서 live migration version 9개, RPC 7개·audit table 2개, 고객 5건·예약 6건 기준선과 canonical 공개/PWA 자산 200·Cron 무인증 401을 재확인 | 승인 Cron 200·DB probe·Runtime log와 post-deploy 실제 browser owner/staff는 이번 감사에서 재실행하지 않음. Preview 환경, 실기기 install/standalone/SW update, `prefetch={false}` 체감 속도는 후속 작업 |
-| R-08 | Done (production deployed; live transactional smoke verified) | PR #16 merge `main@01440b6`, exact 10번째 live migration `20260712093510_r08_service_master`, 기존 서비스 4건·예약 7건 no-backfill, live owner/staff/anon·snapshot transaction smoke와 synthetic residue 0건을 확인했습니다. Vercel Production deployment `6N4gbJURzr8GX4omNErBZEA8VRzQ` 성공, canonical 공개 route/PWA asset과 R-08 bundle marker도 확인했습니다. | 실제 로그인 owner/staff browser smoke, Preview Supabase 격리, 초기 서비스 가격·기본 서비스 운영 입력은 비차단 후속 검증으로 추적 |
-| R-13 | Done (production deployed; public/PWA smoke verified) | PR #18 merge `main@f904bcf`, Vercel Production deployment `dpl_5VemJYn7XhZAorkpEaHBNZN9x85o`, canonical `/appointments/new`·로그인 redirect·manifest/SW/offline/favicon/192·512 icon HTTP 200과 console 0건을 확인했습니다. 로컬에서는 Pencil 6개 상태, 390×844·360×800 mock 검색·중복·성공/실패/취소 draft 보존과 `customers?select=id,name` 최소 조회를 검증했습니다. | 실제 owner/staff 로그인·모바일 실기기 IME/standalone은 후속 운영 검증. Preview 격리 확인 전 실데이터 smoke 금지 |
-| R-09 | Done (production deployed; exact live migration/ACL/PWA verified) | PR #20 merge `main@b63f9a3`, exact 11번째 live migration `20260712124959_r09_stats_advanced`, RPC invoker/stable/search_path/ACL, Vercel deployment `dpl_FBDsYn26v2ZXiJthe5z97vsJDwk2`, canonical redirect·PWA assets·offline fallback을 확인했습니다. local Pencil/SQL/build/mobile 검증과 synthetic residue 0 근거도 유지합니다. | Preview 격리, live authenticated 실제 데이터 smoke, 실기기 install/standalone은 후속 운영 검증. 다음 기능은 별도 Plan 승인을 거쳐 R-10 착수 |
+| R-07 | Done (production deployed; public endpoint rechecked) | release 세션에서 실제 owner/staff/anon Data API/RPC 106개·fixture residue 0건과 `main@16157f89976e41f5218377712d5d77026bc14417` Production 배포를 확인했습니다. 이번 감사에서 live migration version 9개, RPC 7개·audit table 2개, 고객 5건·예약 6건 기준선과 canonical 공개/PWA 자산 200·Cron 무인증 401을 재확인 | 승인 Cron 200·DB probe·Runtime log와 post-deploy 실제 browser owner/staff는 이번 감사에서 재실행하지 않음. 실기기 install/standalone/SW update, `prefetch={false}` 체감 속도는 후속 작업 |
+| R-08 | Done (production deployed; live transactional smoke verified) | PR #16 merge `main@01440b6`, exact 10번째 live migration `20260712093510_r08_service_master`, 기존 서비스 4건·예약 7건 no-backfill, live owner/staff/anon·snapshot transaction smoke와 synthetic residue 0건을 확인했습니다. Vercel Production deployment `6N4gbJURzr8GX4omNErBZEA8VRzQ` 성공, canonical 공개 route/PWA asset과 R-08 bundle marker도 확인했습니다. | 실제 로그인 owner/staff browser smoke와 초기 서비스 가격·기본 서비스 운영 입력은 비차단 후속 검증으로 추적 |
+| R-13 | Done (production deployed; public/PWA smoke verified) | PR #18 merge `main@f904bcf`, Vercel Production deployment `dpl_5VemJYn7XhZAorkpEaHBNZN9x85o`, canonical `/appointments/new`·로그인 redirect·manifest/SW/offline/favicon/192·512 icon HTTP 200과 console 0건을 확인했습니다. 로컬에서는 Pencil 6개 상태, 390×844·360×800 mock 검색·중복·성공/실패/취소 draft 보존과 `customers?select=id,name` 최소 조회를 검증했습니다. | 실제 owner/staff 로그인·모바일 실기기 IME/standalone은 후속 운영 검증. 전용 Preview synthetic 데이터만 사용하고 Production 데이터 smoke는 별도 승인 전 금지 |
+| R-09 | Done (production deployed; exact live migration/ACL/PWA verified) | PR #20 merge `main@b63f9a3`, exact 11번째 live migration `20260712124959_r09_stats_advanced`, RPC invoker/stable/search_path/ACL, Vercel deployment `dpl_FBDsYn26v2ZXiJthe5z97vsJDwk2`, canonical redirect·PWA assets·offline fallback을 확인했습니다. local Pencil/SQL/build/mobile 검증과 synthetic residue 0 근거도 유지합니다. | live authenticated 실제 데이터 smoke와 실기기 install/standalone은 후속 운영 검증. R-10/R-11은 별도 작업으로 유지하고 현재 브랜치는 R-12를 진행 |
+| R-12 | Verified (dedicated Preview integration; branch deployment pending) | owner JWT·기존 RLS만 사용하는 스트리밍 `/api/export`, 고객/예약 CSV, formula injection 방어·no-store, 암호화 보관·30일 삭제 확인 UI를 구현했습니다. Node tests 10/10과 100,005행 스트림을 통과했고 전용 Preview에서 anon 401, staff 403, owner 고객·예약 200과 CSV 계약을 확인했습니다. Production 데이터는 접근하지 않았습니다. | branch Preview의 실제 로그인 390×844·360×800/PWA 검증과 synthetic residue 0 확인 후 Draft PR 마감. 모바일·Safari Blob fallback과 플랫폼 실행시간은 운영 규모 부하 검증 필요 |
 
 ## Phase 1 live 검증 요약 (2026-07-08)
 - Supabase 프로젝트 `burtyhairCRM`은 `ACTIVE_HEALTHY` 상태였고, Phase 1 migration 5개(`r01`, `r02`, `r05`, `r03`, `phase1_function_privilege_hardening`)를 live DB에 적용했습니다.
@@ -76,7 +77,7 @@
 - `CRON_SECRET`으로 보호된 server route가 고객/예약 데이터 대신 `salon_operation_settings.id` 한 컬럼만 read-only 조회합니다.
 - 실제 secret은 저장소에 기록하지 않습니다. release 세션 기록상 Vercel Production에는 `SUPABASE_SECRET_KEY`, `CRON_SECRET`이 Sensitive 변수로 존재하며 로컬 검증 사본은 macOS login Keychain의 고정 alias로만 접근합니다.
 - release 세션 기록상 Vercel Cron Jobs는 Enabled이고 `/api/cron/supabase-keepalive`가 `17 3 * * *`로 등록됐으며 Keychain 승인 호출 200·Runtime Warning/Error/Fatal 0건을 확인했습니다. 이번 감사에서는 무인증 `401 + application/json + no-store`만 현재 재확인했습니다.
-- Preview가 Production Supabase 값을 공유한다는 기존 문서와 Preview 환경변수를 제거했다는 작업 인계 기록이 충돌합니다. 이번 감사에서 Vercel connector가 프로젝트 설정을 노출하지 않아 현재 상태는 `확인 필요`이며, 확인 전까지 Preview 실제 로그인·데이터 smoke는 계속 금지합니다.
+- 2026-07-13 전용 `burtyhairCRM-preview` 프로젝트를 만들고 Vercel Preview 범위에 공개 URL/key를 설정했습니다. Preview 검증은 synthetic 데이터만 사용하며 Production 프로젝트의 고객·예약 데이터에는 접근하지 않습니다.
 - keepalive는 Supabase Free uptime을 보장하지 않으며, Vercel Hobby는 내부 테스트/개인 베타 전제로만 사용합니다.
 - 운영 절차: `docs/operations/supabase-free-keepalive.md`
 
@@ -96,7 +97,7 @@
 ### Phase 3 (P2 확장)
 - `R-10` 권한관리 UI(직원 초대/권한변경)
 - `R-11` 알림 자동화(예약 리마인드/재방문)
-- `R-12` CSV 내보내기/백업
+- `R-12` CSV 내보내기/백업: 전용 Preview Supabase 통합 완료, branch Preview browser/PWA 검증·release 대기
 
 ## 선행관계 맵
 - `R-01 -> R-02 -> R-10`
@@ -132,10 +133,11 @@
 - 실제 구현 착수는 별도 승인 후 진행하며, 구현 계획 문서는 본 로드맵을 참조합니다.
 
 ## 마지막 업데이트
-- 작성일: 2026-07-12
+- 작성일: 2026-07-13
 - 2026-07-12 감사 직접 확인: GitHub PR #9~#15 merge, PR #15 merge commit `origin/main@a7a4186e76c9225c9273fa8474cea27440d36d40`; 당시 Supabase live migration 9개·R-07 RPC 7개/audit table 2개·고객 5건/예약 6건 비식별 count; canonical 공개/PWA 자산 200·Cron 무인증 401
 - R-07 Production release 기록: 애플리케이션 `main@16157f8`, Vercel deployment `5z5MKHSAyxtLrRt6ACF3UZtLBGh7` Promote, 실제 role smoke 106개/residue 0건, 승인 Cron 200·DB probe·Runtime log 0건. 이번 감사에서 secret 기반 검증은 재실행하지 않음
 - R-08 Production 기록: PR #16 merge `main@01440b6`, live migration `20260712093510_r08_service_master`, 고객 5건·예약 7건·서비스 4건 기준선과 기존 snapshot NULL 보존, live transactional role/snapshot smoke·residue 0건, Vercel deployment `6N4gbJURzr8GX4omNErBZEA8VRzQ`, canonical R-08 bundle/PWA/Cron 공개 경계를 확인
 - R-13 release 기록: PR #18 merge `main@f904bcf`, Vercel deployment `dpl_5VemJYn7XhZAorkpEaHBNZN9x85o` READY 및 canonical alias 연결, `/appointments/new` R-13 chunk·로그인 redirect·manifest/SW/offline/favicon/192·512 icon HTTP 200·console 0건 확인. Supabase 요청과 실데이터 smoke는 수행하지 않음
 - R-09 release 기록: PR #20 merge `main@b63f9a3`, exact live migration `20260712124959_r09_stats_advanced`, RPC ACL 계약, Vercel deployment `dpl_FBDsYn26v2ZXiJthe5z97vsJDwk2` READY/canonical 연결, 공개 PWA/offline/Cron 무인증 경계 확인. 실제 고객·예약 fixture와 authenticated live 데이터 smoke는 수행하지 않음
-- 확인 필요: Preview Supabase 환경 격리의 현재 설정
+- R-12 Preview 기록: `origin/main@07eefe8` 기반 `codex/r12-csv-backup`, Pencil 설정 카드, owner-only 고객/예약 스트리밍 CSV, Node tests 10/10·100,005행, build, 390×844·360×800 mock, PWA NetworkOnly·민감 응답 cache 0건 확인. Production 고객·예약 데이터는 접근하지 않음
+- 전용 `burtyhairCRM-preview`에 forward migration 11개를 replay하고 synthetic anon/staff/owner 실제 handler smoke에서 401/403/고객 200/예약 200과 CSV 계약을 확인. Vercel Preview 공개 URL/key를 분리 설정했고 branch Preview 배포·browser smoke·residue 0 확인은 push 후 수행

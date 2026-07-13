@@ -3764,7 +3764,7 @@
       "y": 0,
       "name": "설정 페이지",
       "width": 430,
-      "height": 1580,
+      "height": 1940,
       "fill": "#F5F4F1",
       "layout": "none",
       "children": [
@@ -3774,7 +3774,7 @@
           "x": 0,
           "y": 0,
           "width": 430,
-          "height": 1460,
+          "height": 1820,
           "layout": "vertical",
           "gap": 16,
           "padding": [
@@ -3796,7 +3796,7 @@
               "type": "text",
               "id": "r03SettingsSubtitle",
               "fill": "#6B6966",
-              "content": "영업시간, 기본 시술, 휴무일을 관리합니다.",
+              "content": "영업시간, 기본 시술, 휴무일과 데이터 백업을 관리합니다.",
               "fontFamily": "Outfit",
               "fontSize": 14,
               "fontWeight": "normal"
@@ -4937,6 +4937,266 @@
                   "fontWeight": "500"
                 }
               ]
+            },
+            {
+              "type": "frame",
+              "id": "mVQYv",
+              "layoutPosition": "absolute",
+              "x": 24,
+              "y": 1466,
+              "name": "DataBackupCard",
+              "width": 382,
+              "height": 330,
+              "fill": "$bg-surface",
+              "cornerRadius": 16,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#1A191808",
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "blur": 12
+              },
+              "layout": "none",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Kxx5E",
+                  "x": 16,
+                  "y": 16,
+                  "name": "Data Backup Title",
+                  "fill": "$text-primary",
+                  "content": "데이터 백업",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 18,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "C4YVO0",
+                  "x": 16,
+                  "y": 54,
+                  "name": "Data Backup Description",
+                  "fill": "$text-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": 350,
+                  "content": "고객 연락처와 예약 메모를 포함한 전체 백업을 CSV로 저장합니다.",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 13,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "KV45h",
+                  "x": 16,
+                  "y": 85,
+                  "name": "Sensitive Data Alert",
+                  "width": 350,
+                  "height": 64,
+                  "fill": "$status-warning-light",
+                  "cornerRadius": 12,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "oAehF",
+                      "x": 16,
+                      "y": 16,
+                      "name": "Sensitive Data Alert Icon",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "triangle-alert",
+                      "library": "lucide",
+                      "fill": "$status-warning"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "V0bnY",
+                      "x": 48,
+                      "y": 12,
+                      "name": "Sensitive Data Alert Copy",
+                      "width": 286,
+                      "height": 40,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "wL5Ki",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Sensitive Data Alert Title",
+                          "fill": "$status-warning",
+                          "textGrowth": "fixed-width",
+                          "width": 286,
+                          "content": "민감한 개인정보가 포함됩니다.",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "K5kXX",
+                          "x": 0,
+                          "y": 23,
+                          "name": "Sensitive Data Alert Description",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": 286,
+                          "content": "다운로드 후 접근이 제한된 위치에 보관하세요.",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 12,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "mVvKJ",
+                  "x": 16,
+                  "y": 161,
+                  "name": "Sensitive Data Acknowledgement",
+                  "width": 350,
+                  "height": 56,
+                  "fill": "$bg-primary",
+                  "cornerRadius": 12,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "oF9cO",
+                      "x": 12,
+                      "y": 16,
+                      "name": "Unchecked Checkbox",
+                      "width": 24,
+                      "height": 24,
+                      "fill": "$bg-surface",
+                      "cornerRadius": 6,
+                      "stroke": "$border-default",
+                      "strokeWidth": 1
+                    },
+                    {
+                      "type": "text",
+                      "id": "HK2ol",
+                      "x": 46,
+                      "y": 18.5,
+                      "name": "Acknowledgement Label",
+                      "fill": "$text-primary",
+                      "textGrowth": "fixed-width",
+                      "width": 292,
+                      "content": "민감정보를 안전하게 보관하겠습니다.",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "y70xP",
+                  "x": 16,
+                  "y": 229,
+                  "name": "Backup Activation Hint",
+                  "fill": "$text-tertiary",
+                  "textGrowth": "fixed-width",
+                  "width": 350,
+                  "content": "확인 체크 후 다운로드 버튼이 활성화됩니다.",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 12,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "Tf0sw",
+                  "x": 16,
+                  "y": 258,
+                  "name": "CSV Download Actions",
+                  "width": 350,
+                  "height": 56,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "qRuId",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Customer CSV Download Disabled",
+                      "width": 170,
+                      "height": 56,
+                      "fill": "$disabled-bg",
+                      "cornerRadius": 16,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "U2cWgH",
+                          "x": 43,
+                          "y": 18,
+                          "name": "Customer CSV Download Icon",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "download",
+                          "library": "lucide",
+                          "fill": "$disabled-text"
+                        },
+                        {
+                          "type": "text",
+                          "id": "a1XvU2",
+                          "x": 71,
+                          "y": 18,
+                          "name": "Customer CSV Download Label",
+                          "fill": "$disabled-text",
+                          "content": "고객 CSV",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "j8Ofp6",
+                      "x": 180,
+                      "y": 0,
+                      "name": "Appointment CSV Download Disabled",
+                      "width": 170,
+                      "height": 56,
+                      "fill": "$disabled-bg",
+                      "cornerRadius": 16,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "vayYY",
+                          "x": 43,
+                          "y": 18,
+                          "name": "Appointment CSV Download Icon",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "download",
+                          "library": "lucide",
+                          "fill": "$disabled-text"
+                        },
+                        {
+                          "type": "text",
+                          "id": "ZnRg1",
+                          "x": 71,
+                          "y": 18,
+                          "name": "Appointment CSV Download Label",
+                          "fill": "$disabled-text",
+                          "content": "예약 CSV",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
             }
           ]
         },
@@ -4945,7 +5205,7 @@
           "type": "ref",
           "ref": "WV7HX",
           "x": 0,
-          "y": 1460,
+          "y": 1820,
           "descendants": {
             "hDRQJ": {
               "fill": "#B8B4AE"
@@ -18625,7 +18885,8 @@
               "fill": "#6B6966",
               "content": "예약 화면을 유지한 채 새 고객을 등록할 수 있어요.",
               "fontFamily": "Outfit",
-              "fontSize": 13
+              "fontSize": 13,
+              "fontWeight": "normal"
             },
             {
               "type": "text",
@@ -19136,7 +19397,8 @@
               "fill": "#DEDAD4",
               "content": "━━━━",
               "fontFamily": "Outfit",
-              "fontSize": 16
+              "fontSize": 16,
+              "fontWeight": "normal"
             },
             {
               "type": "text",
@@ -19155,7 +19417,8 @@
               "fill": "#3D8A5A",
               "content": "입력 중인 예약 내용은 그대로 유지됩니다.",
               "fontFamily": "Outfit",
-              "fontSize": 13
+              "fontSize": 13,
+              "fontWeight": "normal"
             },
             {
               "type": "text",
@@ -19184,7 +19447,8 @@
               "fill": "#6B6966",
               "content": "메모 (선택)  ·  고객 특이사항",
               "fontFamily": "Outfit",
-              "fontSize": 15
+              "fontSize": 15,
+              "fontWeight": "normal"
             },
             {
               "type": "text",
@@ -19705,7 +19969,8 @@
               "fill": "#DEDAD4",
               "content": "━━━━",
               "fontFamily": "Outfit",
-              "fontSize": 16
+              "fontSize": 16,
+              "fontWeight": "normal"
             },
             {
               "type": "text",
@@ -19724,7 +19989,8 @@
               "fill": "#6B6966",
               "content": "기존 고객인지 확인해 주세요. 예약 작성 내용은 유지됩니다.",
               "fontFamily": "Outfit",
-              "fontSize": 13
+              "fontSize": 13,
+              "fontWeight": "normal"
             },
             {
               "type": "text",
@@ -19753,7 +20019,8 @@
               "fill": "#1A1918",
               "content": "□ 동일 번호를 함께 사용하는 별도 고객임을 확인했습니다.",
               "fontFamily": "Outfit",
-              "fontSize": 14
+              "fontSize": 14,
+              "fontWeight": "normal"
             },
             {
               "type": "text",
@@ -20276,7 +20543,8 @@
               "fill": "#3D8A5A",
               "content": "새 고객을 등록하고 예약 고객으로 선택했습니다.",
               "fontFamily": "Outfit",
-              "fontSize": 13
+              "fontSize": 13,
+              "fontWeight": "normal"
             },
             {
               "type": "text",

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AlertCircle, Clock, Loader2, Plus, Power, RotateCcw, Save } from 'lucide-react';
 import AuthGate from '@/components/AuthGate';
 import ClosedDayConflictSheet from '@/components/settings/ClosedDayConflictSheet';
+import DataBackupCard from '@/components/settings/DataBackupCard';
 import { supabase } from '@/lib/supabase';
 import {
   APPOINTMENT_STATUS,
@@ -705,7 +706,7 @@ function SettingsPageContent() {
     <div className="page-content" style={{ paddingTop: 12 }}>
       <header className={styles.header}>
         <h1 className="heading-xl">설정</h1>
-        <p className="caption">영업시간, 서비스 마스터, 휴무일을 관리합니다.</p>
+        <p className="caption">영업시간, 기본 시술, 휴무일과 데이터 백업을 관리합니다.</p>
       </header>
 
       <section className={`card ${styles.card}`}>
@@ -1309,6 +1310,8 @@ function SettingsPageContent() {
           </div>
         )}
       </section>
+
+      <DataBackupCard />
 
       <ClosedDayConflictSheet
         open={sheetOpen}
