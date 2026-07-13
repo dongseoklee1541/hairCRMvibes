@@ -339,6 +339,10 @@ test('예약 데이터셋도 고정된 백업 헤더로 CSV를 생성한다', as
 
   assert.equal(response.status, 200);
   assert.equal(capture.datasetSelect.table, 'appointments');
+  assert.deepEqual(
+    capture.orders.map(({ column }) => column),
+    ['created_at', 'id']
+  );
   assert.ok(csv.startsWith('"id","customer_id","date","time","service","service_id"'));
   assert.ok(csv.includes('"\'@위험한 메모"'));
 });
