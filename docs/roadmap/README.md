@@ -105,7 +105,7 @@ R-14는 Pencil Before/After 4쌍과 공통 상태 매트릭스, 공통 가독성
 ## Phase 2 착수 기준
 - R-06/R-07은 재구현하지 않습니다. 실기기 install/standalone/SW update와 post-deploy authenticated browser 검증은 완료 근거와 분리한 후속 운영 작업입니다.
 - R-08은 `/Users/idongseog/workspace/hairCRMvibes-r08-service-master` clean worktree에서 구현한 뒤 PR #16 merge `main@01440b6`, live migration 10개와 Production 배포까지 완료했습니다. 기존 R-07 checkout과 미추적 산출물은 변경하지 않았습니다.
-- R-09는 PR #20 merge, exact 11번째 live migration과 Production 공개/PWA smoke까지 완료했습니다. R-10은 PR #26 merge, Preview/Production migration, Production release와 public/PWA/API boundary를 완료했지만 Auth URL·advisor·authenticated owner smoke blocker로 `In Progress`를 유지합니다. R-11은 별도 작업으로 유지합니다.
+- R-09는 PR #20 merge, exact 11번째 live migration과 Production 공개/PWA smoke까지 완료했습니다. R-10은 PR #26 merge, Preview/Production migration, Production release와 public/PWA/API boundary를 완료했지만 Auth URL·advisor·authenticated owner smoke blocker로 `In Progress`를 유지합니다. R-11은 최신 `origin/main@d8e6e8a` 위에서 선행 설계를 재배치했으며 구현은 별도 승인을 기다립니다.
 - 2026-07-13 `burtyhairCRM-preview` 전용 Supabase 프로젝트를 만들고 forward migration 11개를 순서대로 replay했습니다. Vercel에는 Preview 범위의 공개 URL/key만 추가했으며 기존 Production/Development 값은 변경하지 않았습니다.
 - R-12는 Preview의 synthetic owner/staff/anon·모바일/PWA 검증 후 PR #22 merge `main@7a107c4`와 Production deployment `FxRGiDSgHQFXARsc2mUyCrsydtY8`까지 완료했습니다. canonical R-12 bundle, 공개/PWA 자산과 무인증 `/api/export`의 `401 + no-store`를 확인했으며 Production 실제 CSV는 생성하지 않았습니다.
 - R-14의 Pencil·코드·합성 모바일 브라우저 검증은 `codex/r14-easy-usability-foundation`에서 완료했습니다. 실제 대표 사용자 과제 관찰 결과를 기록하기 전에는 `Done`으로 전환하지 않습니다.
@@ -125,10 +125,13 @@ R-14는 Pencil Before/After 4쌍과 공통 상태 매트릭스, 공통 가독성
 | --- | --- | --- |
 | R-12 | [R-12-csv-export-backup.md](./R-12-csv-export-backup.md) | Done (production deployed; Preview role/PWA + Production public/API boundary verified) |
 | R-10 | [R-10-role-management.md](./R-10-role-management.md) | In Progress (PR #26 merged; live migration and Production release verified; Auth URL/advisor/owner smoke blockers remain) |
+| R-11 | [R-11-notification-automation.md](./R-11-notification-automation.md) | Design Ready (latest `main` rebase complete; implementation approval/provider gates pending) |
 
 R-12는 owner JWT·기존 RLS를 사용하는 스트리밍 Route Handler, 고객/예약 CSV, 명시적 암호화 보관·30일 삭제 확인 UI를 구현했습니다. 전용 Preview에서 anon 401, staff 403, owner 고객·예약 200과 CSV 계약, Vercel branch Preview 실제 owner/staff UI, 390×844·360×800/PWA cache를 검증하고 synthetic residue 0을 확인했습니다. Production 데이터·RLS·service-role·PWA cache 전략은 변경하지 않았습니다.
 
 R-10은 승인된 A′안으로 raw email 없는 private HMAC claim ledger와 claim/settle/reconcile 계약, server-only `R10_INVITATIONS_ENABLED` fail-closed gate, `503/private no-store`, 운영 runbook을 구현했습니다. PR #26을 merge해 `main@6cfb71e`가 되었고 Preview/Production에 R-10 두 migration을 적용했습니다. Production deployment `dpl_2vuPaKZxcv93nF71Nxk1DQKCZnHV`는 canonical alias에 READY이며, public login/API boundary와 PWA offline/recovery를 확인했습니다. Auth Site/Redirect URL은 dashboard 인증 blocker로 변경하지 않았고 Production flag는 `false`입니다. R-10 advisor WARN과 authenticated owner 실제 smoke 미수행이 남아 `In Progress`를 유지합니다. Pencil은 별도 세션이 관리하며 이번 변경은 승인된 micro-copy 예외입니다.
+
+R-11은 최신 `origin/main@d8e6e8a` 위에서 공통 outbox/dry-run을 먼저 두고 고객 예약 안내는 SMS, 직원 운영 알림은 PWA Push, 재방문 안내는 별도 마케팅 동의 후 고객 직접 채널로 활성화하는 C안을 설계했습니다. claim·attempt·settle·reconciliation, serverless 동시성, unknown/manual-review, 권한·PII·동의·retention 경계를 상세 문서와 Pencil 4개 상태로 검증했고 기존 R-10/R-12/R-14 node와 PNG를 보존했습니다. 코드·migration·provider·Cron·외부 설정·실제 발송은 변경하지 않았으며, SMS provider·법적 동의/SLA·VAPID·운영 runbook을 포함한 별도 R-11 Implementation Plan 승인이 구현 gate입니다.
 
 ## 실행 프롬프트
 - [Phase 2 Execution Prompt](./phase-2-execution-prompt.md)

@@ -1,12 +1,14 @@
 # R-11 알림 자동화 선행 설계
 
 ## 상태
-- Design Verified (R-10 최종 동기화·공유 SSOT 갱신 대기)
+- Design Ready (latest `main` rebase complete; 구현 승인 대기)
 - 우선순위: P2
 - 설계 브랜치: `codex/r11-notification-design`
-- 최초 기준: `origin/codex/r10-role-management@0d14192b665779cf7476a2c77fa7ac4985bfb45b`
-- 구현 시작 조건: R-10 최종 계약의 `main` 병합 및 R-11 별도 Implementation Plan 승인
-- 최종 업데이트: 2026-07-13
+- 최초 기준: `origin/codex/r10-role-management@0d14192b665779cf7476a2c77fa7ac4985bfb45b` (이력)
+- R-10 최종 병합 기준: PR #26 merge `main@6cfb71e88cbe4bbfd3a8469a3c5b4487a3ccb449`
+- 현재 설계 기준: `origin/main@d8e6e8ab337cb1f2d37e0a46b8c742c4be03cc5e`
+- 구현 시작 조건: R-11 별도 Implementation Plan 승인 및 provider·법적 동의/SLA·VAPID·retention/manual-review 운영 계약 확정
+- 최종 업데이트: 2026-07-15
 
 ## 문제 정의
 R-11의 기존 설명은 "예약 전/재방문 리마인드 자동 발송"이고 채널 기본값은 PWA Push였습니다. 그러나 현재 PWA의 authenticated 사용자는 원장과 직원이며 고객용 로그인·설치·구독 흐름은 없습니다. 따라서 현재 앱의 PWA Push는 고객 리마인드가 아니라 직원의 내부 운영 알림입니다.
@@ -350,7 +352,7 @@ owner 전용 `/settings`는 staff가 접근할 수 없으므로 staff의 자기 
 - 신규 frame은 고객 이름·전화번호·예약 상세 대신 합성 집계·채널 상태만 사용합니다.
 - before: `output/playwright/r11-notification-design/before/rYt9h.png`
 - after: `output/playwright/r11-notification-design/after/edUw4.png`, `J3bas.png`, `S5VGVz.png`, `pFmgV.png`
-- R-10 최종 head가 아직 push되지 않아 공유 SSOT와 최종 Git 동기화는 완료 기준으로 남겨 둡니다.
+- 기존 R-11 고유 커밋만 최신 `origin/main@d8e6e8a` 위로 재배치했고 공유 SSOT도 같은 기준으로 동기화했습니다. R-10의 `main` 병합은 충족됐으며, R-11 구현은 별도 승인과 provider·법적/운영 계약 확정을 선행조건으로 유지합니다.
 
 ## 구현 예상 범위 — 별도 승인 필요
 - `supabase/migrations/<timestamp>_r11_notification_automation.sql`
