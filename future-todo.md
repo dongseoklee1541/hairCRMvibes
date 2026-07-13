@@ -3,14 +3,14 @@
 ## 문서 목적
 - 이 문서는 Hair CRM의 차후 개발 우선순위를 고정하고, 구현 착수 전 의사결정을 빠르게 하기 위한 로드맵입니다.
 - 본 문서는 기능 구현이 아니라 계획 문서이며, 상대적 실행 순서(Phase) 기준으로 관리합니다.
-- 범위는 워크스페이스 코드베이스와 `pencil-hairshopcrm.pen` 분석 결과를 기반으로 한 13개 기능입니다.
+- 범위는 워크스페이스 코드베이스와 `pencil-hairshopcrm.pen` 분석 결과를 기반으로 한 정식 로드맵 14개와 번호 미배정 사용성 후보 3개입니다.
 
 ## 우선순위 기준
 - `P0`: 보안/데이터 보호, 예약 운영 연속성, 운영 중단 리스크를 직접 줄이는 항목
 - `P1`: 운영 효율과 품질(사용성/통계/데이터 일관성) 고도화 항목
 - `P2`: 확장성/자동화/관리 편의성 중심의 중장기 항목
 
-## 전체 기능 리스트 (13개)
+## 정식 기능 리스트 (14개)
 | ID | 기능 | 우선순위 | 요약 | 선행조건 | 예상효과 | 난이도(S/M/L) |
 | --- | --- | --- | --- | --- | --- | --- |
 | R-01 | RLS 정책 정리 | P0 | `Allow all` 성격 정책 제거 및 인증/역할 기반 접근 정책 정비 | 현재 정책/권한 매트릭스 정리 | 데이터 노출 리스크 감소, 권한 경계 명확화 | M |
@@ -23,9 +23,20 @@
 | R-08 | 서비스 마스터(가격/기본 소요시간) | P1 | 기존 `salon_service_defaults` 확장과 예약 snapshot으로 서비스·가격을 표준화 | nullable 가격/FK, DB trigger, RLS 계약 확정 | 통계/정산 정확도 향상 | M |
 | R-13 | 예약 고객 검색·빠른 등록 | P1 | 예약 화면에서 활성 고객 이름 검색과 인라인 고객 등록·자동 선택을 제공 | R-07 고객 validation·중복 정책 | 예약 등록 이탈·재입력 감소 | M |
 | R-09 | 통계 고도화(매출/객단가/재방문율) | P1 | 기존 건수 통계를 매출/단가/리텐션 지표로 확장 | R-04, R-08 | 의사결정 지표 품질 향상 | M |
+| R-14 | 쉬운 사용성 1차(가독성·조작성 기반) | P1 | 50~60대 여성 사용자를 중심으로 핵심 화면의 글자, 용어, 버튼, 폼 피드백을 쉽게 정비 | 핵심 운영 화면 현황과 대표 사용자 검증 기준 | 오조작과 학습 부담 감소, 예약·고객 업무 자신감 향상 | M |
 | R-10 | 권한관리 UI(직원 초대/권한변경) | P2 | 원장이 직원 계정의 역할을 UI에서 관리 가능하게 구성 | R-01, 초대 흐름 합의 | 운영 권한 관리 비용 절감 | L |
 | R-11 | 알림 자동화(예약 리마인드/재방문) | P2 | 예약 전/재방문 리마인드 자동 발송 플로우 구축 | R-02, R-08, R-10, 채널 선택 | 노쇼 감소, 재방문율 상승 | L |
 | R-12 | CSV 내보내기/백업 | P2 | 고객/예약 데이터 내보내기 및 운영 백업 지원 | 개인정보 마스킹/보관 정책 | 운영 안정성 및 데이터 이관 용이성 향상 | M |
+
+## 번호 미배정 사용성 후보 (3개)
+
+아래 항목은 정식 R 업무가 아니며 번호를 예약하지 않습니다. R-14 구현과 대표 사용자 검증 결과를 본 뒤 별도 승인을 거쳐 필요한 항목만 당시의 다음 사용 가능 R 번호로 승격합니다.
+
+| 구분 | 기능 | 상태 | 판단 목적 | 상세 문서 |
+| --- | --- | --- | --- | --- |
+| 후보 A | 오늘 예약 중심 홈 | Candidate (ID 미배정) | 첫 화면에서 고객 목록보다 당일 일정 확인이 우선인지 검증 | [candidate-today-centered-home.md](./docs/roadmap/candidate-today-centered-home.md) |
+| 후보 B | 지난 시술 그대로 재예약 | Candidate (ID 미배정) | 고객 이력에서 반복 예약을 시작하면 입력 부담이 실제로 줄어드는지 검증 | [candidate-repeat-last-service.md](./docs/roadmap/candidate-repeat-last-service.md) |
+| 후보 C | 예약 등록 완료 확인 강화 | Candidate (ID 미배정) | 저장 직후 명확한 요약과 다음 행동이 중복 입력·불안을 줄이는지 검증 | [candidate-appointment-save-confirmation.md](./docs/roadmap/candidate-appointment-save-confirmation.md) |
 
 ## 단계별 실행 계획
 ### Phase 1 (P0 안정화)
@@ -49,6 +60,7 @@
 | R-13 | Done (production deployed; public/PWA smoke verified) | PR #18 merge `main@f904bcf`, Vercel Production deployment `dpl_5VemJYn7XhZAorkpEaHBNZN9x85o`, canonical `/appointments/new`·로그인 redirect·manifest/SW/offline/favicon/192·512 icon HTTP 200과 console 0건을 확인했습니다. 로컬에서는 Pencil 6개 상태, 390×844·360×800 mock 검색·중복·성공/실패/취소 draft 보존과 `customers?select=id,name` 최소 조회를 검증했습니다. | 실제 owner/staff 로그인·모바일 실기기 IME/standalone은 후속 운영 검증. 전용 Preview synthetic 데이터만 사용하고 Production 데이터 smoke는 별도 승인 전 금지 |
 | R-09 | Done (production deployed; exact live migration/ACL/PWA verified) | PR #20 merge `main@b63f9a3`, exact 11번째 live migration `20260712124959_r09_stats_advanced`, RPC invoker/stable/search_path/ACL, Vercel deployment `dpl_FBDsYn26v2ZXiJthe5z97vsJDwk2`, canonical redirect·PWA assets·offline fallback을 확인했습니다. local Pencil/SQL/build/mobile 검증과 synthetic residue 0 근거도 유지합니다. | live authenticated 실제 데이터 smoke와 실기기 install/standalone은 후속 운영 검증. R-10/R-11은 별도 작업으로 유지 |
 | R-12 | Done (production deployed; Preview role/PWA + Production public/API boundary verified) | PR #22 merge `main@7a107c4`, Vercel deployment `FxRGiDSgHQFXARsc2mUyCrsydtY8`, canonical R-12 설정 chunk·공개/PWA 자산·무인증 export `401 + no-store`를 확인했습니다. Node tests 10/10·100,005행과 전용 Preview anon 401/staff 403/owner 고객·예약 200, 모바일 UI/PWA cache, residue 0 근거를 유지합니다. Production DB는 비식별 count/RLS/grant/residue만 배포 전후 재확인했습니다. | 모바일·Safari Blob fallback 메모리, Vercel 함수 실행시간, 다중 페이지 비-snapshot 특성은 운영 규모 부하 검증 필요. Production 실제 owner CSV 생성은 개인정보 보관 책임 때문에 의도적으로 미실행 |
+| R-14 | Planned | 50~60대 여성 사용자를 위한 공통 가독성·조작성 개선 범위와 완료 기준을 `docs/roadmap/R-14-easy-usability-foundation.md`에 정의 | Pencil SSOT에서 핵심 화면의 before/after와 상태를 먼저 설계하고 별도 Implementation Plan 승인 후 구현 |
 
 ## Phase 1 live 검증 요약 (2026-07-08)
 - Supabase 프로젝트 `burtyhairCRM`은 `ACTIVE_HEALTHY` 상태였고, Phase 1 migration 5개(`r01`, `r02`, `r05`, `r03`, `phase1_function_privilege_hardening`)를 live DB에 적용했습니다.
@@ -87,6 +99,7 @@
 - `R-08` 서비스 마스터(가격/기본 소요시간): Production DB·배포·live transactional smoke Done
 - `R-13` 예약 고객 검색·빠른 등록: Production 배포·canonical 공개/PWA smoke Done
 - `R-09` 통계 고도화(매출/객단가/재방문율): PR/live/Production release Done
+- `R-14` 쉬운 사용성 1차: Planned. 가독성·조작성 공통 기반을 먼저 개선하고 번호 미배정 후보 3개는 사용자 검증 뒤 승격 여부 판단
 
 ### Phase 2 기능 착수 기준 (2026-07-12 감사)
 - R-06/R-07은 재구현하지 않습니다. 미완료 실기기/browser/Preview 검증은 기능 완료 근거와 분리한 후속 운영 작업으로 추적합니다.
@@ -105,13 +118,14 @@
 - `R-04 -> R-09`
 - `R-08 -> R-09`
 - `R-07 -> R-13 -> R-09` (실행 순서; R-13은 R-09 집계 계약을 변경하지 않음)
+- `R-06 + R-13 -> R-14` (현재 모바일/PWA·예약 등록 흐름을 유지하면서 사용성 기반 정비)
 - `R-08 -> R-11`
 - `R-10 -> R-11`
 - `R-02 + R-03 -> R-11`
 
 ## 리스크 및 완화
 - 우선순위 해석 차이: P0/P1/P2 기준(보안/운영중단/확장성)을 문서 상단에 고정합니다.
-- 항목 중복 또는 누락: ID(`R-01`~`R-13`)를 고정하고 신규 항목은 `R-14`부터 순차 부여합니다.
+- 항목 중복 또는 누락: ID(`R-01`~`R-14`)를 고정하고 번호 미배정 후보는 별도 승인 전까지 R ID로 취급하지 않습니다.
 - 문서 노후화: 스프린트 단위로 점검하며 `마지막 업데이트` 섹션을 반드시 갱신합니다.
 
 ## 의사결정 옵션(대안 2안)
@@ -127,8 +141,10 @@
 
 ## 업데이트 규칙
 - 기능 추가 시 기존 ID는 재사용하지 않고 신규 ID를 연번으로 부여합니다.
+- 후보는 파일명과 상태에 `Candidate (ID 미배정)`을 유지하며, 별도 승인으로 승격할 때만 당시의 다음 사용 가능 R 번호를 부여합니다.
 - 우선순위 변경 시 변경 사유(운영 이슈/보안/비즈니스)를 해당 항목에 한 줄로 기록합니다.
 - 완료 항목은 삭제하지 않고 별도 상태 표기(`Planned`, `In Progress`, `Done`)로 추적합니다.
+- 개발 완료 시 같은 변경에서 `future-todo.md` 구현 상태, `docs/roadmap/README.md` 인덱스, 해당 상세 문서의 상태·근거·검증 결과·남은 리스크를 함께 갱신합니다.
 - 본 문서는 절대 날짜 기반 일정표가 아니라 Phase 기반 상대 순서 문서로 유지합니다.
 - 실제 구현 착수는 별도 승인 후 진행하며, 구현 계획 문서는 본 로드맵을 참조합니다.
 
@@ -142,3 +158,4 @@
 - R-12 기록: `origin/main@07eefe8` 기반 `codex/r12-csv-backup`, Pencil 설정 카드, owner-only 고객/예약 스트리밍 CSV, Node tests 10/10·100,005행, build, 전용 Preview synthetic 390×844·360×800, PWA NetworkOnly·민감 응답 cache 0건 확인
 - 전용 `burtyhairCRM-preview`에 forward migration 11개를 replay하고 synthetic anon/staff/owner 실제 handler smoke에서 401/403/고객 200/예약 200과 CSV 계약을 확인. Vercel Preview deployment `EXjXJCPCCjNJ3gPZgPLsntu71Cb7`, 실제 owner/staff UI, 390×844·360×800/PWA cache를 검증하고 users/identities/profiles/customers/appointments/sessions/refresh tokens residue 0을 확인
 - R-12 Production release: PR #22 merge `main@7a107c4`, Vercel deployment `FxRGiDSgHQFXARsc2mUyCrsydtY8`, canonical 공개/PWA 200·설정 chunk marker·무인증 export `401 + no-store`를 확인. Production DB는 고객 6·예약 7·profile 2, RLS 9/9, 핵심 grant 3/3, residue 0의 비식별 상태만 재확인했으며 실제 owner CSV는 생성하지 않음
+- R-14를 정식 `Planned` 업무로 추가하고, 오늘 예약 중심 홈·지난 시술 그대로 재예약·예약 등록 완료 확인 강화는 번호 미배정 후보 문서로 분리했습니다. 기존 완료 상태는 R-01~R-09, R-12, R-13의 저장소 내 검증 근거와 동기화했습니다.

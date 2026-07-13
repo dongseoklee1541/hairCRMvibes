@@ -1,6 +1,6 @@
 # Roadmap Detail Index
 
-이 디렉터리는 `future-todo.md`의 R-xx 항목별 상세 진행 상태와 완료 기준을 기록합니다.
+이 디렉터리는 `future-todo.md`의 R-xx 항목별 상세 진행 상태와 완료 기준을 기록합니다. 번호 미배정 후보는 `candidate-*` 문서로 분리하며 별도 승인 전에는 정식 R 업무로 세지 않습니다.
 
 ## Phase 1
 | ID | 문서 | 상태 |
@@ -13,7 +13,7 @@
 
 ## Phase 1 검증 기준
 - 기준일: 2026-07-12
-- Production 애플리케이션 release 기준: PR #18 merge `main@f904bcfe676e73e4f629eef6e1003a186a7bbec9`
+- 현재 Production 애플리케이션 release 기준: R-12 PR #22 merge `main@7a107c434f272bf33b0a35c7db6fba36e33b1946`
 - 2026-07-12 감사 착수 baseline은 PR #14 merge `2f915c2e8f7ec7e736a6ee4c315caa03113416ab`이었고, 감사 문서 PR #15 merge 후 최신 `origin/main`은 `a7a4186e76c9225c9273fa8474cea27440d36d40`입니다. 두 PR은 문서만 변경했으므로 Production 애플리케이션 release SHA와 구분합니다.
 - release 세션의 live Supabase migration/RLS/RPC/R-03 smoke, R-02 Playwright mobile smoke, Pencil R-02 `snapshot_layout`/export, `npm run build`, `git diff --check`, Vercel Production canonical smoke를 완료 근거로 사용합니다. 이번 감사에서는 현재 GitHub/Supabase catalog와 canonical 공개 endpoint만 읽기 전용으로 재확인했습니다.
 - Fresh DB 정책은 A안을 선택했습니다. `20260219000000_phase1_genesis_baseline.sql`을 포함한 forward migration 8개를 disposable PostgreSQL 17에서 전체 replay했고, 핵심 객체/RLS/RPC/예약 guard를 검증했습니다.
@@ -86,6 +86,7 @@ R-07 release 세션에서 catalog/ACL/RPC 29개 계약과 실제 owner/staff/ano
 | R-08 | [R-08-service-master.md](./R-08-service-master.md) | Done (production deployed; live transactional smoke verified) |
 | R-13 | [R-13-appointment-customer-search-quick-create.md](./R-13-appointment-customer-search-quick-create.md) | Done (production deployed; public/PWA smoke verified) |
 | R-09 | [R-09-stats-advanced.md](./R-09-stats-advanced.md) | Done (production deployed; exact live migration/ACL/PWA verified) |
+| R-14 | [R-14-easy-usability-foundation.md](./R-14-easy-usability-foundation.md) | Planned |
 
 R-07 로컬 완료 게이트에는 등록·편집 미저장 상태의 브라우저 Back/Forward·내부 이동 확인, 제출 중 dirty 유지·지연 응답 stale route 차단, 저장 성공 시 대화상자 0건, 홈 390×844·360×800 지속 콘솔 0건, 새 브라우저 컨텍스트의 PWA/offline 재검증이 포함됩니다. Production release에서는 canonical PWA 핵심 자산과 Cron/DB/runtime log 경계를 추가 확인했습니다.
 
@@ -97,12 +98,25 @@ R-13은 PR #18 merge `main@f904bcf`로 Production에 배포됐습니다. deploym
 
 R-09는 `origin/main@a360cea` 기반 별도 worktree에서 aggregate RPC, 기간 통계 UI, Pencil 6개 상태를 구현했습니다. forward 11개와 `schema.sql` 양 경로 R-07/R-08/R-09 SQL 회귀, 390×844·360×800 mobile mock, production-mode PWA/offline을 통과했습니다. PR #20 merge `main@b63f9a3`, exact 11번째 live migration, RPC catalog/ACL, Production deployment `dpl_FBDsYn26v2ZXiJthe5z97vsJDwk2`와 canonical 공개/PWA/offline 검증까지 완료했습니다.
 
+R-14는 50~60대 여성 사용자를 중심으로 핵심 화면의 가독성, 쉬운 용어, 조작 영역, 폼 피드백을 정비하는 다음 P1 작업입니다. 홈 정보구조 개편, 반복 예약, 별도 저장 완료 흐름은 R-14 범위에 섞지 않고 아래 번호 미배정 후보로 평가합니다.
+
 ## Phase 2 착수 기준
 - R-06/R-07은 재구현하지 않습니다. 실기기 install/standalone/SW update와 post-deploy authenticated browser 검증은 완료 근거와 분리한 후속 운영 작업입니다.
 - R-08은 `/Users/idongseog/workspace/hairCRMvibes-r08-service-master` clean worktree에서 구현한 뒤 PR #16 merge `main@01440b6`, live migration 10개와 Production 배포까지 완료했습니다. 기존 R-07 checkout과 미추적 산출물은 변경하지 않았습니다.
 - R-09는 PR #20 merge, exact 11번째 live migration과 Production 공개/PWA smoke까지 완료했습니다. R-10/R-11은 별도 작업으로 유지합니다.
 - 2026-07-13 `burtyhairCRM-preview` 전용 Supabase 프로젝트를 만들고 forward migration 11개를 순서대로 replay했습니다. Vercel에는 Preview 범위의 공개 URL/key만 추가했으며 기존 Production/Development 값은 변경하지 않았습니다.
 - R-12는 Preview의 synthetic owner/staff/anon·모바일/PWA 검증 후 PR #22 merge `main@7a107c4`와 Production deployment `FxRGiDSgHQFXARsc2mUyCrsydtY8`까지 완료했습니다. canonical R-12 bundle, 공개/PWA 자산과 무인증 `/api/export`의 `401 + no-store`를 확인했으며 Production 실제 CSV는 생성하지 않았습니다.
+- R-14 구현은 `pencil-hairshopcrm.pen` 설계, 별도 Implementation Plan 승인, 코드·모바일 브라우저·대표 사용자 검증 순서로 진행합니다.
+
+## 번호 미배정 사용성 후보
+
+| 상태 | 문서 | 핵심 가설 |
+| --- | --- | --- |
+| Candidate (ID 미배정) | [오늘 예약 중심 홈](./candidate-today-centered-home.md) | 첫 화면의 최우선 정보가 고객 목록보다 오늘 일정이면 일상 업무가 빨라진다 |
+| Candidate (ID 미배정) | [지난 시술 그대로 재예약](./candidate-repeat-last-service.md) | 고객 이력에서 반복 예약을 시작하면 재입력과 선택 실수가 줄어든다 |
+| Candidate (ID 미배정) | [예약 등록 완료 확인 강화](./candidate-appointment-save-confirmation.md) | 저장 직후 큰 완료 표시와 예약 요약을 보여주면 저장 여부에 대한 불안과 중복 입력이 줄어든다 |
+
+후보는 R-14 검증 결과와 실제 사용 빈도를 근거로 하나씩 채택·보류합니다. 채택 시에도 이 표에서 번호를 미리 예약하지 않고 별도 승인으로 당시의 다음 사용 가능 R 번호를 부여합니다.
 
 ## Phase 3
 | ID | 문서 | 상태 |
@@ -116,4 +130,6 @@ R-12는 owner JWT·기존 RLS를 사용하는 스트리밍 Route Handler, 고객
 
 ## 업데이트 규칙
 - 각 R 작업 완료 시 상태, 근거, 검증 결과, 남은 리스크를 해당 문서에 갱신합니다.
+- 같은 완료 변경에서 `future-todo.md`의 구현 상태와 이 인덱스도 함께 갱신하며, PR·merge SHA·배포·검증 중 실제로 확인한 근거만 기록합니다.
+- 후보 문서는 `Candidate (ID 미배정)` 상태를 유지하고, 정식 승격 승인 전에는 R 번호 파일로 이름을 바꾸거나 구현을 시작하지 않습니다.
 - `future-todo.md`의 구현 상태 표와 이 디렉터리 문서의 상태가 서로 다르면 `future-todo.md`를 요약본, R-xx 문서를 상세 근거로 봅니다.
