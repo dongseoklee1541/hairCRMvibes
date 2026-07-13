@@ -32651,6 +32651,2534 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "edUw4",
+      "x": 15172,
+      "y": 0,
+      "name": "R-11 설정 / 알림 자동화 진입",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-primary",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "TwrEB",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "name": "R-11 설정 상단 안전영역 강조",
+          "width": 390,
+          "height": 4,
+          "fill": "$accent-primary",
+          "layout": "none"
+        },
+        {
+          "type": "frame",
+          "id": "fyrWr",
+          "layoutPosition": "absolute",
+          "x": 20,
+          "y": 22,
+          "name": "R-11 설정 헤더",
+          "width": 350,
+          "height": 94,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "dbpJ7",
+              "x": 0,
+              "y": 0,
+              "name": "R-11 설정 제목",
+              "fill": "$text-primary",
+              "content": "설정",
+              "fontFamily": "$font-primary",
+              "fontSize": 26,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "j3F2He",
+              "x": 0,
+              "y": 42,
+              "name": "R-11 설정 설명",
+              "fill": "$text-secondary",
+              "textGrowth": "fixed-width",
+              "width": 350,
+              "content": "직원 권한, 알림 자동화, 예약 설정, 휴무일과 데이터 백업을 관리합니다.",
+              "lineHeight": 1.4,
+              "fontFamily": "$font-primary",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "bWi8A",
+          "layoutPosition": "absolute",
+          "x": 20,
+          "y": 130,
+          "name": "설정 진입 / 직원 및 권한 관리",
+          "width": 350,
+          "height": 88,
+          "fill": "$bg-surface",
+          "cornerRadius": "$radius-lg",
+          "stroke": "$border-subtle",
+          "strokeWidth": 1,
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "IsoWz",
+              "x": 14,
+              "y": 20,
+              "name": "직원 권한 아이콘 배경",
+              "width": 48,
+              "height": 48,
+              "fill": "$status-info-light",
+              "cornerRadius": 14,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "WGopn",
+                  "x": 13,
+                  "y": 13,
+                  "name": "직원 권한 아이콘",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "shield-check",
+                  "library": "lucide",
+                  "fill": "$status-info"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "FVALA",
+              "x": 76,
+              "y": 16,
+              "name": "직원 권한 제목",
+              "fill": "$text-primary",
+              "content": "직원 및 권한 관리",
+              "fontFamily": "$font-primary",
+              "fontSize": 16,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "RzVVf",
+              "x": 76,
+              "y": 43,
+              "name": "직원 권한 설명",
+              "fill": "$text-secondary",
+              "textGrowth": "fixed-width",
+              "width": 220,
+              "content": "직원을 초대하고 원장·직원 역할을 관리합니다.",
+              "lineHeight": 1.4,
+              "fontFamily": "$font-primary",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "icon",
+              "id": "Woafd",
+              "x": 312,
+              "y": 34,
+              "name": "직원 권한 이동",
+              "width": 20,
+              "height": 20,
+              "icon": "chevron-right",
+              "library": "lucide",
+              "fill": "$text-tertiary"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "EmaRv",
+          "layoutPosition": "absolute",
+          "x": 20,
+          "y": 230,
+          "name": "설정 진입 / 알림 자동화",
+          "width": 350,
+          "height": 98,
+          "fill": "$bg-surface",
+          "cornerRadius": "$radius-lg",
+          "stroke": "$accent-primary",
+          "strokeWidth": 1,
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "F35yCb",
+              "x": 14,
+              "y": 25,
+              "name": "알림 자동화 아이콘 배경",
+              "width": 48,
+              "height": 48,
+              "fill": "$accent-light",
+              "cornerRadius": 14,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "z3l0RT",
+                  "x": 13,
+                  "y": 13,
+                  "name": "알림 자동화 아이콘",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "bell-ring",
+                  "library": "lucide",
+                  "fill": "$accent-primary"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "p5NlZT",
+              "x": 76,
+              "y": 16,
+              "name": "알림 자동화 제목",
+              "fill": "$text-primary",
+              "content": "알림 자동화",
+              "fontFamily": "$font-primary",
+              "fontSize": 16,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "fqvNs",
+              "x": 76,
+              "y": 43,
+              "name": "알림 자동화 설명",
+              "fill": "$text-secondary",
+              "textGrowth": "fixed-width",
+              "width": 220,
+              "content": "고객 문자와 직원 앱 알림을 따로 관리합니다.",
+              "lineHeight": 1.4,
+              "fontFamily": "$font-primary",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "juZFL",
+              "x": 76,
+              "y": 70,
+              "name": "원장 설정 배지",
+              "width": 72,
+              "height": 22,
+              "fill": "$status-success-light",
+              "cornerRadius": "$radius-pill",
+              "layout": "none",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "ZcDY0",
+                  "x": 10,
+                  "y": 4,
+                  "name": "원장 설정 배지 문구",
+                  "fill": "$status-success",
+                  "content": "원장 설정",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 10,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "icon",
+              "id": "cZqus",
+              "x": 312,
+              "y": 39,
+              "name": "알림 자동화 이동",
+              "width": 20,
+              "height": 20,
+              "icon": "chevron-right",
+              "library": "lucide",
+              "fill": "$text-tertiary"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Ueqer",
+          "layoutPosition": "absolute",
+          "x": 20,
+          "y": 346,
+          "name": "기존 예약 운영 설정 미리보기",
+          "width": 350,
+          "height": 220,
+          "fill": "$bg-surface",
+          "cornerRadius": "$radius-lg",
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "UL0On",
+              "x": 16,
+              "y": 16,
+              "name": "예약 운영 설정 제목",
+              "fill": "$text-primary",
+              "content": "예약 운영 설정",
+              "fontFamily": "$font-primary",
+              "fontSize": 17,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "CGfMY",
+              "x": 16,
+              "y": 44,
+              "name": "예약 운영 설정 설명",
+              "fill": "$text-secondary",
+              "textGrowth": "fixed-width",
+              "width": 318,
+              "content": "기존 영업시간과 기본 시술 설정은 그대로 유지됩니다.",
+              "lineHeight": 1.4,
+              "fontFamily": "$font-primary",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "GGnF0",
+              "x": 16,
+              "y": 84,
+              "name": "기본 시술 행",
+              "width": 318,
+              "height": 52,
+              "fill": "$bg-primary",
+              "cornerRadius": "$radius-md",
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "JlJPy",
+                  "x": 14,
+                  "y": 16,
+                  "name": "기본 시술 아이콘",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "scissors",
+                  "library": "lucide",
+                  "fill": "$accent-primary"
+                },
+                {
+                  "type": "text",
+                  "id": "mpMSj",
+                  "x": 46,
+                  "y": 10,
+                  "name": "기본 시술 라벨",
+                  "fill": "$text-secondary",
+                  "content": "기본 시술",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "FszJZ",
+                  "x": 220,
+                  "y": 10,
+                  "name": "기본 시술 값",
+                  "fill": "$text-primary",
+                  "textGrowth": "fixed-width",
+                  "width": 82,
+                  "content": "커트 · 60분",
+                  "textAlign": "right",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "dJOIt",
+              "x": 16,
+              "y": 148,
+              "name": "영업일 행",
+              "width": 318,
+              "height": 52,
+              "fill": "$bg-primary",
+              "cornerRadius": "$radius-md",
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "JB1bP",
+                  "x": 14,
+                  "y": 16,
+                  "name": "영업일 아이콘",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "calendar-days",
+                  "library": "lucide",
+                  "fill": "$accent-primary"
+                },
+                {
+                  "type": "text",
+                  "id": "DXDte",
+                  "x": 46,
+                  "y": 10,
+                  "name": "영업일 라벨",
+                  "fill": "$text-secondary",
+                  "content": "영업일",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "fMfoo",
+                  "x": 220,
+                  "y": 10,
+                  "name": "영업일 값",
+                  "fill": "$text-primary",
+                  "textGrowth": "fixed-width",
+                  "width": 82,
+                  "content": "월–토",
+                  "textAlign": "right",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "TdVL0",
+          "layoutPosition": "absolute",
+          "x": 20,
+          "y": 584,
+          "name": "R-11 채널 분리 안내",
+          "width": 350,
+          "height": 76,
+          "fill": "$status-info-light",
+          "cornerRadius": "$radius-md",
+          "layout": "none",
+          "children": [
+            {
+              "type": "icon",
+              "id": "mkozE",
+              "x": 14,
+              "y": 18,
+              "name": "R-11 채널 분리 안내 아이콘",
+              "width": 20,
+              "height": 20,
+              "icon": "info",
+              "library": "lucide",
+              "fill": "$status-info"
+            },
+            {
+              "type": "text",
+              "id": "J7qI5r",
+              "x": 46,
+              "y": 12,
+              "name": "R-11 채널 분리 안내 제목",
+              "fill": "$status-info",
+              "content": "채널을 구분해요",
+              "fontFamily": "$font-primary",
+              "fontSize": 13,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "ehq86",
+              "x": 46,
+              "y": 36,
+              "name": "R-11 채널 분리 안내 설명",
+              "fill": "$text-secondary",
+              "textGrowth": "fixed-width",
+              "width": 286,
+              "content": "고객 예약 안내는 SMS, 직원 운영 알림은 PWA Push로 설계합니다.",
+              "lineHeight": 1.35,
+              "fontFamily": "$font-primary",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "id": "UHEz3",
+          "type": "ref",
+          "ref": "WV7HX",
+          "name": "R-11 설정 Owner TabBar",
+          "x": 0,
+          "y": 760,
+          "width": 390,
+          "height": 84
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "f7pASc",
+      "x": 15642,
+      "y": 0,
+      "name": "R-11 알림 설정 렌더 진단 (비활성)",
+      "enabled": false,
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-primary",
+      "layout": "vertical"
+    },
+    {
+      "type": "frame",
+      "id": "J3bas",
+      "x": 16112,
+      "y": 0,
+      "name": "R-11 알림 자동화 / Owner 기본",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-primary",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "P0yEz",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "name": "R-11 알림 설정 콘텐츠 래퍼",
+          "width": 390,
+          "height": 844,
+          "fill": "$bg-primary",
+          "layout": "none",
+          "children": [
+            {
+              "type": "rectangle",
+              "id": "Z6ukfh",
+              "x": 0,
+              "y": 0,
+              "name": "R-11 알림 설정 불투명 배경",
+              "fill": "$bg-primary",
+              "width": 390,
+              "height": 844
+            },
+            {
+              "type": "frame",
+              "id": "O7bl5",
+              "layoutPosition": "absolute",
+              "x": 0,
+              "y": 0,
+              "name": "R-11 알림 설정 상단 안전영역 강조",
+              "width": 390,
+              "height": 4,
+              "fill": "$accent-primary",
+              "layout": "none"
+            },
+            {
+              "type": "frame",
+              "id": "yXw27",
+              "layoutPosition": "absolute",
+              "x": 20,
+              "y": 20,
+              "name": "알림 설정 뒤로가기",
+              "width": 44,
+              "height": 44,
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-pill",
+              "stroke": "$border-subtle",
+              "strokeWidth": 1,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "FWmNg",
+                  "x": 12,
+                  "y": 12,
+                  "name": "알림 설정 뒤로가기 아이콘",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "arrow-left",
+                  "library": "lucide",
+                  "fill": "$text-secondary"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "W89bSu",
+              "layoutPosition": "absolute",
+              "x": 76,
+              "y": 20,
+              "name": "알림 설정 제목 묶음",
+              "width": 294,
+              "height": 48,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "RRvl4",
+                  "layoutPosition": "absolute",
+                  "x": 0,
+                  "y": 0,
+                  "name": "알림 설정 제목",
+                  "fill": "$text-primary",
+                  "content": "알림 자동화",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 22,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "dgp31",
+                  "layoutPosition": "absolute",
+                  "x": 0,
+                  "y": 30,
+                  "name": "알림 설정 경로",
+                  "fill": "$text-secondary",
+                  "content": "설정 · 고객 문자와 직원 앱 알림",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 11,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "MmF92",
+              "layoutPosition": "absolute",
+              "x": 20,
+              "y": 80,
+              "name": "R-11 채널 구분 카드",
+              "width": 350,
+              "height": 154,
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "layout": "none",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "ebfbo",
+                  "x": 16,
+                  "y": 14,
+                  "name": "채널 구분 제목",
+                  "fill": "$text-primary",
+                  "content": "채널 구분",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 17,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "rl0SI",
+                  "x": 16,
+                  "y": 46,
+                  "name": "고객 예약 안내 채널",
+                  "width": 318,
+                  "height": 46,
+                  "fill": "$bg-primary",
+                  "cornerRadius": "$radius-md",
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "xtLOl",
+                      "x": 12,
+                      "y": 13,
+                      "name": "고객 SMS 아이콘",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "message-square-text",
+                      "library": "lucide",
+                      "fill": "$status-warning"
+                    },
+                    {
+                      "type": "text",
+                      "id": "emz20",
+                      "x": 44,
+                      "y": 7,
+                      "name": "고객 예약 안내 제목",
+                      "fill": "$text-primary",
+                      "content": "고객 예약 안내",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 13,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "a1LLH",
+                      "x": 44,
+                      "y": 26,
+                      "name": "고객 예약 안내 채널 문구",
+                      "fill": "$text-secondary",
+                      "content": "SMS · 공급자 연동 후 사용",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Bz2Ea",
+                      "x": 248,
+                      "y": 8,
+                      "name": "SMS 연동 전 배지",
+                      "width": 58,
+                      "height": 30,
+                      "fill": "$status-warning-light",
+                      "cornerRadius": "$radius-pill",
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Ashsp",
+                          "x": 12,
+                          "y": 7,
+                          "name": "SMS 연동 전 배지 문구",
+                          "fill": "$status-warning",
+                          "content": "연동 전",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 10,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "PsKJA",
+                  "x": 16,
+                  "y": 100,
+                  "name": "직원 운영 알림 채널",
+                  "width": 318,
+                  "height": 42,
+                  "fill": "$status-success-light",
+                  "cornerRadius": "$radius-md",
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "XYl1t",
+                      "x": 12,
+                      "y": 11,
+                      "name": "직원 Push 아이콘",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "bell-ring",
+                      "library": "lucide",
+                      "fill": "$status-success"
+                    },
+                    {
+                      "type": "text",
+                      "id": "dOxzZ",
+                      "x": 44,
+                      "y": 5,
+                      "name": "직원 운영 알림 제목",
+                      "fill": "$text-primary",
+                      "content": "직원 운영 알림",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 13,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "HoEuS",
+                      "x": 44,
+                      "y": 24,
+                      "name": "직원 운영 알림 채널 문구",
+                      "fill": "$text-secondary",
+                      "content": "PWA Push · 기기별 허용",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "lLRPH",
+                      "x": 248,
+                      "y": 6,
+                      "name": "직원 Push 사용 중 배지",
+                      "width": 58,
+                      "height": 30,
+                      "fill": "$status-success-light",
+                      "cornerRadius": "$radius-pill",
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "kfjcX",
+                          "x": 12,
+                          "y": 7,
+                          "name": "직원 Push 사용 중 배지 문구",
+                          "fill": "$status-success",
+                          "content": "사용 중",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 10,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "OpaJ7",
+              "layoutPosition": "absolute",
+              "x": 20,
+              "y": 246,
+              "name": "R-11 예약 리마인드 카드",
+              "width": 350,
+              "height": 168,
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "layout": "none",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "yWVXF",
+                  "x": 16,
+                  "y": 14,
+                  "name": "예약 리마인드 제목",
+                  "fill": "$text-primary",
+                  "content": "예약 리마인드",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 17,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "IeNxC",
+                  "x": 16,
+                  "y": 52,
+                  "name": "직원 내일 예약 요약 제목",
+                  "fill": "$text-primary",
+                  "content": "직원용 내일 예약 요약",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "aeJdz",
+                  "x": 16,
+                  "y": 74,
+                  "name": "직원 내일 예약 요약 설명",
+                  "fill": "$text-secondary",
+                  "content": "매일 오전 중 · 정확한 시각 미보장",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "kQeFd",
+                  "x": 276,
+                  "y": 50,
+                  "name": "직원 예약 요약 켜짐",
+                  "width": 44,
+                  "height": 28,
+                  "fill": "$accent-primary",
+                  "cornerRadius": "$radius-pill",
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "m19rn",
+                      "x": 19,
+                      "y": 3,
+                      "name": "직원 예약 요약 스위치 손잡이",
+                      "fill": "$bg-surface",
+                      "width": 22,
+                      "height": 22
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "q7rPB",
+                  "x": 16,
+                  "y": 99,
+                  "name": "예약 리마인드 구분선",
+                  "width": 318,
+                  "height": 1,
+                  "fill": "$border-subtle",
+                  "layout": "none"
+                },
+                {
+                  "type": "text",
+                  "id": "rhtHs",
+                  "x": 16,
+                  "y": 112,
+                  "name": "고객 예약 문자 제목",
+                  "fill": "$text-primary",
+                  "content": "고객 예약 문자",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "g5r61",
+                  "x": 16,
+                  "y": 134,
+                  "name": "고객 예약 문자 설명",
+                  "fill": "$text-secondary",
+                  "content": "문자 공급자 연동 후 켤 수 있습니다.",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "VGWGG",
+                  "x": 276,
+                  "y": 114,
+                  "name": "고객 예약 문자 비활성",
+                  "width": 44,
+                  "height": 28,
+                  "fill": "$disabled-bg",
+                  "cornerRadius": "$radius-pill",
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "riRbV",
+                      "x": 3,
+                      "y": 3,
+                      "name": "고객 예약 문자 스위치 손잡이",
+                      "fill": "$bg-surface",
+                      "width": 22,
+                      "height": 22
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "RhJCL",
+              "layoutPosition": "absolute",
+              "x": 20,
+              "y": 426,
+              "name": "R-11 재방문 유도 카드",
+              "width": 350,
+              "height": 88,
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "CAMDo",
+                  "x": 16,
+                  "y": 18,
+                  "name": "재방문 유도 아이콘",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "rotate-ccw",
+                  "library": "lucide",
+                  "fill": "$status-warning"
+                },
+                {
+                  "type": "text",
+                  "id": "F5adUE",
+                  "x": 50,
+                  "y": 14,
+                  "name": "재방문 유도 제목",
+                  "fill": "$text-primary",
+                  "content": "재방문 유도",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 15,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "f2D0j0",
+                  "x": 50,
+                  "y": 40,
+                  "name": "재방문 유도 설명",
+                  "fill": "$text-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": 210,
+                  "content": "고객의 별도 마케팅 동의가 필요합니다.",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-primary",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "bCLsC",
+                  "x": 268,
+                  "y": 29,
+                  "name": "재방문 동의 필요 배지",
+                  "width": 66,
+                  "height": 30,
+                  "fill": "$status-warning-light",
+                  "cornerRadius": "$radius-pill",
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "e7XB0",
+                      "x": 12,
+                      "y": 7,
+                      "name": "재방문 동의 필요 문구",
+                      "fill": "$status-warning",
+                      "content": "동의 필요",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 10,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "voOa0",
+              "layoutPosition": "absolute",
+              "x": 20,
+              "y": 526,
+              "name": "R-11 이 기기 앱 알림 진입",
+              "width": 350,
+              "height": 76,
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-subtle",
+              "strokeWidth": 1,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "MnsgI",
+                  "x": 16,
+                  "y": 26,
+                  "name": "이 기기 앱 알림 아이콘",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "smartphone",
+                  "library": "lucide",
+                  "fill": "$accent-primary"
+                },
+                {
+                  "type": "text",
+                  "id": "ldtae",
+                  "x": 50,
+                  "y": 14,
+                  "name": "이 기기 앱 알림 제목",
+                  "fill": "$text-primary",
+                  "content": "이 기기 앱 알림",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 15,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "Ey7Yg",
+                  "x": 50,
+                  "y": 40,
+                  "name": "이 기기 앱 알림 설명",
+                  "fill": "$text-secondary",
+                  "content": "권한과 구독 상태를 확인합니다.",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "icon",
+                  "id": "BfqLK",
+                  "x": 312,
+                  "y": 28,
+                  "name": "이 기기 앱 알림 이동",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "chevron-right",
+                  "library": "lucide",
+                  "fill": "$text-tertiary"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "eAy2b",
+              "layoutPosition": "absolute",
+              "x": 20,
+              "y": 614,
+              "name": "발송 직전 재검증 안내",
+              "width": 350,
+              "height": 76,
+              "fill": "$status-info-light",
+              "cornerRadius": "$radius-md",
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "p9KAvp",
+                  "x": 14,
+                  "y": 18,
+                  "name": "발송 직전 재검증 아이콘",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "shield-check",
+                  "library": "lucide",
+                  "fill": "$status-info"
+                },
+                {
+                  "type": "text",
+                  "id": "GLKsI",
+                  "x": 46,
+                  "y": 12,
+                  "name": "발송 직전 재검증 제목",
+                  "fill": "$status-info",
+                  "content": "발송 직전 다시 확인",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "p9K2x",
+                  "x": 46,
+                  "y": 36,
+                  "name": "발송 직전 재검증 설명",
+                  "fill": "$text-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": 286,
+                  "content": "예약 상태, 현재 권한, 수신 동의를 다시 확인한 뒤 처리합니다.",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-primary",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "id": "o5TQ4",
+              "type": "ref",
+              "ref": "WV7HX",
+              "name": "R-11 알림 설정 Owner TabBar",
+              "x": 0,
+              "y": 760,
+              "width": 390,
+              "height": 84
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "RFhcD",
+      "x": 16582,
+      "y": 0,
+      "name": "R-11 기기 알림 렌더 진단 (비활성)",
+      "enabled": false,
+      "clip": true,
+      "width": 360,
+      "height": 800,
+      "fill": "$bg-primary",
+      "layout": "none"
+    },
+    {
+      "type": "frame",
+      "id": "S5VGVz",
+      "x": 17022,
+      "y": 0,
+      "name": "R-11 이 기기 앱 알림 / 상태 모음",
+      "clip": true,
+      "width": 360,
+      "height": 800,
+      "fill": "$bg-primary",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "QnYGe",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "name": "R-11 기기 알림 상태 콘텐츠",
+          "width": 360,
+          "height": 800,
+          "fill": "$bg-primary",
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "jCpj4",
+              "x": 0,
+              "y": 0,
+              "name": "기기 알림 상단 강조",
+              "width": 360,
+              "height": 4,
+              "fill": "$accent-primary",
+              "layout": "none"
+            },
+            {
+              "type": "frame",
+              "id": "vqwcK",
+              "x": 16,
+              "y": 18,
+              "name": "기기 알림 뒤로가기",
+              "width": 44,
+              "height": 44,
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-pill",
+              "stroke": "$border-subtle",
+              "strokeWidth": 1,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "iAVhY",
+                  "x": 12,
+                  "y": 12,
+                  "name": "기기 알림 뒤로가기 아이콘",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "arrow-left",
+                  "library": "lucide",
+                  "fill": "$text-secondary"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "sEwwH",
+              "x": 72,
+              "y": 18,
+              "name": "기기 알림 제목",
+              "fill": "$text-primary",
+              "content": "이 기기 앱 알림",
+              "fontFamily": "$font-primary",
+              "fontSize": 21,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "SDMHQ",
+              "x": 72,
+              "y": 46,
+              "name": "기기 알림 경로",
+              "fill": "$text-secondary",
+              "content": "설정 · 현재 브라우저와 계정 기준",
+              "fontFamily": "$font-primary",
+              "fontSize": 10,
+              "fontWeight": "500"
+            },
+            {
+              "type": "frame",
+              "id": "mT49z",
+              "x": 16,
+              "y": 76,
+              "name": "기기별 권한 안내",
+              "width": 328,
+              "height": 58,
+              "fill": "$status-info-light",
+              "cornerRadius": "$radius-md",
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "t2xwBw",
+                  "x": 14,
+                  "y": 19,
+                  "name": "기기별 권한 안내 아이콘",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "shield-check",
+                  "library": "lucide",
+                  "fill": "$status-info"
+                },
+                {
+                  "type": "text",
+                  "id": "b0RcoU",
+                  "x": 44,
+                  "y": 10,
+                  "name": "기기별 권한 안내 제목",
+                  "fill": "$status-info",
+                  "content": "계정과 기기마다 상태가 다릅니다",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "HSn8B",
+                  "x": 44,
+                  "y": 31,
+                  "name": "기기별 권한 안내 설명",
+                  "fill": "$text-secondary",
+                  "content": "로그아웃하거나 권한이 바뀌면 발송 전 다시 확인합니다.",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "qAhhL",
+              "x": 16,
+              "y": 146,
+              "name": "기기 알림 상태 지원 안 됨",
+              "width": 328,
+              "height": 68,
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-md",
+              "stroke": "$border-subtle",
+              "strokeWidth": 1,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "CMCpM",
+                  "x": 14,
+                  "y": 24,
+                  "name": "지원 안 됨 상태 아이콘",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "circle-slash-2",
+                  "library": "lucide",
+                  "fill": "$text-tertiary"
+                },
+                {
+                  "type": "text",
+                  "id": "B5SFUF",
+                  "x": 44,
+                  "y": 8,
+                  "name": "지원 안 됨 상태 제목",
+                  "fill": "$text-primary",
+                  "content": "지원 안 됨",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "cLCRT",
+                  "x": 44,
+                  "y": 30,
+                  "name": "지원 안 됨 상태 설명",
+                  "fill": "$text-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": 170,
+                  "content": "이 브라우저는 Web Push를 지원하지 않습니다.",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-primary",
+                  "fontSize": 9,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "lYtcL",
+                  "x": 226,
+                  "y": 12,
+                  "name": "지원 안 됨 상태 동작",
+                  "width": 86,
+                  "height": 44,
+                  "fill": "$bg-primary",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-subtle",
+                  "strokeWidth": 1,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "zu1cT",
+                      "name": "지원 안 됨 상태 동작 문구",
+                      "fill": "$text-secondary",
+                      "content": "도움말",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 11,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "vYWRE",
+              "x": 16,
+              "y": 220,
+              "name": "기기 알림 상태 설치 필요",
+              "width": 328,
+              "height": 68,
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-md",
+              "stroke": "$border-subtle",
+              "strokeWidth": 1,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "Xtziu",
+                  "x": 14,
+                  "y": 24,
+                  "name": "설치 필요 상태 아이콘",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "square-plus",
+                  "library": "lucide",
+                  "fill": "$status-warning"
+                },
+                {
+                  "type": "text",
+                  "id": "d15HTQ",
+                  "x": 44,
+                  "y": 8,
+                  "name": "설치 필요 상태 제목",
+                  "fill": "$text-primary",
+                  "content": "설치 필요",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "A87IU",
+                  "x": 44,
+                  "y": 30,
+                  "name": "설치 필요 상태 설명",
+                  "fill": "$text-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": 170,
+                  "content": "iPhone·iPad는 홈 화면 설치 후 사용할 수 있어요.",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-primary",
+                  "fontSize": 9,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "fqSYi",
+                  "x": 226,
+                  "y": 12,
+                  "name": "설치 필요 상태 동작",
+                  "width": 86,
+                  "height": 44,
+                  "fill": "$status-warning-light",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-subtle",
+                  "strokeWidth": 1,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "f1uV0Y",
+                      "name": "설치 필요 상태 동작 문구",
+                      "fill": "$status-warning",
+                      "content": "설치 안내",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 11,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "VWhz9",
+              "x": 16,
+              "y": 294,
+              "name": "기기 알림 상태 권한 요청 전",
+              "width": 328,
+              "height": 68,
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-md",
+              "stroke": "$border-subtle",
+              "strokeWidth": 1,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "u1DVT",
+                  "x": 14,
+                  "y": 24,
+                  "name": "권한 요청 전 상태 아이콘",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "bell-plus",
+                  "library": "lucide",
+                  "fill": "$status-info"
+                },
+                {
+                  "type": "text",
+                  "id": "N8uqh",
+                  "x": 44,
+                  "y": 8,
+                  "name": "권한 요청 전 상태 제목",
+                  "fill": "$text-primary",
+                  "content": "권한 요청 전",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "r5HYO",
+                  "x": 44,
+                  "y": 30,
+                  "name": "권한 요청 전 상태 설명",
+                  "fill": "$text-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": 170,
+                  "content": "알림은 버튼을 누를 때만 권한을 요청합니다.",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-primary",
+                  "fontSize": 9,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "VY0u3",
+                  "x": 226,
+                  "y": 12,
+                  "name": "권한 요청 전 상태 동작",
+                  "width": 86,
+                  "height": 44,
+                  "fill": "$status-info-light",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-subtle",
+                  "strokeWidth": 1,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "X1AWq",
+                      "name": "권한 요청 전 상태 동작 문구",
+                      "fill": "$status-info",
+                      "content": "허용하기",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 11,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "uBSwM",
+              "x": 16,
+              "y": 442,
+              "name": "기기 알림 상태 권한 차단됨",
+              "width": 328,
+              "height": 68,
+              "fill": "$status-danger-light",
+              "cornerRadius": "$radius-md",
+              "stroke": "$border-subtle",
+              "strokeWidth": 1,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "KsApW",
+                  "x": 14,
+                  "y": 24,
+                  "name": "권한 차단됨 상태 아이콘",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "bell-off",
+                  "library": "lucide",
+                  "fill": "$status-danger"
+                },
+                {
+                  "type": "text",
+                  "id": "lJ5PO",
+                  "x": 44,
+                  "y": 8,
+                  "name": "권한 차단됨 상태 제목",
+                  "fill": "$text-primary",
+                  "content": "권한 차단됨",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "y2YdGw",
+                  "x": 44,
+                  "y": 30,
+                  "name": "권한 차단됨 상태 설명",
+                  "fill": "$text-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": 170,
+                  "content": "브라우저 설정에서 알림 권한을 다시 열어주세요.",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-primary",
+                  "fontSize": 9,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "Y59Jj",
+                  "x": 226,
+                  "y": 12,
+                  "name": "권한 차단됨 상태 동작",
+                  "width": 86,
+                  "height": 44,
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-subtle",
+                  "strokeWidth": 1,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "k3vxlQ",
+                      "name": "권한 차단됨 상태 동작 문구",
+                      "fill": "$status-danger",
+                      "content": "설정 열기",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 11,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "r9AnAh",
+              "x": 16,
+              "y": 516,
+              "name": "기기 알림 상태 사용 중",
+              "width": 328,
+              "height": 68,
+              "fill": "$status-success-light",
+              "cornerRadius": "$radius-md",
+              "stroke": "$border-subtle",
+              "strokeWidth": 1,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "bx2Hl",
+                  "x": 14,
+                  "y": 24,
+                  "name": "사용 중 상태 아이콘",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "bell-ring",
+                  "library": "lucide",
+                  "fill": "$status-success"
+                },
+                {
+                  "type": "text",
+                  "id": "QNOO4",
+                  "x": 44,
+                  "y": 8,
+                  "name": "사용 중 상태 제목",
+                  "fill": "$text-primary",
+                  "content": "사용 중",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "n9tg3",
+                  "x": 44,
+                  "y": 30,
+                  "name": "사용 중 상태 설명",
+                  "fill": "$text-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": 170,
+                  "content": "현재 계정과 이 기기의 구독이 활성 상태입니다.",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-primary",
+                  "fontSize": 9,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "E9WMIO",
+                  "x": 226,
+                  "y": 12,
+                  "name": "사용 중 상태 동작",
+                  "width": 86,
+                  "height": 44,
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-subtle",
+                  "strokeWidth": 1,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Y838pm",
+                      "name": "사용 중 상태 동작 문구",
+                      "fill": "$status-success",
+                      "content": "해제",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 11,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "E76T8h",
+              "x": 16,
+              "y": 368,
+              "name": "기기 알림 상태 연결 중",
+              "width": 328,
+              "height": 68,
+              "fill": "$status-info-light",
+              "cornerRadius": "$radius-md",
+              "stroke": "$border-subtle",
+              "strokeWidth": 1,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "WwcMC",
+                  "x": 14,
+                  "y": 24,
+                  "name": "연결 중 상태 아이콘",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "loader-circle",
+                  "library": "lucide",
+                  "fill": "$status-info"
+                },
+                {
+                  "type": "text",
+                  "id": "kYFIq",
+                  "x": 44,
+                  "y": 8,
+                  "name": "연결 중 상태 제목",
+                  "fill": "$text-primary",
+                  "content": "연결 중",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "p55Vw",
+                  "x": 44,
+                  "y": 30,
+                  "name": "연결 중 상태 설명",
+                  "fill": "$text-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": 170,
+                  "content": "현재 계정과 이 기기의 구독을 확인하고 있습니다.",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-primary",
+                  "fontSize": 9,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "m9Nx8",
+                  "x": 226,
+                  "y": 12,
+                  "name": "연결 중 상태 동작",
+                  "width": 86,
+                  "height": 44,
+                  "fill": "$disabled-bg",
+                  "cornerRadius": "$radius-md",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "S1lkgB",
+                      "name": "연결 중 상태 동작 문구",
+                      "fill": "$disabled-text",
+                      "content": "연결 중…",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 11,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ne8G2",
+              "x": 16,
+              "y": 590,
+              "name": "기기 알림 상태 구독 만료",
+              "width": 328,
+              "height": 68,
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-md",
+              "stroke": "$border-subtle",
+              "strokeWidth": 1,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "a2Zegk",
+                  "x": 14,
+                  "y": 24,
+                  "name": "구독 만료 상태 아이콘",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "refresh-cw",
+                  "library": "lucide",
+                  "fill": "$status-warning"
+                },
+                {
+                  "type": "text",
+                  "id": "ErjBT",
+                  "x": 44,
+                  "y": 8,
+                  "name": "구독 만료 상태 제목",
+                  "fill": "$text-primary",
+                  "content": "구독 만료",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "raMOu",
+                  "x": 44,
+                  "y": 30,
+                  "name": "구독 만료 상태 설명",
+                  "fill": "$text-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": 170,
+                  "content": "만료된 구독은 발송하지 않고 다시 연결합니다.",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-primary",
+                  "fontSize": 9,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "GlyPh",
+                  "x": 226,
+                  "y": 12,
+                  "name": "구독 만료 상태 동작",
+                  "width": 86,
+                  "height": 44,
+                  "fill": "$accent-light",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$border-subtle",
+                  "strokeWidth": 1,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "SCvLw",
+                      "name": "구독 만료 상태 동작 문구",
+                      "fill": "$accent-primary",
+                      "content": "다시 연결",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 11,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "ykH7Q",
+              "x": 20,
+              "y": 674,
+              "name": "기기 알림 개인정보 안내",
+              "fill": "$text-tertiary",
+              "textGrowth": "fixed-width",
+              "width": 320,
+              "content": "기기 구독에는 고객 정보가 저장되지 않으며, 계정 권한이 없으면 외부 발송 없이 종료합니다.",
+              "lineHeight": 1.45,
+              "textAlign": "center",
+              "fontFamily": "$font-primary",
+              "fontSize": 10,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Nq4LQ",
+      "x": 17462,
+      "y": 0,
+      "name": "R-11 발송 상태 렌더 진단 (비활성)",
+      "enabled": false,
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-primary",
+      "layout": "none"
+    },
+    {
+      "type": "frame",
+      "id": "pFmgV",
+      "x": 17932,
+      "y": 0,
+      "name": "R-11 발송 상태 / Owner",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-primary",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "Fkfyb",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "name": "R-11 발송 상태 콘텐츠",
+          "width": 390,
+          "height": 844,
+          "fill": "$bg-primary",
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "qBHd0",
+              "x": 0,
+              "y": 0,
+              "name": "발송 상태 상단 강조",
+              "width": 390,
+              "height": 4,
+              "fill": "$accent-primary",
+              "layout": "none"
+            },
+            {
+              "type": "frame",
+              "id": "WCzmr",
+              "x": 20,
+              "y": 20,
+              "name": "발송 상태 뒤로가기",
+              "width": 44,
+              "height": 44,
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-pill",
+              "stroke": "$border-subtle",
+              "strokeWidth": 1,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "xfmIO",
+                  "x": 12,
+                  "y": 12,
+                  "name": "발송 상태 뒤로가기 아이콘",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "arrow-left",
+                  "library": "lucide",
+                  "fill": "$text-secondary"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "eIzRH",
+              "x": 76,
+              "y": 18,
+              "name": "발송 상태 제목",
+              "fill": "$text-primary",
+              "content": "알림 발송 상태",
+              "fontFamily": "$font-primary",
+              "fontSize": 21,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "KWa0d",
+              "x": 76,
+              "y": 47,
+              "name": "발송 상태 경로",
+              "fill": "$text-secondary",
+              "content": "설정 · 최근 처리와 확인 필요 항목",
+              "fontFamily": "$font-primary",
+              "fontSize": 10,
+              "fontWeight": "500"
+            },
+            {
+              "type": "frame",
+              "id": "t2pTTt",
+              "x": 280,
+              "y": 20,
+              "name": "DRY RUN 모드 배지",
+              "width": 90,
+              "height": 36,
+              "fill": "$status-info-light",
+              "cornerRadius": "$radius-pill",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "A0a27",
+                  "name": "DRY RUN 모드 문구",
+                  "fill": "$status-info",
+                  "content": "DRY RUN",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 10,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "PXg7k",
+              "x": 20,
+              "y": 84,
+              "name": "발송 상태 요약 대기",
+              "width": 106,
+              "height": 80,
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "layout": "none",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "OPX0w",
+                  "x": 14,
+                  "y": 12,
+                  "name": "대기 요약 값",
+                  "fill": "$text-primary",
+                  "content": "12",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 26,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "onozX",
+                  "x": 14,
+                  "y": 49,
+                  "name": "대기 요약 라벨",
+                  "fill": "$text-secondary",
+                  "content": "대기",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 11,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "YEYSj",
+              "x": 142,
+              "y": 84,
+              "name": "발송 상태 요약 사업자 접수",
+              "width": 106,
+              "height": 80,
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "layout": "none",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "bu0DW",
+                  "x": 14,
+                  "y": 12,
+                  "name": "사업자 접수 요약 값",
+                  "fill": "$status-success",
+                  "content": "8",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 26,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "WzcAI",
+                  "x": 14,
+                  "y": 49,
+                  "name": "사업자 접수 요약 라벨",
+                  "fill": "$text-secondary",
+                  "content": "사업자 접수",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 11,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "EifV8",
+              "x": 264,
+              "y": 84,
+              "name": "발송 상태 요약 확인 필요",
+              "width": 106,
+              "height": 80,
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "layout": "none",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "l68gE",
+                  "x": 14,
+                  "y": 12,
+                  "name": "확인 필요 요약 값",
+                  "fill": "$status-warning",
+                  "content": "1",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 26,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "p3I39",
+                  "x": 14,
+                  "y": 49,
+                  "name": "확인 필요 요약 라벨",
+                  "fill": "$text-secondary",
+                  "content": "확인 필요",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 11,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "C1ABF",
+              "x": 20,
+              "y": 178,
+              "name": "다음 스케줄 실행",
+              "width": 350,
+              "height": 84,
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-subtle",
+              "strokeWidth": 1,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "eMogB",
+                  "x": 16,
+                  "y": 26,
+                  "name": "다음 스케줄 아이콘",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "clock-3",
+                  "library": "lucide",
+                  "fill": "$accent-primary"
+                },
+                {
+                  "type": "text",
+                  "id": "y3oje",
+                  "x": 50,
+                  "y": 14,
+                  "name": "다음 스케줄 제목",
+                  "fill": "$text-primary",
+                  "content": "다음 실행 · 매일 오전 중",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "s67wq6",
+                  "x": 50,
+                  "y": 40,
+                  "name": "다음 스케줄 설명",
+                  "fill": "$text-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": 224,
+                  "content": "정확한 시각은 보장하지 않으며 누락 구간을 겹쳐 다시 조회합니다.",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-primary",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "o1ySo",
+                  "x": 290,
+                  "y": 20,
+                  "name": "스케줄 새로고침",
+                  "width": 44,
+                  "height": 44,
+                  "fill": "$accent-light",
+                  "cornerRadius": "$radius-pill",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "ZRPDB",
+                      "name": "스케줄 새로고침 아이콘",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "refresh-cw",
+                      "library": "lucide",
+                      "fill": "$accent-primary"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "AxdcJ",
+              "x": 20,
+              "y": 280,
+              "name": "최근 처리 제목",
+              "fill": "$text-primary",
+              "content": "최근 처리",
+              "fontFamily": "$font-primary",
+              "fontSize": 17,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "mArzq",
+              "x": 20,
+              "y": 314,
+              "name": "최근 처리 직원 내일 예약 요약",
+              "width": 350,
+              "height": 76,
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-md",
+              "stroke": "$border-subtle",
+              "strokeWidth": 1,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "qkQDn",
+                  "x": 16,
+                  "y": 27,
+                  "name": "직원 내일 예약 요약 채널 아이콘",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "bell-ring",
+                  "library": "lucide",
+                  "fill": "$status-success"
+                },
+                {
+                  "type": "text",
+                  "id": "Wltv1",
+                  "x": 50,
+                  "y": 14,
+                  "name": "직원 내일 예약 요약 처리 제목",
+                  "fill": "$text-primary",
+                  "content": "직원 내일 예약 요약",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "dJCR7",
+                  "x": 50,
+                  "y": 39,
+                  "name": "직원 내일 예약 요약 처리 설명",
+                  "fill": "$text-secondary",
+                  "content": "PWA Push · 직원 2명",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "W9PTA",
+                  "x": 256,
+                  "y": 23,
+                  "name": "직원 내일 예약 요약 처리 배지",
+                  "width": 78,
+                  "height": 30,
+                  "fill": "$status-success-light",
+                  "cornerRadius": "$radius-pill",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Z0reoG",
+                      "name": "직원 내일 예약 요약 처리 배지 문구",
+                      "fill": "$status-success",
+                      "content": "사업자 접수",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 10,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "nY2GT",
+              "x": 20,
+              "y": 402,
+              "name": "최근 처리 고객 예약 안내",
+              "width": 350,
+              "height": 76,
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-md",
+              "stroke": "$border-subtle",
+              "strokeWidth": 1,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "j2Tbi",
+                  "x": 16,
+                  "y": 27,
+                  "name": "고객 예약 안내 채널 아이콘",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "message-square-text",
+                  "library": "lucide",
+                  "fill": "$status-warning"
+                },
+                {
+                  "type": "text",
+                  "id": "wMVp1",
+                  "x": 50,
+                  "y": 14,
+                  "name": "고객 예약 안내 처리 제목",
+                  "fill": "$text-primary",
+                  "content": "고객 예약 안내",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "j77dE",
+                  "x": 50,
+                  "y": 39,
+                  "name": "고객 예약 안내 처리 설명",
+                  "fill": "$text-secondary",
+                  "content": "SMS · 공급자 미연동",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "ZUjsH",
+                  "x": 256,
+                  "y": 23,
+                  "name": "고객 예약 안내 처리 배지",
+                  "width": 78,
+                  "height": 30,
+                  "fill": "$status-warning-light",
+                  "cornerRadius": "$radius-pill",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "tZk6V",
+                      "name": "고객 예약 안내 처리 배지 문구",
+                      "fill": "$status-warning",
+                      "content": "연동 전",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 10,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "QYGdD",
+              "x": 20,
+              "y": 490,
+              "name": "최근 처리 외부 응답 확인 필요",
+              "width": 350,
+              "height": 76,
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-md",
+              "stroke": "$border-subtle",
+              "strokeWidth": 1,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "f3ATQ",
+                  "x": 16,
+                  "y": 27,
+                  "name": "외부 응답 확인 필요 채널 아이콘",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "triangle-alert",
+                  "library": "lucide",
+                  "fill": "$status-danger"
+                },
+                {
+                  "type": "text",
+                  "id": "RqBQU",
+                  "x": 50,
+                  "y": 14,
+                  "name": "외부 응답 확인 필요 처리 제목",
+                  "fill": "$text-primary",
+                  "content": "외부 응답 확인 필요",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "oNCu1",
+                  "x": 50,
+                  "y": 39,
+                  "name": "외부 응답 확인 필요 처리 설명",
+                  "fill": "$text-secondary",
+                  "content": "재발송 전 운영자 판단 필요",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "kOjMu",
+                  "x": 256,
+                  "y": 23,
+                  "name": "외부 응답 확인 필요 처리 배지",
+                  "width": 78,
+                  "height": 30,
+                  "fill": "$status-danger-light",
+                  "cornerRadius": "$radius-pill",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "fvWFI",
+                      "name": "외부 응답 확인 필요 처리 배지 문구",
+                      "fill": "$status-danger",
+                      "content": "확인 필요",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 10,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "HYRO7",
+              "x": 20,
+              "y": 584,
+              "name": "발송 상태 개인정보와 의미 안내",
+              "width": 350,
+              "height": 76,
+              "fill": "$status-info-light",
+              "cornerRadius": "$radius-md",
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "el3Bi",
+                  "x": 14,
+                  "y": 18,
+                  "name": "발송 상태 개인정보 안내 아이콘",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "shield-check",
+                  "library": "lucide",
+                  "fill": "$status-info"
+                },
+                {
+                  "type": "text",
+                  "id": "ujre5",
+                  "x": 46,
+                  "y": 11,
+                  "name": "발송 상태 개인정보 안내 제목",
+                  "fill": "$status-info",
+                  "content": "최소 정보만 표시",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "QennV",
+                  "x": 46,
+                  "y": 34,
+                  "name": "발송 상태 개인정보 안내 설명",
+                  "fill": "$text-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": 286,
+                  "content": "전화번호 원문은 숨기며, 전달 완료는 provider callback 확인 시에만 표시합니다.",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-primary",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Xmi5k",
+              "x": 20,
+              "y": 676,
+              "name": "발송 상태 전체 새로고침",
+              "width": 350,
+              "height": 56,
+              "fill": "$accent-primary",
+              "cornerRadius": "$radius-lg",
+              "gap": 8,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "AtOKg",
+                  "name": "발송 상태 전체 새로고침 아이콘",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "refresh-cw",
+                  "library": "lucide",
+                  "fill": "$bg-surface"
+                },
+                {
+                  "type": "text",
+                  "id": "Pyr8d",
+                  "name": "발송 상태 전체 새로고침 문구",
+                  "fill": "$bg-surface",
+                  "content": "상태 새로고침",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "id": "Jp3VP",
+              "type": "ref",
+              "ref": "WV7HX",
+              "name": "R-11 발송 상태 Owner TabBar",
+              "x": 0,
+              "y": 760,
+              "width": 390,
+              "height": 84
+            }
+          ]
+        }
+      ]
     }
   ],
   "variables": {
