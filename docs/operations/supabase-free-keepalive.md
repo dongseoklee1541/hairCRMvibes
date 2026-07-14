@@ -25,7 +25,7 @@ Production 환경에 다음 값을 직접 등록합니다.
 | `CRON_SECRET` | 서버 전용 | Vercel Cron 요청의 Bearer 검증용 무작위 secret |
 
 `SUPABASE_SECRET_KEY`와 `CRON_SECRET`은 저장소, 브라우저 bundle, 로그, 응답, 문서에 실제 값을 기록하지 않습니다.
-Supabase secret key의 발급·회전·폐기 원본은 Supabase이며 Vercel Production에는 배포 사본만 둡니다. 높은 권한을 가지므로 이 route 밖으로 전달하지 않고 최소 read-only 조회에만 사용합니다.
+Supabase secret key의 발급·회전·폐기 원본은 Supabase이며 Vercel Production에는 배포 사본만 둡니다. 높은 권한을 가지므로 브라우저나 응답으로 전달하지 않습니다. R-10 이전에는 keepalive의 최소 read-only 조회에만 사용했으며, R-10부터는 별도 Node server-only 직원 목록/초대 route가 Auth Admin API를 호출할 때도 사용합니다. 역할 변경은 secret client가 아니라 caller JWT를 유지한 owner-only DB RPC로 처리합니다.
 
 `CRON_SECRET` 생성 예시:
 
@@ -46,6 +46,14 @@ openssl rand -hex 32
 - Cron Jobs는 Enabled이며 `/api/cron/supabase-keepalive`가 `17 3 * * *`로 등록됐습니다.
 - 무인증 요청은 `401 + application/json + no-store`, Keychain wrapper 승인 요청은 `200 + {"ok":true}`를 반환했습니다. Runtime Logs의 Warning/Error/Fatal은 각각 0건이었습니다.
 - Production DB `select 1`과 임시 CA/Cron response residue 0건도 함께 확인했습니다.
+
+## R-10 server-only 재사용 사전 확인 (2026-07-13)
+
+- Vercel Project `hair-cr-mvibes`에서 `SUPABASE_SECRET_KEY`가 `Sensitive / Production`으로 존재함을 값 조회 없이 다시 확인했습니다.
+- R-10의 `GET /api/staff`, `POST /api/staff/invitations`만 Auth 사용자 식별/초대를 위해 Admin client를 사용합니다. 응답에는 마스킹된 email만 포함하고 raw email·token·secret은 기록하지 않습니다.
+- `PATCH /api/staff/[userId]/role`은 caller access token과 owner-only `change_staff_role` RPC만 사용합니다.
+- Supabase Auth Site URL은 현재 `http://localhost:3000`, Redirect URL은 0개로 확인됐습니다. canonical `/invite/accept` 허용 전에는 Production 초대 수락 링크를 완료할 수 없으며, 외부 Auth URL 설정은 별도 release gate입니다.
+- 전용 Preview Supabase와 Vercel Preview 공개 URL/key 격리는 R-12에서 완료됐지만, R-10 Admin route용 Preview server secret은 이번 범위에서 추가·변경·검증하지 않았습니다. 실제 Preview/Production 초대는 모두 금지합니다.
 
 ## 배포 후 검증
 

@@ -7,13 +7,13 @@ import TabBar from '@/components/TabBar';
 
 export default function AppShell({ children }) {
   const pathname = usePathname();
-  const isLoginPage = pathname === '/login';
+  const isPublicAuthPage = pathname === '/login' || pathname === '/invite/accept';
 
   return (
     <AuthProvider>
       <div className="app-container">
-        {isLoginPage ? children : <AuthGate>{children}</AuthGate>}
-        {!isLoginPage && <TabBar />}
+        {isPublicAuthPage ? children : <AuthGate>{children}</AuthGate>}
+        {!isPublicAuthPage && <TabBar />}
       </div>
     </AuthProvider>
   );

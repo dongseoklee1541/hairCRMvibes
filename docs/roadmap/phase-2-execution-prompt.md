@@ -1,9 +1,9 @@
 # Next Execution Prompt
 
-R-09 Production 완료 뒤 다음 우선순위인 R-10 권한관리 UI의 계획을 시작할 때 사용합니다.
+R-10 Release Plan A의 승인된 연속 실행 범위에서 maintenance gate/runbook 구현·검증 후 PR #26 merge, Preview/Production migration, Auth URL, Vercel Production release, release SSOT 동기화까지 진행할 때 사용합니다.
 
 ```text
-/goal R-10 권한관리 UI(직원 초대·역할 변경)의 현재 Auth/profile 운영 경계를 조사하고 안전한 설계 대안을 제시합니다. 첫 응답은 AGENTS.md 형식의 Implementation Plan만 작성하고 승인 전에는 파일·Git·Supabase·Vercel·Pencil을 변경하지 않습니다.
+/goal 이전 세션에서 승인된 R-10 Release Plan A를 이어서 구현·검증하고, maintenance gate/runbook → PR #26 merge → Preview/Production migration → Supabase Auth URL 설정 → Vercel Production release → release SSOT 동기화 순서로 완료합니다. 실제 직원 초대·역할 변경·테스트 계정 생성은 수행하지 않습니다.
 
 읽기 전용 착수 디렉터리:
 - /Users/idongseog/workspace/hairCRMvibes
@@ -12,42 +12,69 @@ R-09 Production 완료 뒤 다음 우선순위인 R-10 권한관리 UI의 계획
 - AGENTS.md
 - future-todo.md
 - docs/roadmap/README.md
-- docs/roadmap/R-01-rls-policy.md
-- docs/roadmap/R-09-stats-advanced.md
+- docs/roadmap/R-10-role-management.md
 - docs/operations/local-keychain-secrets.md
-- schema.sql
-- supabase/migrations/**
-- components/AuthProvider.js
-- components/AuthGate.js
-- app/settings/**
+- docs/operations/supabase-free-keepalive.md
+- lib/server/staffManagementCore.mjs
+- lib/server/staffManagementSupabase.mjs
+- app/api/staff/**
+- supabase/migrations/20260712153420_r10_role_management.sql
+- supabase/migrations/20260713143746_r10_invitation_claim_ledger.sql
+- supabase/rollbacks/20260712153420_r10_role_management.down.sql
+- supabase/rollbacks/20260713143746_r10_invitation_claim_ledger.down.sql
+- supabase/tests/r10_role_management.sql
+- supabase/tests/r10_role_management_concurrency.sh
+- scripts/verify-r10-staff-management.mjs
 
-현재 release 기준:
-- R-09 PR #20 merge `main@b63f9a3771409776593c6ad61727e24c68082186`
-- Supabase exact migration 11개, 최신 `20260712124959_r09_stats_advanced`
-- R-09 live RPC는 owner/staff 동일 read, anon/PUBLIC 차단
-- Production deployment `dpl_FBDsYn26v2ZXiJthe5z97vsJDwk2` READY/canonical 연결
-- 신규 Auth 사용자는 profile 자동 생성이 없고 운영 절차에서 `profiles(id, role)`을 명시적으로 만들어야 함
-- Preview Supabase 격리는 `확인 필요`; 확인 전 Preview 로그인·실데이터 smoke 금지
+현재 계약:
+- Draft PR #26: https://github.com/dongseoklee1541/hairCRMvibes/pull/26
+- 브랜치: `codex/r10-role-management`
+- A′ 구현 commit `726e1b8` 기준 최신 `origin/main@a85c3f7` merge-tree, `Vercel`/`Vercel Preview Comments`, GitHub `CLEAN/MERGEABLE`을 통과했습니다. release 세션에서는 더 최신 head/main이 있는지 다시 확인합니다.
+- A′안은 raw email을 저장하지 않는 private HMAC claim ledger와 owner-only claim/settle/reconcile RPC를 사용합니다.
+- 동일 logical request/active email fingerprint의 Admin invite 호출은 winner 1건으로 제한합니다. 외부 이메일 전달 exactly-once는 보장하지 않으며 stale/모호한 결과는 `unknown`으로 두고 자동 재전송하지 않습니다.
+- Auth 성공 후 profile 실패는 `auth_succeeded`로 보존해 후속 요청이 이메일 재전송 없이 복구합니다.
+- `unknown`은 active unique index를 계속 점유하고 자동 만료·재전송·임의 UPDATE/DELETE를 금지합니다. Auth user/profile/동일 request provisioning audit가 모두 일치할 때만 reconcile로 종결하며, 그렇지 않으면 route를 중지하고 incident로 유지합니다.
+- `SUPABASE_SECRET_KEY`는 browser bundle·응답·로그에 노출하지 않으며 HMAC domain separation에도 사용합니다. key 회전은 route `503 + no-store` 선중지, in-flight 0, 기존 key active ledger 0, 모든 server instance 재배포, 새 key smoke 후에만 재개합니다. 기존 fingerprint는 재계산·삭제하지 않습니다.
+- Production/Preview는 R-09까지 11개 migration만 존재하고 R-10 table/RPC는 아직 없습니다.
+- 실제 Auth 사용자·초대·역할 변경, live migration, Production deploy는 수행하지 않았습니다.
+- 전용 Preview Supabase와 공개 URL/key 격리는 완료됐지만 R-10 Admin route용 Preview server secret은 미변경·미검증입니다.
+- Supabase Auth Site URL은 `http://localhost:3000`, Redirect URL은 0개로 확인됐습니다.
 
-Plan에서 최소 두 대안을 비교하세요:
-1. Supabase Admin API를 server-only route에서 사용하는 초대/역할 변경 방식
-2. Dashboard/운영 절차를 유지하고 앱은 profile 역할 관리만 제공하는 방식
+착수 재검증 gate:
+1. `git fetch --prune origin` 후 PR head와 최신 `origin/main`의 실제 conflict test 및 checks
+2. Production/Preview migration history와 local 13개 비교. `--include-all`로 backdated migration을 재실행하지 말 것
+3. Production/Preview의 R-10 table/function/ACL 부재와 Auth Site/Redirect URL metadata를 값·사용자 PII 없이 확인
+4. local 13/13 fresh/schema replay, R-07~R-10, 동시성, rollback/reapply, R-10 catalog parity, 서버 20/20, build·mobile·PWA·secret scan 근거와 미검증 항목을 구분해 보고
+5. `unknown` 조사/종결 runbook, 초대 POST route 선중지 수단, HMAC 회전 및 rollback 순서가 실제 운영 가능함을 제시. 없으면 release blocker로 유지
 
-반드시 결정할 항목:
-- owner만 초대·역할 변경 가능한 DB/API 경계와 자기 강등·마지막 owner 보호
-- service-role secret의 browser 번들/로그/응답 비노출
-- Auth user와 profiles 생성 실패의 원자성·보상·재시도
-- 이메일 초대 링크, 만료, 중복 초대, 탈퇴/비활성화의 범위
-- SECURITY DEFINER가 필요할 때 auth.uid role 검사, 빈 search_path, PUBLIC/anon 회수
-- 개인정보 최소 표시, audit log, loading/error/empty/forbidden 상태
-- Pencil 선반영, SQL role fixture, owner/staff/anon, 390×844·360×800, PWA NetworkOnly 회귀
+승인된 release 순서:
+1. `unknown` runbook과 route `503 + no-store` 선중지/재개 수단을 승인·검증하고 active ledger가 아직 없는 기준선을 기록
+2. PR #26을 main에 병합하고 merge SHA를 확인
+3. Production에 local 순서 그대로 `20260712153420`, `20260713143746` 두 migration만 적용
+4. migration version, private ledger RLS/no-grant, public RPC owner/search_path/EXECUTE ACL, 기존 role RPC/마지막 owner 보호를 비식별 검증
+5. Supabase Auth Production Site URL을 `https://hair-cr-mvibes.vercel.app`으로 설정
+6. exact Redirect URLs만 등록:
+   - `https://hair-cr-mvibes.vercel.app/invite/accept`
+   - `http://localhost:3000/invite/accept`
+   - `http://127.0.0.1:3000/invite/accept`
+7. wildcard Preview redirect는 추가하지 않고 Preview Site URL은 localhost로 유지
+8. Vercel Production 배포/Promote 후 canonical 공개 route, manifest/SW/offline/icon, 무인증 staff API 401/no-store, 민감 응답 cache 0을 확인
+9. 실제 초대 이메일·역할 변경 없이 migration/Auth URL/배포 전후 비식별 count와 synthetic residue 0을 확인
+
+rollback 원칙:
+- 앱 문제는 merge commit revert와 직전 성공 Production deployment 재연결을 우선합니다.
+- 초대 POST route를 먼저 `503 + no-store`로 중지하고 in-flight 0을 확인합니다. ledger 계약이 없는 구버전 앱으로 먼저 되돌리거나 route를 재개해 Admin invite가 ledger를 우회하게 만들지 않습니다.
+- 호환 앱/DB 순서를 확인한 뒤 claim/settle/reconcile EXECUTE를 회수하고 함수를 제거하되 private table/RLS/no-grant와 상태 증거는 보존합니다. 앱과 DB 계약이 다시 맞는 것을 확인한 뒤에만 route를 재개합니다.
+- 역할 audit과 ledger를 삭제하지 않으며 이미 적용된 역할을 자동 역전하지 않습니다.
+- Auth URL 문제는 직전 Site/Redirect metadata를 복원하되 운영 초대 중단과 active/`unknown` ledger 확인을 먼저 수행합니다.
 
 Non-Goals:
-- R-01~R-09/R-13 재구현
+- 승인 전 실제 직원 초대·역할 변경·계정 삭제
 - Preview/Production 테스트 계정 생성
-- 실제 직원 초대·권한 변경을 승인 없이 실행
-- Keychain/Vercel env 변경
+- 고객·예약 데이터 변경
+- PWA cache 전략 변경
 - 기존 미추적 산출물 정리
+- R-11 구현 / R-14 추가 변경·대표 사용자 검증
 
-최신 `origin/main`과 열린 PR/worktree/병행 세션을 읽기 전용으로 재확인하고, 승인 후에만 `codex/r10-role-management` clean worktree를 만듭니다.
+첨부된 Release Plan A가 현재 구현·GitHub·DB/Auth/Vercel 외부 변경 범위를 승인했으므로 반복 승인을 요구하지 않습니다. 단, 승인 범위를 실질적으로 확대하거나 파괴적 작업이 필요하면 Updated Implementation Plan으로 중단합니다.
 ```

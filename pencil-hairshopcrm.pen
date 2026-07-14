@@ -27855,7 +27855,8 @@
               "fill": "$text-secondary",
               "content": "활성 고객 2명",
               "fontFamily": "$font-primary",
-              "fontSize": 16
+              "fontSize": 16,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -27972,7 +27973,8 @@
               "fill": "$text-secondary",
               "content": "이름, 전화번호, 메모로 검색",
               "fontFamily": "$font-primary",
-              "fontSize": 16
+              "fontSize": 16,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -28141,7 +28143,8 @@
                       "fill": "$text-secondary",
                       "content": "010-0000-0000",
                       "fontFamily": "$font-primary",
-                      "fontSize": 15
+                      "fontSize": 15,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -28248,7 +28251,8 @@
                       "fill": "$text-secondary",
                       "content": "010-1111-0000",
                       "fontFamily": "$font-primary",
-                      "fontSize": 15
+                      "fontSize": 15,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -28618,6 +28622,4031 @@
                   "fontWeight": "500"
                 }
               ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "v5otbf",
+      "x": 13322,
+      "y": 0,
+      "name": "R-10 권한관리 / 직원 목록",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-primary",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "ZQiIY",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "name": "권한관리 상단 안전영역 강조",
+          "width": 390,
+          "height": 4,
+          "fill": "$accent-primary",
+          "layout": "none"
+        },
+        {
+          "type": "frame",
+          "id": "u56T7a",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "name": "직원 목록 콘텐츠",
+          "width": 390,
+          "height": 756,
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "i9KjA",
+              "layoutPosition": "absolute",
+              "x": 20,
+              "y": 20,
+              "name": "권한관리 헤더",
+              "width": 350,
+              "height": 44,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "T2f71H",
+                  "layoutPosition": "absolute",
+                  "x": 0,
+                  "y": 0,
+                  "name": "설정으로 돌아가기",
+                  "width": 44,
+                  "height": 44,
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-pill",
+                  "stroke": "$border-subtle",
+                  "strokeWidth": 1,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "fL7Sp",
+                      "x": 12,
+                      "y": 12,
+                      "name": "Icon Button Glyph",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "arrow-left",
+                      "library": "lucide",
+                      "fill": "$text-primary"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "AEuXL",
+                  "layoutPosition": "absolute",
+                  "x": 56,
+                  "y": 0,
+                  "name": "권한관리 제목 묶음",
+                  "width": 294,
+                  "height": 44,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "DnR67",
+                      "layoutPosition": "absolute",
+                      "x": 0,
+                      "y": 0,
+                      "name": "권한관리 제목",
+                      "fill": "$text-primary",
+                      "content": "권한 관리",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 22,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "ergrY",
+                      "layoutPosition": "absolute",
+                      "x": 0,
+                      "y": 27,
+                      "name": "권한관리 경로",
+                      "fill": "$text-tertiary",
+                      "content": "설정 · 직원 계정과 역할",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "l0EMW",
+              "x": 20,
+              "y": 78,
+              "name": "직원 초대 카드",
+              "width": "fill_container(350)",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#1A191808",
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "blur": 12
+              },
+              "layout": "vertical",
+              "gap": 10,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "hB0vE",
+                  "name": "직원 초대 카드 헤더",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "rBNwF",
+                      "name": "직원 초대 제목 묶음",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "nRY9a",
+                          "name": "직원 초대 제목",
+                          "fill": "$text-primary",
+                          "content": "직원 초대",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 17,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "l8CgH",
+                          "name": "직원 초대 설명",
+                          "fill": "$text-secondary",
+                          "content": "초대 수락 후 staff로 시작합니다.",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 12,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "i7sIFe",
+                      "name": "원장 전용 배지",
+                      "height": 30,
+                      "fill": "$accent-light",
+                      "cornerRadius": "$radius-pill",
+                      "gap": 6,
+                      "padding": [
+                        0,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "i35caB",
+                          "name": "원장 전용 배지 아이콘",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "shield-check",
+                          "library": "lucide",
+                          "fill": "$accent-primary"
+                        },
+                        {
+                          "type": "text",
+                          "id": "sZq0w",
+                          "name": "원장 전용 배지 라벨",
+                          "fill": "$accent-primary",
+                          "content": "원장 전용",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "y8AFGR",
+                  "name": "직원 이메일 입력",
+                  "width": 318,
+                  "height": 104,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "N9HLgH",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Text Input Label",
+                      "fill": "$text-primary",
+                      "content": "직원 이메일",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "nlJkt",
+                      "x": 0,
+                      "y": 24,
+                      "name": "Text Input Control",
+                      "width": 318,
+                      "height": 48,
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-md",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Z1nVX8",
+                          "x": 16,
+                          "y": 14,
+                          "name": "Text Input Value",
+                          "fill": "$text-tertiary",
+                          "content": "name@salon.example",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 15,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "vmZlk",
+                      "x": 0,
+                      "y": 80,
+                      "name": "Text Input Helper",
+                      "fill": "$text-tertiary",
+                      "content": "이메일은 목록에서 마스킹해 표시합니다.",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "i9HbgG",
+                  "name": "직원 초대 보내기",
+                  "width": 318,
+                  "height": 56,
+                  "fill": "$accent-primary",
+                  "cornerRadius": "$radius-lg",
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "FzNc2",
+                      "x": 88,
+                      "y": 18,
+                      "name": "Primary Button Icon",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "mail-plus",
+                      "library": "lucide",
+                      "fill": "#FFFFFF"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Wu2th",
+                      "x": 120,
+                      "y": 17,
+                      "name": "Primary Button Label",
+                      "fill": "#FFFFFF",
+                      "content": "초대 보내기",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "x0suM",
+                  "name": "초대 개인정보 안내",
+                  "width": "fill_container",
+                  "fill": "$status-info-light",
+                  "cornerRadius": "$radius-md",
+                  "gap": 8,
+                  "padding": [
+                    8,
+                    10
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "yTIFL",
+                      "name": "개인정보 안내 아이콘",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "eye-off",
+                      "library": "lucide",
+                      "fill": "$status-info"
+                    },
+                    {
+                      "type": "text",
+                      "id": "uSecb",
+                      "name": "개인정보 안내 문구",
+                      "fill": "$status-info",
+                      "textGrowth": "fixed-width",
+                      "width": 280,
+                      "content": "원문 이메일·초대 token은 화면과 응답에 남기지 않습니다.",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "s7pk8M",
+              "x": 20,
+              "y": 390,
+              "name": "직원 역할 목록 카드",
+              "width": "fill_container(350)",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#1A191808",
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "blur": 12
+              },
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "s6YTQL",
+                  "name": "직원 목록 헤더",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "e40Kp",
+                      "name": "직원 목록 제목 묶음",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "on3Bm",
+                          "name": "직원 목록 제목",
+                          "fill": "$text-primary",
+                          "content": "직원과 역할",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 17,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "xF6nm",
+                          "name": "직원 목록 설명",
+                          "fill": "$text-secondary",
+                          "content": "원장 2 · 직원 1",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 12,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "B6aif6",
+                      "name": "직원 목록 새로고침",
+                      "width": 44,
+                      "height": 44,
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-pill",
+                      "stroke": "$border-subtle",
+                      "strokeWidth": 1,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "bUqSb",
+                          "x": 12,
+                          "y": 12,
+                          "name": "Icon Button Glyph",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "refresh-cw",
+                          "library": "lucide",
+                          "fill": "$text-secondary"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "rJIed",
+                  "name": "현재 원장 계정 행",
+                  "width": "fill_container",
+                  "height": 66,
+                  "fill": "$bg-primary",
+                  "cornerRadius": "$radius-md",
+                  "gap": 10,
+                  "padding": 10,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "gxiTU",
+                      "name": "현재 원장 아바타",
+                      "width": 40,
+                      "height": 40,
+                      "fill": "$accent-light",
+                      "cornerRadius": "$radius-pill",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Xsxj7",
+                          "name": "현재 원장 이니셜",
+                          "fill": "$accent-primary",
+                          "content": "나",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "oBhXC",
+                      "name": "현재 원장 정보",
+                      "width": 120,
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "gKmzz",
+                          "name": "현재 원장 마스킹 이메일",
+                          "fill": "$text-primary",
+                          "content": "me•••@salon.example",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "WnWvo",
+                          "name": "현재 원장 보조 정보",
+                          "fill": "$text-tertiary",
+                          "content": "현재 계정 · 자기 강등 불가",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 11,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "NDs3J",
+                      "name": "현재 원장 역할 배지",
+                      "width": 64,
+                      "height": 30,
+                      "fill": "$accent-light",
+                      "cornerRadius": "$radius-pill",
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "ATvhP",
+                          "x": 12,
+                          "y": 10,
+                          "name": "Status Badge Dot",
+                          "width": 10,
+                          "height": 10,
+                          "fill": "$accent-primary",
+                          "cornerRadius": "$radius-pill"
+                        },
+                        {
+                          "type": "text",
+                          "id": "r3c1aO",
+                          "x": 30,
+                          "y": 6,
+                          "name": "Status Badge Label",
+                          "fill": "$accent-primary",
+                          "content": "원장",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "kiNs2",
+                      "name": "현재 원장 변경 잠금",
+                      "opacity": 0.55,
+                      "width": 44,
+                      "height": 44,
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-pill",
+                      "stroke": "$border-subtle",
+                      "strokeWidth": 1,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "o1x4X",
+                          "x": 12,
+                          "y": 12,
+                          "name": "Icon Button Glyph",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "lock-keyhole",
+                          "library": "lucide",
+                          "fill": "$disabled-text"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "efZ4n",
+                  "name": "두 번째 원장 계정 행",
+                  "width": "fill_container",
+                  "height": 66,
+                  "fill": "$bg-primary",
+                  "cornerRadius": "$radius-md",
+                  "gap": 10,
+                  "padding": 10,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "yRE7j",
+                      "name": "두 번째 원장 아바타",
+                      "width": 40,
+                      "height": 40,
+                      "fill": "$accent-warm-light",
+                      "cornerRadius": "$radius-pill",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "n5RD2T",
+                          "name": "두 번째 원장 이니셜",
+                          "fill": "$accent-warm",
+                          "content": "지",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "SvsUf",
+                      "name": "두 번째 원장 정보",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "vxSWv",
+                          "name": "두 번째 원장 마스킹 이메일",
+                          "fill": "$text-primary",
+                          "content": "ji•••@salon.example",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "T5IYc",
+                          "name": "두 번째 원장 보조 정보",
+                          "fill": "$text-tertiary",
+                          "content": "이메일 확인 · 2026.07",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 11,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "faDR2",
+                      "name": "두 번째 원장 역할 배지",
+                      "width": 64,
+                      "height": 30,
+                      "fill": "$accent-light",
+                      "cornerRadius": "$radius-pill",
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "ppAdW",
+                          "x": 12,
+                          "y": 10,
+                          "name": "Status Badge Dot",
+                          "width": 10,
+                          "height": 10,
+                          "fill": "$accent-primary",
+                          "cornerRadius": "$radius-pill"
+                        },
+                        {
+                          "type": "text",
+                          "id": "oVHJm",
+                          "x": 30,
+                          "y": 6,
+                          "name": "Status Badge Label",
+                          "fill": "$accent-primary",
+                          "content": "원장",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "aSaVO",
+                      "name": "두 번째 원장 역할 변경",
+                      "width": 44,
+                      "height": 44,
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-pill",
+                      "stroke": "$border-subtle",
+                      "strokeWidth": 1,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "ZEwfY",
+                          "x": 12,
+                          "y": 12,
+                          "name": "Icon Button Glyph",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "user-cog",
+                          "library": "lucide",
+                          "fill": "$text-secondary"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "u4HGTc",
+                  "name": "직원 계정 행",
+                  "width": "fill_container",
+                  "height": 66,
+                  "fill": "$bg-primary",
+                  "cornerRadius": "$radius-md",
+                  "gap": 10,
+                  "padding": 10,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "oaJWW",
+                      "name": "직원 아바타",
+                      "width": 40,
+                      "height": 40,
+                      "fill": "$status-info-light",
+                      "cornerRadius": "$radius-pill",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "glQMa",
+                          "name": "직원 이니셜",
+                          "fill": "$status-info",
+                          "content": "수",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "VpH65",
+                      "name": "직원 정보",
+                      "width": 120,
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "VyHF9",
+                          "name": "직원 마스킹 이메일",
+                          "fill": "$text-primary",
+                          "content": "su•••@salon.example",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "YiXYz",
+                          "name": "직원 보조 정보",
+                          "fill": "$text-tertiary",
+                          "content": "이메일 확인 · 2026.07",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 11,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "m4hEf",
+                      "name": "직원 역할 배지",
+                      "width": 64,
+                      "height": 30,
+                      "fill": "$status-info-light",
+                      "cornerRadius": "$radius-pill",
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "rhQPk",
+                          "x": 12,
+                          "y": 10,
+                          "name": "Status Badge Dot",
+                          "width": 10,
+                          "height": 10,
+                          "fill": "$status-info",
+                          "cornerRadius": "$radius-pill"
+                        },
+                        {
+                          "type": "text",
+                          "id": "yrkLH",
+                          "x": 30,
+                          "y": 6,
+                          "name": "Status Badge Label",
+                          "fill": "$status-info",
+                          "content": "직원",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "KuAaD",
+                      "name": "직원 역할 변경",
+                      "width": 44,
+                      "height": 44,
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-pill",
+                      "stroke": "$border-subtle",
+                      "strokeWidth": 1,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "uOXcu",
+                          "x": 12,
+                          "y": 12,
+                          "name": "Icon Button Glyph",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "user-cog",
+                          "library": "lucide",
+                          "fill": "$text-secondary"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "p9LTT",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 760,
+          "name": "직원 목록 Owner TabBar",
+          "width": 390,
+          "height": 84,
+          "fill": "#FFFFFF",
+          "cornerRadius": [
+            24,
+            24,
+            0,
+            0
+          ],
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#1A191803",
+            "offset": {
+              "x": 0,
+              "y": -1
+            },
+            "blur": 8
+          },
+          "justifyContent": "space_around",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "hj8AZ",
+              "name": "tab1",
+              "layout": "vertical",
+              "gap": 4,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "ET3dJ",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "users",
+                  "library": "lucide",
+                  "fill": "$tab-inactive"
+                },
+                {
+                  "type": "text",
+                  "id": "xLPYa",
+                  "fill": "$tab-inactive",
+                  "content": "고객",
+                  "fontFamily": "Outfit",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "D0P0E",
+              "name": "tab2",
+              "layout": "vertical",
+              "gap": 4,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "sJYrn",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "calendar",
+                  "library": "lucide",
+                  "fill": "#B8B4AE"
+                },
+                {
+                  "type": "text",
+                  "id": "uKTWw",
+                  "fill": "#B8B4AE",
+                  "content": "예약",
+                  "fontFamily": "Outfit",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "a4v8td",
+              "name": "tab3",
+              "layout": "vertical",
+              "gap": 4,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "EFolu",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "trending-up",
+                  "library": "lucide",
+                  "fill": "#B8B4AE"
+                },
+                {
+                  "type": "text",
+                  "id": "cEt23",
+                  "fill": "#B8B4AE",
+                  "content": "통계",
+                  "fontFamily": "Outfit",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "V7bSOP",
+              "name": "tab4",
+              "layout": "vertical",
+              "gap": 4,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "t6o1WU",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "settings",
+                  "library": "lucide",
+                  "fill": "$accent-primary"
+                },
+                {
+                  "type": "text",
+                  "id": "quDfw",
+                  "fill": "$accent-primary",
+                  "content": "설정",
+                  "fontFamily": "Outfit",
+                  "fontSize": 10,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "ckGvh",
+      "x": 13792,
+      "y": 0,
+      "name": "R-10 권한관리 / 초대 상태",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-primary",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "FD1rO",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "name": "권한관리 상단 안전영역 강조",
+          "width": 390,
+          "height": 4,
+          "fill": "$accent-primary",
+          "layout": "none"
+        },
+        {
+          "type": "frame",
+          "id": "mGRCD",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "name": "직원 목록 콘텐츠",
+          "width": 390,
+          "height": 756,
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "B1qez9",
+              "layoutPosition": "absolute",
+              "x": 20,
+              "y": 20,
+              "name": "권한관리 헤더",
+              "width": 350,
+              "height": 44,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Exy6p",
+                  "layoutPosition": "absolute",
+                  "x": 0,
+                  "y": 0,
+                  "name": "설정으로 돌아가기",
+                  "width": 44,
+                  "height": 44,
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-pill",
+                  "stroke": "$border-subtle",
+                  "strokeWidth": 1,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "nPPeU",
+                      "x": 12,
+                      "y": 12,
+                      "name": "Icon Button Glyph",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "arrow-left",
+                      "library": "lucide",
+                      "fill": "$text-primary"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "ZlR3z",
+                  "layoutPosition": "absolute",
+                  "x": 56,
+                  "y": 0,
+                  "name": "권한관리 제목 묶음",
+                  "width": 294,
+                  "height": 44,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "LBymA",
+                      "layoutPosition": "absolute",
+                      "x": 0,
+                      "y": 0,
+                      "name": "권한관리 제목",
+                      "fill": "$text-primary",
+                      "content": "초대 상태",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 22,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "qPA9H",
+                      "layoutPosition": "absolute",
+                      "x": 0,
+                      "y": 27,
+                      "name": "권한관리 경로",
+                      "fill": "$text-tertiary",
+                      "content": "설정 · 권한 관리 · 초대",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "nrYlk",
+              "x": 20,
+              "y": 78,
+              "name": "직원 초대 카드",
+              "width": "fill_container(350)",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#1A191808",
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "blur": 12
+              },
+              "layout": "vertical",
+              "gap": 10,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "ZNvKF",
+                  "name": "직원 초대 카드 헤더",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "sjqLJ",
+                      "name": "직원 초대 제목 묶음",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "d1mUd",
+                          "name": "직원 초대 제목",
+                          "fill": "$text-primary",
+                          "content": "직원 초대",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 17,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "grGld",
+                          "name": "직원 초대 설명",
+                          "fill": "$text-secondary",
+                          "content": "입력·응답·재시도 상태를 분리합니다.",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 12,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Y5CUvK",
+                      "name": "원장 전용 배지",
+                      "height": 30,
+                      "fill": "$accent-light",
+                      "cornerRadius": "$radius-pill",
+                      "gap": 6,
+                      "padding": [
+                        0,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "O5evb9",
+                          "name": "원장 전용 배지 아이콘",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "shield-check",
+                          "library": "lucide",
+                          "fill": "$accent-primary"
+                        },
+                        {
+                          "type": "text",
+                          "id": "wMHcp",
+                          "name": "원장 전용 배지 라벨",
+                          "fill": "$accent-primary",
+                          "content": "원장 전용",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "MzoA1",
+                  "name": "직원 이메일 입력",
+                  "width": 318,
+                  "height": 104,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "JZt2H",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Text Input Label",
+                      "fill": "$text-primary",
+                      "content": "이메일 형식을 확인하세요",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "E10uL",
+                      "x": 0,
+                      "y": 24,
+                      "name": "Text Input Control",
+                      "width": 318,
+                      "height": 48,
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-md",
+                      "stroke": "#D85B5B",
+                      "strokeWidth": 1,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "mspzm",
+                          "x": 16,
+                          "y": 14,
+                          "name": "Text Input Value",
+                          "fill": "#D85B5B",
+                          "content": "invalid-email",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 15,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "k9rW1",
+                      "x": 0,
+                      "y": 80,
+                      "name": "Text Input Helper",
+                      "fill": "#D85B5B",
+                      "content": "유효한 업무 이메일을 입력해 주세요.",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "uMZsj",
+                  "name": "직원 초대 보내기",
+                  "width": 318,
+                  "height": 56,
+                  "fill": "$accent-primary",
+                  "cornerRadius": "$radius-lg",
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "AU8Zq",
+                      "x": 88,
+                      "y": 18,
+                      "name": "Primary Button Icon",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "rotate-cw",
+                      "library": "lucide",
+                      "fill": "#FFFFFF"
+                    },
+                    {
+                      "type": "text",
+                      "id": "N5OwsA",
+                      "x": 120,
+                      "y": 17,
+                      "name": "Primary Button Label",
+                      "fill": "#FFFFFF",
+                      "content": "다시 시도",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "O0syGS",
+                  "name": "초대 개인정보 안내",
+                  "width": "fill_container",
+                  "fill": "#FCEBDF",
+                  "cornerRadius": "$radius-md",
+                  "gap": 8,
+                  "padding": [
+                    8,
+                    10
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "yuCOx",
+                      "name": "개인정보 안내 아이콘",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "circle-alert",
+                      "library": "lucide",
+                      "fill": "#9A5A2B"
+                    },
+                    {
+                      "type": "text",
+                      "id": "BIVZa",
+                      "name": "개인정보 안내 문구",
+                      "fill": "#9A5A2B",
+                      "textGrowth": "fixed-width",
+                      "width": 280,
+                      "content": "전송 실패 · 네트워크 확인 후 다시 시도할 수 있어요.",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "QCKaq",
+              "x": 20,
+              "y": 390,
+              "name": "직원 역할 목록 카드",
+              "width": "fill_container(350)",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#1A191808",
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "blur": 12
+              },
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "h6u4wq",
+                  "name": "직원 목록 헤더",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "kdZ6M",
+                      "name": "직원 목록 제목 묶음",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "MxUyN",
+                          "name": "직원 목록 제목",
+                          "fill": "$text-primary",
+                          "content": "초대 결과",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 17,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "lSeqh",
+                          "name": "직원 목록 설명",
+                          "fill": "$text-secondary",
+                          "content": "성공 · pending · 중복",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 12,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "sxPQA",
+                      "name": "직원 목록 새로고침",
+                      "width": 44,
+                      "height": 44,
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-pill",
+                      "stroke": "$border-subtle",
+                      "strokeWidth": 1,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "ezIZD",
+                          "x": 12,
+                          "y": 12,
+                          "name": "Icon Button Glyph",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "refresh-cw",
+                          "library": "lucide",
+                          "fill": "$text-secondary"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "r3wUV",
+                  "name": "초대 성공 상태",
+                  "width": "fill_container",
+                  "height": 66,
+                  "fill": "$bg-primary",
+                  "cornerRadius": "$radius-md",
+                  "gap": 10,
+                  "padding": 10,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "ugEBV",
+                      "name": "현재 원장 아바타",
+                      "width": 40,
+                      "height": 40,
+                      "fill": "$accent-light",
+                      "cornerRadius": "$radius-pill",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "QZqBp",
+                          "name": "현재 원장 이니셜",
+                          "fill": "$accent-primary",
+                          "content": "✓",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "aAzKl",
+                      "name": "현재 원장 정보",
+                      "width": 120,
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "t3BQQ",
+                          "name": "현재 원장 마스킹 이메일",
+                          "fill": "$text-primary",
+                          "content": "ne•••@salon.example",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "dDtHL",
+                          "name": "현재 원장 보조 정보",
+                          "fill": "$text-tertiary",
+                          "content": "초대 메일 전송 완료",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 11,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "zLdeu",
+                      "name": "현재 원장 역할 배지",
+                      "width": 64,
+                      "height": 30,
+                      "fill": "$accent-light",
+                      "cornerRadius": "$radius-pill",
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "b1bcbD",
+                          "x": 12,
+                          "y": 10,
+                          "name": "Status Badge Dot",
+                          "width": 10,
+                          "height": 10,
+                          "fill": "#2F7D4A",
+                          "cornerRadius": "$radius-pill"
+                        },
+                        {
+                          "type": "text",
+                          "id": "YdE1D",
+                          "x": 30,
+                          "y": 6,
+                          "name": "Status Badge Label",
+                          "fill": "#2F7D4A",
+                          "content": "성공",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "h003Nw",
+                      "name": "현재 원장 변경 잠금",
+                      "opacity": 0.55,
+                      "width": 44,
+                      "height": 44,
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-pill",
+                      "stroke": "$border-subtle",
+                      "strokeWidth": 1,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "GVt1V",
+                          "x": 12,
+                          "y": 12,
+                          "name": "Icon Button Glyph",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "circle-check",
+                          "library": "lucide",
+                          "fill": "#2F7D4A"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "y6ILU",
+                  "name": "초대 pending 상태",
+                  "width": "fill_container",
+                  "height": 66,
+                  "fill": "$bg-primary",
+                  "cornerRadius": "$radius-md",
+                  "gap": 10,
+                  "padding": 10,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "QB6uP",
+                      "name": "두 번째 원장 아바타",
+                      "width": 40,
+                      "height": 40,
+                      "fill": "$accent-warm-light",
+                      "cornerRadius": "$radius-pill",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "g2SDuc",
+                          "name": "두 번째 원장 이니셜",
+                          "fill": "$accent-warm",
+                          "content": "…",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "lsxAk",
+                      "name": "두 번째 원장 정보",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "i1PMm",
+                          "name": "두 번째 원장 마스킹 이메일",
+                          "fill": "$text-primary",
+                          "content": "pa•••@salon.example",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "WHSPL",
+                          "name": "두 번째 원장 보조 정보",
+                          "fill": "$text-tertiary",
+                          "content": "수락 대기 · 재초대 가능",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 11,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "K70d1",
+                      "name": "두 번째 원장 역할 배지",
+                      "width": 64,
+                      "height": 30,
+                      "fill": "#FCEBDF",
+                      "cornerRadius": "$radius-pill",
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "jQklk",
+                          "x": 12,
+                          "y": 10,
+                          "name": "Status Badge Dot",
+                          "width": 10,
+                          "height": 10,
+                          "fill": "#9A5A2B",
+                          "cornerRadius": "$radius-pill"
+                        },
+                        {
+                          "type": "text",
+                          "id": "iHxNC",
+                          "x": 30,
+                          "y": 6,
+                          "name": "Status Badge Label",
+                          "fill": "#9A5A2B",
+                          "content": "대기",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Q1Vl1u",
+                      "name": "두 번째 원장 역할 변경",
+                      "width": 44,
+                      "height": 44,
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-pill",
+                      "stroke": "$border-subtle",
+                      "strokeWidth": 1,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "Adgui",
+                          "x": 12,
+                          "y": 12,
+                          "name": "Icon Button Glyph",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "send",
+                          "library": "lucide",
+                          "fill": "#9A5A2B"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "vQqUk",
+                  "name": "초대 중복 상태",
+                  "width": "fill_container",
+                  "height": 66,
+                  "fill": "$bg-primary",
+                  "cornerRadius": "$radius-md",
+                  "gap": 10,
+                  "padding": 10,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "b7zXE",
+                      "name": "직원 아바타",
+                      "width": 40,
+                      "height": 40,
+                      "fill": "$status-info-light",
+                      "cornerRadius": "$radius-pill",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "UrpNZ",
+                          "name": "직원 이니셜",
+                          "fill": "$status-info",
+                          "content": "!",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "aUWvk",
+                      "name": "직원 정보",
+                      "width": 120,
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "w3Mbq",
+                          "name": "직원 마스킹 이메일",
+                          "fill": "$text-primary",
+                          "content": "du•••@salon.example",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "nD1jF",
+                          "name": "직원 보조 정보",
+                          "fill": "$text-tertiary",
+                          "content": "이미 등록된 계정",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 11,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "aans4",
+                      "name": "직원 역할 배지",
+                      "width": 64,
+                      "height": 30,
+                      "fill": "#FBE8E8",
+                      "cornerRadius": "$radius-pill",
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "cAqas",
+                          "x": 12,
+                          "y": 10,
+                          "name": "Status Badge Dot",
+                          "width": 10,
+                          "height": 10,
+                          "fill": "#B24444",
+                          "cornerRadius": "$radius-pill"
+                        },
+                        {
+                          "type": "text",
+                          "id": "JsNnI",
+                          "x": 30,
+                          "y": 6,
+                          "name": "Status Badge Label",
+                          "fill": "#B24444",
+                          "content": "중복",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "rpbBZ",
+                      "name": "직원 역할 변경",
+                      "width": 44,
+                      "height": 44,
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-pill",
+                      "stroke": "$border-subtle",
+                      "strokeWidth": 1,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "L5UVBO",
+                          "x": 12,
+                          "y": 12,
+                          "name": "Icon Button Glyph",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "user-check",
+                          "library": "lucide",
+                          "fill": "#B24444"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "VZTg5",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 760,
+          "name": "직원 목록 Owner TabBar",
+          "width": 390,
+          "height": 84,
+          "fill": "#FFFFFF",
+          "cornerRadius": [
+            24,
+            24,
+            0,
+            0
+          ],
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#1A191803",
+            "offset": {
+              "x": 0,
+              "y": -1
+            },
+            "blur": 8
+          },
+          "justifyContent": "space_around",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "Z3iWtr",
+              "name": "tab1",
+              "layout": "vertical",
+              "gap": 4,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "bedFK",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "users",
+                  "library": "lucide",
+                  "fill": "$tab-inactive"
+                },
+                {
+                  "type": "text",
+                  "id": "whdNT",
+                  "fill": "$tab-inactive",
+                  "content": "고객",
+                  "fontFamily": "Outfit",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "o1bAhV",
+              "name": "tab2",
+              "layout": "vertical",
+              "gap": 4,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "IvVa8",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "calendar",
+                  "library": "lucide",
+                  "fill": "#B8B4AE"
+                },
+                {
+                  "type": "text",
+                  "id": "WQv3d",
+                  "fill": "#B8B4AE",
+                  "content": "예약",
+                  "fontFamily": "Outfit",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "o1c4Bu",
+              "name": "tab3",
+              "layout": "vertical",
+              "gap": 4,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "MTc69",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "trending-up",
+                  "library": "lucide",
+                  "fill": "#B8B4AE"
+                },
+                {
+                  "type": "text",
+                  "id": "ErWwM",
+                  "fill": "#B8B4AE",
+                  "content": "통계",
+                  "fontFamily": "Outfit",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ohPFK",
+              "name": "tab4",
+              "layout": "vertical",
+              "gap": 4,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "p3UGIM",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "settings",
+                  "library": "lucide",
+                  "fill": "$accent-primary"
+                },
+                {
+                  "type": "text",
+                  "id": "ma4E2",
+                  "fill": "$accent-primary",
+                  "content": "설정",
+                  "fontFamily": "Outfit",
+                  "fontSize": 10,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "CaBNI",
+      "x": 14262,
+      "y": 0,
+      "name": "R-10 권한관리 / 역할 변경",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg-primary",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "Bj0OW",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "name": "권한관리 상단 안전영역 강조",
+          "width": 390,
+          "height": 4,
+          "fill": "$accent-primary",
+          "layout": "none"
+        },
+        {
+          "type": "frame",
+          "id": "lG5qe",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "name": "직원 목록 콘텐츠",
+          "width": 390,
+          "height": 756,
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "sFKeK",
+              "layoutPosition": "absolute",
+              "x": 20,
+              "y": 20,
+              "name": "권한관리 헤더",
+              "width": 350,
+              "height": 44,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "UsUZi",
+                  "layoutPosition": "absolute",
+                  "x": 0,
+                  "y": 0,
+                  "name": "설정으로 돌아가기",
+                  "width": 44,
+                  "height": 44,
+                  "fill": "$bg-surface",
+                  "cornerRadius": "$radius-pill",
+                  "stroke": "$border-subtle",
+                  "strokeWidth": 1,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "d2sRa",
+                      "x": 12,
+                      "y": 12,
+                      "name": "Icon Button Glyph",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "arrow-left",
+                      "library": "lucide",
+                      "fill": "$text-primary"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "gfu3E",
+                  "layoutPosition": "absolute",
+                  "x": 56,
+                  "y": 0,
+                  "name": "권한관리 제목 묶음",
+                  "width": 294,
+                  "height": 44,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "S6TcU",
+                      "layoutPosition": "absolute",
+                      "x": 0,
+                      "y": 0,
+                      "name": "권한관리 제목",
+                      "fill": "$text-primary",
+                      "content": "역할 변경",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 22,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "ztGnU",
+                      "layoutPosition": "absolute",
+                      "x": 0,
+                      "y": 27,
+                      "name": "권한관리 경로",
+                      "fill": "$text-tertiary",
+                      "content": "설정 · 권한 관리 · 확인",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "lo5i7",
+              "x": 20,
+              "y": 78,
+              "name": "직원 초대 카드",
+              "width": "fill_container(350)",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#1A191808",
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "blur": 12
+              },
+              "layout": "vertical",
+              "gap": 10,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "NqEBX",
+                  "name": "직원 초대 카드 헤더",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "tvmOb",
+                      "name": "직원 초대 제목 묶음",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "tu7ui",
+                          "name": "직원 초대 제목",
+                          "fill": "$text-primary",
+                          "content": "직원 초대",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 17,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "WRqZ7",
+                          "name": "직원 초대 설명",
+                          "fill": "$text-secondary",
+                          "content": "초대 수락 후 staff로 시작합니다.",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 12,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "v0BXl",
+                      "name": "원장 전용 배지",
+                      "height": 30,
+                      "fill": "$accent-light",
+                      "cornerRadius": "$radius-pill",
+                      "gap": 6,
+                      "padding": [
+                        0,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "rAOG2",
+                          "name": "원장 전용 배지 아이콘",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "shield-check",
+                          "library": "lucide",
+                          "fill": "$accent-primary"
+                        },
+                        {
+                          "type": "text",
+                          "id": "b16aHm",
+                          "name": "원장 전용 배지 라벨",
+                          "fill": "$accent-primary",
+                          "content": "원장 전용",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "WNiKL",
+                  "name": "직원 이메일 입력",
+                  "width": 318,
+                  "height": 104,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "uirEw",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Text Input Label",
+                      "fill": "$text-primary",
+                      "content": "직원 이메일",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "S9c6R",
+                      "x": 0,
+                      "y": 24,
+                      "name": "Text Input Control",
+                      "width": 318,
+                      "height": 48,
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-md",
+                      "stroke": "$border-default",
+                      "strokeWidth": 1,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "epqe6",
+                          "x": 16,
+                          "y": 14,
+                          "name": "Text Input Value",
+                          "fill": "$text-tertiary",
+                          "content": "name@salon.example",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 15,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "H2B5fq",
+                      "x": 0,
+                      "y": 80,
+                      "name": "Text Input Helper",
+                      "fill": "$text-tertiary",
+                      "content": "이메일은 목록에서 마스킹해 표시합니다.",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "tnVq5",
+                  "name": "직원 초대 보내기",
+                  "width": 318,
+                  "height": 56,
+                  "fill": "$accent-primary",
+                  "cornerRadius": "$radius-lg",
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "S2cOM",
+                      "x": 88,
+                      "y": 18,
+                      "name": "Primary Button Icon",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "mail-plus",
+                      "library": "lucide",
+                      "fill": "#FFFFFF"
+                    },
+                    {
+                      "type": "text",
+                      "id": "i8iI9",
+                      "x": 120,
+                      "y": 17,
+                      "name": "Primary Button Label",
+                      "fill": "#FFFFFF",
+                      "content": "초대 보내기",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "P6Ipm",
+                  "name": "초대 개인정보 안내",
+                  "width": "fill_container",
+                  "fill": "$status-info-light",
+                  "cornerRadius": "$radius-md",
+                  "gap": 8,
+                  "padding": [
+                    8,
+                    10
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "Hu08A",
+                      "name": "개인정보 안내 아이콘",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "eye-off",
+                      "library": "lucide",
+                      "fill": "$status-info"
+                    },
+                    {
+                      "type": "text",
+                      "id": "p07dz",
+                      "name": "개인정보 안내 문구",
+                      "fill": "$status-info",
+                      "textGrowth": "fixed-width",
+                      "width": 280,
+                      "content": "원문 이메일·초대 token은 화면과 응답에 남기지 않습니다.",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "n3I6dU",
+              "x": 20,
+              "y": 390,
+              "name": "직원 역할 목록 카드",
+              "width": "fill_container(350)",
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#1A191808",
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "blur": 12
+              },
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "CgaW9",
+                  "name": "직원 목록 헤더",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "ffZ9o",
+                      "name": "직원 목록 제목 묶음",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Hjx4n",
+                          "name": "직원 목록 제목",
+                          "fill": "$text-primary",
+                          "content": "직원과 역할",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 17,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Djl5J",
+                          "name": "직원 목록 설명",
+                          "fill": "$text-secondary",
+                          "content": "원장 2 · 직원 1",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 12,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "rFQNN",
+                      "name": "직원 목록 새로고침",
+                      "width": 44,
+                      "height": 44,
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-pill",
+                      "stroke": "$border-subtle",
+                      "strokeWidth": 1,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "juc5a",
+                          "x": 12,
+                          "y": 12,
+                          "name": "Icon Button Glyph",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "refresh-cw",
+                          "library": "lucide",
+                          "fill": "$text-secondary"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "zWo02",
+                  "name": "현재 원장 계정 행",
+                  "width": "fill_container",
+                  "height": 66,
+                  "fill": "$bg-primary",
+                  "cornerRadius": "$radius-md",
+                  "gap": 10,
+                  "padding": 10,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "K7FE6l",
+                      "name": "현재 원장 아바타",
+                      "width": 40,
+                      "height": 40,
+                      "fill": "$accent-light",
+                      "cornerRadius": "$radius-pill",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "WNw6O",
+                          "name": "현재 원장 이니셜",
+                          "fill": "$accent-primary",
+                          "content": "나",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "T3PG6e",
+                      "name": "현재 원장 정보",
+                      "width": 120,
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "J9n4Vu",
+                          "name": "현재 원장 마스킹 이메일",
+                          "fill": "$text-primary",
+                          "content": "me•••@salon.example",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "O4D7u",
+                          "name": "현재 원장 보조 정보",
+                          "fill": "$text-tertiary",
+                          "content": "현재 계정 · 자기 강등 불가",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 11,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "M8L9nA",
+                      "name": "현재 원장 역할 배지",
+                      "width": 64,
+                      "height": 30,
+                      "fill": "$accent-light",
+                      "cornerRadius": "$radius-pill",
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "MahtF",
+                          "x": 12,
+                          "y": 10,
+                          "name": "Status Badge Dot",
+                          "width": 10,
+                          "height": 10,
+                          "fill": "$accent-primary",
+                          "cornerRadius": "$radius-pill"
+                        },
+                        {
+                          "type": "text",
+                          "id": "URtSf",
+                          "x": 30,
+                          "y": 6,
+                          "name": "Status Badge Label",
+                          "fill": "$accent-primary",
+                          "content": "원장",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "HdBjK",
+                      "name": "현재 원장 변경 잠금",
+                      "opacity": 0.55,
+                      "width": 44,
+                      "height": 44,
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-pill",
+                      "stroke": "$border-subtle",
+                      "strokeWidth": 1,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "KI5M2",
+                          "x": 12,
+                          "y": 12,
+                          "name": "Icon Button Glyph",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "lock-keyhole",
+                          "library": "lucide",
+                          "fill": "$disabled-text"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "I8t2a",
+                  "name": "두 번째 원장 계정 행",
+                  "width": "fill_container",
+                  "height": 66,
+                  "fill": "$bg-primary",
+                  "cornerRadius": "$radius-md",
+                  "gap": 10,
+                  "padding": 10,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "c3mk6a",
+                      "name": "두 번째 원장 아바타",
+                      "width": 40,
+                      "height": 40,
+                      "fill": "$accent-warm-light",
+                      "cornerRadius": "$radius-pill",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "f8kC3e",
+                          "name": "두 번째 원장 이니셜",
+                          "fill": "$accent-warm",
+                          "content": "지",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "w8i30t",
+                      "name": "두 번째 원장 정보",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "DVAut",
+                          "name": "두 번째 원장 마스킹 이메일",
+                          "fill": "$text-primary",
+                          "content": "ji•••@salon.example",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "ACOq9",
+                          "name": "두 번째 원장 보조 정보",
+                          "fill": "$text-tertiary",
+                          "content": "이메일 확인 · 2026.07",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 11,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "u4Mdr",
+                      "name": "두 번째 원장 역할 배지",
+                      "width": 64,
+                      "height": 30,
+                      "fill": "$accent-light",
+                      "cornerRadius": "$radius-pill",
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "j8xPkb",
+                          "x": 12,
+                          "y": 10,
+                          "name": "Status Badge Dot",
+                          "width": 10,
+                          "height": 10,
+                          "fill": "$accent-primary",
+                          "cornerRadius": "$radius-pill"
+                        },
+                        {
+                          "type": "text",
+                          "id": "ctclC",
+                          "x": 30,
+                          "y": 6,
+                          "name": "Status Badge Label",
+                          "fill": "$accent-primary",
+                          "content": "원장",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "II32d",
+                      "name": "두 번째 원장 역할 변경",
+                      "width": 44,
+                      "height": 44,
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-pill",
+                      "stroke": "$border-subtle",
+                      "strokeWidth": 1,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "uShgr",
+                          "x": 12,
+                          "y": 12,
+                          "name": "Icon Button Glyph",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "user-cog",
+                          "library": "lucide",
+                          "fill": "$text-secondary"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "xAiqD",
+                  "name": "직원 계정 행",
+                  "width": "fill_container",
+                  "height": 66,
+                  "fill": "$bg-primary",
+                  "cornerRadius": "$radius-md",
+                  "gap": 10,
+                  "padding": 10,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "T11SO0",
+                      "name": "직원 아바타",
+                      "width": 40,
+                      "height": 40,
+                      "fill": "$status-info-light",
+                      "cornerRadius": "$radius-pill",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "AOsJ4",
+                          "name": "직원 이니셜",
+                          "fill": "$status-info",
+                          "content": "수",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "cWO5r",
+                      "name": "직원 정보",
+                      "width": 120,
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "T51bP",
+                          "name": "직원 마스킹 이메일",
+                          "fill": "$text-primary",
+                          "content": "su•••@salon.example",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "X8e0E",
+                          "name": "직원 보조 정보",
+                          "fill": "$text-tertiary",
+                          "content": "이메일 확인 · 2026.07",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 11,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ew3LU",
+                      "name": "직원 역할 배지",
+                      "width": 64,
+                      "height": 30,
+                      "fill": "$status-info-light",
+                      "cornerRadius": "$radius-pill",
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "o7HqXj",
+                          "x": 12,
+                          "y": 10,
+                          "name": "Status Badge Dot",
+                          "width": 10,
+                          "height": 10,
+                          "fill": "$status-info",
+                          "cornerRadius": "$radius-pill"
+                        },
+                        {
+                          "type": "text",
+                          "id": "d9ixt",
+                          "x": 30,
+                          "y": 6,
+                          "name": "Status Badge Label",
+                          "fill": "$status-info",
+                          "content": "직원",
+                          "fontFamily": "$font-primary",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "MR4kl",
+                      "name": "직원 역할 변경",
+                      "width": 44,
+                      "height": 44,
+                      "fill": "$bg-surface",
+                      "cornerRadius": "$radius-pill",
+                      "stroke": "$border-subtle",
+                      "strokeWidth": 1,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "VEuoN",
+                          "x": 12,
+                          "y": 12,
+                          "name": "Icon Button Glyph",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "user-cog",
+                          "library": "lucide",
+                          "fill": "$text-secondary"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "tgsZi",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 760,
+          "name": "직원 목록 Owner TabBar",
+          "width": 390,
+          "height": 84,
+          "fill": "#FFFFFF",
+          "cornerRadius": [
+            24,
+            24,
+            0,
+            0
+          ],
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#1A191803",
+            "offset": {
+              "x": 0,
+              "y": -1
+            },
+            "blur": 8
+          },
+          "justifyContent": "space_around",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "TgEu0",
+              "name": "tab1",
+              "layout": "vertical",
+              "gap": 4,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "V3fGvJ",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "users",
+                  "library": "lucide",
+                  "fill": "$tab-inactive"
+                },
+                {
+                  "type": "text",
+                  "id": "W07mE1",
+                  "fill": "$tab-inactive",
+                  "content": "고객",
+                  "fontFamily": "Outfit",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "oMACH",
+              "name": "tab2",
+              "layout": "vertical",
+              "gap": 4,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "fIETy",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "calendar",
+                  "library": "lucide",
+                  "fill": "#B8B4AE"
+                },
+                {
+                  "type": "text",
+                  "id": "K7gQX",
+                  "fill": "#B8B4AE",
+                  "content": "예약",
+                  "fontFamily": "Outfit",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "iTdbE",
+              "name": "tab3",
+              "layout": "vertical",
+              "gap": 4,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "m2D7n1",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "trending-up",
+                  "library": "lucide",
+                  "fill": "#B8B4AE"
+                },
+                {
+                  "type": "text",
+                  "id": "tyQ4u",
+                  "fill": "#B8B4AE",
+                  "content": "통계",
+                  "fontFamily": "Outfit",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "lxgft",
+              "name": "tab4",
+              "layout": "vertical",
+              "gap": 4,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "zGqzS",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "settings",
+                  "library": "lucide",
+                  "fill": "$accent-primary"
+                },
+                {
+                  "type": "text",
+                  "id": "iR6sO",
+                  "fill": "$accent-primary",
+                  "content": "설정",
+                  "fontFamily": "Outfit",
+                  "fontSize": 10,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "vc1ZA",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "name": "역할 변경 배경 차단",
+          "width": 390,
+          "height": 844,
+          "fill": "#1A191866",
+          "layout": "none"
+        },
+        {
+          "type": "frame",
+          "id": "FVPH8",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 494,
+          "name": "R-10 역할 변경 확인 시트 최종",
+          "width": 390,
+          "height": 300,
+          "fill": "$bg-surface",
+          "cornerRadius": [
+            24,
+            24,
+            0,
+            0
+          ],
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#1A191814",
+            "offset": {
+              "x": 0,
+              "y": -4
+            },
+            "blur": 24
+          },
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "v1zSDQ",
+              "x": 167,
+              "y": 10,
+              "name": "Bottom Sheet Grabber",
+              "width": 56,
+              "height": 5,
+              "fill": "$border-default",
+              "cornerRadius": "$radius-pill"
+            },
+            {
+              "type": "text",
+              "id": "nH5wj",
+              "x": 20,
+              "y": 34,
+              "name": "Bottom Sheet Title",
+              "fill": "$text-primary",
+              "content": "ji•••@salon.example 역할을 바꿀까요?",
+              "fontFamily": "$font-primary",
+              "fontSize": 20,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "hWH4z",
+              "x": 20,
+              "y": 70,
+              "name": "Bottom Sheet Description",
+              "fill": "$text-secondary",
+              "textGrowth": "fixed-width",
+              "width": 350,
+              "content": "원장 → 직원 · 변경 즉시 권한이 새로고침됩니다.",
+              "lineHeight": 1.45,
+              "fontFamily": "$font-primary",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "VnMFd",
+              "x": 20,
+              "y": 122,
+              "name": "Bottom Sheet Info",
+              "width": 350,
+              "height": 68,
+              "fill": "#FCEBDF",
+              "cornerRadius": "$radius-md",
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "gtouV",
+                  "x": 14,
+                  "y": 14,
+                  "name": "Bottom Sheet Info Icon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "shield-alert",
+                  "library": "lucide",
+                  "fill": "#9A5A2B"
+                },
+                {
+                  "type": "text",
+                  "id": "ZqQsJ",
+                  "x": 44,
+                  "y": 12,
+                  "name": "Bottom Sheet Info Title",
+                  "fill": "#9A5A2B",
+                  "content": "자기 강등 · 마지막 원장 차단",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "gUJJx",
+                  "x": 44,
+                  "y": 36,
+                  "name": "Bottom Sheet Info Description",
+                  "fill": "$text-secondary",
+                  "content": "현재 계정은 강등할 수 없고 owner 1명을 보존합니다.",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "KiznO",
+              "x": 16,
+              "y": 228,
+              "name": "Bottom Sheet Cancel",
+              "width": 171,
+              "height": 56,
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-lg",
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "B21oks",
+                  "x": 50,
+                  "y": 18,
+                  "name": "Secondary Button Icon",
+                  "enabled": false,
+                  "width": 20,
+                  "height": 20,
+                  "icon": "rotate-ccw",
+                  "library": "lucide",
+                  "fill": "$text-secondary"
+                },
+                {
+                  "type": "text",
+                  "id": "X6X3K",
+                  "x": 70,
+                  "y": 17,
+                  "name": "Secondary Button Label",
+                  "fill": "$text-primary",
+                  "content": "취소",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "r9d16t",
+              "x": 203,
+              "y": 228,
+              "name": "Bottom Sheet Confirm",
+              "width": 171,
+              "height": 56,
+              "fill": "$status-danger",
+              "cornerRadius": "$radius-lg",
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "ChlMG",
+                  "x": 36,
+                  "y": 18,
+                  "name": "Danger Button Icon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "archive",
+                  "library": "lucide",
+                  "fill": "#FFFFFF"
+                },
+                {
+                  "type": "text",
+                  "id": "e3ZJdD",
+                  "x": 68,
+                  "y": 17,
+                  "name": "Danger Button Label",
+                  "fill": "#FFFFFF",
+                  "content": "직원으로 변경",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "PtvkE",
+      "x": 14732,
+      "y": 0,
+      "name": "R-10 권한관리 / 시스템 상태",
+      "clip": true,
+      "width": 360,
+      "height": 800,
+      "fill": "#F5F4F1",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "R3rVp",
+          "x": 0,
+          "y": 0,
+          "name": "시스템 상태 상단 안전영역 강조",
+          "enabled": false,
+          "width": 360,
+          "height": 4,
+          "fill": "#3D8A5A"
+        },
+        {
+          "type": "frame",
+          "id": "KIGWD",
+          "x": 0,
+          "y": 4,
+          "name": "시스템 상태 헤더",
+          "enabled": false,
+          "width": 360,
+          "height": 56,
+          "gap": 12,
+          "padding": [
+            6,
+            16
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "r7Rvyl",
+              "name": "권한관리로 돌아가기",
+              "width": 44,
+              "height": 44,
+              "fill": "#FFFFFF",
+              "cornerRadius": 100,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "oZpG5",
+                  "name": "권한관리로 돌아가기 아이콘",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "arrow-left",
+                  "library": "lucide",
+                  "fill": "#1A1918"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "eShj3",
+              "name": "시스템 상태 제목 묶음",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 2,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "AyhLs",
+                  "name": "시스템 상태 제목",
+                  "fill": "#1A1918",
+                  "content": "권한관리 상태",
+                  "fontFamily": "Outfit",
+                  "fontSize": 18,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "mlqIv",
+                  "name": "시스템 상태 부제",
+                  "fill": "#6B6966",
+                  "content": "모든 분기에서 안전하게 복구합니다.",
+                  "fontFamily": "Outfit",
+                  "fontSize": 11,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "l2b6C",
+          "x": 0,
+          "y": 60,
+          "name": "시스템 상태 콘텐츠",
+          "enabled": false,
+          "width": 360,
+          "height": 740,
+          "layout": "vertical",
+          "gap": 10,
+          "padding": [
+            10,
+            16,
+            24,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "K6uOwU",
+              "name": "시스템 상태 안내",
+              "width": "fill_container",
+              "height": 62,
+              "fill": "#E7F2F8",
+              "cornerRadius": 14,
+              "layout": "vertical",
+              "gap": 4,
+              "padding": [
+                10,
+                12
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "mEOwL",
+                  "name": "시스템 상태 안내 제목",
+                  "fill": "#356A8A",
+                  "content": "owner만 직원 권한을 관리합니다",
+                  "fontFamily": "Outfit",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "qhD0A",
+                  "name": "시스템 상태 안내 설명",
+                  "fill": "#6B6966",
+                  "content": "로딩·빈 목록·오류·권한 없음은 각각 명확히 안내합니다.",
+                  "fontFamily": "Outfit",
+                  "fontSize": 11,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Idubs",
+              "name": "시스템 상태 / 로딩",
+              "width": "fill_container",
+              "height": 120,
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "stroke": "#EEECEA",
+              "strokeWidth": 1,
+              "gap": 12,
+              "padding": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "xWsH4",
+                  "name": "로딩 상태 아이콘 영역",
+                  "width": 44,
+                  "height": 44,
+                  "fill": "#E7F2F8",
+                  "cornerRadius": 12,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "LTbtD",
+                      "name": "로딩 상태 아이콘",
+                      "width": 22,
+                      "height": 22,
+                      "icon": "loader-circle",
+                      "library": "lucide",
+                      "fill": "#356A8A"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "hRx1o",
+                  "name": "로딩 상태 설명",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "BUYo0",
+                      "name": "로딩 상태 제목",
+                      "fill": "#1A1918",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "직원 목록을 불러오는 중",
+                      "fontFamily": "Outfit",
+                      "fontSize": 14,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "yYHIa",
+                      "name": "로딩 상태 본문",
+                      "fill": "#6B6966",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "권한과 초대 상태를 안전하게 확인하고 있습니다.",
+                      "lineHeight": 1.4,
+                      "fontFamily": "Outfit",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "C81cY",
+                  "name": "로딩 상태 액션",
+                  "width": 76,
+                  "height": 44,
+                  "fill": "#E7F2F8",
+                  "cornerRadius": 12,
+                  "stroke": "#E7F2F8",
+                  "strokeWidth": 1,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "utsYf",
+                      "name": "로딩 상태 액션 라벨",
+                      "fill": "#356A8A",
+                      "content": "불러오는 중",
+                      "fontFamily": "Outfit",
+                      "fontSize": 11,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "EqcOF",
+              "name": "시스템 상태 / 빈 목록",
+              "width": "fill_container",
+              "height": 120,
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "stroke": "#EEECEA",
+              "strokeWidth": 1,
+              "gap": 12,
+              "padding": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "mFLZi",
+                  "name": "빈 목록 상태 아이콘 영역",
+                  "width": 44,
+                  "height": 44,
+                  "fill": "#EEECEA",
+                  "cornerRadius": 12,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "WCcpU",
+                      "name": "빈 목록 상태 아이콘",
+                      "width": 22,
+                      "height": 22,
+                      "icon": "users",
+                      "library": "lucide",
+                      "fill": "#6B6966"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "pJ284",
+                  "name": "빈 목록 상태 설명",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Tm97y",
+                      "name": "빈 목록 상태 제목",
+                      "fill": "#1A1918",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "등록된 직원이 없습니다",
+                      "fontFamily": "Outfit",
+                      "fontSize": 14,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "rSuT9",
+                      "name": "빈 목록 상태 본문",
+                      "fill": "#6B6966",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "첫 직원을 초대하면 이곳에 역할이 표시됩니다.",
+                      "lineHeight": 1.4,
+                      "fontFamily": "Outfit",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Ey2E9",
+                  "name": "빈 목록 상태 액션",
+                  "width": 76,
+                  "height": 44,
+                  "fill": "#EEECEA",
+                  "cornerRadius": 12,
+                  "stroke": "#EEECEA",
+                  "strokeWidth": 1,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "OYRTM",
+                      "name": "빈 목록 상태 액션 라벨",
+                      "fill": "#6B6966",
+                      "content": "0명",
+                      "fontFamily": "Outfit",
+                      "fontSize": 11,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "uk7bv",
+              "name": "시스템 상태 / 오류",
+              "width": "fill_container",
+              "height": 120,
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "stroke": "#EEECEA",
+              "strokeWidth": 1,
+              "gap": 12,
+              "padding": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "oMd0c",
+                  "name": "오류 상태 아이콘 영역",
+                  "width": 44,
+                  "height": 44,
+                  "fill": "#FCEBDF",
+                  "cornerRadius": 12,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "r5vjZR",
+                      "name": "오류 상태 아이콘",
+                      "width": 22,
+                      "height": 22,
+                      "icon": "triangle-alert",
+                      "library": "lucide",
+                      "fill": "#9A5A2B"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Odooo",
+                  "name": "오류 상태 설명",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "MW08I",
+                      "name": "오류 상태 제목",
+                      "fill": "#1A1918",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "목록을 불러오지 못했습니다",
+                      "fontFamily": "Outfit",
+                      "fontSize": 14,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "c6NaZ",
+                      "name": "오류 상태 본문",
+                      "fill": "#6B6966",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "연결을 확인한 뒤 다시 시도해 주세요.",
+                      "lineHeight": 1.4,
+                      "fontFamily": "Outfit",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Ng5bD",
+                  "name": "오류 상태 액션",
+                  "width": 88,
+                  "height": 44,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 12,
+                  "stroke": "#C98046",
+                  "strokeWidth": 1,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "XFPAp",
+                      "name": "오류 상태 액션 라벨",
+                      "fill": "#9A5A2B",
+                      "content": "다시 시도",
+                      "fontFamily": "Outfit",
+                      "fontSize": 11,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "I5RtY",
+              "name": "시스템 상태 / 권한 없음",
+              "width": "fill_container",
+              "height": 120,
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "stroke": "#EEECEA",
+              "strokeWidth": 1,
+              "gap": 12,
+              "padding": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "v9fIc",
+                  "name": "권한 없음 상태 아이콘 영역",
+                  "width": 44,
+                  "height": 44,
+                  "fill": "#FBE8E8",
+                  "cornerRadius": 12,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "LyDWE",
+                      "name": "권한 없음 상태 아이콘",
+                      "width": 22,
+                      "height": 22,
+                      "icon": "lock-keyhole",
+                      "library": "lucide",
+                      "fill": "#B24444"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "U0K8zw",
+                  "name": "권한 없음 상태 설명",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "I2nfvu",
+                      "name": "권한 없음 상태 제목",
+                      "fill": "#1A1918",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "owner 전용 화면입니다",
+                      "fontFamily": "Outfit",
+                      "fontSize": 14,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "kCKC7",
+                      "name": "권한 없음 상태 본문",
+                      "fill": "#6B6966",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "직원 계정은 권한을 조회하거나 변경할 수 없습니다.",
+                      "lineHeight": 1.4,
+                      "fontFamily": "Outfit",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "MX55g",
+                  "name": "권한 없음 상태 액션",
+                  "width": 76,
+                  "height": 44,
+                  "fill": "#FBE8E8",
+                  "cornerRadius": 12,
+                  "stroke": "#FBE8E8",
+                  "strokeWidth": 1,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "q2Dgo",
+                      "name": "권한 없음 상태 액션 라벨",
+                      "fill": "#B24444",
+                      "content": "접근 차단",
+                      "fontFamily": "Outfit",
+                      "fontSize": 11,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "fiOsE",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "name": "시스템 상태 상단 안전영역 강조 최종",
+          "width": 360,
+          "height": 4,
+          "fill": "$accent-primary",
+          "layout": "none"
+        },
+        {
+          "type": "frame",
+          "id": "NeMdO",
+          "layoutPosition": "absolute",
+          "x": 15,
+          "y": 20,
+          "name": "시스템 상태 헤더 최종",
+          "width": 330,
+          "height": 44,
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "MDS6e",
+              "layoutPosition": "absolute",
+              "x": 0,
+              "y": 0,
+              "name": "설정으로 돌아가기",
+              "width": 44,
+              "height": 44,
+              "fill": "$bg-surface",
+              "cornerRadius": "$radius-pill",
+              "stroke": "$border-subtle",
+              "strokeWidth": 1,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "oVHGH",
+                  "x": 12,
+                  "y": 12,
+                  "name": "Icon Button Glyph",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "arrow-left",
+                  "library": "lucide",
+                  "fill": "$text-primary"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "O2K5M",
+              "layoutPosition": "absolute",
+              "x": 56,
+              "y": 0,
+              "name": "권한관리 제목 묶음",
+              "width": 274,
+              "height": 44,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "bEAMb",
+                  "layoutPosition": "absolute",
+                  "x": 0,
+                  "y": 0,
+                  "name": "권한관리 제목",
+                  "fill": "$text-primary",
+                  "content": "권한관리 상태",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 21,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "aOcDI",
+                  "layoutPosition": "absolute",
+                  "x": 0,
+                  "y": 27,
+                  "name": "권한관리 경로",
+                  "fill": "$text-tertiary",
+                  "content": "로딩 · 빈 목록 · 오류 · 권한 없음",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 12,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "B8BUrM",
+          "x": 40,
+          "y": 100,
+          "name": "시스템 상태 / 로딩 최종",
+          "width": 280,
+          "height": 72,
+          "fill": "$status-info-light",
+          "cornerRadius": "$radius-md",
+          "layout": "none",
+          "children": [
+            {
+              "type": "icon",
+              "id": "xOORc",
+              "x": 14,
+              "y": 14,
+              "name": "불러오는 중 Icon",
+              "width": 20,
+              "height": 20,
+              "icon": "loader",
+              "library": "lucide",
+              "fill": "$status-info"
+            },
+            {
+              "type": "text",
+              "id": "BQIUz",
+              "x": 46,
+              "y": 10,
+              "name": "불러오는 중 Title",
+              "fill": "$status-info",
+              "content": "직원 목록 불러오는 중",
+              "fontFamily": "$font-primary",
+              "fontSize": 13,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "Zu1f3",
+              "x": 46,
+              "y": 34,
+              "name": "불러오는 중 Description",
+              "fill": "$text-secondary",
+              "textGrowth": "fixed-width",
+              "width": 218,
+              "content": "권한과 초대 상태를 안전하게 확인하고 있어요.",
+              "lineHeight": 1.35,
+              "fontFamily": "$font-primary",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "k291SZ",
+          "x": 40,
+          "y": 188,
+          "name": "시스템 상태 / 빈 목록 최종",
+          "width": 280,
+          "height": 72,
+          "fill": "$bg-primary",
+          "cornerRadius": "$radius-md",
+          "layout": "none",
+          "children": [
+            {
+              "type": "icon",
+              "id": "mwuXy",
+              "x": 14,
+              "y": 14,
+              "name": "후보 없음 Icon",
+              "width": 20,
+              "height": 20,
+              "icon": "users",
+              "library": "lucide",
+              "fill": "$text-secondary"
+            },
+            {
+              "type": "text",
+              "id": "M152dy",
+              "x": 46,
+              "y": 10,
+              "name": "후보 없음 Title",
+              "fill": "$text-secondary",
+              "content": "등록된 직원 없음",
+              "fontFamily": "$font-primary",
+              "fontSize": 13,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "s9L8X",
+              "x": 46,
+              "y": 34,
+              "name": "후보 없음 Description",
+              "fill": "$text-secondary",
+              "textGrowth": "fixed-width",
+              "width": 218,
+              "content": "첫 직원을 초대하면 역할이 표시됩니다.",
+              "lineHeight": 1.35,
+              "fontFamily": "$font-primary",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "LddDB",
+          "x": 40,
+          "y": 276,
+          "name": "시스템 상태 / 오류 최종",
+          "width": 280,
+          "height": 72,
+          "fill": "$status-danger-light",
+          "cornerRadius": "$radius-md",
+          "layout": "none",
+          "children": [
+            {
+              "type": "icon",
+              "id": "KyEVb",
+              "x": 14,
+              "y": 14,
+              "name": "불러오기 실패 Icon",
+              "width": 20,
+              "height": 20,
+              "icon": "circle-x",
+              "library": "lucide",
+              "fill": "$status-danger"
+            },
+            {
+              "type": "text",
+              "id": "PcONZ",
+              "x": 46,
+              "y": 10,
+              "name": "불러오기 실패 Title",
+              "fill": "$status-danger",
+              "content": "직원 목록 불러오기 실패",
+              "fontFamily": "$font-primary",
+              "fontSize": 13,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "vB7Tj",
+              "x": 46,
+              "y": 34,
+              "name": "불러오기 실패 Description",
+              "fill": "$text-secondary",
+              "textGrowth": "fixed-width",
+              "width": 218,
+              "content": "연결을 확인한 뒤 다시 시도하세요.",
+              "lineHeight": 1.35,
+              "fontFamily": "$font-primary",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "wrrFD",
+          "x": 120,
+          "y": 354,
+          "name": "시스템 상태 오류 다시 시도",
+          "width": 120,
+          "height": 44,
+          "fill": "$bg-surface",
+          "cornerRadius": "$radius-lg",
+          "stroke": "$border-default",
+          "strokeWidth": 1,
+          "layout": "none",
+          "children": [
+            {
+              "type": "icon",
+              "id": "nY48V",
+              "x": 20,
+              "y": 12,
+              "name": "Secondary Button Icon",
+              "width": 20,
+              "height": 20,
+              "icon": "refresh-cw",
+              "library": "lucide",
+              "fill": "$text-secondary"
+            },
+            {
+              "type": "text",
+              "id": "gnAb6",
+              "x": 50,
+              "y": 12,
+              "name": "Secondary Button Label",
+              "fill": "$text-primary",
+              "content": "다시 시도",
+              "fontFamily": "$font-primary",
+              "fontSize": 14,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "iducj",
+          "x": 40,
+          "y": 420,
+          "name": "시스템 상태 / owner 전용 차단 최종",
+          "width": 280,
+          "height": 72,
+          "fill": "$status-warning-light",
+          "cornerRadius": "$radius-md",
+          "layout": "none",
+          "children": [
+            {
+              "type": "icon",
+              "id": "M4QMcm",
+              "x": 14,
+              "y": 14,
+              "name": "권한 없음 Icon",
+              "width": 20,
+              "height": 20,
+              "icon": "shield-x",
+              "library": "lucide",
+              "fill": "$status-warning"
+            },
+            {
+              "type": "text",
+              "id": "JTXFD",
+              "x": 46,
+              "y": 10,
+              "name": "권한 없음 Title",
+              "fill": "$status-warning",
+              "content": "owner 전용 화면",
+              "fontFamily": "$font-primary",
+              "fontSize": 13,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "O4uMN",
+              "x": 46,
+              "y": 34,
+              "name": "권한 없음 Description",
+              "fill": "$text-secondary",
+              "textGrowth": "fixed-width",
+              "width": 218,
+              "content": "직원 계정은 권한을 관리할 수 없습니다.",
+              "lineHeight": 1.35,
+              "fontFamily": "$font-primary",
+              "fontSize": 11,
+              "fontWeight": "normal"
             }
           ]
         }
