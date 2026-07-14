@@ -1,11 +1,12 @@
 # R-10 Role Management
 
 ## 상태
-- In Progress (A′ implementation plus fail-closed invitation maintenance gate/runbook; local verification and live/release gates remain)
+- In Progress (PR #26 merge·live migration·Production release 완료; Auth URL과 초대 enablement blocker 잔여)
 - 구현 브랜치: `codex/r10-role-management`
 - 최초 구현 기준: `origin/main@b2258844642fae0d7a5f07798a95c9a3091cd502`
-- 최신 통합 기준: `origin/main@a85c3f7597a0a326844f639da757d6d3f5f4c8bc`
-- Draft PR: [#26](https://github.com/dongseoklee1541/hairCRMvibes/pull/26)
+- 구현 commit: `fccf3753856abbe0c254813eafd48bcbfffafcb0`
+- PR: [#26](https://github.com/dongseoklee1541/hairCRMvibes/pull/26) merged
+- 최신 Production application 기준: `origin/main@6cfb71e88cbe4bbfd3a8469a3c5b4487a3ccb449`
 - 최종 업데이트: 2026-07-14
 
 ## 목표
@@ -33,7 +34,7 @@
 ## 확인된 기준선
 - live Auth 사용자 2명, profile 2명, owner 1명, staff 1명, profile 누락 0명이며 읽기 전용 aggregate만 확인했습니다.
 - Vercel project `hair-cr-mvibes`의 `SUPABASE_SECRET_KEY`는 값 확인 없이 `Sensitive / Production`으로 존재함을 확인했습니다.
-- Supabase Auth Site URL은 `http://localhost:3000`, Redirect URL은 0개입니다. 실제 Production 초대 수락 경로는 현재 설정으로 완료할 수 없으므로 외부 Auth URL 변경 전 release blocker입니다.
+- Supabase Auth URL metadata는 이번 release에서 변경하지 않았고 dashboard 인증/management access blocker로 현재 exact 값을 재확인하지 못했습니다. 목표 Production Site/Redirect URL을 설정하기 전에는 canonical 초대 수락 경로를 활성화하지 않습니다.
 - 전용 `burtyhairCRM-preview` 프로젝트와 Vercel Preview 공개 URL/key 격리는 R-12에서 완료됐습니다. 다만 R-10 Admin 경로의 Preview server secret은 이번 범위에서 추가·변경·검증하지 않았고 실제 Preview/Production 초대·로그인·역할 변경 smoke도 수행하지 않습니다.
 
 ## UI/Pencil 범위
@@ -54,12 +55,19 @@
 - 무환경·synthetic-env `npm run build`, `git diff --check`, browser bundle secret/HMAC domain/claim token scan을 통과했습니다. 실제 Auth 사용자·초대·역할·고객·예약 데이터는 변경하지 않았습니다.
 - 기존 최신 main 통합에서 R-14 사용성 변경, R-12 `DataBackupCard`, R-10 진입점을 함께 보존했습니다. A′에서는 390×844·360×800의 `unknown` 안내 상태를 추가 검증해 수평 overflow 0건, 모든 주요 touch target 44px 이상, 일반 page load console 0건을 확인했습니다. 실제 409 mock에는 Chromium의 예상 resource error 1건만 있고 app exception은 없습니다. 캡처는 `output/playwright/r10-role-management/20260714_r10_invitation_unknown_{before,after}_{390x844,360x800}.png`이며 synthetic masked data만 사용했습니다.
 - maintenance gate 단위 검증은 정확히 문자열 `true`만 활성화하고 누락·대소문자 변형·숫자·boolean 값을 비활성으로 처리하며, 비활성 handler가 downstream client/owner RPC/claim-settle-reconcile/Admin invite를 0회 호출하는 계약을 포함합니다. UI는 `직원 초대 기능을 점검 중입니다. 잠시 후 다시 확인해주세요.` 문구를 stable error code에 매핑합니다. 운영 절차와 상태 aggregate/unknown/reconcile/key rotation/rollback SQL은 [`docs/operations/r10-invitation-ledger.md`](../operations/r10-invitation-ledger.md)에 기록했습니다.
+- PR #26은 구현 commit `fccf3753856abbe0c254813eafd48bcbfffafcb0`에서 squash merge되어 `main@6cfb71e88cbe4bbfd3a8469a3c5b4487a3ccb449`가 되었습니다. PR checks와 Vercel Production/Preview Comments는 통과했습니다.
+- Preview에는 `20260714145253 r10_role_management`, `20260714145314 r10_invitation_claim_ledger`가 connector 적용 시각으로 기록됐고, Production에는 local migration version `20260712153420 r10_role_management`, `20260713143746 r10_invitation_claim_ledger`가 기록됐습니다. 두 환경 모두 private ledger RLS/no-grant, public audit RLS/owner-read policy, R-10 RPC의 `authenticated` execute ACL을 비식별 catalog로 확인했습니다.
+- Preview/Production `private.staff_invitation_requests` 상태 aggregate는 0건이었으며 실제 Auth 사용자·초대·역할 변경·고객·예약 데이터는 변경하지 않았습니다.
+- Supabase Auth URL 설정은 dashboard가 sign-in으로 되돌아가고 CLI management access token도 없어 실행하지 못했습니다. 따라서 canonical Site/Redirect URL은 변경하지 않았고, Production `R10_INVITATIONS_ENABLED=false`를 유지했습니다.
+- Vercel Production deployment `dpl_2vuPaKZxcv93nF71Nxk1DQKCZnHV`는 READY이며 canonical `https://hair-cr-mvibes.vercel.app`에 연결됐습니다. 390×844 canonical login redirect, manifest/SW/offline HTTP 200, 무인증 staff invitation `401 + no-store`, synthetic bearer의 maintenance `503 + private, no-store`, SW offline fallback 및 online recovery를 확인했습니다.
+- Preview/Production Supabase advisor에서 R-10 `SECURITY DEFINER` 함수 6개가 `authenticated_security_definer_function_executable` WARN으로 잡혔고, 두 환경의 private ledger는 의도적으로 RLS/no-policy입니다. Production에는 `role_management_events`의 GraphQL authenticated exposure WARN도 있습니다. 이는 권한 경계를 넓혀 숨기는 대신 별도 hardening blocker로 유지합니다.
 
-## Draft PR checks와 migration diff
-- A′ 구현 commit `726e1b8`을 push한 뒤 최신 `origin/main@a85c3f7`이 HEAD ancestor(`0 behind / 6 ahead`)임을 확인했고 `git merge-tree --write-tree HEAD origin/main`이 충돌 없이 tree를 생성했습니다. Draft PR #26의 새 head에서 `Vercel`, `Vercel Preview Comments` checks가 통과했고 GitHub `CLEAN/MERGEABLE`을 확인했습니다.
-- 2026-07-14 읽기 전용 재확인에서 Production은 R-09까지 11개 migration만 존재하며 R-10 role audit/table/RPC와 private invitation ledger/RPC가 모두 없습니다.
-- 전용 Preview도 R-09까지 11개만 존재하고 R-10 public/private 객체가 없습니다. Preview의 migration version은 connector 적용 시각이지만 이름/순서는 기존 11개와 대응합니다.
-- 따라서 현재 migration diff는 local-only R-10 migration 2개(`20260712153420`, `20260713143746`)이며 live migration은 실행하지 않았습니다.
+## PR, migration, Auth, Vercel release 기록
+- 구현 commit `fccf3753856abbe0c254813eafd48bcbfffafcb0`은 PR #26으로 squash merge됐고 merge SHA는 `6cfb71e88cbe4bbfd3a8469a3c5b4487a3ccb449`입니다. 최신 `origin/main`과 release-record worktree의 conflict test는 충돌 없이 통과했습니다.
+- Preview migration history는 connector 적용 시각을 보존해 `20260714145253 r10_role_management`, `20260714145314 r10_invitation_claim_ledger`입니다. Production migration history는 기존 local filename convention에 맞춰 `20260712153420 r10_role_management`, `20260713143746 r10_invitation_claim_ledger`입니다.
+- 두 live 프로젝트에서 `role_management_events`와 `private.staff_invitation_requests`의 RLS/ACL, R-10 function ACL, owner-only audit policy, empty ledger aggregate를 확인했습니다. private ledger에는 Data API role 직접 권한이나 policy를 추가하지 않았습니다.
+- Supabase Auth dashboard는 인증 화면으로 리다이렉트되어 URL metadata를 변경하지 못했고, CLI management access token도 제공되지 않았습니다. 목표값은 Site URL `https://hair-cr-mvibes.vercel.app`, exact redirect 3개이며 wildcard Preview redirect는 추가하지 않습니다.
+- Vercel Production `dpl_2vuPaKZxcv93nF71Nxk1DQKCZnHV`는 READY/canonical alias 연결 상태입니다. Production env에는 `R10_INVITATIONS_ENABLED=false`만 추가했고, Auth URL과 advisor blocker가 해소되기 전에는 `true`로 바꾸지 않습니다.
 
 ## A′ claim ledger 결정
 - `private.staff_invitation_requests`는 queue/worker가 아니라 요청 claim과 복구 상태만 보존하는 최소 ledger입니다. private schema/table은 RLS를 켜고 Data API role에 schema/table 직접 권한을 주지 않습니다.
@@ -69,7 +77,6 @@
 - HMAC key를 겸하는 `SUPABASE_SECRET_KEY`가 회전하면 기존 active fingerprint와 새 fingerprint가 달라져 at-most-once 장벽을 우회할 수 있습니다. 회전은 초대 route `503 + no-store` 선중지 → in-flight 0 → 기존 key의 active `claimed`/`auth_succeeded`/`unknown` 0 확인 → 모든 server instance secret 교체·재배포 → 새 key smoke와 old active 0 재확인 → route 재개의 순서로만 진행합니다. 기존 fingerprint를 재계산·삭제하지 않습니다.
 
 ## 현재 release blocker
-- Supabase Auth에 canonical `https://hair-cr-mvibes.vercel.app/invite/accept`를 허용하는 URL 설정이 없습니다.
-- 이 설정은 저장소 migration이나 Vercel env가 아닌 외부 Auth configuration 변경이므로 구현·PR 검증과 분리해 승인 범위를 다시 확인한 뒤 변경해야 합니다.
-- route 선중지 수단과 `unknown`을 증거 기반으로 조사·종결할 운영 runbook을 추가했지만 아직 live 환경에서 실행하지 않았습니다. 미해소 `unknown`은 해당 fingerprint를 계속 잠그는 fail-closed 가용성 위험이므로 Production 전 상태 aggregate·in-flight 0·reconcile 증거를 확인해야 합니다.
-- Production/Preview에는 R-10 두 forward migration이 아직 적용되지 않았고 실제 owner 초대·역할 smoke를 수행하지 않았습니다. PR checks와 migration diff 보고 후 별도 승인을 받아 live migration/Auth 설정/Production release를 진행합니다.
+- Supabase Auth Site/Redirect URL은 dashboard 인증 및 management access token 부재로 설정하지 못했습니다. canonical invite accept 경로를 허용하기 전에는 초대 route를 활성화하지 않습니다.
+- Preview/Production advisor의 R-10 `SECURITY DEFINER` execute WARN 6건과 Production GraphQL exposure WARN 1건은 권한 경계를 바꾸지 않고 별도 hardening 검토로 남겨 둡니다. 이 상태에서 `R10_INVITATIONS_ENABLED=true`로 전환하지 않습니다.
+- authenticated owner의 실제 로그인·초대·역할 변경 smoke는 실제 side effect 방지 범위 때문에 수행하지 않았습니다. Auth URL 설정과 advisor hardening 후 별도 승인된 synthetic/운영 검증이 필요합니다.

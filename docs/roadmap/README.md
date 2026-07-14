@@ -13,7 +13,7 @@
 
 ## Phase 1 검증 기준
 - 기준일: 2026-07-13
-- 현재 Production 애플리케이션 release 기준: R-14 구현 PR #25 merge `main@cdabf40982c1b8d2dcc196bacc116b3d399efa15` (구현 commit `c7eaaabaabb47cbe4b11fabb6aaaccc1c428cb67`; 이후 문서 동기화 PR은 docs-only 변경으로 구분)
+- 현재 Production 애플리케이션 release 기준: R-10 PR #26 merge `main@6cfb71e88cbe4bbfd3a8469a3c5b4487a3ccb449` (구현 commit `fccf3753856abbe0c254813eafd48bcbfffafcb0`; 이후 release SSOT 문서 동기화 PR은 docs-only 변경으로 구분)
 - 2026-07-12 감사 착수 baseline은 PR #14 merge `2f915c2e8f7ec7e736a6ee4c315caa03113416ab`이었고, 감사 문서 PR #15 merge 후 최신 `origin/main`은 `a7a4186e76c9225c9273fa8474cea27440d36d40`입니다. 두 PR은 문서만 변경했으므로 Production 애플리케이션 release SHA와 구분합니다.
 - release 세션의 live Supabase migration/RLS/RPC/R-03 smoke, R-02 Playwright mobile smoke, Pencil R-02 `snapshot_layout`/export, `npm run build`, `git diff --check`, Vercel Production canonical smoke를 완료 근거로 사용합니다. 이번 감사에서는 현재 GitHub/Supabase catalog와 canonical 공개 endpoint만 읽기 전용으로 재확인했습니다.
 - Fresh DB 정책은 A안을 선택했습니다. `20260219000000_phase1_genesis_baseline.sql`을 포함한 forward migration 8개를 disposable PostgreSQL 17에서 전체 replay했고, 핵심 객체/RLS/RPC/예약 guard를 검증했습니다.
@@ -105,7 +105,7 @@ R-14는 Pencil Before/After 4쌍과 공통 상태 매트릭스, 공통 가독성
 ## Phase 2 착수 기준
 - R-06/R-07은 재구현하지 않습니다. 실기기 install/standalone/SW update와 post-deploy authenticated browser 검증은 완료 근거와 분리한 후속 운영 작업입니다.
 - R-08은 `/Users/idongseog/workspace/hairCRMvibes-r08-service-master` clean worktree에서 구현한 뒤 PR #16 merge `main@01440b6`, live migration 10개와 Production 배포까지 완료했습니다. 기존 R-07 checkout과 미추적 산출물은 변경하지 않았습니다.
-- R-09는 PR #20 merge, exact 11번째 live migration과 Production 공개/PWA smoke까지 완료했습니다. R-10은 Draft PR #26에서 최신 main Git 충돌을 해소한 뒤 A′ invitation claim ledger의 local 구현·검증과 새 head PR checks를 완료했으며 live migration/Auth redirect/Production gate를 유지합니다. R-11은 별도 작업으로 유지합니다.
+- R-09는 PR #20 merge, exact 11번째 live migration과 Production 공개/PWA smoke까지 완료했습니다. R-10은 PR #26 merge, Preview/Production migration, Production release와 public/PWA/API boundary를 완료했지만 Auth URL·advisor·authenticated owner smoke blocker로 `In Progress`를 유지합니다. R-11은 별도 작업으로 유지합니다.
 - 2026-07-13 `burtyhairCRM-preview` 전용 Supabase 프로젝트를 만들고 forward migration 11개를 순서대로 replay했습니다. Vercel에는 Preview 범위의 공개 URL/key만 추가했으며 기존 Production/Development 값은 변경하지 않았습니다.
 - R-12는 Preview의 synthetic owner/staff/anon·모바일/PWA 검증 후 PR #22 merge `main@7a107c4`와 Production deployment `FxRGiDSgHQFXARsc2mUyCrsydtY8`까지 완료했습니다. canonical R-12 bundle, 공개/PWA 자산과 무인증 `/api/export`의 `401 + no-store`를 확인했으며 Production 실제 CSV는 생성하지 않았습니다.
 - R-14의 Pencil·코드·합성 모바일 브라우저 검증은 `codex/r14-easy-usability-foundation`에서 완료했습니다. 실제 대표 사용자 과제 관찰 결과를 기록하기 전에는 `Done`으로 전환하지 않습니다.
@@ -124,11 +124,11 @@ R-14는 Pencil Before/After 4쌍과 공통 상태 매트릭스, 공통 가독성
 | ID | 문서 | 상태 |
 | --- | --- | --- |
 | R-12 | [R-12-csv-export-backup.md](./R-12-csv-export-backup.md) | Done (production deployed; Preview role/PWA + Production public/API boundary verified) |
-| R-10 | [R-10-role-management.md](./R-10-role-management.md) | In Progress (Draft PR #26; A′ implementation plus fail-closed invitation maintenance gate/runbook; local verification and live/release gates remain) |
+| R-10 | [R-10-role-management.md](./R-10-role-management.md) | In Progress (PR #26 merged; live migration and Production release verified; Auth URL/advisor/owner smoke blockers remain) |
 
 R-12는 owner JWT·기존 RLS를 사용하는 스트리밍 Route Handler, 고객/예약 CSV, 명시적 암호화 보관·30일 삭제 확인 UI를 구현했습니다. 전용 Preview에서 anon 401, staff 403, owner 고객·예약 200과 CSV 계약, Vercel branch Preview 실제 owner/staff UI, 390×844·360×800/PWA cache를 검증하고 synthetic residue 0을 확인했습니다. Production 데이터·RLS·service-role·PWA cache 전략은 변경하지 않았습니다.
 
-R-10은 `origin/main@b225884`에서 구현한 뒤 최신 `origin/main@a85c3f7`의 R-14 변경까지 실제 merge로 통합하고 Draft PR #26을 갱신했습니다. Pencil 충돌 1건은 R-10·R-12·R-14 node를 함께 보존해 해소했고 미해결 Git 충돌은 0건입니다. 이후 승인된 A′안으로 raw email 없는 private HMAC claim ledger와 claim/settle/reconcile 계약을 추가해 Admin invite logical request당 at-most-once 호출과 `unknown` 자동 재전송 금지를 구현했습니다. 이번 단계에서 server-only `R10_INVITATIONS_ENABLED` fail-closed gate와 `docs/operations/r10-invitation-ledger.md` 운영 runbook을 추가했습니다. 기존 PostgreSQL 17 forward migration 13/13·schema replay·R-07~R-10·동시성·rollback/reapply·R-10 catalog parity, 서버·build·모바일·PWA·secret scan 근거는 보존하며 새 gate 계약은 별도 검증합니다. Production/Preview에는 R-10 두 migration/public·private 객체가 없고 실제 Auth 사용자·초대·역할은 변경하지 않았습니다. canonical Supabase Auth redirect, live migration/Auth 설정/Production 적용은 별도 release gate입니다.
+R-10은 승인된 A′안으로 raw email 없는 private HMAC claim ledger와 claim/settle/reconcile 계약, server-only `R10_INVITATIONS_ENABLED` fail-closed gate, `503/private no-store`, 운영 runbook을 구현했습니다. PR #26을 merge해 `main@6cfb71e`가 되었고 Preview/Production에 R-10 두 migration을 적용했습니다. Production deployment `dpl_2vuPaKZxcv93nF71Nxk1DQKCZnHV`는 canonical alias에 READY이며, public login/API boundary와 PWA offline/recovery를 확인했습니다. Auth Site/Redirect URL은 dashboard 인증 blocker로 변경하지 않았고 Production flag는 `false`입니다. R-10 advisor WARN과 authenticated owner 실제 smoke 미수행이 남아 `In Progress`를 유지합니다. Pencil은 별도 세션이 관리하며 이번 변경은 승인된 micro-copy 예외입니다.
 
 ## 실행 프롬프트
 - [Phase 2 Execution Prompt](./phase-2-execution-prompt.md)
