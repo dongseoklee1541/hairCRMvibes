@@ -25,6 +25,7 @@ const ERROR_MESSAGES = Object.freeze({
   duplicate_invite: '이미 등록되었거나 초대된 직원입니다.',
   forbidden: '직원 권한은 원장 계정만 관리할 수 있습니다.',
   invalid_origin: '현재 주소에서는 초대 요청을 보낼 수 없습니다.',
+  invitation_maintenance: '직원 초대 기능을 점검 중입니다. 잠시 후 다시 확인해주세요.',
   invitation_in_progress: '현재 초대 처리가 진행 중입니다. 잠시 기다린 뒤 직원 목록에서 상태를 확인해주세요.',
   invitation_outcome_unknown: '초대 메일 전송 결과를 확인할 수 없습니다. 운영 확인 전에는 같은 이메일로 다시 보내지 마세요.',
   last_owner_forbidden: '마지막 원장은 직원으로 변경할 수 없습니다.',

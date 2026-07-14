@@ -1,7 +1,7 @@
 # R-10 Role Management
 
 ## 상태
-- In Progress (A′ local implementation/verification and new-head PR checks complete; live/release gates remain)
+- In Progress (A′ implementation plus fail-closed invitation maintenance gate/runbook; local verification and live/release gates remain)
 - 구현 브랜치: `codex/r10-role-management`
 - 최초 구현 기준: `origin/main@b2258844642fae0d7a5f07798a95c9a3091cd502`
 - 최신 통합 기준: `origin/main@a85c3f7597a0a326844f639da757d6d3f5f4c8bc`
@@ -22,6 +22,7 @@
 - 상태는 `claimed`, `auth_succeeded`, `provisioned`, `failed_definitive`, `unknown`으로 제한합니다. 동일 request/email의 winner 한 건만 Admin invite를 호출하고, 호출 결과가 모호하거나 claim이 stale이면 `unknown`으로 닫아 자동 재전송하지 않습니다.
 - 이는 외부 이메일의 exactly-once 전달 보장이 아니라 logical request/active fingerprint당 Admin API **at-most-once 호출** 보장입니다. `unknown`은 운영 확인 대상이며 UI도 즉시 재시도를 권하지 않습니다.
 - 계정 삭제, 비활성화, Auth ban은 범위 밖입니다.
+- 초대 route는 server-only `R10_INVITATIONS_ENABLED === 'true'`일 때만 활성화하며, 비활성 상태는 owner/ledger/Admin side effect 없이 `503 + invitation_maintenance + private, no-store`로 닫습니다. 역할 조회·역할 변경 route에는 이 gate를 적용하지 않습니다.
 
 ## 권한 경계
 - client 역할 숨김은 UX일 뿐 권한 근거로 사용하지 않습니다.
@@ -52,6 +53,7 @@
 - Production-mode local PWA에서 SW activated/controller, 390×844·360×800 offline fallback, online refresh recovery, console error 0건, API/Supabase/document response cache 0건을 확인했습니다. manifest/SW/offline/icon 192·512는 HTTP 200입니다.
 - 무환경·synthetic-env `npm run build`, `git diff --check`, browser bundle secret/HMAC domain/claim token scan을 통과했습니다. 실제 Auth 사용자·초대·역할·고객·예약 데이터는 변경하지 않았습니다.
 - 기존 최신 main 통합에서 R-14 사용성 변경, R-12 `DataBackupCard`, R-10 진입점을 함께 보존했습니다. A′에서는 390×844·360×800의 `unknown` 안내 상태를 추가 검증해 수평 overflow 0건, 모든 주요 touch target 44px 이상, 일반 page load console 0건을 확인했습니다. 실제 409 mock에는 Chromium의 예상 resource error 1건만 있고 app exception은 없습니다. 캡처는 `output/playwright/r10-role-management/20260714_r10_invitation_unknown_{before,after}_{390x844,360x800}.png`이며 synthetic masked data만 사용했습니다.
+- maintenance gate 단위 검증은 정확히 문자열 `true`만 활성화하고 누락·대소문자 변형·숫자·boolean 값을 비활성으로 처리하며, 비활성 handler가 downstream client/owner RPC/claim-settle-reconcile/Admin invite를 0회 호출하는 계약을 포함합니다. UI는 `직원 초대 기능을 점검 중입니다. 잠시 후 다시 확인해주세요.` 문구를 stable error code에 매핑합니다. 운영 절차와 상태 aggregate/unknown/reconcile/key rotation/rollback SQL은 [`docs/operations/r10-invitation-ledger.md`](../operations/r10-invitation-ledger.md)에 기록했습니다.
 
 ## Draft PR checks와 migration diff
 - A′ 구현 commit `726e1b8`을 push한 뒤 최신 `origin/main@a85c3f7`이 HEAD ancestor(`0 behind / 6 ahead`)임을 확인했고 `git merge-tree --write-tree HEAD origin/main`이 충돌 없이 tree를 생성했습니다. Draft PR #26의 새 head에서 `Vercel`, `Vercel Preview Comments` checks가 통과했고 GitHub `CLEAN/MERGEABLE`을 확인했습니다.
@@ -69,5 +71,5 @@
 ## 현재 release blocker
 - Supabase Auth에 canonical `https://hair-cr-mvibes.vercel.app/invite/accept`를 허용하는 URL 설정이 없습니다.
 - 이 설정은 저장소 migration이나 Vercel env가 아닌 외부 Auth configuration 변경이므로 구현·PR 검증과 분리해 승인 범위를 다시 확인한 뒤 변경해야 합니다.
-- `unknown`을 증거 기반으로 조사·종결할 운영 runbook과 route 선중지 수단이 아직 배포되지 않았습니다. 미해소 `unknown`은 해당 fingerprint를 계속 잠그는 fail-closed 가용성 위험이므로 Production 전 별도 승인·검증이 필요합니다.
+- route 선중지 수단과 `unknown`을 증거 기반으로 조사·종결할 운영 runbook을 추가했지만 아직 live 환경에서 실행하지 않았습니다. 미해소 `unknown`은 해당 fingerprint를 계속 잠그는 fail-closed 가용성 위험이므로 Production 전 상태 aggregate·in-flight 0·reconcile 증거를 확인해야 합니다.
 - Production/Preview에는 R-10 두 forward migration이 아직 적용되지 않았고 실제 owner 초대·역할 smoke를 수행하지 않았습니다. PR checks와 migration diff 보고 후 별도 승인을 받아 live migration/Auth 설정/Production release를 진행합니다.

@@ -124,11 +124,11 @@ R-14는 Pencil Before/After 4쌍과 공통 상태 매트릭스, 공통 가독성
 | ID | 문서 | 상태 |
 | --- | --- | --- |
 | R-12 | [R-12-csv-export-backup.md](./R-12-csv-export-backup.md) | Done (production deployed; Preview role/PWA + Production public/API boundary verified) |
-| R-10 | [R-10-role-management.md](./R-10-role-management.md) | In Progress (Draft PR #26; A′ local implementation/verification and new-head PR checks complete; live/release gates remain) |
+| R-10 | [R-10-role-management.md](./R-10-role-management.md) | In Progress (Draft PR #26; A′ implementation plus fail-closed invitation maintenance gate/runbook; local verification and live/release gates remain) |
 
 R-12는 owner JWT·기존 RLS를 사용하는 스트리밍 Route Handler, 고객/예약 CSV, 명시적 암호화 보관·30일 삭제 확인 UI를 구현했습니다. 전용 Preview에서 anon 401, staff 403, owner 고객·예약 200과 CSV 계약, Vercel branch Preview 실제 owner/staff UI, 390×844·360×800/PWA cache를 검증하고 synthetic residue 0을 확인했습니다. Production 데이터·RLS·service-role·PWA cache 전략은 변경하지 않았습니다.
 
-R-10은 `origin/main@b225884`에서 구현한 뒤 최신 `origin/main@a85c3f7`의 R-14 변경까지 실제 merge로 통합하고 Draft PR #26을 갱신했습니다. Pencil 충돌 1건은 R-10·R-12·R-14 node를 함께 보존해 해소했고 미해결 Git 충돌은 0건입니다. 이후 승인된 A′안으로 raw email 없는 private HMAC claim ledger와 claim/settle/reconcile 계약을 추가해 Admin invite logical request당 at-most-once 호출과 `unknown` 자동 재전송 금지를 구현했습니다. PostgreSQL 17 forward migration 13/13·schema replay·R-07~R-10·동시성·rollback/reapply·R-10 catalog parity, 서버 계약 20/20, build·모바일·PWA·secret scan을 통과했습니다. A′ 구현 commit `726e1b8` 기준 latest-main merge-tree와 새 head의 Vercel checks, GitHub `CLEAN/MERGEABLE`도 통과했습니다. Production/Preview에는 R-10 두 migration/public·private 객체가 없고 실제 Auth 사용자·초대·역할은 변경하지 않았습니다. canonical Supabase Auth redirect, `unknown` 조사/종결 runbook과 route 선중지 수단, live/Production 적용은 별도 release gate입니다.
+R-10은 `origin/main@b225884`에서 구현한 뒤 최신 `origin/main@a85c3f7`의 R-14 변경까지 실제 merge로 통합하고 Draft PR #26을 갱신했습니다. Pencil 충돌 1건은 R-10·R-12·R-14 node를 함께 보존해 해소했고 미해결 Git 충돌은 0건입니다. 이후 승인된 A′안으로 raw email 없는 private HMAC claim ledger와 claim/settle/reconcile 계약을 추가해 Admin invite logical request당 at-most-once 호출과 `unknown` 자동 재전송 금지를 구현했습니다. 이번 단계에서 server-only `R10_INVITATIONS_ENABLED` fail-closed gate와 `docs/operations/r10-invitation-ledger.md` 운영 runbook을 추가했습니다. 기존 PostgreSQL 17 forward migration 13/13·schema replay·R-07~R-10·동시성·rollback/reapply·R-10 catalog parity, 서버·build·모바일·PWA·secret scan 근거는 보존하며 새 gate 계약은 별도 검증합니다. Production/Preview에는 R-10 두 migration/public·private 객체가 없고 실제 Auth 사용자·초대·역할은 변경하지 않았습니다. canonical Supabase Auth redirect, live migration/Auth 설정/Production 적용은 별도 release gate입니다.
 
 ## 실행 프롬프트
 - [Phase 2 Execution Prompt](./phase-2-execution-prompt.md)

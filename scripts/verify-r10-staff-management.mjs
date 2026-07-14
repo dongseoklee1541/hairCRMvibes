@@ -5,7 +5,9 @@ import {
   changeStaffMemberRole,
   errorResponse,
   getStaffDirectory,
+  handleInvitationPost,
   inviteStaffMember,
+  isInvitationFeatureEnabled,
   maskEmail,
   requireBearerToken,
   resolveInviteRedirect,
@@ -195,6 +197,70 @@ test('strict bearer and input validation', async () => {
     () => validateRolePayload({ requestId: REQUEST_ID, role: 'manager' }),
     'validation_error',
   );
+});
+
+test('invitation maintenance flag is exact true and fails closed before downstream calls', async () => {
+  assert.equal(isInvitationFeatureEnabled({ R10_INVITATIONS_ENABLED: 'true' }), true);
+  assert.equal(isInvitationFeatureEnabled({ R10_INVITATIONS_ENABLED: 'TRUE' }), false);
+  assert.equal(isInvitationFeatureEnabled({ R10_INVITATIONS_ENABLED: '1' }), false);
+  assert.equal(isInvitationFeatureEnabled({ R10_INVITATIONS_ENABLED: true }), false);
+  assert.equal(isInvitationFeatureEnabled({}), false);
+
+  let downstreamCalls = 0;
+  const downstream = () => {
+    downstreamCalls += 1;
+    throw new Error('maintenance gate must stop before downstream calls');
+  };
+  const response = await handleInvitationPost(
+    localRequest({ headers: { authorization: 'Bearer synthetic-token' } }),
+    {
+      claimStaffInvitation: downstream,
+      createUserScopedClient: downstream,
+      fingerprintStaffInvitationEmail: downstream,
+      inviteAuthUser: downstream,
+      listAllAuthUsers: downstream,
+      listStaffProfiles: downstream,
+      provisionInvitedStaff: downstream,
+      reconcileStaffInvitation: downstream,
+      settleStaffInvitation: downstream,
+    },
+    { R10_INVITATIONS_ENABLED: 'false' },
+  );
+  const body = await response.json();
+
+  assert.equal(response.status, 503);
+  assert.equal(response.headers.get('cache-control'), 'private, no-store');
+  assert.deepEqual(body, {
+    ok: false,
+    error: {
+      code: 'invitation_maintenance',
+      message: '직원 초대 기능을 점검 중입니다. 잠시 후 다시 확인해주세요.',
+      retryable: true,
+    },
+  });
+  assert.equal(downstreamCalls, 0);
+  assert.equal(JSON.stringify(body).includes(EMAIL), false);
+  assert.equal(JSON.stringify(body).includes(CLAIM_TOKEN), false);
+  assert.equal(JSON.stringify(body).includes('service-role'), false);
+});
+
+test('unauthenticated invitation requests remain 401 before maintenance gate', async () => {
+  const response = await handleInvitationPost(
+    localRequest(),
+    {},
+    { R10_INVITATIONS_ENABLED: 'false' },
+  );
+  const body = await response.json();
+
+  assert.equal(response.status, 401);
+  assert.equal(response.headers.get('cache-control'), 'no-store, max-age=0');
+  assert.deepEqual(body, {
+    ok: false,
+    error: {
+      code: 'unauthorized',
+      message: '로그인이 필요합니다.',
+    },
+  });
 });
 
 test('server configuration requires the secret only for admin work', async () => {
