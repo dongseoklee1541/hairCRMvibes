@@ -25,7 +25,7 @@
 | R-09 | 통계 고도화(매출/객단가/재방문율) | P1 | 기존 건수 통계를 매출/단가/리텐션 지표로 확장 | R-04, R-08 | 의사결정 지표 품질 향상 | M |
 | R-14 | 쉬운 사용성 1차(가독성·조작성 기반) | P1 | 50~60대 여성 사용자를 중심으로 핵심 화면의 글자, 용어, 버튼, 폼 피드백을 쉽게 정비 | 핵심 운영 화면 현황과 대표 사용자 검증 기준 | 오조작과 학습 부담 감소, 예약·고객 업무 자신감 향상 | M |
 | R-10 | 권한관리 UI(직원 초대/권한변경) | P2 | 원장이 직원 계정의 역할을 UI에서 관리 가능하게 구성 | R-01, 초대 흐름 합의 | 운영 권한 관리 비용 절감 | L |
-| R-11 | 알림 자동화(예약 리마인드/재방문) | P2 | 예약 전/재방문 리마인드 자동 발송 플로우 구축 | R-02, R-08, R-10, 채널 선택 | 노쇼 감소, 재방문율 상승 | L |
+| R-11 | 알림 자동화(예약 리마인드/재방문) | P2 | 공통 dry-run/outbox 위에 고객 SMS·직원 PWA Push·동의 기반 재방문 채널을 단계적으로 구성 | R-02, R-08, R-10, provider·법적 gate | 노쇼 감소, 운영 확인 자동화, 재방문율 상승 | L |
 | R-12 | CSV 내보내기/백업 | P2 | 고객/예약 데이터 내보내기 및 운영 백업 지원 | 개인정보 마스킹/보관 정책 | 운영 안정성 및 데이터 이관 용이성 향상 | M |
 
 ## 번호 미배정 사용성 후보 (3개)
@@ -60,6 +60,7 @@
 | R-13 | Done (production deployed; public/PWA smoke verified) | PR #18 merge `main@f904bcf`, Vercel Production deployment `dpl_5VemJYn7XhZAorkpEaHBNZN9x85o`, canonical `/appointments/new`·로그인 redirect·manifest/SW/offline/favicon/192·512 icon HTTP 200과 console 0건을 확인했습니다. 로컬에서는 Pencil 6개 상태, 390×844·360×800 mock 검색·중복·성공/실패/취소 draft 보존과 `customers?select=id,name` 최소 조회를 검증했습니다. | 실제 owner/staff 로그인·모바일 실기기 IME/standalone은 후속 운영 검증. 전용 Preview synthetic 데이터만 사용하고 Production 데이터 smoke는 별도 승인 전 금지 |
 | R-09 | Done (production deployed; exact live migration/ACL/PWA verified) | PR #20 merge `main@b63f9a3`, exact 11번째 live migration `20260712124959_r09_stats_advanced`, RPC invoker/stable/search_path/ACL, Vercel deployment `dpl_FBDsYn26v2ZXiJthe5z97vsJDwk2`, canonical redirect·PWA assets·offline fallback을 확인했습니다. local Pencil/SQL/build/mobile 검증과 synthetic residue 0 근거도 유지합니다. | live authenticated 실제 데이터 smoke와 실기기 install/standalone은 후속 운영 검증. R-10/R-11은 별도 작업으로 유지 |
 | R-10 | In Progress (PR #26 merged; live migration·Production release verified; Auth URL/advisor/owner smoke blockers remain) | raw email 없는 private HMAC claim ledger와 owner-only claim/settle/reconcile RPC, server-only `R10_INVITATIONS_ENABLED` exact-true gate, `503/private no-store`, UI maintenance 문구와 운영 runbook을 구현했습니다. PR #26 merge `main@6cfb71e`, Preview/Production R-10 migration, catalog/RLS/ACL/empty-ledger 검증, Vercel Production `dpl_2vuPaKZxcv93nF71Nxk1DQKCZnHV` canonical/PWA/API boundary를 확인했습니다. 실제 초대·역할 변경·테스트 계정·고객·예약 데이터는 변경하지 않았고 Production flag는 `false`입니다. | Supabase Auth Site/Redirect URL 미설정, R-10 advisor WARN 및 authenticated owner 실제 smoke 미수행 |
+| R-11 | Design Ready (latest `main` rebase complete; implementation approval pending) | 최신 `origin/main@d8e6e8a` 위에서 목적별 채널, 공통 outbox/dry-run, claim·attempt·settle·reconciliation, 권한·개인정보·동의 경계를 설계했습니다. Pencil R-11 4개 frame(`edUw4/J3bas/S5VGVz/pFmgV`)과 기존 R-10/R-12/R-14 node, 기존 PNG hash·크기를 보존했습니다. 코드·migration·provider·Cron·실제 발송은 변경하지 않았습니다. | 별도 R-11 Implementation Plan 승인 후 SMS provider·법적 동의/SLA, VAPID, retention, manual-review 운영 절차를 확정하고 migration/dry-run부터 착수 |
 | R-12 | Done (production deployed; Preview role/PWA + Production public/API boundary verified) | PR #22 merge `main@7a107c4`, Vercel deployment `FxRGiDSgHQFXARsc2mUyCrsydtY8`, canonical R-12 설정 chunk·공개/PWA 자산·무인증 export `401 + no-store`를 확인했습니다. Node tests 10/10·100,005행과 전용 Preview anon 401/staff 403/owner 고객·예약 200, 모바일 UI/PWA cache, residue 0 근거를 유지합니다. Production DB는 비식별 count/RLS/grant/residue만 배포 전후 재확인했습니다. | 모바일·Safari Blob fallback 메모리, Vercel 함수 실행시간, 다중 페이지 비-snapshot 특성은 운영 규모 부하 검증 필요. Production 실제 owner CSV 생성은 개인정보 보관 책임 때문에 의도적으로 미실행 |
 | R-14 | In Progress (구현 완료 · 대표 사용자 검증 대기) | 구현 commit `c7eaaabaabb47cbe4b11fabb6aaaccc1c428cb67`, PR #25 merge `main@cdabf40982c1b8d2dcc196bacc116b3d399efa15`, GitHub Production deployment record `5424206017` success, canonical `https://hair-cr-mvibes.vercel.app`, 공개/PWA 자산 200·R-14 bundle marker, Cron 무인증 `401/no-store`, CSV export `dataset=customers` 무인증 `401/private/no-store`를 확인했습니다. 실제 고객·예약 데이터는 조회하거나 변경하지 않았습니다. | 실제 50~60대 여성 대표 사용자 2명에게 고객 찾기·새 예약 등록·예약 확인/상태 변경 과제를 관찰하고 막힘·오조작·용어 이해·완료 확신을 기록한 뒤 `Done` 여부 판단 |
 
@@ -110,7 +111,7 @@
 
 ### Phase 3 (P2 확장)
 - `R-10` 권한관리 UI(직원 초대/권한변경): In Progress (PR #26 merge·live migration·Production release 완료; Auth URL/advisor/owner smoke blocker)
-- `R-11` 알림 자동화(예약 리마인드/재방문)
+- `R-11` 알림 자동화(예약 리마인드/재방문): Design Ready (latest `main` rebase complete; implementation approval/provider gates pending)
 - `R-12` CSV 내보내기/백업: PR #22 merge·Production 배포·canonical 공개/API 경계까지 Done
 
 ## 선행관계 맵
@@ -129,16 +130,16 @@
 - 항목 중복 또는 누락: ID(`R-01`~`R-14`)를 고정하고 번호 미배정 후보는 별도 승인 전까지 R ID로 취급하지 않습니다.
 - 문서 노후화: 스프린트 단위로 점검하며 `마지막 업데이트` 섹션을 반드시 갱신합니다.
 
-## 의사결정 옵션(대안 2안)
+## 의사결정 옵션
 ### 1) 예약 충돌 처리
 - `A안`: 충돌 시 경고를 노출하되 저장 허용
 - `B안`: 충돌 시 저장 차단 + 대체 시간 추천
 - 기본값(권장): `B안` (운영 안정성 우선)
 
 ### 2) 알림 채널
-- `A안`: PWA Push 중심
-- `B안`: SMS 중심
-- 기본값(권장): `A안`으로 시작하고, 미수신군 보완이 필요하면 `B안` 병행
+- `A안`: PWA Push 중심 — 현재 고객 인증·설치·구독 흐름이 없어 직원 운영 알림에만 적합
+- `B안`: SMS 중심 — 고객 도달성은 높지만 provider·발신번호·비용·동의 운영을 먼저 확정해야 함
+- `C안`(선택): 공통 outbox와 dry-run을 먼저 만들고 고객 예약 안내는 SMS, 직원 운영 알림은 PWA Push, 재방문 안내는 별도 마케팅 동의 후 고객 직접 채널로 단계적으로 활성화
 
 ## 업데이트 규칙
 - 기능 추가 시 기존 ID는 재사용하지 않고 신규 ID를 연번으로 부여합니다.
@@ -152,6 +153,7 @@
 ## 마지막 업데이트
 - 작성일: 2026-07-14
 - R-10 구현/통합 기록: `origin/main@b225884`에서 시작해 R-14 변경과 Pencil node 공존을 보존했고, 승인된 A′ private HMAC invitation claim ledger·fail-closed gate·운영 runbook을 구현했습니다. implementation commit `fccf3753856abbe0c254813eafd48bcbfffafcb0`은 PR #26으로 `main@6cfb71e`에 merge됐으며, Preview/Production migration과 Vercel Production release는 완료됐습니다. Pencil transport 재검증은 별도 세션 blocker이고 `.pen` SHA-1은 불변입니다. Auth URL은 이번 release에서 변경하지 않았고, advisor WARN 및 authenticated owner smoke blocker 때문에 R-10은 `In Progress`입니다.
+- R-11 선행 설계 기록: `codex/r11-notification-design`을 최신 `origin/main@d8e6e8a` 위로 재배치하고 목적별 채널·outbox/dry-run·상태 전이·권한·개인정보·동의 계약을 유지했습니다. Pencil 390×844/360×800 4개 frame과 기존 R-10/R-12/R-14 node, 기존 PNG hash·크기를 보존했습니다. 코드·migration·provider·Cron·외부 설정·실제 발송은 변경하지 않았으며 별도 R-11 Implementation Plan 승인을 구현 gate로 유지합니다.
 - 2026-07-12 감사 직접 확인: GitHub PR #9~#15 merge, PR #15 merge commit `origin/main@a7a4186e76c9225c9273fa8474cea27440d36d40`; 당시 Supabase live migration 9개·R-07 RPC 7개/audit table 2개·고객 5건/예약 6건 비식별 count; canonical 공개/PWA 자산 200·Cron 무인증 401
 - R-07 Production release 기록: 애플리케이션 `main@16157f8`, Vercel deployment `5z5MKHSAyxtLrRt6ACF3UZtLBGh7` Promote, 실제 role smoke 106개/residue 0건, 승인 Cron 200·DB probe·Runtime log 0건. 이번 감사에서 secret 기반 검증은 재실행하지 않음
 - R-08 Production 기록: PR #16 merge `main@01440b6`, live migration `20260712093510_r08_service_master`, 고객 5건·예약 7건·서비스 4건 기준선과 기존 snapshot NULL 보존, live transactional role/snapshot smoke·residue 0건, Vercel deployment `6N4gbJURzr8GX4omNErBZEA8VRzQ`, canonical R-08 bundle/PWA/Cron 공개 경계를 확인
