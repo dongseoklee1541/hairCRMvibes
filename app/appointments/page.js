@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import {
   CheckCircle2,
@@ -40,6 +40,25 @@ const STATUS_LABELS = {
 };
 
 const LEGACY_SERVICE_VALUE = '__current_service_snapshot__';
+const EMPTY_APPOINTMENTS = [];
+const EMPTY_APPOINTMENT_DATES = new Set();
+
+function createEmptyEditForm() {
+  return {
+    date: '',
+    time: '',
+    service: '',
+    selected_service_id: LEGACY_SERVICE_VALUE,
+    service_changed: false,
+    price_snapshot_krw: null,
+    duration_minutes: 60,
+    original_service_id: LEGACY_SERVICE_VALUE,
+    original_service_name: '',
+    original_price_snapshot_krw: null,
+    original_duration_minutes: 60,
+    memo: '',
+  };
+}
 
 function formatPriceKrw(value) {
   if (value === null || value === undefined) return '가격 미설정';
@@ -62,40 +81,83 @@ export default function AppointmentsPage() {
   const [year, setYear] = useState(today.year);
   const [month, setMonth] = useState(today.monthIndex);
   const [selectedDay, setSelectedDay] = useState(today.day);
-  
-  const [loading, setLoading] = useState(true);
-  const [dailyError, setDailyError] = useState('');
-  const [dailyAppts, setDailyAppts] = useState([]);
-  const [monthHasAppts, setMonthHasAppts] = useState(new Set());
+
+  const [dailyState, setDailyState] = useState({
+    dateKey: null,
+    loading: true,
+    error: '',
+    appointments: EMPTY_APPOINTMENTS,
+  });
+  const [monthState, setMonthState] = useState({
+    monthKey: null,
+    appointmentDates: EMPTY_APPOINTMENT_DATES,
+  });
   const [serviceDefaults, setServiceDefaults] = useState([]);
   const [servicesLoading, setServicesLoading] = useState(true);
   const [servicesError, setServicesError] = useState('');
-  const [actionMessage, setActionMessage] = useState('');
-  const [statusSavingId, setStatusSavingId] = useState(null);
-  const [editSavingId, setEditSavingId] = useState(null);
-  const [editingAppointmentId, setEditingAppointmentId] = useState(null);
-  const [editForm, setEditForm] = useState({
-    date: '',
-    time: '',
-    service: '',
-    selected_service_id: LEGACY_SERVICE_VALUE,
-    service_changed: false,
-    price_snapshot_krw: null,
-    duration_minutes: 60,
-    original_service_id: LEGACY_SERVICE_VALUE,
-    original_service_name: '',
-    original_price_snapshot_krw: null,
-    original_duration_minutes: 60,
-    memo: '',
-  });
+  const [actionFeedback, setActionFeedback] = useState({ dateKey: null, message: '' });
+  const [statusSavingById, setStatusSavingById] = useState(() => new Map());
+  const [editSavingById, setEditSavingById] = useState(() => new Map());
+  const [editingAppointment, setEditingAppointment] = useState({ dateKey: null, id: null, sessionId: null });
+  const [editForm, setEditForm] = useState(createEmptyEditForm);
+  const mountedRef = useRef(false);
+  const latestSelectionRef = useRef(null);
+  const editingAppointmentRef = useRef({ dateKey: null, id: null, sessionId: null });
+  const editSessionIdRef = useRef(0);
+  const statusMutationIdRef = useRef(0);
+  const editMutationIdRef = useRef(0);
+  const monthRequestIdRef = useRef(0);
+  const dailyRequestIdRef = useRef(0);
+  const serviceRequestIdRef = useRef(0);
 
   const daysInMonth = getDaysInKstMonth(year, month);
   const firstDay = getFirstWeekdayOfKstMonth(year, month);
+  const monthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
+  const selectedDateKey = formatDateKey(year, month, selectedDay);
 
-  const fetchMonthData = useCallback(async () => {
+  latestSelectionRef.current = {
+    year,
+    month,
+    selectedDay,
+    daysInMonth,
+    monthKey,
+    dateKey: selectedDateKey,
+  };
+  editingAppointmentRef.current = editingAppointment;
+
+  const loading = dailyState.dateKey !== selectedDateKey || dailyState.loading;
+  const dailyError = dailyState.dateKey === selectedDateKey ? dailyState.error : '';
+  const dailyAppts = dailyState.dateKey === selectedDateKey
+    ? dailyState.appointments
+    : EMPTY_APPOINTMENTS;
+  const monthHasAppts = monthState.monthKey === monthKey
+    ? monthState.appointmentDates
+    : EMPTY_APPOINTMENT_DATES;
+  const actionMessage = actionFeedback.dateKey === selectedDateKey
+    ? actionFeedback.message
+    : '';
+
+  const fetchMonthData = useCallback(async (selection = latestSelectionRef.current) => {
+    const target = {
+      year: selection.year,
+      month: selection.month,
+      daysInMonth: selection.daysInMonth,
+      monthKey: selection.monthKey,
+    };
+    const latest = latestSelectionRef.current;
+
+    if (!mountedRef.current || latest.monthKey !== target.monthKey) return;
+
+    const requestId = ++monthRequestIdRef.current;
+    const isCurrentRequest = () => (
+      mountedRef.current
+      && requestId === monthRequestIdRef.current
+      && latestSelectionRef.current.monthKey === target.monthKey
+    );
+
     try {
-      const startDate = formatDateKey(year, month, 1);
-      const endDate = formatDateKey(year, month, daysInMonth);
+      const startDate = formatDateKey(target.year, target.month, 1);
+      const endDate = formatDateKey(target.year, target.month, target.daysInMonth);
       
       const { data, error } = await supabase
         .from('appointments')
@@ -104,19 +166,53 @@ export default function AppointmentsPage() {
         .lte('date', endDate);
         
       if (error) throw error;
+      if (!isCurrentRequest()) return;
       
       const apptDates = new Set(data?.map(a => a.date));
-      setMonthHasAppts(apptDates);
+      setMonthState((current) => (
+        isCurrentRequest()
+          ? { monthKey: target.monthKey, appointmentDates: apptDates }
+          : current
+      ));
     } catch (error) {
+      if (!isCurrentRequest()) return;
       console.error('Error fetching month appts:', error);
     }
-  }, [year, month, daysInMonth]);
+  }, []);
 
-  const fetchDailyData = useCallback(async () => {
+  const fetchDailyData = useCallback(async (selection = latestSelectionRef.current) => {
+    const target = {
+      dateKey: selection.dateKey,
+    };
+    const latest = latestSelectionRef.current;
+
+    if (!mountedRef.current || latest.dateKey !== target.dateKey) return;
+
+    const requestId = ++dailyRequestIdRef.current;
+    const isCurrentRequest = () => (
+      mountedRef.current
+      && requestId === dailyRequestIdRef.current
+      && latestSelectionRef.current.dateKey === target.dateKey
+    );
+
     try {
-      setLoading(true);
-      setDailyError('');
-      const selectedDateKey = formatDateKey(year, month, selectedDay);
+      setDailyState((current) => (
+        isCurrentRequest()
+          ? {
+              dateKey: target.dateKey,
+              loading: true,
+              error: '',
+              appointments: current.dateKey === target.dateKey
+                ? current.appointments
+                : EMPTY_APPOINTMENTS,
+            }
+          : current
+      ));
+      setActionFeedback((current) => (
+        isCurrentRequest() && current.dateKey !== target.dateKey
+          ? { dateKey: target.dateKey, message: '' }
+          : current
+      ));
       
       const { data, error } = await supabase
         .from('appointments')
@@ -124,25 +220,55 @@ export default function AppointmentsPage() {
           *,
           customers(name)
         `)
-        .eq('date', selectedDateKey)
+        .eq('date', target.dateKey)
         .order('time');
         
       if (error) throw error;
-      setDailyAppts(data || []);
+      if (!isCurrentRequest()) return;
+      setDailyState((current) => (
+        isCurrentRequest()
+          ? {
+              dateKey: target.dateKey,
+              loading: true,
+              error: '',
+              appointments: data || [],
+            }
+          : current
+      ));
     } catch (error) {
+      if (!isCurrentRequest()) return;
       console.error('Error fetching daily appts:', error);
-      setDailyAppts([]);
-      setDailyError(
-        navigator.onLine
-          ? '예약을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.'
-          : '오프라인에서는 예약을 불러올 수 없습니다. 연결을 확인해주세요.'
-      );
+      const errorMessage = navigator.onLine
+        ? '예약을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.'
+        : '오프라인에서는 예약을 불러올 수 없습니다. 연결을 확인해주세요.';
+      setDailyState((current) => (
+        isCurrentRequest()
+          ? {
+              dateKey: target.dateKey,
+              loading: true,
+              error: errorMessage,
+              appointments: EMPTY_APPOINTMENTS,
+            }
+          : current
+      ));
     } finally {
-      setLoading(false);
+      if (!isCurrentRequest()) return;
+      setDailyState((current) => (
+        isCurrentRequest() && current.dateKey === target.dateKey
+          ? { ...current, loading: false }
+          : current
+      ));
     }
-  }, [year, month, selectedDay]);
+  }, []);
 
   const fetchServiceDefaults = useCallback(async () => {
+    if (!mountedRef.current) return;
+
+    const requestId = ++serviceRequestIdRef.current;
+    const isCurrentRequest = () => (
+      mountedRef.current && requestId === serviceRequestIdRef.current
+    );
+
     try {
       setServicesLoading(true);
       setServicesError('');
@@ -154,26 +280,53 @@ export default function AppointmentsPage() {
         .order('name', { ascending: true });
 
       if (error) throw error;
+      if (!isCurrentRequest()) return;
       setServiceDefaults(data || []);
     } catch (error) {
+      if (!isCurrentRequest()) return;
       console.error('Error fetching active services:', error);
       setServiceDefaults([]);
       setServicesError('활성 서비스를 불러오지 못했습니다. 현재 시술 기록은 그대로 저장할 수 있습니다.');
     } finally {
-      setServicesLoading(false);
+      if (isCurrentRequest()) {
+        setServicesLoading(false);
+      }
     }
   }, []);
 
   useEffect(() => {
-    fetchMonthData();
-  }, [fetchMonthData]);
+    mountedRef.current = true;
+
+    return () => {
+      mountedRef.current = false;
+      monthRequestIdRef.current += 1;
+      dailyRequestIdRef.current += 1;
+      serviceRequestIdRef.current += 1;
+    };
+  }, []);
 
   useEffect(() => {
-    fetchDailyData();
-  }, [fetchDailyData]);
+    fetchMonthData(latestSelectionRef.current);
+
+    return () => {
+      monthRequestIdRef.current += 1;
+    };
+  }, [fetchMonthData, monthKey]);
+
+  useEffect(() => {
+    fetchDailyData(latestSelectionRef.current);
+
+    return () => {
+      dailyRequestIdRef.current += 1;
+    };
+  }, [fetchDailyData, selectedDateKey]);
 
   useEffect(() => {
     fetchServiceDefaults();
+
+    return () => {
+      serviceRequestIdRef.current += 1;
+    };
   }, [fetchServiceDefaults]);
 
   const prevMonth = () => {
@@ -188,20 +341,49 @@ export default function AppointmentsPage() {
     setSelectedDay(1);
   };
 
-  const refreshAppointments = async () => {
-    await Promise.all([fetchMonthData(), fetchDailyData()]);
-  };
+  const refreshAppointments = useCallback(async () => {
+    if (!mountedRef.current) return;
+
+    const selection = { ...latestSelectionRef.current };
+    await Promise.all([
+      fetchMonthData(selection),
+      fetchDailyData(selection),
+    ]);
+  }, [fetchDailyData, fetchMonthData]);
+
+  const publishActionMessage = useCallback((message, targetDateKey = latestSelectionRef.current.dateKey) => {
+    if (
+      !mountedRef.current
+      || latestSelectionRef.current.dateKey !== targetDateKey
+    ) return false;
+
+    setActionFeedback((current) => (
+      mountedRef.current && latestSelectionRef.current.dateKey === targetDateKey
+        ? { dateKey: targetDateKey, message }
+        : current
+    ));
+    return true;
+  }, []);
 
   const startEditingAppointment = (appointment) => {
+    if (!mountedRef.current) return;
+
+    const selection = { ...latestSelectionRef.current };
     const originalServiceId = appointment.service_id || LEGACY_SERVICE_VALUE;
     const originalServiceName = appointment.service || '';
     const originalPriceSnapshotKrw = appointment.price_snapshot_krw ?? null;
     const originalDurationMinutes = resolveAppointmentDurationMinutes(appointment, 60);
+    const nextEditingAppointment = {
+      dateKey: selection.dateKey,
+      id: appointment.id,
+      sessionId: ++editSessionIdRef.current,
+    };
 
-    setActionMessage('');
-    setEditingAppointmentId(appointment.id);
+    publishActionMessage('', selection.dateKey);
+    editingAppointmentRef.current = nextEditingAppointment;
+    setEditingAppointment(nextEditingAppointment);
     setEditForm({
-      date: appointment.date || formatDateKey(year, month, selectedDay),
+      date: appointment.date || selection.dateKey,
       time: normalizeTimeValue(appointment.time),
       service: originalServiceName,
       selected_service_id: originalServiceId,
@@ -216,23 +398,25 @@ export default function AppointmentsPage() {
     });
   };
 
-  const closeEditingAppointment = () => {
-    setEditingAppointmentId(null);
-    setEditForm({
-      date: '',
-      time: '',
-      service: '',
-      selected_service_id: LEGACY_SERVICE_VALUE,
-      service_changed: false,
-      price_snapshot_krw: null,
-      duration_minutes: 60,
-      original_service_id: LEGACY_SERVICE_VALUE,
-      original_service_name: '',
-      original_price_snapshot_krw: null,
-      original_duration_minutes: 60,
-      memo: '',
-    });
-  };
+  const closeEditingAppointment = useCallback((expected = null) => {
+    if (!mountedRef.current) return false;
+
+    const current = editingAppointmentRef.current;
+    if (
+      expected
+      && (
+        current.id !== expected.id
+        || current.dateKey !== expected.dateKey
+        || current.sessionId !== expected.sessionId
+      )
+    ) return false;
+
+    const emptyEditingAppointment = { dateKey: null, id: null, sessionId: null };
+    editingAppointmentRef.current = emptyEditingAppointment;
+    setEditingAppointment(emptyEditingAppointment);
+    setEditForm(createEmptyEditForm());
+    return true;
+  }, []);
 
   const handleEditServiceChange = (serviceId) => {
     setEditForm((prev) => {
@@ -270,9 +454,17 @@ export default function AppointmentsPage() {
       if (cancelReason === null) return;
     }
 
+    if (!mountedRef.current) return;
+    const mutationSelection = { ...latestSelectionRef.current };
+    const mutationId = ++statusMutationIdRef.current;
+
     try {
-      setActionMessage('');
-      setStatusSavingId(appointment.id);
+      publishActionMessage('', mutationSelection.dateKey);
+      setStatusSavingById((current) => {
+        const next = new Map(current);
+        next.set(appointment.id, mutationId);
+        return next;
+      });
       const { error } = await supabase.rpc('set_appointment_status', {
         p_appointment_id: appointment.id,
         p_status: nextStatus,
@@ -280,38 +472,66 @@ export default function AppointmentsPage() {
       });
 
       if (error) throw error;
+      if (!mountedRef.current) return;
 
-      setActionMessage(`${appointment.customers?.name || '예약'} 상태를 ${label}(으)로 변경했습니다.`);
+      publishActionMessage(
+        `${appointment.customers?.name || '예약'} 상태를 ${label}(으)로 변경했습니다.`,
+        mutationSelection.dateKey
+      );
       await refreshAppointments();
     } catch (error) {
+      if (!mountedRef.current) return;
       console.error('Error updating appointment status:', error);
-      setActionMessage(error?.message || '예약 상태 변경 중 오류가 발생했습니다.');
+      publishActionMessage(
+        error?.message || '예약 상태 변경 중 오류가 발생했습니다.',
+        mutationSelection.dateKey
+      );
     } finally {
-      setStatusSavingId(null);
+      if (mountedRef.current) {
+        setStatusSavingById((current) => {
+          if (current.get(appointment.id) !== mutationId) return current;
+          const next = new Map(current);
+          next.delete(appointment.id);
+          return next;
+        });
+      }
     }
   };
 
   const handleEditSubmit = async (event, appointment) => {
     event.preventDefault();
+    if (!mountedRef.current) return;
+
+    const mutationSelection = { ...latestSelectionRef.current };
+    const editSession = { ...editingAppointmentRef.current };
+    if (
+      editSession.id !== appointment.id
+      || editSession.dateKey !== mutationSelection.dateKey
+    ) return;
+    const mutationId = ++editMutationIdRef.current;
     if (!editForm.date || !editForm.time || !editForm.service.trim()) {
-      setActionMessage('날짜, 시간, 시술명을 모두 입력해주세요.');
+      publishActionMessage('날짜, 시간, 시술명을 모두 입력해주세요.', mutationSelection.dateKey);
       return;
     }
 
     if (editForm.service_changed && editForm.selected_service_id === LEGACY_SERVICE_VALUE) {
-      setActionMessage('변경할 활성 서비스를 선택해주세요.');
+      publishActionMessage('변경할 활성 서비스를 선택해주세요.', mutationSelection.dateKey);
       return;
     }
 
     const durationMinutes = Number(editForm.duration_minutes);
     if (!Number.isFinite(durationMinutes) || durationMinutes <= 0) {
-      setActionMessage('소요시간을 확인해주세요.');
+      publishActionMessage('소요시간을 확인해주세요.', mutationSelection.dateKey);
       return;
     }
 
     try {
-      setActionMessage('');
-      setEditSavingId(appointment.id);
+      publishActionMessage('', mutationSelection.dateKey);
+      setEditSavingById((current) => {
+        const next = new Map(current);
+        next.set(appointment.id, mutationId);
+        return next;
+      });
       const updatePayload = {
         date: editForm.date,
         time: editForm.time,
@@ -331,20 +551,38 @@ export default function AppointmentsPage() {
         .eq('id', appointment.id);
 
       if (error) throw error;
+      if (!mountedRef.current) return;
 
-      setActionMessage(`${appointment.customers?.name || '예약'} 예약을 수정했습니다.`);
-      closeEditingAppointment();
+      publishActionMessage(
+        `${appointment.customers?.name || '예약'} 예약을 수정했습니다.`,
+        mutationSelection.dateKey
+      );
+      closeEditingAppointment(editSession);
       await refreshAppointments();
     } catch (error) {
+      if (!mountedRef.current) return;
       console.error('Error updating appointment:', error);
       if (error?.code === '55000' && error?.message?.includes('서비스')) {
-        setActionMessage('선택한 서비스가 비활성화되었습니다. 다시 선택해주세요.');
+        publishActionMessage(
+          '선택한 서비스가 비활성화되었습니다. 다시 선택해주세요.',
+          mutationSelection.dateKey
+        );
         await fetchServiceDefaults();
       } else {
-        setActionMessage(error?.message || '예약 수정 중 오류가 발생했습니다.');
+        publishActionMessage(
+          error?.message || '예약 수정 중 오류가 발생했습니다.',
+          mutationSelection.dateKey
+        );
       }
     } finally {
-      setEditSavingId(null);
+      if (mountedRef.current) {
+        setEditSavingById((current) => {
+          if (current.get(appointment.id) !== mutationId) return current;
+          const next = new Map(current);
+          next.delete(appointment.id);
+          return next;
+        });
+      }
     }
   };
 
@@ -367,7 +605,7 @@ export default function AppointmentsPage() {
     weeks.push(currentWeek);
   }
 
-  const dayOfWeek = getWeekdayFromDateKey(formatDateKey(year, month, selectedDay));
+  const dayOfWeek = getWeekdayFromDateKey(selectedDateKey);
   const dayName = DAYS[dayOfWeek];
 
   return (
@@ -480,7 +718,7 @@ export default function AppointmentsPage() {
             ) : dailyError ? (
               <div className={styles.errorState} role="alert">
                 <p>{dailyError}</p>
-                <button type="button" onClick={fetchDailyData}>
+                <button type="button" onClick={() => fetchDailyData()}>
                   다시 시도
                 </button>
               </div>
@@ -491,8 +729,9 @@ export default function AppointmentsPage() {
               </div>
             ) : (
               dailyAppts.map((appt, i) => {
-                const isBusy = statusSavingId === appt.id || editSavingId === appt.id;
-                const isEditing = editingAppointmentId === appt.id;
+                const isBusy = statusSavingById.has(appt.id) || editSavingById.has(appt.id);
+                const isEditing = editingAppointment.dateKey === selectedDateKey
+                  && editingAppointment.id === appt.id;
                 const durationMinutes = resolveAppointmentDurationMinutes(appt, 60);
                 const status = appt.status || 'confirmed';
 
@@ -641,11 +880,11 @@ export default function AppointmentsPage() {
                           />
                         </label>
                         <div className={styles.editActions}>
-                          <button type="button" className={styles.secondaryButton} onClick={closeEditingAppointment} disabled={isBusy}>
+                          <button type="button" className={styles.secondaryButton} onClick={() => closeEditingAppointment()} disabled={isBusy}>
                             취소
                           </button>
                           <button type="submit" className={styles.primaryButton} disabled={isBusy}>
-                            {editSavingId === appt.id ? (
+                            {editSavingById.has(appt.id) ? (
                               <Loader2 size={16} className="animate-spin" />
                             ) : (
                               <Save size={16} />
