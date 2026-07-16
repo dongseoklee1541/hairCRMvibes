@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 
 import { supabase } from '@/lib/supabase';
+import { formatPriceKrw } from '@/lib/formatPrice';
 import {
   formatDateKey,
   getDaysInKstMonth,
@@ -60,11 +61,6 @@ function createEmptyEditForm() {
   };
 }
 
-function formatPriceKrw(value) {
-  if (value === null || value === undefined) return '가격 미설정';
-  return `${new Intl.NumberFormat('ko-KR').format(Number(value))}원`;
-}
-
 function getStatusClassName(status) {
   if (status === 'completed') return styles.statusCompleted;
   if (status === 'cancelled') return styles.statusCancelled;
@@ -91,6 +87,7 @@ export default function AppointmentsPage() {
   const [monthState, setMonthState] = useState({
     monthKey: null,
     appointmentDates: EMPTY_APPOINTMENT_DATES,
+    error: '',
   });
   const [serviceDefaults, setServiceDefaults] = useState([]);
   const [servicesLoading, setServicesLoading] = useState(true);
@@ -133,6 +130,7 @@ export default function AppointmentsPage() {
   const monthHasAppts = monthState.monthKey === monthKey
     ? monthState.appointmentDates
     : EMPTY_APPOINTMENT_DATES;
+  const monthError = monthState.monthKey === monthKey ? monthState.error : '';
   const actionMessage = actionFeedback.dateKey === selectedDateKey
     ? actionFeedback.message
     : '';
@@ -171,12 +169,23 @@ export default function AppointmentsPage() {
       const apptDates = new Set(data?.map(a => a.date));
       setMonthState((current) => (
         isCurrentRequest()
-          ? { monthKey: target.monthKey, appointmentDates: apptDates }
+          ? { monthKey: target.monthKey, appointmentDates: apptDates, error: '' }
           : current
       ));
     } catch (error) {
       if (!isCurrentRequest()) return;
       console.error('Error fetching month appts:', error);
+      setMonthState((current) => (
+        isCurrentRequest()
+          ? {
+              monthKey: target.monthKey,
+              appointmentDates: EMPTY_APPOINTMENT_DATES,
+              error: navigator.onLine
+                ? '달력의 예약 표시를 불러오지 못했습니다. 날짜별 예약 목록은 계속 확인할 수 있습니다.'
+                : '인터넷이 연결되지 않아 달력의 예약 표시를 불러올 수 없습니다.',
+            }
+          : current
+      ));
     }
   }, []);
 
@@ -286,7 +295,7 @@ export default function AppointmentsPage() {
       if (!isCurrentRequest()) return;
       console.error('Error fetching active services:', error);
       setServiceDefaults([]);
-      setServicesError('활성 서비스를 불러오지 못했습니다. 현재 시술 기록은 그대로 저장할 수 있습니다.');
+      setServicesError('사용 중인 시술을 불러오지 못했습니다. 현재 시술 기록은 그대로 저장할 수 있습니다.');
     } finally {
       if (isCurrentRequest()) {
         setServicesLoading(false);
@@ -515,7 +524,7 @@ export default function AppointmentsPage() {
     }
 
     if (editForm.service_changed && editForm.selected_service_id === LEGACY_SERVICE_VALUE) {
-      publishActionMessage('변경할 활성 서비스를 선택해주세요.', mutationSelection.dateKey);
+      publishActionMessage('변경할 사용 중인 시술을 선택해 주세요.', mutationSelection.dateKey);
       return;
     }
 
@@ -564,7 +573,7 @@ export default function AppointmentsPage() {
       console.error('Error updating appointment:', error);
       if (error?.code === '55000' && error?.message?.includes('서비스')) {
         publishActionMessage(
-          '선택한 서비스가 비활성화되었습니다. 다시 선택해주세요.',
+          '선택한 시술은 현재 사용하지 않습니다. 다른 시술을 선택해 주세요.',
           mutationSelection.dateKey
         );
         await fetchServiceDefaults();
@@ -695,6 +704,15 @@ export default function AppointmentsPage() {
             </div>
           ))}
         </div>
+
+        {monthError ? (
+          <div className={styles.calendarError} role="alert">
+            <p>{monthError}</p>
+            <button type="button" onClick={() => fetchMonthData()}>
+              <RotateCcw size={17} aria-hidden="true" /> 예약 표시 다시 불러오기
+            </button>
+          </div>
+        ) : null}
 
         <section className={styles.dailySection}>
           <div className="section-header">
@@ -849,9 +867,9 @@ export default function AppointmentsPage() {
                             </select>
                             <small className={styles.fieldHint}>
                               {servicesLoading
-                                ? '활성 서비스를 불러오는 중입니다.'
+                                ? '사용 중인 시술을 불러오는 중입니다.'
                                 : servicesError || (serviceDefaults.length === 0
-                                  ? '활성 서비스가 없어 현재 시술 기록을 그대로 유지합니다.'
+                                  ? '사용 중인 시술이 없어 현재 시술 기록을 그대로 유지합니다.'
                                   : `${formatPriceKrw(editForm.price_snapshot_krw)} · 시술을 다시 선택할 때만 이 예약의 시술명과 금액이 바뀝니다.`)}
                             </small>
                           </label>

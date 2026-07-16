@@ -76,6 +76,17 @@
   color: var(--text-tertiary);
 }
 
+.searchHelp {
+  margin: -2px 4px 2px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.searchHelpError {
+  color: var(--status-danger, var(--status-negative));
+}
+
 .archiveToggle {
   position: relative;
   display: flex;
@@ -342,6 +353,26 @@
   font-weight: 700;
 }
 
+.loadMoreButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 0 16px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  color: var(--accent-primary);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.loadMoreButton:disabled {
+  color: var(--disabled-text);
+  cursor: wait;
+}
+
 .appointmentCard {
   overflow: hidden;
   border-radius: var(--radius-lg);
@@ -353,10 +384,40 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   min-height: 88px;
   padding: 20px;
   color: var(--text-tertiary);
   font-size: 14px;
+}
+
+.appointmentError {
+  display: flex;
+  min-height: 132px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px;
+  background: var(--status-danger-light, #fbe8e8);
+  color: var(--status-danger, var(--status-negative));
+  text-align: center;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.appointmentError button {
+  display: inline-flex;
+  min-height: 52px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 16px;
+  border-radius: var(--radius-md);
+  background: var(--status-danger, var(--status-negative));
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
 }
 
 .appointmentRow {

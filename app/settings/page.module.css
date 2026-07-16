@@ -4,6 +4,48 @@
   gap: 6px;
 }
 
+.settingsLoadError {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px 12px;
+  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--status-danger) 24%, transparent);
+  border-radius: var(--radius-lg);
+  background: var(--status-danger-light);
+  color: var(--status-danger);
+}
+
+.settingsLoadError > svg {
+  margin-top: 2px;
+}
+
+.settingsLoadError strong {
+  display: block;
+  color: var(--text-primary);
+  font-size: 17px;
+}
+
+.settingsLoadError p {
+  margin-top: 4px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.settingsLoadError button {
+  grid-column: 1 / -1;
+  display: inline-flex;
+  min-height: 52px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: var(--radius-md);
+  background: var(--status-danger);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+}
+
 .teamEntry {
   min-height: 76px;
   padding: 14px 16px;
@@ -360,6 +402,20 @@
   color: #8c4f00;
   font-size: 13px;
   font-weight: 600;
+}
+
+.impactRetry {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 4px;
+  border-radius: 10px;
+  background: var(--status-warning-light, #fcebdF);
+  color: var(--status-warning, #9a5a2b);
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .closedDateList {

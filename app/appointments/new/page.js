@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useMemo, useRef, Suspense } from 'rea
 import { useRouter, useSearchParams } from 'next/navigation';
 import { X, ChevronDown, Check, Clock, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { formatPriceKrw } from '@/lib/formatPrice';
 import AppointmentDatePicker from '@/components/appointments/AppointmentDatePicker';
 import { AppointmentCustomerPicker } from '@/components/appointments/AppointmentCustomerPicker';
 import { CustomerQuickCreateSheet } from '@/components/customers/CustomerQuickCreateSheet';
@@ -17,16 +18,6 @@ import {
   validateAppointmentBusinessHours,
 } from '@/lib/appointmentRules';
 import styles from './page.module.css';
-
-function formatPriceKrw(value) {
-  if (value === null || value === undefined) {
-    return '가격 미설정';
-  }
-  if (Number(value) === 0) {
-    return '0원(무료)';
-  }
-  return `${Number(value).toLocaleString('ko-KR')}원`;
-}
 
 function NewAppointmentForm() {
   const router = useRouter();
@@ -382,7 +373,7 @@ function NewAppointmentForm() {
             <p className={styles.dateHelp}>
               {fetchingClosedDays
                 ? '휴무일 정보를 불러오는 중입니다...'
-                : closedDaysError || '휴무일은 달력에서 선택할 수 없도록 비활성화됩니다.'}
+                : closedDaysError || '휴무일은 달력에서 선택하지 못하게 표시됩니다.'}
             </p>
           </div>
 
@@ -415,7 +406,7 @@ function NewAppointmentForm() {
               </div>
             ) : serviceDefaults.length === 0 ? (
               <div className={styles.serviceStateError} role="alert">
-                예약 가능한 시술이 없습니다. 설정에서 시술을 추가하거나 다시 활성화한 뒤 예약해주세요.
+                예약 가능한 시술이 없습니다. 설정에서 시술을 추가하거나 다시 사용하도록 바꾼 뒤 예약해 주세요.
               </div>
             ) : (
               <>

@@ -3,7 +3,7 @@
 ## 상태
 - Done (live verified)
 - 브랜치: `feature/r02-appointment-edit-status` (Phase 1 통합 브랜치)
-- 최종 업데이트: 2026-07-11
+- 최종 업데이트: 2026-07-16
 
 ## 목표
 - 브라우저 로컬 timezone이나 UTC 변환으로 인해 `YYYY-MM-DD` date key가 하루 밀리는 문제를 방지합니다.
@@ -32,11 +32,15 @@
   - app/components는 `formatDateKey`, `getTodayKst`, `getWeekdayFromDateKey`, `getMonthMatrix` 등 공통 유틸 경유 확인
   - `toISOString()` date key 생성은 app/components에서 사용하지 않음 확인
 - Phase 1 integration readiness 재검증에서도 동일 정적 검색 기준을 유지
+- `npm run test:node`의 `tests/date-time.test.mjs`에서 다음 경계를 자동 검증
+  - KST 자정 직전/직후와 월말·연말 date key 전환
+  - 윤년 2월, 월 시작 요일, 월 범위와 날짜 범위 상한
+  - 상대 날짜 문구와 날짜 차이 계산
 - Playwright mobile smoke:
   - `/appointments` authenticated 화면을 390x844에서 확인
   - `/appointments` inline edit panel을 390x844와 360x800에서 확인
   - screenshot 근거는 R-02 문서의 `output/playwright/r02-appointment-edit-status/20260708_*` 파일에 기록
 
 ## 남은 리스크
-- 실제 자정/월경계 time-travel 테스트는 아직 자동화하지 않았습니다. 브라우저 timezone mock 또는 date 유틸 unit test를 추가해야 장기 회귀를 막을 수 있습니다.
-- 별도 date unit test 스크립트가 없어 이번 검증은 build, 정적 검색, 모바일 route smoke 중심입니다.
+- 날짜 유틸의 자정·월경계 단위 테스트는 자동화했습니다.
+- 브라우저 timezone을 바꾸는 전체 화면 time-travel 검증과 실제 기기 장시간 실행 검증은 별도 운영 검증으로 남아 있습니다.

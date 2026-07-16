@@ -61,6 +61,31 @@
   gap: 8px;
 }
 
+.calendarError {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: var(--status-warning-light, #fcebdf);
+  color: var(--status-warning, #9a5a2b);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.calendarError button {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border-radius: 10px;
+  background: var(--bg-surface);
+  color: var(--status-warning, #9a5a2b);
+  font-size: 14px;
+  font-weight: 700;
+}
+
 .calendarRow {
   display: grid;
   grid-template-columns: repeat(7, 1fr);

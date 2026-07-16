@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
   AlertCircle,
@@ -9,6 +9,7 @@ import {
   Loader2,
   Plus,
   Power,
+  RefreshCw,
   RotateCcw,
   Save,
   ShieldCheck,
@@ -17,6 +18,7 @@ import AuthGate from '@/components/AuthGate';
 import ClosedDayConflictSheet from '@/components/settings/ClosedDayConflictSheet';
 import DataBackupCard from '@/components/settings/DataBackupCard';
 import { supabase } from '@/lib/supabase';
+import { formatPriceKrw } from '@/lib/formatPrice';
 import {
   APPOINTMENT_STATUS,
   buildBatchTargetDates,
@@ -65,16 +67,6 @@ function parsePriceKrw(value) {
   return { value: price, error: '' };
 }
 
-function formatPriceKrw(value) {
-  if (value === null || value === undefined || value === '') {
-    return '가격 미설정';
-  }
-  if (Number(value) === 0) {
-    return '0원(무료)';
-  }
-  return `${Number(value).toLocaleString('ko-KR')}원`;
-}
-
 function normalizeTimeValue(value, fallback = '') {
   if (!value) return fallback;
   return String(value).slice(0, 5);
@@ -115,6 +107,7 @@ function getBusinessHourPayload(row) {
 
 function SettingsPageContent() {
   const today = getTodayKstDateKey();
+  const conflictTriggerRef = useRef(null);
 
   const [mode, setMode] = useState(CLOSED_DAY_MODE.SINGLE);
   const [singleDate, setSingleDate] = useState(today);
@@ -144,7 +137,7 @@ function SettingsPageContent() {
   const [conflicts, setConflicts] = useState([]);
   const [selectedConflictIds, setSelectedConflictIds] = useState([]);
 
-  const [loadingSettings, setLoadingSettings] = useState(true);
+  const [settingsLoadState, setSettingsLoadState] = useState('loading');
   const [loadingClosedDays, setLoadingClosedDays] = useState(true);
   const [checkingConflicts, setCheckingConflicts] = useState(false);
   const [calculatingImpact, setCalculatingImpact] = useState(false);
@@ -155,13 +148,17 @@ function SettingsPageContent() {
   const [removing, setRemoving] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
 
-  const [impactCount, setImpactCount] = useState(0);
+  const [impactCount, setImpactCount] = useState(null);
+  const [impactError, setImpactError] = useState('');
   const [settingsFeedback, setSettingsFeedback] = useState('');
   const [feedbackMessage, setFeedbackMessage] = useState('');
+  const loadingSettings = settingsLoadState === 'loading';
+  const settingsReady = settingsLoadState === 'ready';
 
   const fetchSettings = useCallback(async () => {
     try {
-      setLoadingSettings(true);
+      setSettingsLoadState('loading');
+      setSettingsFeedback('');
 
       const [
         operationResult,
@@ -204,11 +201,11 @@ function SettingsPageContent() {
       }
       setBusinessHours(Array.from(defaultsByWeekday.values()).sort((a, b) => a.weekday - b.weekday));
       setServiceDefaults(serviceDefaultsResult.data || []);
+      setSettingsLoadState('ready');
     } catch (error) {
       console.error('운영 설정 조회 오류:', error);
-      setSettingsFeedback('운영 설정을 불러오지 못했습니다.');
-    } finally {
-      setLoadingSettings(false);
+      setSettingsLoadState('error');
+      setSettingsFeedback('설정을 불러오지 못했습니다. 현재 값을 확인할 때까지 저장할 수 없습니다.');
     }
   }, []);
 
@@ -251,6 +248,11 @@ function SettingsPageContent() {
   };
 
   const handleSaveOperationSettings = async () => {
+    if (!settingsReady) {
+      setSettingsFeedback('설정을 다시 불러온 뒤 저장해 주세요.');
+      return;
+    }
+
     const defaultDuration = Number(operationSettings.default_duration_minutes);
     const slotMinutes = Number(operationSettings.appointment_slot_minutes);
     const selectedService = serviceDefaults.find(
@@ -258,12 +260,12 @@ function SettingsPageContent() {
     );
 
     if (!selectedService || !selectedService.is_active) {
-      setSettingsFeedback('활성 서비스 중 예약 기본 서비스를 선택해주세요.');
+      setSettingsFeedback('사용 중인 시술 가운데 예약 기본 시술을 선택해 주세요.');
       return;
     }
 
     if (!selectedService.name.trim()) {
-      setSettingsFeedback('선택한 서비스명을 먼저 저장해주세요.');
+      setSettingsFeedback('선택한 시술 이름을 먼저 저장해 주세요.');
       return;
     }
 
@@ -277,7 +279,7 @@ function SettingsPageContent() {
 
       if (serviceError) throw serviceError;
       if (!persistedService?.is_active) {
-        throw new Error('선택한 서비스가 비활성 상태입니다. 다른 서비스를 선택해주세요.');
+        throw new Error('선택한 시술은 현재 사용하지 않습니다. 다른 시술을 선택해 주세요.');
       }
 
       const { error } = await supabase
@@ -305,6 +307,11 @@ function SettingsPageContent() {
   };
 
   const handleSaveBusinessHours = async () => {
+    if (!settingsReady) {
+      setSettingsFeedback('설정을 다시 불러온 뒤 저장해 주세요.');
+      return;
+    }
+
     for (const row of businessHours) {
       if (row.is_open && (!row.open_time || !row.close_time || row.open_time >= row.close_time)) {
         setSettingsFeedback(`${WEEKDAY_OPTIONS[row.weekday].label} 영업 시작/종료 시간을 확인해주세요.`);
@@ -348,8 +355,13 @@ function SettingsPageContent() {
   };
 
   const handleSaveServiceDefault = async (service) => {
+    if (!settingsReady) {
+      setSettingsFeedback('설정을 다시 불러온 뒤 저장해 주세요.');
+      return;
+    }
+
     if (!service.name.trim()) {
-      setSettingsFeedback('서비스명을 입력해주세요.');
+      setSettingsFeedback('시술 이름을 입력해 주세요.');
       return;
     }
 
@@ -373,7 +385,7 @@ function SettingsPageContent() {
         .eq('id', service.id);
 
       if (error) throw error;
-      setSettingsFeedback(`${service.name.trim()} 서비스가 저장되었습니다.`);
+      setSettingsFeedback(`${service.name.trim()} 시술을 저장했습니다.`);
       await fetchSettings();
     } catch (error) {
       console.error('서비스 저장 오류:', error);
@@ -384,8 +396,13 @@ function SettingsPageContent() {
   };
 
   const handleAddServiceDefault = async () => {
+    if (!settingsReady) {
+      setSettingsFeedback('설정을 다시 불러온 뒤 저장해 주세요.');
+      return;
+    }
+
     if (!newService.name.trim()) {
-      setSettingsFeedback('추가할 서비스명을 입력해주세요.');
+      setSettingsFeedback('추가할 시술 이름을 입력해 주세요.');
       return;
     }
 
@@ -414,27 +431,32 @@ function SettingsPageContent() {
 
       if (error) throw error;
       setNewService({ name: '', price_krw: '', default_duration_minutes: 60 });
-      setSettingsFeedback('서비스가 추가되었습니다.');
+      setSettingsFeedback('새 시술을 추가했습니다.');
       await fetchSettings();
     } catch (error) {
       console.error('서비스 추가 오류:', error);
-      setSettingsFeedback(error?.message || '서비스 추가 중 오류가 발생했습니다.');
+      setSettingsFeedback(error?.message || '시술을 추가하지 못했습니다. 잠시 후 다시 시도해 주세요.');
     } finally {
       setSavingServices(false);
     }
   };
 
   const handleToggleServiceDefault = async (service) => {
+    if (!settingsReady) {
+      setSettingsFeedback('설정을 다시 불러온 뒤 변경해 주세요.');
+      return;
+    }
+
     if (service.is_active) {
       if (operationSettings.default_service_id === service.id) {
         setSettingsFeedback(
-          '예약 기본 서비스를 다른 활성 서비스로 변경해 저장한 뒤 비활성화해주세요.'
+          '예약 기본 시술을 다른 사용 중인 시술로 바꾸어 저장한 뒤 사용 중지를 선택해 주세요.'
         );
         return;
       }
 
       const shouldDeactivate = window.confirm(
-        `${service.name} 서비스를 비활성화할까요?\n기존 예약의 서비스와 가격 기록은 유지됩니다.`
+        `${service.name} 시술을 사용 중지할까요?\n기존 예약의 시술 이름과 가격 기록은 그대로 유지됩니다.`
       );
       if (!shouldDeactivate) return;
     }
@@ -448,7 +470,7 @@ function SettingsPageContent() {
 
       if (error) throw error;
       setSettingsFeedback(
-        service.is_active ? `${service.name} 서비스가 비활성화되었습니다.` : `${service.name} 서비스가 재활성화되었습니다.`
+        service.is_active ? `${service.name} 시술을 사용 중지했습니다.` : `${service.name} 시술을 다시 사용합니다.`
       );
       await fetchSettings();
     } catch (error) {
@@ -487,6 +509,7 @@ function SettingsPageContent() {
   const calculateImpact = useCallback(async () => {
     try {
       setCalculatingImpact(true);
+      setImpactError('');
       const targetDates = getTargetDates(mode);
 
       if (targetDates.length === 0) {
@@ -512,7 +535,9 @@ function SettingsPageContent() {
       setImpactCount(nextCount);
       return nextCount;
     } catch (error) {
-      setImpactCount(0);
+      console.error('휴무일 영향도 계산 오류:', error);
+      setImpactCount(null);
+      setImpactError('취소될 예약 수를 확인하지 못했습니다. 다시 계산한 뒤 저장해 주세요.');
       return null;
     } finally {
       setCalculatingImpact(false);
@@ -555,7 +580,7 @@ function SettingsPageContent() {
     } catch (error) {
       console.error('충돌 예약 조회 오류:', error);
       setFeedbackMessage('충돌 예약을 불러오지 못했습니다.');
-      return [];
+      return null;
     } finally {
       setCheckingConflicts(false);
     }
@@ -568,6 +593,8 @@ function SettingsPageContent() {
 
   const handleOpenConflictSheet = async () => {
     const nextConflicts = await fetchConflicts();
+    if (nextConflicts === null) return;
+
     setSheetOpen(true);
 
     if (nextConflicts.length === 0) {
@@ -595,7 +622,7 @@ function SettingsPageContent() {
     const confirmedCount = conflicts.filter((item) => item.status === APPOINTMENT_STATUS.CONFIRMED).length;
 
     if (confirmedCount > 0 && selectedConflictIds.length === 0) {
-      setFeedbackMessage('confirmed 예약을 최소 1건 이상 선택해야 휴무일 저장이 가능합니다.');
+      setFeedbackMessage('확정 예약을 최소 1건 이상 선택해야 휴무일을 저장할 수 있습니다.');
       return;
     }
 
@@ -640,7 +667,7 @@ function SettingsPageContent() {
 
       const modeLabel = mode === CLOSED_DAY_MODE.RANGE ? '기간' : '정기';
       const shouldProceed = window.confirm(
-        `${modeLabel} 휴무일 ${targetDates.length}일을 저장합니다.\nconfirmed 예약 ${currentImpact}건이 일괄 취소됩니다.\n계속할까요?`
+        `${modeLabel} 휴무일 ${targetDates.length}일을 저장합니다.\n확정 예약 ${currentImpact}건이 모두 취소됩니다.\n계속할까요?`
       );
 
       if (!shouldProceed) {
@@ -662,7 +689,7 @@ function SettingsPageContent() {
       const appliedDays = data?.applied_days ?? targetDates.length;
       const cancelledCount = data?.cancelled_count ?? currentImpact;
 
-      setFeedbackMessage(`${modeLabel} 휴무일 ${appliedDays}일 저장, confirmed ${cancelledCount}건 취소 완료.`);
+      setFeedbackMessage(`${modeLabel} 휴무일 ${appliedDays}일을 저장하고 확정 예약 ${cancelledCount}건을 취소했습니다.`);
       await fetchClosedDates();
       await calculateImpact();
     } catch (error) {
@@ -718,9 +745,23 @@ function SettingsPageContent() {
       <header className={styles.header}>
         <h1 className="heading-xl">설정</h1>
         <p className="caption">
-          직원 권한과 영업시간, 기본 시술, 휴무일, 데이터 백업을 관리합니다.
+          직원 권한, 영업시간, 기본 시술, 휴무일과 데이터 백업을 관리합니다.
         </p>
       </header>
+
+      {settingsLoadState === 'error' ? (
+        <div className={styles.settingsLoadError} role="alert">
+          <AlertCircle size={22} aria-hidden="true" />
+          <div>
+            <strong>설정을 불러오지 못했습니다</strong>
+            <p>현재 값을 확인할 때까지 저장 기능을 잠갔습니다. 인터넷 연결을 확인한 뒤 다시 불러와 주세요.</p>
+          </div>
+          <button type="button" onClick={fetchSettings}>
+            <RefreshCw size={18} aria-hidden="true" />
+            다시 불러오기
+          </button>
+        </div>
+      ) : null}
 
       <Link
         href="/settings/team"
@@ -741,14 +782,14 @@ function SettingsPageContent() {
       <section className={`card ${styles.card}`}>
         <div className="section-header">
           <div>
-            <h2 className="heading-md">예약 기본 서비스</h2>
-            <p className="caption">새 예약에서 먼저 선택할 서비스와 시간 단위입니다.</p>
+            <h2 className="heading-md">예약 기본 시술</h2>
+            <p className="caption">새 예약에서 먼저 선택할 시술과 시간 간격입니다.</p>
           </div>
           {loadingSettings ? <Loader2 size={18} className="animate-spin text-tertiary" /> : null}
         </div>
 
         <div className="form-group">
-          <label className="form-label">예약 기본 서비스</label>
+          <label className="form-label">예약 기본 시술</label>
           <div className="form-input">
             <select
               value={operationSettings.default_service_id}
@@ -762,19 +803,19 @@ function SettingsPageContent() {
                   default_service_name: selectedService?.name || prev.default_service_name,
                 }));
               }}
-              disabled={loadingSettings || savingOperation}
+              disabled={!settingsReady || savingOperation}
               className="w-full h-full bg-transparent appearance-none"
             >
-              <option value="">활성 서비스를 선택해주세요</option>
+              <option value="">사용 중인 시술을 선택해 주세요</option>
               {serviceDefaults.map((service) => (
                 <option key={service.id} value={service.id} disabled={!service.is_active}>
-                  {service.name}{service.is_active ? '' : ' (비활성)'}
+                  {service.name}{service.is_active ? '' : ' (사용 중지)'}
                 </option>
               ))}
             </select>
           </div>
           <p className={styles.policyText}>
-            이름으로 자동 연결하지 않습니다. 선택한 서비스 ID와 현재 이름을 함께 저장합니다.
+            선택한 시술을 정확히 연결해 저장하므로 같은 이름의 시술도 구분할 수 있습니다.
           </p>
         </div>
 
@@ -790,7 +831,7 @@ function SettingsPageContent() {
                     default_duration_minutes: Number(e.target.value),
                   }))
                 }
-                disabled={loadingSettings || savingOperation}
+                disabled={!settingsReady || savingOperation}
                 className="w-full h-full bg-transparent appearance-none"
               >
                 {DURATION_MINUTE_OPTIONS.map((minutes) => (
@@ -813,7 +854,7 @@ function SettingsPageContent() {
                     appointment_slot_minutes: Number(e.target.value),
                   }))
                 }
-                disabled={loadingSettings || savingOperation}
+                disabled={!settingsReady || savingOperation}
                 className="w-full h-full bg-transparent appearance-none"
               >
                 {SLOT_OPTIONS.map((minutes) => (
@@ -831,7 +872,7 @@ function SettingsPageContent() {
           type="button"
           className={styles.secondaryButton}
           onClick={handleSaveOperationSettings}
-          disabled={loadingSettings || savingOperation}
+          disabled={!settingsReady || savingOperation}
         >
           {savingOperation ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
           <span>기본 예약값 저장</span>
@@ -842,7 +883,7 @@ function SettingsPageContent() {
         <div className="section-header">
           <div>
             <h2 className="heading-md">영업시간</h2>
-            <p className="caption">confirmed 예약은 이 시간 밖에서 저장되지 않습니다.</p>
+            <p className="caption">확정 예약은 영업시간 밖에 등록할 수 없습니다.</p>
           </div>
         </div>
 
@@ -856,7 +897,7 @@ function SettingsPageContent() {
                     type="checkbox"
                     checked={row.is_open}
                     onChange={(e) => updateBusinessHour(row.weekday, { is_open: e.target.checked })}
-                    disabled={loadingSettings || savingBusinessHours}
+                    disabled={!settingsReady || savingBusinessHours}
                   />
                   <span>{weekday?.label}</span>
                 </label>
@@ -868,28 +909,28 @@ function SettingsPageContent() {
                       aria-label={`${weekday?.label} 영업 시작`}
                       value={row.open_time}
                       onChange={(e) => updateBusinessHour(row.weekday, { open_time: e.target.value })}
-                      disabled={loadingSettings || savingBusinessHours}
+                      disabled={!settingsReady || savingBusinessHours}
                     />
                     <input
                       type="time"
                       aria-label={`${weekday?.label} 영업 종료`}
                       value={row.close_time}
                       onChange={(e) => updateBusinessHour(row.weekday, { close_time: e.target.value })}
-                      disabled={loadingSettings || savingBusinessHours}
+                      disabled={!settingsReady || savingBusinessHours}
                     />
                     <input
                       type="time"
                       aria-label={`${weekday?.label} 휴게 시작`}
                       value={row.break_start}
                       onChange={(e) => updateBusinessHour(row.weekday, { break_start: e.target.value })}
-                      disabled={loadingSettings || savingBusinessHours}
+                      disabled={!settingsReady || savingBusinessHours}
                     />
                     <input
                       type="time"
                       aria-label={`${weekday?.label} 휴게 종료`}
                       value={row.break_end}
                       onChange={(e) => updateBusinessHour(row.weekday, { break_end: e.target.value })}
-                      disabled={loadingSettings || savingBusinessHours}
+                      disabled={!settingsReady || savingBusinessHours}
                     />
                   </div>
                 ) : (
@@ -904,7 +945,7 @@ function SettingsPageContent() {
           type="button"
           className={styles.secondaryButton}
           onClick={handleSaveBusinessHours}
-          disabled={loadingSettings || savingBusinessHours}
+          disabled={!settingsReady || savingBusinessHours}
         >
           {savingBusinessHours ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
           <span>영업시간 저장</span>
@@ -914,11 +955,13 @@ function SettingsPageContent() {
       <section className={`card ${styles.card}`}>
         <div className="section-header">
           <div>
-            <h2 className="heading-md">서비스 마스터</h2>
-            <p className="caption">가격 미설정과 0원은 서로 다르게 저장됩니다.</p>
+            <h2 className="heading-md">시술과 가격 관리</h2>
+            <p className="caption">가격을 비워 둔 경우와 무료(0원)는 다르게 저장됩니다.</p>
           </div>
           <span className="badge badge-green">
-            {serviceDefaults.filter((service) => service.is_active).length}/{serviceDefaults.length} 활성
+            {settingsReady
+              ? `${serviceDefaults.filter((service) => service.is_active).length}/${serviceDefaults.length} 사용 중`
+              : '확인 필요'}
           </span>
         </div>
 
@@ -926,10 +969,12 @@ function SettingsPageContent() {
           {loadingSettings ? (
             <div className={styles.empty} role="status">
               <Loader2 size={18} className="animate-spin" />
-              <span>서비스를 불러오는 중입니다.</span>
+              <span>시술 목록을 불러오는 중입니다.</span>
             </div>
+          ) : !settingsReady ? (
+            <div className={styles.empty}>설정을 다시 불러오면 시술 목록을 확인할 수 있습니다.</div>
           ) : serviceDefaults.length === 0 ? (
-            <div className={styles.empty}>등록된 서비스가 없습니다. 아래에서 첫 서비스를 추가해주세요.</div>
+            <div className={styles.empty}>등록된 시술이 없습니다. 아래에서 첫 시술을 추가해 주세요.</div>
           ) : (
             serviceDefaults.map((service) => (
               <div
@@ -938,9 +983,9 @@ function SettingsPageContent() {
               >
                 <div className={styles.serviceSummary}>
                   <div>
-                    <strong>{service.name || '이름 없는 서비스'}</strong>
+                    <strong>{service.name || '이름 없는 시술'}</strong>
                     <span className={!service.is_active ? styles.inactiveText : undefined}>
-                      {service.is_active ? '활성' : '비활성'} · {formatPriceKrw(service.price_krw)}
+                      {service.is_active ? '사용 중' : '사용 중지'} · {formatPriceKrw(service.price_krw)}
                     </span>
                   </div>
                   <span className={styles.durationBadge}>
@@ -949,12 +994,12 @@ function SettingsPageContent() {
                 </div>
                 <div className={styles.serviceInputs}>
                   <label className={`${styles.serviceField} ${styles.serviceNameField}`}>
-                    <span>서비스명</span>
+                    <span>시술 이름</span>
                     <div className="form-input">
                       <input
                         value={service.name}
                         onChange={(e) => updateServiceDefault(service.id, { name: e.target.value })}
-                        disabled={loadingSettings || savingServices}
+                        disabled={!settingsReady || savingServices}
                       />
                     </div>
                   </label>
@@ -970,7 +1015,7 @@ function SettingsPageContent() {
                         placeholder="미설정"
                         value={service.price_krw ?? ''}
                         onChange={(e) => updateServiceDefault(service.id, { price_krw: e.target.value })}
-                        disabled={loadingSettings || savingServices}
+                        disabled={!settingsReady || savingServices}
                         aria-label={`${service.name} 가격`}
                       />
                     </div>
@@ -985,7 +1030,7 @@ function SettingsPageContent() {
                             default_duration_minutes: Number(e.target.value),
                           })
                         }
-                        disabled={loadingSettings || savingServices}
+                        disabled={!settingsReady || savingServices}
                         className="w-full h-full bg-transparent appearance-none"
                       >
                         {DURATION_MINUTE_OPTIONS.map((minutes) => (
@@ -1002,7 +1047,7 @@ function SettingsPageContent() {
                     type="button"
                     className={styles.iconButton}
                     onClick={() => handleSaveServiceDefault(service)}
-                    disabled={savingServices}
+                    disabled={!settingsReady || savingServices}
                     aria-label={`${service.name} 저장`}
                   >
                     <Save size={16} />
@@ -1012,11 +1057,11 @@ function SettingsPageContent() {
                     type="button"
                     className={`${styles.iconButton} ${service.is_active ? styles.deactivateButton : styles.reactivateButton}`}
                     onClick={() => handleToggleServiceDefault(service)}
-                    disabled={savingServices}
-                    aria-label={`${service.name} ${service.is_active ? '비활성화' : '재활성화'}`}
+                    disabled={!settingsReady || savingServices}
+                    aria-label={`${service.name} ${service.is_active ? '사용 중지' : '다시 사용'}`}
                   >
                     {service.is_active ? <Power size={16} /> : <RotateCcw size={16} />}
-                    <span>{service.is_active ? '비활성화' : '재활성화'}</span>
+                    <span>{service.is_active ? '사용 중지' : '다시 사용'}</span>
                   </button>
                 </div>
               </div>
@@ -1025,15 +1070,15 @@ function SettingsPageContent() {
         </div>
 
         <div className={styles.addServiceRow}>
-          <h3>새 서비스 추가</h3>
+          <h3>새 시술 추가</h3>
           <label className={`${styles.serviceField} ${styles.serviceNameField}`}>
-            <span>서비스명</span>
+            <span>시술 이름</span>
             <div className="form-input">
               <input
                 placeholder="예: 여성 커트"
                 value={newService.name}
                 onChange={(e) => setNewService((prev) => ({ ...prev, name: e.target.value }))}
-                disabled={savingServices}
+                disabled={!settingsReady || savingServices}
               />
             </div>
           </label>
@@ -1049,7 +1094,7 @@ function SettingsPageContent() {
                 placeholder="미설정"
                 value={newService.price_krw}
                 onChange={(e) => setNewService((prev) => ({ ...prev, price_krw: e.target.value }))}
-                disabled={savingServices}
+                disabled={!settingsReady || savingServices}
               />
             </div>
           </label>
@@ -1064,7 +1109,7 @@ function SettingsPageContent() {
                     default_duration_minutes: Number(e.target.value),
                   }))
                 }
-                disabled={savingServices}
+                disabled={!settingsReady || savingServices}
                 className="w-full h-full bg-transparent appearance-none"
               >
                 {DURATION_MINUTE_OPTIONS.map((minutes) => (
@@ -1079,15 +1124,15 @@ function SettingsPageContent() {
             type="button"
             className={styles.addButton}
             onClick={handleAddServiceDefault}
-            disabled={savingServices}
-            aria-label="서비스 추가"
+            disabled={!settingsReady || savingServices}
+            aria-label="시술 추가"
           >
             {savingServices ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
-            <span>서비스 추가</span>
+            <span>시술 추가</span>
           </button>
         </div>
         <p className={styles.policyText}>
-          사용한 서비스는 삭제하지 않고 비활성화합니다. 기존 예약의 당시 서비스명과 가격은 유지됩니다.
+          사용한 시술은 삭제하지 않고 사용 중지합니다. 기존 예약의 당시 시술 이름과 가격은 그대로 유지됩니다.
         </p>
       </section>
 
@@ -1205,19 +1250,29 @@ function SettingsPageContent() {
         <div className={styles.impactCard}>
           <p className="caption">저장 전 영향도</p>
           <p className={styles.impactValue}>
-            {calculatingImpact ? '계산 중...' : `취소 예정 confirmed 예약: ${impactCount}건`}
+            {calculatingImpact
+              ? '취소될 예약 수를 확인하는 중입니다.'
+              : impactError
+                ? '취소될 예약 수를 확인하지 못했습니다.'
+                : `취소 예정 확정 예약: ${impactCount}건`}
           </p>
+          {impactError ? (
+            <button type="button" className={styles.impactRetry} onClick={calculateImpact}>
+              <RefreshCw size={16} aria-hidden="true" />
+              다시 계산하기
+            </button>
+          ) : null}
           {mode === CLOSED_DAY_MODE.SINGLE ? (
-            <p className={styles.policyText}>단일 저장은 confirmed 예약을 선택 취소한 뒤 진행합니다.</p>
+            <p className={styles.policyText}>하루 휴무일은 취소할 확정 예약을 직접 선택한 뒤 저장합니다.</p>
           ) : (
-            <p className={styles.policyText}>대상 휴무일 {targetDatesPreviewCount}일 · 기간/정기 저장 시 confirmed 예약은 일괄 취소됩니다.</p>
+            <p className={styles.policyText}>대상 휴무일 {targetDatesPreviewCount}일 · 기간 또는 정기 휴무를 저장하면 확정 예약이 모두 취소됩니다.</p>
           )}
         </div>
 
         {mode !== CLOSED_DAY_MODE.SINGLE ? (
           <div className={styles.warningBox}>
             <AlertCircle size={16} />
-            <span>기간/정기 저장 시 confirmed 예약이 일괄 취소됩니다.</span>
+            <span>기간 또는 정기 휴무를 저장하면 해당 날짜의 확정 예약이 모두 취소됩니다.</span>
           </div>
         ) : null}
 
@@ -1231,6 +1286,7 @@ function SettingsPageContent() {
         <div className={styles.actions}>
           {mode === CLOSED_DAY_MODE.SINGLE ? (
             <button
+              ref={conflictTriggerRef}
               type="button"
               className={styles.secondaryButton}
               onClick={handleOpenConflictSheet}
@@ -1251,7 +1307,11 @@ function SettingsPageContent() {
             type="button"
             className="btn-primary"
             onClick={mode === CLOSED_DAY_MODE.SINGLE ? handleApplySingleClosedDay : handleApplyBatchClosedDays}
-            disabled={saving || removing}
+            disabled={
+              saving
+              || removing
+              || (mode !== CLOSED_DAY_MODE.SINGLE && (calculatingImpact || Boolean(impactError)))
+            }
           >
             {saving ? (
               <>
@@ -1351,6 +1411,7 @@ function SettingsPageContent() {
         onClose={() => setSheetOpen(false)}
         onConfirm={handleApplySingleClosedDay}
         saving={saving}
+        returnFocusRef={conflictTriggerRef}
       />
     </div>
   );
