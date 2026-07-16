@@ -8,7 +8,7 @@
 | R-01 | [R-01-rls-policy.md](./R-01-rls-policy.md) | Done (live + fresh replay verified) |
 | R-05 | [R-05-settings-page.md](./R-05-settings-page.md) | Done (live verified) |
 | R-03 | [R-03-booking-conflict-business-hours.md](./R-03-booking-conflict-business-hours.md) | Done (live + fresh replay verified) |
-| R-04 | [R-04-kst-date-time-consistency.md](./R-04-kst-date-time-consistency.md) | Done (live verified) |
+| R-04 | [R-04-kst-date-time-consistency.md](./R-04-kst-date-time-consistency.md) | Done (live + unit verified) |
 | R-02 | [R-02-appointment-edit-cancel-status.md](./R-02-appointment-edit-cancel-status.md) | Done (live verified) |
 
 ## Phase 1 검증 기준
@@ -101,6 +101,10 @@ R-13은 PR #18 merge `main@f904bcf`로 Production에 배포됐습니다. deploym
 R-09는 `origin/main@a360cea` 기반 별도 worktree에서 aggregate RPC, 기간 통계 UI, Pencil 6개 상태를 구현했습니다. forward 11개와 `schema.sql` 양 경로 R-07/R-08/R-09 SQL 회귀, 390×844·360×800 mobile mock, production-mode PWA/offline을 통과했습니다. PR #20 merge `main@b63f9a3`, exact 11번째 live migration, RPC catalog/ACL, Production deployment `dpl_FBDsYn26v2ZXiJthe5z97vsJDwk2`와 canonical 공개/PWA/offline 검증까지 완료했습니다.
 
 R-14는 Pencil Before/After 4쌍과 공통 상태 매트릭스, 공통 가독성·조작 토큰, 홈·예약·새 예약·고객 상세 코드를 구현했습니다. 합성 데이터로 390×844·360×800 정상 화면, 390×844 empty/error/disabled, 키보드 축소, production build, PWA NetworkOnly·민감 cache 0건을 검증했습니다. 실제 50~60대 여성 대표 사용자 2명 검증이 남아 있으므로 `Done`이 아니라 구현 완료·대표 사용자 검증 대기 상태입니다. 홈 정보구조 개편, 반복 예약, 별도 저장 완료 흐름은 아래 번호 미배정 후보로 유지합니다.
+
+### 교차 품질 개선
+
+- [AI-slop remediation (2026-07-16)](./ai-slop-remediation-2026-07-16.md): 고객 서버 검색 최소 select·exact count·50개 pagination과 특수문자-only 방어, 홈·예약 독립 실패 상태, 가격 상태 구분, 설정 fail-closed 저장, 휴무일 dialog 접근성을 정비했습니다. 실제 owner/staff Auth/JWT 브라우저 검증은 미검증 비차단 운영 후속으로 defer하며 Production 데이터·migration·RLS·수동 배포는 변경하지 않습니다.
 
 ## Phase 2 착수 기준
 - R-06/R-07은 재구현하지 않습니다. 실기기 install/standalone/SW update와 post-deploy authenticated browser 검증은 완료 근거와 분리한 후속 운영 작업입니다.

@@ -19,11 +19,66 @@
   max-height: 74dvh;
 }
 
+.handle {
+  width: 56px;
+  height: 5px;
+  flex: 0 0 auto;
+  align-self: center;
+  border-radius: var(--radius-full);
+  background: var(--border-default);
+}
+
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+}
+
+.header > div {
+  min-width: 0;
+}
+
+.header p {
+  margin-top: 4px;
+  line-height: 1.45;
+}
+
+.closeButton {
+  display: inline-flex;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+}
+
+.closeButton:disabled {
+  color: var(--disabled-text);
+}
+
+.warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--status-warning-light, #fcebdf);
+  color: var(--status-warning, #9a5a2b);
+}
+
+.warning svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+}
+
+.warning p {
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 .list {
@@ -34,25 +89,42 @@
 }
 
 .item {
-  min-height: 52px;
+  min-height: 64px;
   border-radius: 12px;
   background: var(--bg-primary);
-  padding: 10px 12px;
+  padding: 6px 12px 6px 6px;
   display: flex;
-  gap: 10px;
+  gap: 6px;
   align-items: center;
 }
 
-.item input {
-  width: 18px;
-  height: 18px;
+.checkboxTarget {
+  display: inline-flex;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkboxTarget input {
+  width: 22px;
+  height: 22px;
   flex-shrink: 0;
+  accent-color: var(--accent-primary);
 }
 
 .itemInfo {
   display: flex;
+  min-width: 0;
   flex-direction: column;
   gap: 2px;
+}
+
+.itemInfo > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .itemLocked {
@@ -68,4 +140,26 @@
   justify-content: center;
   color: var(--text-tertiary);
   font-size: 13px;
+}
+
+.confirmButton {
+  display: inline-flex;
+  width: 100%;
+  min-height: 56px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 14px;
+  border-radius: var(--radius-lg);
+  background: var(--status-danger);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.confirmButton:disabled {
+  background: var(--disabled-bg);
+  color: var(--disabled-text);
 }

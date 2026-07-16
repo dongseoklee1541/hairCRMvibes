@@ -134,7 +134,7 @@ Operational rules:
 
 - Follow existing JavaScript, React, Tailwind, and CSS conventions before introducing new global patterns.
 - Do not add or replace production dependencies unless the approved Implementation Plan names the dependency, rationale, bundle/runtime impact, and rollback.
-- Use only scripts that exist in `package.json`. Currently the repository exposes `dev`, `build`, and `start`; do not assume `lint`, `test`, or `typecheck` exists.
+- Use only scripts that exist in `package.json`. Currently the repository exposes `dev`, `build`, `start`, `test`, `test:node`, and `test:race`; do not assume `lint` or `typecheck` exists.
 - Treat generated service-worker files such as `public/sw.js` and `public/workbox-*.js` as build outputs. Change `next.config.mjs` or source assets and regenerate them; do not hand-edit generated output unless the plan explicitly requires it.
 - Do not remove or replace the existing PWA baseline without documenting service-worker, offline, update, and rollback risks.
 
@@ -179,7 +179,8 @@ Run checks that exist and are relevant to the approved scope. Record exact comma
 ### 6.1 Local Checks
 
 - Code/config/dependency changes: run `npm run build` at least once.
-- If `lint`, `test`, or `typecheck` scripts are added later, run those relevant to the change.
+- Run `npm test` for application logic changes covered by the Node and appointment race suites.
+- If `lint` or `typecheck` scripts are added later, run those relevant to the change.
 - The build must complete without errors. Resolve new relevant warnings caused by the change or report them as blockers; do not hide them.
 - Documentation-only changes: read back the changed document, inspect the diff, run `git diff --check`, and verify referenced paths/commands. An application build is not required.
 - Database changes: validate migration ordering, apply/replay behavior in the approved environment, policy/grant behavior, representative SQL or sample data, and `schema.sql` synchronization.

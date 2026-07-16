@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/components/AuthProvider';
 import { supabase } from '@/lib/supabase';
+import { formatPriceKrw } from '@/lib/formatPrice';
 import {
   formatKoreanShortDate,
   formatKstDateDot,
@@ -39,11 +40,6 @@ function formatDate(date) {
     short: formatKoreanShortDate(date),
     day: getWeekdayLabelFromDateKey(date, KOREAN_WEEKDAYS_LONG),
   };
-}
-
-function formatPriceKrw(value) {
-  if (value === null || value === undefined) return '가격 미설정';
-  return `${new Intl.NumberFormat('ko-KR').format(Number(value))}원`;
 }
 
 function getLifecycleStatus(customer) {
@@ -68,7 +64,7 @@ function getLifecycleErrorMessage(error) {
 function getAppointmentErrorMessage(error) {
   if (!navigator.onLine) return '오프라인에서는 시술 이력을 추가할 수 없습니다.';
   if (error?.code === '55000' && error?.message?.includes('서비스')) {
-    return '선택한 서비스가 비활성화되었습니다. 목록을 새로고침한 뒤 다시 선택해주세요.';
+    return '선택한 시술은 현재 사용하지 않습니다. 목록을 새로고침한 뒤 다른 시술을 선택해 주세요.';
   }
   if (error?.code === '55000' || error?.code === '23514') {
     return '보관되거나 병합된 고객에게는 새 시술 이력을 추가할 수 없습니다.';
@@ -178,7 +174,7 @@ export default function CustomerDetailPage() {
     } catch (error) {
       console.error('활성 서비스 조회 오류:', error);
       setServiceDefaults([]);
-      setServicesError('활성 서비스를 불러오지 못했습니다. 시술명을 직접 입력해주세요.');
+      setServicesError('사용 중인 시술을 불러오지 못했습니다. 시술 이름을 직접 입력해 주세요.');
     } finally {
       setServicesLoading(false);
     }
@@ -759,9 +755,9 @@ export default function CustomerDetailPage() {
                 </select>
                 <small className={styles.fieldHint}>
                   {servicesLoading
-                    ? '활성 서비스를 불러오는 중입니다.'
+                    ? '사용 중인 시술을 불러오는 중입니다.'
                     : servicesError || (serviceDefaults.length === 0
-                      ? '활성 서비스가 없습니다. 시술명을 직접 입력해주세요.'
+                      ? '사용 중인 시술이 없습니다. 시술 이름을 직접 입력해 주세요.'
                       : '시술을 선택하면 현재 가격과 기본 시간을 완료 이력에 기록합니다.')}
                 </small>
               </label>
