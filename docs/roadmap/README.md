@@ -13,7 +13,7 @@
 
 ## Phase 1 검증 기준
 - 기준일: 2026-07-13
-- 현재 Production 애플리케이션 release 기준: R-10 PR #26 merge `main@6cfb71e88cbe4bbfd3a8469a3c5b4487a3ccb449` (구현 commit `fccf3753856abbe0c254813eafd48bcbfffafcb0`; 이후 release SSOT 문서 동기화 PR은 docs-only 변경으로 구분)
+- 현재 Production 애플리케이션 release 기준: R-15 PR #34 merge `main@52fa394d783cb418883d413ef4796be32f8afcde` (구현 commit `a0f324f743809baad8a0be91550c6dc6daf075ae`; docs-only SSOT 동기화 PR은 별도)
 - 2026-07-12 감사 착수 baseline은 PR #14 merge `2f915c2e8f7ec7e736a6ee4c315caa03113416ab`이었고, 감사 문서 PR #15 merge 후 최신 `origin/main`은 `a7a4186e76c9225c9273fa8474cea27440d36d40`입니다. 두 PR은 문서만 변경했으므로 Production 애플리케이션 release SHA와 구분합니다.
 - release 세션의 live Supabase migration/RLS/RPC/R-03 smoke, R-02 Playwright mobile smoke, Pencil R-02 `snapshot_layout`/export, `npm run build`, `git diff --check`, Vercel Production canonical smoke를 완료 근거로 사용합니다. 이번 감사에서는 현재 GitHub/Supabase catalog와 canonical 공개 endpoint만 읽기 전용으로 재확인했습니다.
 - Fresh DB 정책은 A안을 선택했습니다. `20260219000000_phase1_genesis_baseline.sql`을 포함한 forward migration 8개를 disposable PostgreSQL 17에서 전체 replay했고, 핵심 객체/RLS/RPC/예약 guard를 검증했습니다.
@@ -89,6 +89,8 @@ R-07 release 세션에서 catalog/ACL/RPC 29개 계약과 실제 owner/staff/ano
 | R-13 | [R-13-appointment-customer-search-quick-create.md](./R-13-appointment-customer-search-quick-create.md) | Done (production deployed; public/PWA smoke verified) |
 | R-09 | [R-09-stats-advanced.md](./R-09-stats-advanced.md) | Done (production deployed; exact live migration/ACL/PWA verified) |
 | R-14 | [R-14-easy-usability-foundation.md](./R-14-easy-usability-foundation.md) | In Progress (구현 완료 · 대표 사용자 검증 대기; PR #25 merge `main@cdabf409`, Production deployment `5424206017` success, canonical 공개/PWA 자산 200·R-14 bundle marker, Cron 무인증 `401/no-store`, CSV export `dataset=customers` 무인증 `401/private/no-store` 확인; 실제 고객·예약 데이터 미조회·미변경) |
+| R-15 | [R-15-customer-service-price.md](./R-15-customer-service-price.md) | Done (production deployed; live migration applied; authenticated UI smoke pending) |
+| R-16 | [R-16-customer-session-pass.md](./R-16-customer-session-pass.md) | Proposed (설계 문서화 완료 · 구현 승인 없음) |
 
 R-07 로컬 완료 게이트에는 등록·편집 미저장 상태의 브라우저 Back/Forward·내부 이동 확인, 제출 중 dirty 유지·지연 응답 stale route 차단, 저장 성공 시 대화상자 0건, 홈 390×844·360×800 지속 콘솔 0건, 새 브라우저 컨텍스트의 PWA/offline 재검증이 포함됩니다. Production release에서는 canonical PWA 핵심 자산과 Cron/DB/runtime log 경계를 추가 확인했습니다.
 
@@ -102,6 +104,10 @@ R-09는 `origin/main@a360cea` 기반 별도 worktree에서 aggregate RPC, 기간
 
 R-14는 Pencil Before/After 4쌍과 공통 상태 매트릭스, 공통 가독성·조작 토큰, 홈·예약·새 예약·고객 상세 코드를 구현했습니다. 합성 데이터로 390×844·360×800 정상 화면, 390×844 empty/error/disabled, 키보드 축소, production build, PWA NetworkOnly·민감 cache 0건을 검증했습니다. 실제 50~60대 여성 대표 사용자 2명 검증이 남아 있으므로 `Done`이 아니라 구현 완료·대표 사용자 검증 대기 상태입니다. 홈 정보구조 개편, 반복 예약, 별도 저장 완료 흐름은 아래 번호 미배정 후보로 유지합니다.
 
+R-15는 PR #34 merge `main@52fa394`로 코드·Pencil·migration이 반영됐고 Preview/Production DB에 `actual_price_krw`·`set_appointment_actual_price`·R-09 actual revenue 분리를 적용했습니다. 실제 매출은 completed + non-null `actual_price_krw`만 사용하며 snapshot fallback은 없습니다. 기존 예약 backfill은 하지 않았고 authenticated owner/staff UI smoke는 후속 검증입니다.
+
+R-16은 고객별 총 횟수와 예약별 사용 원장을 분리하고 confirmed 예약에서 `reserved`, completed에서 `consumed`, cancelled에서 `released`로 전이하는 설계입니다. 마지막 1회를 동시에 초과 예약하지 않도록 DB row lock, partial unique index와 단일 transaction을 요구하며, 횟수권 사용을 실제 금액 0원이나 매출로 자동 기록하지 않습니다. 고객 병합·만료·owner/staff 권한과 RPC 통합 여부는 구현 전 결정사항입니다.
+
 ### 교차 품질 개선
 
 - [AI-slop remediation (2026-07-16)](./ai-slop-remediation-2026-07-16.md): 고객 서버 검색 최소 select·exact count·50개 pagination과 특수문자-only 방어, 홈·예약 독립 실패 상태, 가격 상태 구분, 설정 fail-closed 저장, 휴무일 dialog 접근성을 정비했습니다. 실제 owner/staff Auth/JWT 브라우저 검증은 미검증 비차단 운영 후속으로 defer하며 Production 데이터·migration·RLS·수동 배포는 변경하지 않습니다.
@@ -113,6 +119,7 @@ R-14는 Pencil Before/After 4쌍과 공통 상태 매트릭스, 공통 가독성
 - 2026-07-13 `burtyhairCRM-preview` 전용 Supabase 프로젝트를 만들고 forward migration 11개를 순서대로 replay했습니다. Vercel에는 Preview 범위의 공개 URL/key만 추가했으며 기존 Production/Development 값은 변경하지 않았습니다.
 - R-12는 Preview의 synthetic owner/staff/anon·모바일/PWA 검증 후 PR #22 merge `main@7a107c4`와 Production deployment `FxRGiDSgHQFXARsc2mUyCrsydtY8`까지 완료했습니다. canonical R-12 bundle, 공개/PWA 자산과 무인증 `/api/export`의 `401 + no-store`를 확인했으며 Production 실제 CSV는 생성하지 않았습니다.
 - R-14의 Pencil·코드·합성 모바일 브라우저 검증은 `codex/r14-easy-usability-foundation`에서 완료했습니다. 실제 대표 사용자 과제 관찰 결과를 기록하기 전에는 `Done`으로 전환하지 않습니다.
+- R-15는 PR #34 merge `main@52fa394`, Vercel Production 배포, Preview/Production live migration까지 완료했습니다. R-16은 설계 문서만 유지하며 별도 승인 전 구현하지 않습니다.
 
 ## 번호 미배정 사용성 후보
 

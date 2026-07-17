@@ -3,14 +3,14 @@
 ## 문서 목적
 - 이 문서는 Hair CRM의 차후 개발 우선순위를 고정하고, 구현 착수 전 의사결정을 빠르게 하기 위한 로드맵입니다.
 - 본 문서는 기능 구현이 아니라 계획 문서이며, 상대적 실행 순서(Phase) 기준으로 관리합니다.
-- 범위는 워크스페이스 코드베이스와 `pencil-hairshopcrm.pen` 분석 결과를 기반으로 한 정식 로드맵 14개와 번호 미배정 사용성 후보 3개입니다.
+- 범위는 워크스페이스 코드베이스와 `pencil-hairshopcrm.pen` 분석 결과를 기반으로 한 정식 로드맵 16개와 번호 미배정 사용성 후보 3개입니다.
 
 ## 우선순위 기준
 - `P0`: 보안/데이터 보호, 예약 운영 연속성, 운영 중단 리스크를 직접 줄이는 항목
 - `P1`: 운영 효율과 품질(사용성/통계/데이터 일관성) 고도화 항목
 - `P2`: 확장성/자동화/관리 편의성 중심의 중장기 항목
 
-## 정식 기능 리스트 (14개)
+## 정식 기능 리스트 (16개)
 | ID | 기능 | 우선순위 | 요약 | 선행조건 | 예상효과 | 난이도(S/M/L) |
 | --- | --- | --- | --- | --- | --- | --- |
 | R-01 | RLS 정책 정리 | P0 | `Allow all` 성격 정책 제거 및 인증/역할 기반 접근 정책 정비 | 현재 정책/권한 매트릭스 정리 | 데이터 노출 리스크 감소, 권한 경계 명확화 | M |
@@ -24,6 +24,8 @@
 | R-13 | 예약 고객 검색·빠른 등록 | P1 | 예약 화면에서 활성 고객 이름 검색과 인라인 고객 등록·자동 선택을 제공 | R-07 고객 validation·중복 정책 | 예약 등록 이탈·재입력 감소 | M |
 | R-09 | 통계 고도화(매출/객단가/재방문율) | P1 | 기존 건수 통계를 매출/단가/리텐션 지표로 확장 | R-04, R-08 | 의사결정 지표 품질 향상 | M |
 | R-14 | 쉬운 사용성 1차(가독성·조작성 기반) | P1 | 50~60대 여성 사용자를 중심으로 핵심 화면의 글자, 용어, 버튼, 폼 피드백을 쉽게 정비 | 핵심 운영 화면 현황과 대표 사용자 검증 기준 | 오조작과 학습 부담 감소, 예약·고객 업무 자신감 향상 | M |
+| R-15 | 고객별 실제 시술금액 입력·수정 | P1 | 서비스 기본가격 snapshot과 고객에게 실제 적용한 금액을 분리해 예약·고객 이력에서 입력·수정 | R-08, R-09 통계 계약 재결정 | 고객별 실제 가격 이력과 매출 데이터 품질 향상 | M |
+| R-16 | 고객별 횟수권 | P1 | 고객별 총 횟수와 예약별 사용 원장을 두고 예약 확정 시 차감·취소 시 복구·잔여 조회 | R-02, R-07, R-08, R-15 | 패키지 운영의 잔여 오류와 수기 관리 감소 | L |
 | R-10 | 권한관리 UI(직원 초대/권한변경) | P2 | 원장이 직원 계정의 역할을 UI에서 관리 가능하게 구성 | R-01, 초대 흐름 합의 | 운영 권한 관리 비용 절감 | L |
 | R-11 | 알림 자동화(예약 리마인드/재방문) | P2 | 공통 dry-run/outbox 위에 고객 SMS·직원 PWA Push·동의 기반 재방문 채널을 단계적으로 구성 | R-02, R-08, R-10, provider·법적 gate | 노쇼 감소, 운영 확인 자동화, 재방문율 상승 | L |
 | R-12 | CSV 내보내기/백업 | P2 | 고객/예약 데이터 내보내기 및 운영 백업 지원 | 개인정보 마스킹/보관 정책 | 운영 안정성 및 데이터 이관 용이성 향상 | M |
@@ -63,6 +65,8 @@
 | R-11 | Design Ready (PR #31 merged; implementation deferred) | 설계 PR #31을 `main@93c94bb`로 병합했고 목적별 채널, 공통 outbox/dry-run, 권한·개인정보·동의 경계와 Pencil 4개 frame을 보존했습니다. 구현은 보류했으며 코드·migration·provider·Cron·실제 발송은 없습니다. | 다른 roadmap 업무를 우선합니다. 재개 시 최신 기준을 재감사하고 30일 보존의 dry-run 전용 foundation만 별도 승인하며 live·attempt·manual-review·외부 dispatch는 provider/live gate 전까지 비활성화 |
 | R-12 | Done (production deployed; Preview role/PWA + Production public/API boundary verified) | PR #22 merge `main@7a107c4`, Vercel deployment `FxRGiDSgHQFXARsc2mUyCrsydtY8`, canonical R-12 설정 chunk·공개/PWA 자산·무인증 export `401 + no-store`를 확인했습니다. Node tests 10/10·100,005행과 전용 Preview anon 401/staff 403/owner 고객·예약 200, 모바일 UI/PWA cache, residue 0 근거를 유지합니다. Production DB는 비식별 count/RLS/grant/residue만 배포 전후 재확인했습니다. | 모바일·Safari Blob fallback 메모리, Vercel 함수 실행시간, 다중 페이지 비-snapshot 특성은 운영 규모 부하 검증 필요. Production 실제 owner CSV 생성은 개인정보 보관 책임 때문에 의도적으로 미실행 |
 | R-14 | In Progress (구현 완료 · 대표 사용자 검증 대기) | 구현 commit `c7eaaabaabb47cbe4b11fabb6aaaccc1c428cb67`, PR #25 merge `main@cdabf40982c1b8d2dcc196bacc116b3d399efa15`, GitHub Production deployment record `5424206017` success, canonical `https://hair-cr-mvibes.vercel.app`, 공개/PWA 자산 200·R-14 bundle marker, Cron 무인증 `401/no-store`, CSV export `dataset=customers` 무인증 `401/private/no-store`를 확인했습니다. 실제 고객·예약 데이터는 조회하거나 변경하지 않았습니다. | 실제 50~60대 여성 대표 사용자 2명에게 고객 찾기·새 예약 등록·예약 확인/상태 변경 과제를 관찰하고 막힘·오조작·용어 이해·완료 확신을 기록한 뒤 `Done` 여부 판단 |
+| R-15 | Done (production deployed; live migration applied; authenticated UI smoke pending) | PR #34 merge `main@52fa394`, implementation `a0f324f` + ignore `96bd4b7`. Vercel Production deployment success, Preview/Production에 `r15_customer_service_price` migration 적용. actual_price 컬럼·RPC·trigger·stats signature 검증 완료. 기존 예약 backfill 0. | 실제 owner/staff 로그인 UI smoke와 Production authenticated stats 조회는 후속 운영 검증. R-16은 별도 설계/승인 유지 |
+| R-16 | Proposed (설계 문서화 완료 · 구현 승인 없음) | 최신 `origin/main@ed5b07b`에서 횟수권 선행 구현이 없음을 확인하고 총 횟수+예약별 사용 원장, confirmed 예약 차감·completed 확정·cancelled 복구, row lock/unique 원자성 권장안을 문서화했습니다. 코드·DB·Pencil은 변경하지 않았습니다. | owner/staff 관리 권한, 만료·고객 병합 정책, RPC 통합 여부와 R-15 가격 경계를 결정한 뒤 별도 Implementation Plan 승인 |
 
 ## 교차 품질 개선 (2026-07-16)
 
@@ -108,6 +112,8 @@
 - `R-13` 예약 고객 검색·빠른 등록: Production 배포·canonical 공개/PWA smoke Done
 - `R-09` 통계 고도화(매출/객단가/재방문율): PR/live/Production release Done
 - `R-14` 쉬운 사용성 1차: 구현 완료·대표 사용자 검증 대기. 번호 미배정 후보 3개는 실제 사용자 관찰 뒤 승격 여부 판단
+- `R-15` 고객별 실제 시술금액 입력·수정: Done (PR #34 merge·Preview/Production migration·Vercel Production 배포 완료; authenticated UI smoke 대기)
+- `R-16` 고객별 횟수권: Proposed, R-15 가격 의미와 예약 차감·취소 복구·고객 병합 계약 결정 후 별도 구현 승인
 
 ### Phase 2 기능 착수 기준 (2026-07-12 감사)
 - R-06/R-07은 재구현하지 않습니다. 미완료 실기기/browser/Preview 검증은 기능 완료 근거와 분리한 후속 운영 작업으로 추적합니다.
@@ -127,13 +133,15 @@
 - `R-08 -> R-09`
 - `R-07 -> R-13 -> R-09` (실행 순서; R-13은 R-09 집계 계약을 변경하지 않음)
 - `R-06 + R-13 -> R-14` (현재 모바일/PWA·예약 등록 흐름을 유지하면서 사용성 기반 정비)
+- `R-08 + R-09 -> R-15` (서비스 기본가격 snapshot과 실제 적용 금액·통계 의미 분리)
+- `R-02 + R-07 + R-08 + R-15 -> R-16` (예약 상태·고객 lifecycle·서비스 자격·가격 경계를 먼저 고정)
 - `R-08 -> R-11`
 - `R-10 -> R-11`
 - `R-02 + R-03 -> R-11`
 
 ## 리스크 및 완화
 - 우선순위 해석 차이: P0/P1/P2 기준(보안/운영중단/확장성)을 문서 상단에 고정합니다.
-- 항목 중복 또는 누락: ID(`R-01`~`R-14`)를 고정하고 번호 미배정 후보는 별도 승인 전까지 R ID로 취급하지 않습니다.
+- 항목 중복 또는 누락: ID(`R-01`~`R-16`)를 고정하고 번호 미배정 후보는 별도 승인 전까지 R ID로 취급하지 않습니다.
 - 문서 노후화: 스프린트 단위로 점검하며 `마지막 업데이트` 섹션을 반드시 갱신합니다.
 
 ## 의사결정 옵션
@@ -157,7 +165,9 @@
 - 실제 구현 착수는 별도 승인 후 진행하며, 구현 계획 문서는 본 로드맵을 참조합니다.
 
 ## 마지막 업데이트
-- 작성일: 2026-07-16
+- 작성일: 2026-07-17
+- R-15 release 기록: PR #34 merge `main@52fa394d783cb418883d413ef4796be32f8afcde` (구현 `a0f324f`, ignore `96bd4b7`). Vercel Preview READY, Production deployment success. Preview migration `20260717140419_r15_customer_service_price`, Production migration `20260717140540_r15_customer_service_price` + signature fix `r15_customer_service_price_stats_signature_fix` 적용. catalog 검증: actual_price 4컬럼, check/trigger/RPC, authenticated EXECUTE 허용·anon 차단, nonnull actual_price 0. 실제 고객·예약 데이터 변경 없음.
+- R-15/R-16 설계 기록: 최신 `origin/main@ed5b07bee005bd8d84d164a78c00e0adf38153ab`에서 R-08/R-09 가격 계약과 예약·고객 상세·고객 lifecycle을 읽기 전용 검토했습니다. R-15는 실제 시술금액을 기존 snapshot과 분리하는 안, R-16은 총 횟수와 예약별 사용 원장을 분리해 confirmed 차감·completed 확정·cancelled 복구하는 안을 권장안으로 문서화했습니다. 구현 승인, 코드·migration·Pencil·Production 변경은 없습니다.
 - R-10 구현/통합 기록: `origin/main@b225884`에서 시작해 R-14 변경과 Pencil node 공존을 보존했고, 승인된 A′ private HMAC invitation claim ledger·fail-closed gate·운영 runbook을 구현했습니다. implementation commit `fccf3753856abbe0c254813eafd48bcbfffafcb0`은 PR #26으로 `main@6cfb71e`에 merge됐으며, Preview/Production migration과 Vercel Production release는 완료됐습니다. Pencil transport 재검증은 별도 세션 blocker이고 `.pen` SHA-1은 불변입니다. Auth URL은 이번 release에서 변경하지 않았고, advisor WARN 및 authenticated owner smoke blocker 때문에 R-10은 `In Progress`입니다.
 - R-11 선행 설계/보류 기록: 설계 PR #31을 merge commit `93c94bbac22d263cdca5fcb6ab0ee6b7e7295523`으로 `main`에 반영했습니다. 구현은 보류하고 다른 roadmap 업무를 우선합니다. 재개 시 첫 단위는 dry-run run 집계와 `simulated` job/delivery만 30일 보존하는 foundation이며 live·attempt·manual-review·외부 dispatch는 비활성화합니다. 실제 발송의 최소 dedupe tombstone 보존, HMAC rotation, provider 증거 기반 manual-review, 법적 동의/SLA·VAPID는 별도 live gate입니다.
 - 2026-07-12 감사 직접 확인: GitHub PR #9~#15 merge, PR #15 merge commit `origin/main@a7a4186e76c9225c9273fa8474cea27440d36d40`; 당시 Supabase live migration 9개·R-07 RPC 7개/audit table 2개·고객 5건/예약 6건 비식별 count; canonical 공개/PWA 자산 200·Cron 무인증 401
