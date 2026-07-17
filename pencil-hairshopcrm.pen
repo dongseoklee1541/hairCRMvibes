@@ -36738,6 +36738,1216 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "NBU03",
+      "x": 19812,
+      "y": 0,
+      "name": "R-15 새 예약 실제금액 - 빈값과 기본가격 사용",
+      "clip": true,
+      "width": 390,
+      "height": 920,
+      "fill": "$bg-primary",
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "g2e44R",
+          "x": 20,
+          "y": 22,
+          "name": "상태 시간",
+          "fill": "$text-primary",
+          "content": "9:41",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "bflT3",
+          "x": 325,
+          "y": 22,
+          "name": "상태 신호",
+          "fill": "$text-primary",
+          "content": "● ● ●",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "kzgDh",
+          "x": 20,
+          "y": 78,
+          "name": "새 예약 제목",
+          "fill": "$text-primary",
+          "content": "새 예약",
+          "fontFamily": "Outfit",
+          "fontSize": 26,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "DPNjN",
+          "x": 20,
+          "y": 116,
+          "name": "새 예약 안내",
+          "fill": "$text-secondary",
+          "content": "실제 시술금액은 선택 입력이에요.",
+          "fontFamily": "Outfit",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "qvaMC",
+          "x": 20,
+          "y": 164,
+          "name": "실제금액 입력 카드",
+          "width": 350,
+          "height": 246,
+          "fill": "$bg-surface",
+          "cornerRadius": 16,
+          "stroke": "$border-subtle",
+          "strokeWidth": 1,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "OGCGW",
+              "x": 16,
+              "y": 18,
+              "name": "실제금액 라벨",
+              "fill": "$text-primary",
+              "content": "실제 시술금액 (선택)",
+              "fontFamily": "Outfit",
+              "fontSize": 15,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "YszvN",
+              "x": 16,
+              "y": 52,
+              "name": "실제금액 빈 입력",
+              "width": 318,
+              "height": 52,
+              "fill": "$bg-surface",
+              "cornerRadius": 12,
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "QL1wI",
+                  "x": 14,
+                  "y": 15,
+                  "name": "실제금액 placeholder",
+                  "fill": "$text-tertiary",
+                  "content": "금액을 입력하지 않아도 저장할 수 있어요",
+                  "fontFamily": "Outfit",
+                  "fontSize": 15,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "n5sHP",
+                  "x": 286,
+                  "y": 16,
+                  "name": "실제금액 원",
+                  "fill": "$text-secondary",
+                  "content": "원",
+                  "fontFamily": "Outfit",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "x3g8N",
+              "x": 16,
+              "y": 122,
+              "name": "선택 서비스 기준가격",
+              "fill": "$text-secondary",
+              "content": "여성 커트 · 현재 기본가격 30,000원",
+              "fontFamily": "Outfit",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "k9CHp8",
+              "x": 16,
+              "y": 158,
+              "name": "기본가격 사용 버튼 44",
+              "width": 318,
+              "height": 44,
+              "fill": "$accent-light",
+              "cornerRadius": 12,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "zyIAU",
+                  "x": 88,
+                  "y": 12,
+                  "name": "기본가격 사용 라벨",
+                  "fill": "$accent-primary",
+                  "content": "기본가격 30,000원 사용",
+                  "fontFamily": "Outfit",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "k3L0B",
+          "x": 20,
+          "y": 428,
+          "name": "미입력 정보",
+          "width": 350,
+          "height": 82,
+          "fill": "$status-info-light",
+          "cornerRadius": 12,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "O92rY",
+              "x": 14,
+              "y": 14,
+              "name": "미입력 정보 제목",
+              "fill": "$status-info",
+              "content": "비워 두면 실제 금액 미입력으로 기록됩니다.",
+              "fontFamily": "Outfit",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "BSVGp",
+              "x": 14,
+              "y": 42,
+              "name": "미입력 정보 설명",
+              "fill": "$text-secondary",
+              "content": "예약 기준가격은 별도로 보존되며 자동 복사되지 않습니다.",
+              "fontFamily": "Outfit",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "gV2Ej",
+          "x": 20,
+          "y": 780,
+          "name": "예약 저장 CTA 56",
+          "width": 350,
+          "height": 56,
+          "fill": "$accent-primary",
+          "cornerRadius": 16,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "phNQw",
+              "x": 144,
+              "y": 16,
+              "name": "예약 저장 라벨",
+              "fill": "#FFFFFF",
+              "content": "예약 저장",
+              "fontFamily": "Outfit",
+              "fontSize": 16,
+              "fontWeight": "700"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "Ojgqs",
+          "x": 40,
+          "y": 854,
+          "name": "safe area 안내",
+          "fill": "$text-tertiary",
+          "content": "저장 버튼은 숫자 키보드와 safe-area 위에 유지됩니다.",
+          "fontFamily": "Outfit",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "hlI8U",
+      "x": 20282,
+      "y": 0,
+      "name": "R-15 예약 수정 - 가격차이 경고와 완료 사유",
+      "clip": true,
+      "width": 390,
+      "height": 1020,
+      "fill": "$bg-primary",
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "IGsgT",
+          "x": 20,
+          "y": 76,
+          "name": "예약 수정 제목",
+          "fill": "$text-primary",
+          "content": "예약 수정",
+          "fontFamily": "Outfit",
+          "fontSize": 26,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "M7TFD9",
+          "x": 20,
+          "y": 114,
+          "name": "예약 상태",
+          "fill": "$status-success",
+          "content": "완료된 예약 · 실제 금액 수정",
+          "fontFamily": "Outfit",
+          "fontSize": 13,
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "IpFIN",
+          "x": 20,
+          "y": 154,
+          "name": "기준과 실제 금액 카드",
+          "width": 350,
+          "height": 192,
+          "fill": "$bg-surface",
+          "cornerRadius": 16,
+          "stroke": "$border-subtle",
+          "strokeWidth": 1,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "Dykti",
+              "x": 16,
+              "y": 18,
+              "name": "예약 기준가격 라벨",
+              "fill": "$text-secondary",
+              "content": "예약 기준가격",
+              "fontFamily": "Outfit",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "H4mSf",
+              "x": 16,
+              "y": 40,
+              "name": "예약 기준가격 값",
+              "fill": "$text-primary",
+              "content": "30,000원",
+              "fontFamily": "Outfit",
+              "fontSize": 22,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "qlToj",
+              "x": 185,
+              "y": 18,
+              "name": "실제 금액 라벨",
+              "fill": "$text-secondary",
+              "content": "실제 시술금액",
+              "fontFamily": "Outfit",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "E4Pmc",
+              "x": 185,
+              "y": 40,
+              "name": "실제 금액 값",
+              "fill": "$accent-primary",
+              "content": "35,000원",
+              "fontFamily": "Outfit",
+              "fontSize": 22,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "lG4Ds",
+              "x": 16,
+              "y": 84,
+              "name": "서비스 변경 금액 경고",
+              "width": 318,
+              "height": 76,
+              "fill": "$status-warning-light",
+              "cornerRadius": 12,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "k5XymN",
+                  "x": 12,
+                  "y": 12,
+                  "name": "가격 차이 경고 제목",
+                  "fill": "$status-warning",
+                  "content": "서비스가 변경되어 기준가격과 다를 수 있어요",
+                  "fontFamily": "Outfit",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "BaPn4",
+                  "x": 12,
+                  "y": 38,
+                  "name": "가격 차이 경고 설명",
+                  "fill": "$text-secondary",
+                  "content": "실제 금액은 자동으로 바뀌지 않습니다.",
+                  "fontFamily": "Outfit",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "pHD8E",
+          "x": 20,
+          "y": 366,
+          "name": "완료 예약 수정 사유",
+          "width": 350,
+          "height": 144,
+          "fill": "$bg-surface",
+          "cornerRadius": 16,
+          "stroke": "$border-default",
+          "strokeWidth": 1,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "T7VO3n",
+              "x": 16,
+              "y": 16,
+              "name": "수정 사유 라벨",
+              "fill": "$text-primary",
+              "content": "수정 사유 (필수)",
+              "fontFamily": "Outfit",
+              "fontSize": 15,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "PXBQB",
+              "x": 16,
+              "y": 50,
+              "name": "수정 사유 입력",
+              "width": 318,
+              "height": 58,
+              "fill": "$bg-surface",
+              "cornerRadius": 12,
+              "stroke": "$border-default",
+              "strokeWidth": 1,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "u69y0r",
+                  "x": 14,
+                  "y": 18,
+                  "name": "수정 사유 placeholder",
+                  "fill": "$text-tertiary",
+                  "content": "예: 현장 할인 적용",
+                  "fontFamily": "Outfit",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "bdyda",
+          "x": 20,
+          "y": 850,
+          "name": "금액 저장 CTA 56",
+          "width": 350,
+          "height": 56,
+          "fill": "$accent-primary",
+          "cornerRadius": 16,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "T18diR",
+              "x": 133,
+              "y": 16,
+              "name": "금액 저장 라벨",
+              "fill": "#FFFFFF",
+              "content": "실제 금액 저장",
+              "fontFamily": "Outfit",
+              "fontSize": 16,
+              "fontWeight": "700"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "Ud56j",
+          "x": 20,
+          "y": 928,
+          "name": "수정 감사 안내",
+          "fill": "$text-secondary",
+          "content": "값이 바뀔 때만 수정자·시각·사유가 기록됩니다.",
+          "fontFamily": "Outfit",
+          "fontSize": 12,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "CIskW",
+      "x": 20752,
+      "y": 0,
+      "name": "R-15 고객 이력 - 실제 미입력 무료와 수정",
+      "clip": true,
+      "width": 390,
+      "height": 1040,
+      "fill": "$bg-primary",
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "w6HzZ",
+          "x": 20,
+          "y": 76,
+          "name": "고객 이력 제목",
+          "fill": "$text-primary",
+          "content": "시술 이력",
+          "fontFamily": "Outfit",
+          "fontSize": 26,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "Y99nK",
+          "x": 20,
+          "y": 114,
+          "name": "고객 이력 설명",
+          "fill": "$text-secondary",
+          "content": "실제 금액과 예약 기준가격을 구분해 보여드려요.",
+          "fontFamily": "Outfit",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "aim3l",
+          "x": 20,
+          "y": 154,
+          "name": "이력 실제금액 입력됨",
+          "width": 350,
+          "height": 130,
+          "fill": "$bg-surface",
+          "cornerRadius": 16,
+          "stroke": "$border-subtle",
+          "strokeWidth": 1,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "eOqFu",
+              "x": 16,
+              "y": 16,
+              "name": "이력 실제 날짜",
+              "fill": "$text-secondary",
+              "content": "7월 10일 · 완료 · 여성 커트",
+              "fontFamily": "Outfit",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "Z1tlHU",
+              "x": 16,
+              "y": 46,
+              "name": "이력 실제 금액",
+              "fill": "$accent-primary",
+              "content": "실제 35,000원",
+              "fontFamily": "Outfit",
+              "fontSize": 19,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "e66SU",
+              "x": 16,
+              "y": 78,
+              "name": "이력 실제 기준",
+              "fill": "$text-secondary",
+              "content": "예약 기준 30,000원",
+              "fontFamily": "Outfit",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "Lxw0t",
+              "x": 282,
+              "y": 72,
+              "name": "이력 실제 수정 44",
+              "width": 44,
+              "height": 44,
+              "fill": "$accent-light",
+              "cornerRadius": 22,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "V3tKiA",
+                  "x": 12,
+                  "y": 12,
+                  "name": "이력 실제 수정 아이콘",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "pencil",
+                  "library": "lucide",
+                  "fill": "$accent-primary"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "H4afD",
+          "x": 20,
+          "y": 300,
+          "name": "이력 금액 미입력",
+          "width": 350,
+          "height": 130,
+          "fill": "$bg-surface",
+          "cornerRadius": 16,
+          "stroke": "$border-subtle",
+          "strokeWidth": 1,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "xyPYa",
+              "x": 16,
+              "y": 16,
+              "name": "이력 미입력 날짜",
+              "fill": "$text-secondary",
+              "content": "6월 18일 · 완료 · 전체 염색",
+              "fontFamily": "Outfit",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "PfXtV",
+              "x": 16,
+              "y": 46,
+              "name": "이력 미입력 값",
+              "fill": "$status-warning",
+              "content": "실제 금액 미입력",
+              "fontFamily": "Outfit",
+              "fontSize": 19,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "f0LZO",
+              "x": 16,
+              "y": 78,
+              "name": "이력 미입력 기준",
+              "fill": "$text-secondary",
+              "content": "예약 기준 80,000원",
+              "fontFamily": "Outfit",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "i5fqx",
+              "x": 282,
+              "y": 72,
+              "name": "이력 미입력 수정 44",
+              "width": 44,
+              "height": 44,
+              "fill": "$accent-light",
+              "cornerRadius": 22,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "Ipc8A",
+                  "x": 12,
+                  "y": 12,
+                  "name": "이력 미입력 수정 아이콘",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "pencil",
+                  "library": "lucide",
+                  "fill": "$accent-primary"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "baL10",
+          "x": 20,
+          "y": 446,
+          "name": "이력 무료 금액",
+          "width": 350,
+          "height": 130,
+          "fill": "$bg-surface",
+          "cornerRadius": 16,
+          "stroke": "$border-subtle",
+          "strokeWidth": 1,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "Iz1fG",
+              "x": 16,
+              "y": 16,
+              "name": "이력 무료 날짜",
+              "fill": "$text-secondary",
+              "content": "5월 24일 · 완료 · 클리닉",
+              "fontFamily": "Outfit",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "s1JDKC",
+              "x": 16,
+              "y": 46,
+              "name": "이력 무료 값",
+              "fill": "$accent-primary",
+              "content": "실제 0원 · 무료",
+              "fontFamily": "Outfit",
+              "fontSize": 19,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "gC6Ez",
+              "x": 16,
+              "y": 78,
+              "name": "이력 무료 기준",
+              "fill": "$text-secondary",
+              "content": "예약 기준 20,000원",
+              "fontFamily": "Outfit",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "mDHbu",
+              "x": 282,
+              "y": 72,
+              "name": "이력 무료 수정 44",
+              "width": 44,
+              "height": 44,
+              "fill": "$accent-light",
+              "cornerRadius": 22,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "EbmzV",
+                  "x": 12,
+                  "y": 12,
+                  "name": "이력 무료 수정 아이콘",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "pencil",
+                  "library": "lucide",
+                  "fill": "$accent-primary"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "WLYXQ",
+          "x": 20,
+          "y": 600,
+          "name": "읽기 전용 고객 안내",
+          "width": 350,
+          "height": 82,
+          "fill": "$status-warning-light",
+          "cornerRadius": 12,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "Ehhhs",
+              "x": 14,
+              "y": 14,
+              "name": "읽기 전용 고객 제목",
+              "fill": "$status-warning",
+              "content": "보관·병합·익명 처리 고객은 조회만 가능합니다.",
+              "fontFamily": "Outfit",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "JTxmr",
+              "x": 14,
+              "y": 42,
+              "name": "읽기 전용 고객 설명",
+              "fill": "$text-secondary",
+              "content": "수정 행동은 비활성화됩니다.",
+              "fontFamily": "Outfit",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "zxmxX",
+      "x": 21222,
+      "y": 0,
+      "name": "R-15 가격 수정 - 로딩 오류 오프라인 충돌",
+      "clip": true,
+      "width": 390,
+      "height": 940,
+      "fill": "$bg-primary",
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "powaE",
+          "x": 20,
+          "y": 76,
+          "name": "가격 수정 제목",
+          "fill": "$text-primary",
+          "content": "실제 금액 수정",
+          "fontFamily": "Outfit",
+          "fontSize": 26,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "wDclH",
+          "x": 20,
+          "y": 114,
+          "name": "가격 수정 안내",
+          "fill": "$text-secondary",
+          "content": "저장 상태에 따라 다음 행동을 안내합니다.",
+          "fontFamily": "Outfit",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "rN5pA",
+          "x": 20,
+          "y": 156,
+          "name": "가격 저장 중 상태",
+          "width": 350,
+          "height": 98,
+          "fill": "$bg-surface",
+          "cornerRadius": 16,
+          "stroke": "$border-subtle",
+          "strokeWidth": 1,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "H7D3R",
+              "x": 16,
+              "y": 16,
+              "name": "저장 중 제목",
+              "fill": "$text-primary",
+              "content": "35,000원 저장 중…",
+              "fontFamily": "Outfit",
+              "fontSize": 15,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "J31b4v",
+              "x": 16,
+              "y": 46,
+              "name": "저장 중 설명",
+              "fill": "$text-secondary",
+              "content": "중복 저장을 막기 위해 버튼이 비활성화됩니다.",
+              "fontFamily": "Outfit",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "eH49r",
+          "x": 20,
+          "y": 270,
+          "name": "가격 저장 성공 상태",
+          "width": 350,
+          "height": 98,
+          "fill": "$status-success-light",
+          "cornerRadius": 16,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "ABPjf",
+              "x": 16,
+              "y": 16,
+              "name": "저장 성공 제목",
+              "fill": "$status-success",
+              "content": "실제 금액이 저장되었습니다.",
+              "fontFamily": "Outfit",
+              "fontSize": 15,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "n9EVX",
+              "x": 16,
+              "y": 46,
+              "name": "저장 성공 설명",
+              "fill": "$text-secondary",
+              "content": "최신 수정 시각과 사유를 확인할 수 있어요.",
+              "fontFamily": "Outfit",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "vPJPL",
+          "x": 20,
+          "y": 384,
+          "name": "가격 오프라인 상태",
+          "width": 350,
+          "height": 98,
+          "fill": "$status-info-light",
+          "cornerRadius": 16,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "MHRJ9",
+              "x": 16,
+              "y": 16,
+              "name": "오프라인 제목",
+              "fill": "$status-info",
+              "content": "오프라인에서는 실제 금액을 저장할 수 없어요.",
+              "fontFamily": "Outfit",
+              "fontSize": 15,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "b5TIX",
+              "x": 16,
+              "y": 46,
+              "name": "오프라인 설명",
+              "fill": "$text-secondary",
+              "content": "연결 후 최신 정보를 다시 불러와 주세요.",
+              "fontFamily": "Outfit",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "IjK4b",
+          "x": 20,
+          "y": 498,
+          "name": "가격 동시 수정 충돌 상태",
+          "width": 350,
+          "height": 122,
+          "fill": "$status-warning-light",
+          "cornerRadius": 16,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "w1uSI",
+              "x": 16,
+              "y": 16,
+              "name": "동시 수정 제목",
+              "fill": "$status-warning",
+              "content": "다른 사람이 금액을 먼저 수정했어요.",
+              "fontFamily": "Outfit",
+              "fontSize": 15,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "sV5yK",
+              "x": 16,
+              "y": 46,
+              "name": "동시 수정 설명",
+              "fill": "$text-secondary",
+              "content": "조용히 덮어쓰지 않고 최신 값을 다시 불러옵니다.",
+              "fontFamily": "Outfit",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "z9cHB",
+              "x": 16,
+              "y": 70,
+              "name": "최신 값 다시 불러오기 44",
+              "width": 170,
+              "height": 36,
+              "fill": "$bg-surface",
+              "cornerRadius": 12,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "w2NvsH",
+                  "x": 22,
+                  "y": 10,
+                  "name": "최신 값 다시 불러오기 라벨",
+                  "fill": "$status-warning",
+                  "content": "최신 값 다시 불러오기",
+                  "fontFamily": "Outfit",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "UFMfP",
+      "x": 21692,
+      "y": 0,
+      "name": "R-15 통계 - 실제 매출과 예약 기준금액 분리",
+      "clip": true,
+      "width": 390,
+      "height": 980,
+      "fill": "$bg-primary",
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "i7PfCO",
+          "x": 20,
+          "y": 76,
+          "name": "통계 제목",
+          "fill": "$text-primary",
+          "content": "통계",
+          "fontFamily": "Outfit",
+          "fontSize": 26,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "MbWZY",
+          "x": 20,
+          "y": 114,
+          "name": "통계 기간",
+          "fill": "$text-secondary",
+          "content": "2026년 7월 · 완료된 예약 기준",
+          "fontFamily": "Outfit",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "SD0c0",
+          "x": 20,
+          "y": 154,
+          "name": "실제 매출 주 지표",
+          "width": 350,
+          "height": 150,
+          "fill": "$bg-surface",
+          "cornerRadius": 16,
+          "stroke": "$accent-primary",
+          "strokeWidth": 1,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "eRmtr",
+              "x": 16,
+              "y": 18,
+              "name": "실제 매출 라벨",
+              "fill": "$accent-primary",
+              "content": "실제 매출",
+              "fontFamily": "Outfit",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "CjEGY",
+              "x": 16,
+              "y": 46,
+              "name": "실제 매출 값",
+              "fill": "$text-primary",
+              "content": "1,240,000원",
+              "fontFamily": "Outfit",
+              "fontSize": 30,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "eT5gQ",
+              "x": 16,
+              "y": 94,
+              "name": "실제 매출 설명",
+              "fill": "$text-secondary",
+              "content": "완료 + 실제 금액 입력 건만 합산",
+              "fontFamily": "Outfit",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Bw1UY",
+          "x": 20,
+          "y": 320,
+          "name": "예약 기준금액 보조 지표",
+          "width": 350,
+          "height": 126,
+          "fill": "$bg-surface",
+          "cornerRadius": 16,
+          "stroke": "$border-subtle",
+          "strokeWidth": 1,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "KkDmh",
+              "x": 16,
+              "y": 18,
+              "name": "예약 기준금액 라벨",
+              "fill": "$text-secondary",
+              "content": "예약 기준금액 (보조)",
+              "fontFamily": "Outfit",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "g5Qbql",
+              "x": 16,
+              "y": 46,
+              "name": "예약 기준금액 값",
+              "fill": "$text-primary",
+              "content": "1,390,000원",
+              "fontFamily": "Outfit",
+              "fontSize": 24,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "PGzze",
+              "x": 16,
+              "y": 88,
+              "name": "예약 기준금액 설명",
+              "fill": "$text-secondary",
+              "content": "예약 당시 기본가격 합계 · 실제 매출과 섞지 않음",
+              "fontFamily": "Outfit",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "RpCaJ",
+          "x": 20,
+          "y": 462,
+          "name": "실제 금액 품질 안내",
+          "width": 350,
+          "height": 128,
+          "fill": "$status-warning-light",
+          "cornerRadius": 16,
+          "layout": "none",
+          "children": [
+            {
+              "type": "text",
+              "id": "j0R7h3",
+              "x": 16,
+              "y": 16,
+              "name": "품질 안내 제목",
+              "fill": "$status-warning",
+              "content": "실제 금액 입력 상태",
+              "fontFamily": "Outfit",
+              "fontSize": 15,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "QWUKV",
+              "x": 16,
+              "y": 46,
+              "name": "품질 안내 미입력",
+              "fill": "$text-primary",
+              "content": "미입력 3건 · 실제 매출에서 제외",
+              "fontFamily": "Outfit",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "T1RcwS",
+              "x": 16,
+              "y": 74,
+              "name": "품질 안내 무료",
+              "fill": "$text-primary",
+              "content": "0원 완료 1건 · 실제 매출에 포함",
+              "fontFamily": "Outfit",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "d4FHbm",
+              "x": 16,
+              "y": 102,
+              "name": "품질 안내 객단가",
+              "fill": "$text-secondary",
+              "content": "유료 객단가는 실제 금액 0원 초과 완료 건만 사용",
+              "fontFamily": "Outfit",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
     }
   ],
   "variables": {
@@ -36890,5 +38100,5 @@
       "value": 56
     }
   },
-  "fileToken": "c05b8afc-efc8-41cb-8fa2-c58357a7a270"
+  "fileToken": "85cd469a-50af-4721-bc3e-8b858f97a919"
 }

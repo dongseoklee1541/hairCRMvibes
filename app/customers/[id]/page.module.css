@@ -134,6 +134,27 @@
   font-weight: 700;
 }
 
+.editPriceButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 8px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--accent-primary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.editPriceButton:focus-visible {
+  outline: 2px solid var(--focus-ring, var(--accent-primary));
+  outline-offset: 2px;
+}
+
 .statusBadge {
   min-height: 28px;
   padding: 3px 9px;
@@ -720,6 +741,10 @@
 
   .historyDate {
     width: 48px;
+  }
+
+  .editPriceButton span {
+    display: none;
   }
 
   .lifecycleActions,

@@ -52,6 +52,7 @@ function NewAppointmentForm() {
     service_id: '',
     service: '',
     duration_minutes: 60,
+    actual_price_krw: '',
     memo: '',
   });
   const [submitMessage, setSubmitMessage] = useState('');
@@ -287,6 +288,14 @@ function NewAppointmentForm() {
       return;
     }
 
+    const actualPriceKrw = formData.actual_price_krw === ''
+      ? null
+      : Number(formData.actual_price_krw);
+    if (actualPriceKrw !== null && (!Number.isInteger(actualPriceKrw) || actualPriceKrw < 0)) {
+      setSubmitMessage('실제 시술금액은 0원 이상의 정수로 입력해주세요.');
+      return;
+    }
+
     try {
       setLoading(true);
       const validationMessage = await validateBeforeSubmit();
@@ -307,7 +316,8 @@ function NewAppointmentForm() {
             duration: formatDurationMinutes(formData.duration_minutes),
             duration_minutes: formData.duration_minutes,
             memo: formData.memo,
-            status: 'confirmed'
+            status: 'confirmed',
+            actual_price_krw: actualPriceKrw,
           },
         ]);
 
@@ -439,6 +449,39 @@ function NewAppointmentForm() {
                   선택한 시술명과 금액은 이 예약에 그대로 보관됩니다.
                 </p>
               </>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="appointment-actual-price">실제 시술금액 <span className={styles.optionalText}>선택</span></label>
+            <div className="form-input">
+              <input
+                id="appointment-actual-price"
+                type="number"
+                min="0"
+                step="1"
+                inputMode="numeric"
+                value={formData.actual_price_krw}
+                onChange={(event) => setFormData({ ...formData, actual_price_krw: event.target.value })}
+                disabled={loading || fetchingSettings}
+                placeholder="입력하지 않아도 저장할 수 있어요"
+              />
+              <span aria-hidden="true">원</span>
+            </div>
+            <p className={styles.dateHelp}>
+              {selectedService?.price_krw == null
+                ? '선택한 시술의 기본가격이 설정되지 않았습니다.'
+                : `현재 기본가격은 ${formatPriceKrw(selectedService.price_krw)}입니다. 실제 금액에는 자동으로 복사되지 않습니다.`}
+            </p>
+            {selectedService?.price_krw != null && (
+              <button
+                type="button"
+                className={styles.useDefaultPriceButton}
+                disabled={loading || fetchingSettings}
+                onClick={() => setFormData({ ...formData, actual_price_krw: String(selectedService.price_krw) })}
+              >
+                기본가격 {formatPriceKrw(selectedService.price_krw)} 사용
+              </button>
             )}
           </div>
 

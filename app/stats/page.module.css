@@ -203,6 +203,24 @@
   line-height: 1.45;
 }
 
+.snapshotNote {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 13px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.snapshotNote strong {
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
 .sectionHeader {
   margin-bottom: 12px;
   display: flex;

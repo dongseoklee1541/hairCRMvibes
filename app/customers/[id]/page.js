@@ -69,7 +69,13 @@ function getAppointmentErrorMessage(error) {
   if (error?.code === '55000' || error?.code === '23514') {
     return '보관되거나 병합된 고객에게는 새 시술 이력을 추가할 수 없습니다.';
   }
-  return '시술 이력을 추가하지 못했습니다. 잠시 후 다시 시도해주세요.';
+  if (error?.code === '42501') {
+    return '읽기 전용 고객이거나 권한이 없어 시술 이력을 저장할 수 없습니다.';
+  }
+  if (error?.code === '22023') {
+    return error?.message || '입력한 실제 시술금액 또는 사유를 확인해 주세요.';
+  }
+  return error?.message || '시술 이력을 추가하지 못했습니다. 잠시 후 다시 시도해주세요.';
 }
 
 export default function CustomerDetailPage() {
@@ -100,12 +106,18 @@ export default function CustomerDetailPage() {
   const [showHistorySheet, setShowHistorySheet] = useState(false);
   const [historySaving, setHistorySaving] = useState(false);
   const [historyError, setHistoryError] = useState('');
+  const [priceEditor, setPriceEditor] = useState(null);
+  const [priceSaving, setPriceSaving] = useState(false);
+  const [priceError, setPriceError] = useState('');
+  const dataRequestIdRef = useRef(0);
   const [historyForm, setHistoryForm] = useState({
     date: getTodayKstDateKey(),
     time: '10:00',
     service_id: '',
     service: '',
     duration_minutes: null,
+    actual_price_krw: '',
+    actual_price_update_reason: '',
     memo: '',
   });
 
@@ -114,10 +126,15 @@ export default function CustomerDetailPage() {
   const fetchData = useCallback(async () => {
     if (!customerId) return;
 
+    const requestId = ++dataRequestIdRef.current;
+    const isCurrentRequest = () => requestId === dataRequestIdRef.current;
+
     setStatus('loading');
     setLoadError('');
 
     try {
+      // Completed rows must not INSERT audit columns or actual_price_krw directly:
+      // audit is RPC/trigger-owned, and completed actual prices require a reason via RPC.
       const { data: customerData, error: customerError } = await supabase
         .from('customers')
         .select(
@@ -127,6 +144,7 @@ export default function CustomerDetailPage() {
         .maybeSingle();
 
       if (customerError) throw customerError;
+      if (!isCurrentRequest()) return;
       if (!customerData) {
         setCustomer(null);
         setHistory([]);
@@ -136,17 +154,19 @@ export default function CustomerDetailPage() {
 
       const { data: historyData, error: historyQueryError } = await supabase
         .from('appointments')
-        .select('id,date,time,service,memo,status,service_id,duration_minutes,price_snapshot_krw')
+        .select('id,date,time,service,memo,status,service_id,duration_minutes,price_snapshot_krw,actual_price_krw,actual_price_updated_at,actual_price_updated_by,actual_price_update_reason')
         .eq('customer_id', customerId)
         .order('date', { ascending: false })
         .order('time', { ascending: false });
 
       if (historyQueryError) throw historyQueryError;
+      if (!isCurrentRequest()) return;
 
       setCustomer(customerData);
       setHistory(historyData ?? []);
       setStatus('ready');
     } catch {
+      if (!isCurrentRequest()) return;
       setCustomer(null);
       setHistory([]);
       setLoadError(
@@ -182,6 +202,9 @@ export default function CustomerDetailPage() {
 
   useEffect(() => {
     fetchData();
+    return () => {
+      dataRequestIdRef.current += 1;
+    };
   }, [fetchData]);
 
   useEffect(() => {
@@ -223,7 +246,7 @@ export default function CustomerDetailPage() {
   }, [historySaving]);
 
   useEffect(() => {
-    if (!activeDialog && !showHistorySheet) return undefined;
+    if (!activeDialog && !showHistorySheet && !priceEditor) return undefined;
 
     const previousOverflow = document.body.style.overflow;
     const trigger = dialogTriggerRef.current;
@@ -232,9 +255,11 @@ export default function CustomerDetailPage() {
 
     const modal = closeDialogRef.current?.closest('[role="dialog"], [role="alertdialog"]');
     const handleKeyDown = (event) => {
-      if (event.key === 'Escape' && !actionLoadingRef.current && !historySavingRef.current) {
+        if (event.key === 'Escape' && !actionLoadingRef.current && !historySavingRef.current && !priceSaving) {
         setActiveDialog(null);
         setShowHistorySheet(false);
+        setPriceEditor(null);
+        setPriceError('');
         setArchiveReason('');
         setAnonymizeConfirmation('');
         setLifecycleError('');
@@ -278,7 +303,7 @@ export default function CustomerDetailPage() {
         pendingFocusRestoreRef.current = false;
       });
     };
-  }, [activeDialog, showHistorySheet]);
+  }, [activeDialog, showHistorySheet, priceEditor]);
 
   const closeLifecycleDialog = () => {
     if (actionLoading) return;
@@ -336,6 +361,8 @@ export default function CustomerDetailPage() {
       service_id: '',
       service: '',
       duration_minutes: null,
+      actual_price_krw: '',
+      actual_price_update_reason: '',
       memo: '',
     });
     setShowHistorySheet(true);
@@ -374,6 +401,16 @@ export default function CustomerDetailPage() {
       return;
     }
 
+    const actualPriceKrw = historyForm.actual_price_krw === '' ? null : Number(historyForm.actual_price_krw);
+    if (actualPriceKrw !== null && (!Number.isInteger(actualPriceKrw) || actualPriceKrw < 0)) {
+      setHistoryError('실제 시술금액은 0원 이상의 정수로 입력해주세요.');
+      return;
+    }
+    if (actualPriceKrw !== null && !historyForm.actual_price_update_reason.trim()) {
+      setHistoryError('완료 이력의 실제 금액을 기록하려면 수정 사유를 입력해주세요.');
+      return;
+    }
+
     setHistorySaving(true);
     setHistoryError('');
 
@@ -396,12 +433,38 @@ export default function CustomerDetailPage() {
         payload.price_snapshot_krw = null;
       }
 
-      const { error } = await supabase.from('appointments').insert(payload);
+      const { data: inserted, error } = await supabase
+        .from('appointments')
+        .insert(payload)
+        .select('id')
+        .single();
 
       if (error) throw error;
 
+      if (actualPriceKrw !== null) {
+        const { error: priceError } = await supabase.rpc('set_appointment_actual_price', {
+          p_appointment_id: inserted.id,
+          p_actual_price_krw: actualPriceKrw,
+          p_expected_actual_price_updated_at: null,
+          p_update_reason: historyForm.actual_price_update_reason.trim() || null,
+        });
+
+        if (priceError) {
+          setShowHistorySheet(false);
+          setFeedback(
+            '시술 이력은 저장됐지만 실제 시술금액을 기록하지 못했습니다. 이력의 금액 수정으로 다시 입력해 주세요.'
+          );
+          await fetchData();
+          return;
+        }
+      }
+
       setShowHistorySheet(false);
-      setFeedback('시술 이력을 추가했습니다.');
+      setFeedback(
+        actualPriceKrw === null
+          ? '시술 이력을 추가했습니다.'
+          : '시술 이력과 실제 시술금액을 저장했습니다.'
+      );
       await fetchData();
     } catch (error) {
       setHistoryError(getAppointmentErrorMessage(error));
@@ -410,6 +473,72 @@ export default function CustomerDetailPage() {
       }
     } finally {
       setHistorySaving(false);
+    }
+  };
+
+  const openPriceEditor = (event, item) => {
+    if (isReadOnly) return;
+    dialogTriggerRef.current = event.currentTarget;
+    setPriceError('');
+    setPriceEditor({
+      id: item.id,
+      status: item.status,
+      actual_price_krw: item.actual_price_krw == null ? '' : String(item.actual_price_krw),
+      original_actual_price_krw: item.actual_price_krw ?? null,
+      expected_actual_price_updated_at: item.actual_price_updated_at ?? null,
+      update_reason: '',
+    });
+  };
+
+  const handlePriceSave = async (event) => {
+    event.preventDefault();
+    if (!priceEditor || priceSaving) return;
+    if (!navigator.onLine) {
+      setPriceError('오프라인에서는 실제 시술금액을 저장할 수 없습니다. 연결을 확인해주세요.');
+      return;
+    }
+
+    const actualPriceKrw = priceEditor.actual_price_krw === '' ? null : Number(priceEditor.actual_price_krw);
+    if (actualPriceKrw !== null && (!Number.isInteger(actualPriceKrw) || actualPriceKrw < 0)) {
+      setPriceError('실제 시술금액은 0원 이상의 정수로 입력해주세요.');
+      return;
+    }
+    if (actualPriceKrw === priceEditor.original_actual_price_krw) {
+      setPriceEditor(null);
+      setFeedback('변경된 실제 시술금액이 없습니다.');
+      return;
+    }
+    if (priceEditor.status === 'completed' && !priceEditor.update_reason.trim()) {
+      setPriceError('완료 예약의 실제 금액 변경 사유를 입력해주세요.');
+      return;
+    }
+
+    const editingId = priceEditor.id;
+    setPriceSaving(true);
+    setPriceError('');
+    try {
+      const { error } = await supabase.rpc('set_appointment_actual_price', {
+        p_appointment_id: editingId,
+        p_actual_price_krw: actualPriceKrw,
+        p_expected_actual_price_updated_at: priceEditor.expected_actual_price_updated_at,
+        p_update_reason: priceEditor.update_reason.trim() || null,
+      });
+      if (error) throw error;
+      if (!priceEditor || priceEditor.id !== editingId) return;
+      setPriceEditor(null);
+      setFeedback('실제 시술금액을 저장했습니다.');
+      await fetchData();
+    } catch (error) {
+      if (error?.code === '40001') {
+        setPriceError('다른 사용자가 실제 금액을 먼저 수정했습니다. 최신 이력을 다시 불러온 뒤 확인해주세요.');
+        await fetchData();
+      } else if (error?.code === '42501') {
+        setPriceError('읽기 전용 고객이거나 권한이 없어 실제 금액을 수정할 수 없습니다.');
+      } else {
+        setPriceError(error?.message || '실제 시술금액을 저장하지 못했습니다. 잠시 후 다시 시도해주세요.');
+      }
+    } finally {
+      setPriceSaving(false);
     }
   };
 
@@ -580,12 +709,27 @@ export default function CustomerDetailPage() {
                   <span className={styles.historyDivider} aria-hidden="true" />
                   <div className={styles.historyInfo}>
                     <h3>{item.service}</h3>
-                    <p className={styles.historyPrice}>{formatPriceKrw(item.price_snapshot_krw)}</p>
+                    <p className={styles.historyPrice}>
+                      {item.actual_price_krw == null
+                        ? `실제 금액 미입력 · 예약 기준 ${formatPriceKrw(item.price_snapshot_krw)}`
+                        : `실제 ${formatPriceKrw(item.actual_price_krw)} · 예약 기준 ${formatPriceKrw(item.price_snapshot_krw)}`}
+                    </p>
                     {item.memo && <p className={styles.historyMemo}>{item.memo}</p>}
                   </div>
                   <span className={`${styles.appointmentBadge} ${styles[`appointment${item.status}`]}`}>
                     {item.status === 'completed' ? '완료' : item.status === 'cancelled' ? '취소' : '예약'}
                   </span>
+                  {!isReadOnly && (
+                    <button
+                      type="button"
+                      className={styles.editPriceButton}
+                      onClick={(event) => openPriceEditor(event, item)}
+                      aria-label={`${item.service} 실제 시술금액 수정`}
+                    >
+                      <Pencil size={17} aria-hidden="true" />
+                      <span>금액 수정</span>
+                    </button>
+                  )}
                 </article>
               );
             })
@@ -791,6 +935,32 @@ export default function CustomerDetailPage() {
                   disabled={historySaving}
                 />
               </label>
+              <label>
+                <span>실제 시술금액 (선택)</span>
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  inputMode="numeric"
+                  value={historyForm.actual_price_krw}
+                  onChange={(event) => setHistoryForm((current) => ({ ...current, actual_price_krw: event.target.value }))}
+                  placeholder="미입력"
+                  disabled={historySaving}
+                />
+                <small className={styles.fieldHint}>예약 기준금액과 별도로 저장됩니다. 0원은 무료 시술입니다.</small>
+              </label>
+              {historyForm.actual_price_krw !== '' && (
+                <label>
+                  <span>실제 금액 기록 사유 (필수)</span>
+                  <input
+                    value={historyForm.actual_price_update_reason}
+                    onChange={(event) => setHistoryForm((current) => ({ ...current, actual_price_update_reason: event.target.value }))}
+                    placeholder="예: 현장 할인 적용"
+                    maxLength={300}
+                    disabled={historySaving}
+                  />
+                </label>
+              )}
               {historyError && <p className={styles.actionError} role="alert">{historyError}</p>}
               <button
                 type="submit"
@@ -799,6 +969,70 @@ export default function CustomerDetailPage() {
               >
                 {historySaving ? <Loader2 size={20} className="animate-spin" /> : <Check size={20} />}
                 {historySaving ? '저장 중' : '이력 저장'}
+              </button>
+            </form>
+          </section>
+        </div>
+      )}
+
+      {priceEditor && (
+        <div className={styles.overlay} role="presentation" onMouseDown={() => !priceSaving && setPriceEditor(null)}>
+          <section
+            className={styles.bottomSheet}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="actual-price-sheet-title"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <header className={styles.sheetHeader}>
+              <div>
+                <h2 id="actual-price-sheet-title" className="heading-md">실제 시술금액 수정</h2>
+                <p>예약 기준금액은 바꾸지 않으며 실제 적용 금액만 기록합니다.</p>
+              </div>
+              <button
+                ref={closeDialogRef}
+                type="button"
+                className={`${styles.closeButton} min-h-[44px] focus-visible:outline-2`}
+                onClick={() => setPriceEditor(null)}
+                disabled={priceSaving}
+                aria-label="실제 시술금액 수정 닫기"
+              >
+                <X size={20} aria-hidden="true" />
+              </button>
+            </header>
+            <form className={styles.historyForm} onSubmit={handlePriceSave}>
+              <label>
+                <span>실제 시술금액</span>
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  inputMode="numeric"
+                  value={priceEditor.actual_price_krw}
+                  onChange={(event) => setPriceEditor((current) => ({ ...current, actual_price_krw: event.target.value }))}
+                  placeholder="미입력"
+                  disabled={priceSaving}
+                  autoFocus
+                />
+                <small className={styles.fieldHint}>비워 두면 실제 금액 미입력으로 되돌립니다.</small>
+              </label>
+              {priceEditor.status === 'completed' && (
+                <label>
+                  <span>실제 금액 수정 사유 (필수)</span>
+                  <input
+                    value={priceEditor.update_reason}
+                    onChange={(event) => setPriceEditor((current) => ({ ...current, update_reason: event.target.value }))}
+                    placeholder="예: 현장 할인 적용"
+                    maxLength={300}
+                    disabled={priceSaving}
+                    required
+                  />
+                </label>
+              )}
+              {priceError && <p className={styles.actionError} role="alert">{priceError}</p>}
+              <button type="submit" className={`${styles.sheetPrimaryButton} min-h-[56px] focus-visible:outline-2`} disabled={priceSaving}>
+                {priceSaving ? <Loader2 size={20} className="animate-spin" /> : <Check size={20} />}
+                {priceSaving ? '저장 중' : '실제 금액 저장'}
               </button>
             </form>
           </section>
