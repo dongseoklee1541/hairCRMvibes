@@ -57,6 +57,10 @@ function createEmptyEditForm() {
     original_service_name: '',
     original_price_snapshot_krw: null,
     original_duration_minutes: 60,
+    actual_price_krw: '',
+    original_actual_price_krw: null,
+    actual_price_updated_at: null,
+    actual_price_update_reason: '',
     memo: '',
   };
 }
@@ -95,6 +99,7 @@ export default function AppointmentsPage() {
   const [actionFeedback, setActionFeedback] = useState({ dateKey: null, message: '' });
   const [statusSavingById, setStatusSavingById] = useState(() => new Map());
   const [editSavingById, setEditSavingById] = useState(() => new Map());
+  const [actualPriceSavingById, setActualPriceSavingById] = useState(() => new Map());
   const [editingAppointment, setEditingAppointment] = useState({ dateKey: null, id: null, sessionId: null });
   const [editForm, setEditForm] = useState(createEmptyEditForm);
   const mountedRef = useRef(false);
@@ -103,6 +108,7 @@ export default function AppointmentsPage() {
   const editSessionIdRef = useRef(0);
   const statusMutationIdRef = useRef(0);
   const editMutationIdRef = useRef(0);
+  const actualPriceMutationIdRef = useRef(0);
   const monthRequestIdRef = useRef(0);
   const dailyRequestIdRef = useRef(0);
   const serviceRequestIdRef = useRef(0);
@@ -403,6 +409,10 @@ export default function AppointmentsPage() {
       original_service_name: originalServiceName,
       original_price_snapshot_krw: originalPriceSnapshotKrw,
       original_duration_minutes: originalDurationMinutes,
+      actual_price_krw: appointment.actual_price_krw == null ? '' : String(appointment.actual_price_krw),
+      original_actual_price_krw: appointment.actual_price_krw ?? null,
+      actual_price_updated_at: appointment.actual_price_updated_at ?? null,
+      actual_price_update_reason: '',
       memo: appointment.memo || '',
     });
   };
@@ -534,6 +544,12 @@ export default function AppointmentsPage() {
       return;
     }
 
+    const actualPriceKrw = editForm.actual_price_krw === '' ? null : Number(editForm.actual_price_krw);
+    if (actualPriceKrw !== editForm.original_actual_price_krw) {
+      publishActionMessage('실제 시술금액은 아래의 별도 저장 버튼으로 먼저 저장해주세요.', mutationSelection.dateKey);
+      return;
+    }
+
     try {
       publishActionMessage('', mutationSelection.dateKey);
       setEditSavingById((current) => {
@@ -586,6 +602,83 @@ export default function AppointmentsPage() {
     } finally {
       if (mountedRef.current) {
         setEditSavingById((current) => {
+          if (current.get(appointment.id) !== mutationId) return current;
+          const next = new Map(current);
+          next.delete(appointment.id);
+          return next;
+        });
+      }
+    }
+  };
+
+  const handleActualPriceSave = async (appointment) => {
+    if (!mountedRef.current) return;
+
+    const mutationSelection = { ...latestSelectionRef.current };
+    const editSession = { ...editingAppointmentRef.current };
+    if (
+      editSession.id !== appointment.id
+      || editSession.dateKey !== mutationSelection.dateKey
+    ) return;
+
+    if (!navigator.onLine) {
+      publishActionMessage('오프라인에서는 실제 시술금액을 저장할 수 없습니다. 연결을 확인해주세요.', mutationSelection.dateKey);
+      return;
+    }
+
+    const actualPriceKrw = editForm.actual_price_krw === '' ? null : Number(editForm.actual_price_krw);
+    if (actualPriceKrw !== null && (!Number.isInteger(actualPriceKrw) || actualPriceKrw < 0)) {
+      publishActionMessage('실제 시술금액은 0원 이상의 정수로 입력해주세요.', mutationSelection.dateKey);
+      return;
+    }
+    if (actualPriceKrw === editForm.original_actual_price_krw) {
+      publishActionMessage('변경된 실제 시술금액이 없습니다.', mutationSelection.dateKey);
+      return;
+    }
+    if (appointment.status === 'completed' && !editForm.actual_price_update_reason.trim()) {
+      publishActionMessage('완료 예약의 실제 금액 변경 사유를 입력해주세요.', mutationSelection.dateKey);
+      return;
+    }
+
+    const mutationId = ++actualPriceMutationIdRef.current;
+    try {
+      publishActionMessage('', mutationSelection.dateKey);
+      setActualPriceSavingById((current) => {
+        const next = new Map(current);
+        next.set(appointment.id, mutationId);
+        return next;
+      });
+      const { data, error } = await supabase.rpc('set_appointment_actual_price', {
+        p_appointment_id: appointment.id,
+        p_actual_price_krw: actualPriceKrw,
+        p_expected_actual_price_updated_at: editForm.actual_price_updated_at,
+        p_update_reason: editForm.actual_price_update_reason.trim() || null,
+      });
+      if (error) throw error;
+      if (!mountedRef.current || editingAppointmentRef.current.sessionId !== editSession.sessionId) return;
+
+      const next = Array.isArray(data) ? data[0] : data;
+      setEditForm((current) => ({
+        ...current,
+        original_actual_price_krw: next?.actual_price_krw ?? actualPriceKrw,
+        actual_price_updated_at: next?.actual_price_updated_at ?? current.actual_price_updated_at,
+        actual_price_update_reason: '',
+      }));
+      publishActionMessage('실제 시술금액을 저장했습니다.', mutationSelection.dateKey);
+      await refreshAppointments();
+    } catch (error) {
+      if (!mountedRef.current || editingAppointmentRef.current.sessionId !== editSession.sessionId) return;
+      console.error('Error updating actual appointment price:', error);
+      if (error?.code === '40001') {
+        publishActionMessage('다른 사용자가 실제 금액을 먼저 수정했습니다. 최신 값을 다시 불러온 뒤 확인해주세요.', mutationSelection.dateKey);
+        await refreshAppointments();
+        closeEditingAppointment(editSession);
+      } else {
+        publishActionMessage(error?.message || '실제 시술금액을 저장하지 못했습니다. 잠시 후 다시 시도해주세요.', mutationSelection.dateKey);
+      }
+    } finally {
+      if (mountedRef.current) {
+        setActualPriceSavingById((current) => {
           if (current.get(appointment.id) !== mutationId) return current;
           const next = new Map(current);
           next.delete(appointment.id);
@@ -747,11 +840,13 @@ export default function AppointmentsPage() {
               </div>
             ) : (
               dailyAppts.map((appt, i) => {
-                const isBusy = statusSavingById.has(appt.id) || editSavingById.has(appt.id);
+                const isBusy = statusSavingById.has(appt.id) || editSavingById.has(appt.id) || actualPriceSavingById.has(appt.id);
                 const isEditing = editingAppointment.dateKey === selectedDateKey
                   && editingAppointment.id === appt.id;
                 const durationMinutes = resolveAppointmentDurationMinutes(appt, 60);
                 const status = appt.status || 'confirmed';
+                const actualPriceChanged = isEditing
+                  && (editForm.actual_price_krw === '' ? null : Number(editForm.actual_price_krw)) !== editForm.original_actual_price_krw;
 
                 return (
                   <div
@@ -777,7 +872,7 @@ export default function AppointmentsPage() {
                           </span>
                         </div>
                         <span className="caption">약 {formatDurationMinutes(durationMinutes) || appt.duration || '미정'} 예상</span>
-                        <span className={styles.priceText}>{formatPriceKrw(appt.price_snapshot_krw)}</span>
+                        <span className={styles.priceText}>기준 {formatPriceKrw(appt.price_snapshot_krw)} · 실제 {appt.actual_price_krw == null ? '미입력' : formatPriceKrw(appt.actual_price_krw)}</span>
                         {appt.memo ? <span className="caption">{appt.memo}</span> : null}
                         <div className={styles.apptActions}>
                           {status !== 'completed' ? (
@@ -887,6 +982,43 @@ export default function AppointmentsPage() {
                               ))}
                             </select>
                           </label>
+                          <label className={styles.editField}>
+                            <span>실제 시술금액 (선택)</span>
+                            <input
+                              type="number"
+                              min="0"
+                              step="1"
+                              inputMode="numeric"
+                              value={editForm.actual_price_krw}
+                              onChange={(event) => setEditForm((prev) => ({ ...prev, actual_price_krw: event.target.value }))}
+                              disabled={isBusy}
+                              placeholder="미입력"
+                            />
+                            <small className={styles.fieldHint}>기준가격 {formatPriceKrw(editForm.price_snapshot_krw)}와 실제 금액은 별도로 보관됩니다.</small>
+                          </label>
+                        </div>
+                        {actualPriceChanged && appt.status === 'completed' ? (
+                          <label className={styles.editField}>
+                            <span>실제 금액 수정 사유 (필수)</span>
+                            <input
+                              value={editForm.actual_price_update_reason}
+                              onChange={(event) => setEditForm((prev) => ({ ...prev, actual_price_update_reason: event.target.value }))}
+                              disabled={isBusy}
+                              placeholder="예: 현장 할인 적용"
+                            />
+                          </label>
+                        ) : null}
+                        <div className={styles.actualPriceActions}>
+                          <button
+                            type="button"
+                            className={styles.secondaryButton}
+                            onClick={() => handleActualPriceSave(appt)}
+                            disabled={isBusy || !actualPriceChanged}
+                          >
+                            {actualPriceSavingById.has(appt.id) ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+                            실제 금액 저장
+                          </button>
+                          <span className={styles.fieldHint}>실제 금액은 예약 정보와 별도로 저장되어 충돌 시 다른 수정 내용을 덮어쓰지 않습니다.</span>
                         </div>
                         <label className={styles.editField}>
                           <span>메모</span>

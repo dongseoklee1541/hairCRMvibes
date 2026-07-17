@@ -192,28 +192,32 @@ declare
   v_first_service jsonb;
   v_payload jsonb;
   v_expected_result_keys text[] := array[
-    'average_ticket_krw',
+    'actual_average_ticket_krw',
+    'actual_revenue_krw',
+    'booking_snapshot_missing_completed_count',
+    'booking_snapshot_priced_completed_count',
+    'booking_snapshot_revenue_krw',
     'completed_count',
     'completed_customer_count',
-    'missing_price_completed_count',
-    'missing_price_rate',
-    'missing_price_with_service_count',
-    'missing_price_without_service_count',
-    'paid_completed_count',
+    'missing_actual_price_completed_count',
+    'missing_actual_price_rate',
+    'missing_actual_price_with_service_count',
+    'missing_actual_price_without_service_count',
+    'paid_actual_completed_count',
     'period_end',
     'period_start',
     'repeat_customer_count',
     'repeat_rate',
-    'revenue_krw',
     'service_breakdown',
-    'zero_price_completed_count'
+    'zero_actual_price_completed_count'
   ];
   v_expected_service_keys text[] := array[
-    'average_ticket_krw',
+    'actual_average_ticket_krw',
+    'actual_revenue_krw',
+    'booking_snapshot_revenue_krw',
     'completed_count',
-    'missing_price_count',
-    'paid_completed_count',
-    'revenue_krw',
+    'missing_actual_price_count',
+    'paid_actual_completed_count',
     'service_name'
   ];
 begin
@@ -223,14 +227,17 @@ begin
   if v_result.period_start <> '2026-07-01'::date
      or v_result.period_end <> '2026-07-31'::date
      or v_result.completed_count <> 6
-     or v_result.revenue_krw <> 130000
-     or v_result.paid_completed_count <> 3
-     or v_result.average_ticket_krw <> 43333
-     or v_result.zero_price_completed_count <> 1
-     or v_result.missing_price_completed_count <> 2
-     or v_result.missing_price_rate <> 33.3
-     or v_result.missing_price_without_service_count <> 1
-     or v_result.missing_price_with_service_count <> 1
+     or v_result.actual_revenue_krw <> 0
+     or v_result.paid_actual_completed_count <> 0
+     or v_result.actual_average_ticket_krw is not null
+     or v_result.zero_actual_price_completed_count <> 0
+     or v_result.missing_actual_price_completed_count <> 6
+     or v_result.missing_actual_price_rate <> 100.0
+     or v_result.missing_actual_price_without_service_count <> 1
+     or v_result.missing_actual_price_with_service_count <> 5
+     or v_result.booking_snapshot_revenue_krw <> 130000
+     or v_result.booking_snapshot_priced_completed_count <> 4
+     or v_result.booking_snapshot_missing_completed_count <> 2
      or v_result.completed_customer_count <> 5
      or v_result.repeat_customer_count <> 1
      or v_result.repeat_rate <> 20.0 then
@@ -244,9 +251,10 @@ begin
   v_first_service := v_result.service_breakdown -> 0;
   if v_first_service ->> 'service_name' <> 'R-09 커트'
      or (v_first_service ->> 'completed_count')::bigint <> 2
-     or (v_first_service ->> 'revenue_krw')::bigint <> 60000
-     or (v_first_service ->> 'average_ticket_krw')::bigint <> 30000 then
-    raise exception 'R-09 smoke: service text/price snapshot ranking이 계약과 다릅니다. first=%', v_first_service;
+     or (v_first_service ->> 'actual_revenue_krw')::bigint <> 0
+     or (v_first_service ->> 'booking_snapshot_revenue_krw')::bigint <> 60000
+     or (v_first_service ->> 'actual_average_ticket_krw') is not null then
+    raise exception 'R-09 smoke: service actual/snapshot 분리 ranking이 계약과 다릅니다. first=%', v_first_service;
   end if;
 
   v_payload := to_jsonb(v_result);
@@ -281,9 +289,9 @@ begin
   from public.get_stats_summary('2026-09-01', '2026-09-30');
 
   if v_result.completed_count <> 0
-     or v_result.revenue_krw <> 0
-     or v_result.average_ticket_krw is not null
-     or v_result.missing_price_rate is not null
+     or v_result.actual_revenue_krw <> 0
+     or v_result.actual_average_ticket_krw is not null
+     or v_result.missing_actual_price_rate is not null
      or v_result.repeat_rate is not null
      or v_result.service_breakdown <> '[]'::jsonb then
     raise exception 'R-09 smoke: empty denominator가 데이터 없음(NULL) 계약과 다릅니다. payload=%', to_jsonb(v_result);
@@ -317,7 +325,7 @@ begin
   from public.get_stats_summary('2026-07-01', '2026-07-31');
 
   if v_staff.completed_count <> 6
-     or v_staff.revenue_krw <> 130000
+     or v_staff.actual_revenue_krw <> 0
      or v_staff.repeat_rate <> 20.0 then
     raise exception 'R-09 smoke: staff 집계가 승인된 owner 공통 계약과 다릅니다.';
   end if;

@@ -133,8 +133,9 @@ export default function StatsPage() {
 
   const retry = () => fetchSummary(appliedRange);
   const completedCount = Number(summary?.completed_count || 0);
-  const missingPriceCount = Number(summary?.missing_price_completed_count || 0);
-  const zeroPriceCount = Number(summary?.zero_price_completed_count || 0);
+  const missingActualPriceCount = Number(summary?.missing_actual_price_completed_count || 0);
+  const zeroActualPriceCount = Number(summary?.zero_actual_price_completed_count || 0);
+  const snapshotPricedCount = Number(summary?.booking_snapshot_priced_completed_count || 0);
   const services = Array.isArray(summary?.service_breakdown) ? summary.service_breakdown : [];
   const isEmpty = status === 'success' && completedCount === 0;
 
@@ -143,7 +144,7 @@ export default function StatsPage() {
       <header className={styles.header}>
         <div>
           <h1 className="heading-xl">통계</h1>
-          <p className={styles.headerHint}>완료된 예약 기준</p>
+          <p className={styles.headerHint}>완료 예약의 실제 시술금액 기준</p>
         </div>
         <button
           type="button"
@@ -194,15 +195,15 @@ export default function StatsPage() {
             <section className={styles.kpiGrid} aria-label="핵심 통계">
               <article className={`${styles.kpiCard} ${styles.kpiPrimary}`}>
                 <span className={styles.kpiIcon}><WalletCards size={18} aria-hidden="true" /></span>
-                <span className={styles.kpiLabel}>매출 합계</span>
-                <strong className={styles.kpiValue}>{formatCurrency(summary.revenue_krw)}</strong>
-                <span className={styles.kpiMeta}>가격 입력 완료 건 합계</span>
+                <span className={styles.kpiLabel}>실제 매출</span>
+                <strong className={styles.kpiValue}>{formatCurrency(summary.actual_revenue_krw)}</strong>
+                <span className={styles.kpiMeta}>실제 금액 입력 완료 건만 합산</span>
               </article>
 
               <article className={styles.kpiCard}>
                 <span className={styles.kpiLabel}>유료 객단가</span>
-                <strong className={styles.kpiValue}>{formatNullableCurrency(summary.average_ticket_krw)}</strong>
-                <span className={styles.kpiMeta}>유료 완료 {Number(summary.paid_completed_count || 0)}건 기준</span>
+                <strong className={styles.kpiValue}>{formatNullableCurrency(summary.actual_average_ticket_krw)}</strong>
+                <span className={styles.kpiMeta}>유료 실제금액 {Number(summary.paid_actual_completed_count || 0)}건 기준</span>
               </article>
 
               <article className={styles.kpiCard}>
@@ -220,27 +221,32 @@ export default function StatsPage() {
               </article>
             </section>
 
-            {missingPriceCount > 0 ? (
+            {missingActualPriceCount > 0 ? (
               <section className={styles.qualityWarning} role="status">
                 <AlertCircle size={20} aria-hidden="true" />
                 <div>
-                  <strong>가격 미입력 {missingPriceCount}건은 매출에서 제외됐어요</strong>
+                  <strong>실제 금액 미입력 {missingActualPriceCount}건은 실제 매출에서 제외됐어요</strong>
                   <p>
-                    전체 완료의 {formatNullableRate(summary.missing_price_rate)} · 서비스 미연결 {Number(summary.missing_price_without_service_count || 0)}건,
-                    연결 서비스 가격 미입력 {Number(summary.missing_price_with_service_count || 0)}건
+                    전체 완료의 {formatNullableRate(summary.missing_actual_price_rate)} · 서비스 미연결 {Number(summary.missing_actual_price_without_service_count || 0)}건,
+                    연결 서비스 {Number(summary.missing_actual_price_with_service_count || 0)}건
                   </p>
                 </div>
               </section>
             ) : (
               <section className={styles.qualityComplete} role="status">
                 <CheckCircle2 size={19} aria-hidden="true" />
-                <span>완료 예약의 가격 데이터가 모두 입력되어 있습니다.</span>
+                <span>완료 예약의 실제 금액이 모두 입력되어 있습니다.</span>
               </section>
             )}
 
-            {zeroPriceCount > 0 && (
-              <p className={styles.zeroPriceNote}>0원 완료 {zeroPriceCount}건은 무료 서비스로 구분하며 유료 객단가에서 제외합니다.</p>
+            {zeroActualPriceCount > 0 && (
+              <p className={styles.zeroPriceNote}>실제 0원 완료 {zeroActualPriceCount}건은 무료 시술로 포함하며 유료 객단가에서 제외합니다.</p>
             )}
+
+            <section className={styles.snapshotNote} aria-label="예약 기준금액 보조 지표">
+              <strong>예약 기준금액 합계 {formatCurrency(summary.booking_snapshot_revenue_krw)}</strong>
+              <span>예약 당시 기본가격이 있는 완료 {snapshotPricedCount}건의 보조 지표이며 실제 매출에는 사용하지 않습니다.</span>
+            </section>
 
             <section>
               <div className={styles.sectionHeader}>
@@ -256,13 +262,13 @@ export default function StatsPage() {
                     <span className={styles.serviceRank}>{index + 1}</span>
                     <div className={styles.serviceInfo}>
                       <strong>{service.service_name}</strong>
-                      <span>{Number(service.completed_count || 0)}건 · 매출 {formatCurrency(service.revenue_krw)}</span>
+                      <span>{Number(service.completed_count || 0)}건 · 실제 매출 {formatCurrency(service.actual_revenue_krw)}</span>
                     </div>
                     <div className={styles.serviceMetric}>
                       <span>유료 객단가</span>
-                      <strong>{formatNullableCurrency(service.average_ticket_krw)}</strong>
-                      {Number(service.missing_price_count || 0) > 0 && (
-                        <em>가격 미입력 {Number(service.missing_price_count)}건</em>
+                      <strong>{formatNullableCurrency(service.actual_average_ticket_krw)}</strong>
+                      {Number(service.missing_actual_price_count || 0) > 0 && (
+                        <em>실제 금액 미입력 {Number(service.missing_actual_price_count)}건</em>
                       )}
                     </div>
                   </article>

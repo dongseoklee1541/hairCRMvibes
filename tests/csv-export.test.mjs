@@ -324,6 +324,10 @@ test('예약 데이터셋도 고정된 백업 헤더로 CSV를 생성한다', as
           date: '2026-07-13',
           time: '10:00:00',
           service: '커트',
+          actual_price_krw: 0,
+          actual_price_updated_at: '2026-07-13T01:00:00.000Z',
+          actual_price_updated_by: 'owner-1',
+          actual_price_update_reason: '=무료 체험',
           memo: '@위험한 메모',
           status: 'confirmed',
         },
@@ -344,6 +348,8 @@ test('예약 데이터셋도 고정된 백업 헤더로 CSV를 생성한다', as
     ['created_at', 'id']
   );
   assert.ok(csv.startsWith('"id","customer_id","date","time","service","service_id"'));
+  assert.ok(csv.includes('"actual_price_krw","actual_price_updated_at","actual_price_updated_by","actual_price_update_reason"'));
+  assert.ok(csv.includes('"0","2026-07-13T01:00:00.000Z","owner-1","\'=무료 체험"'));
   assert.ok(csv.includes('"\'@위험한 메모"'));
 });
 
