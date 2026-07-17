@@ -20,6 +20,9 @@
 supabase/.temp/
 output/playwright/**/console-*.log
 output/playwright/**/page-*.yml
+output/playwright/r15-customer-service-price/20260717_r15_reverify_appointments_*.png
+output/playwright/r15-customer-service-price/20260717_r15_reverify_customer_*.png
+output/playwright/r15-customer-service-price/20260717_r15_reverify_stats_*.png
 
 # next.js
 /.next/
