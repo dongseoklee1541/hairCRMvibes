@@ -163,6 +163,18 @@ Operational rules:
 - Typo-level or bug-level micro fixes may skip a `.pen` update only when the Implementation Plan explicitly identifies the exception and explains why design intent is unchanged.
 - If Pencil MCP or `.pen` persistence is unavailable, diagnose or isolate the blocker and report it explicitly. Do not silently substitute an unrelated mock or mark a material UI task complete unless the user approves a specific exception to the SSOT requirement.
 
+### 5.1 Pencil Desktop MCP Operations
+
+- Use the Pencil Desktop app MCP as the default path. Do not mix it with the VS Code Pencil extension MCP route in the same task.
+- Before design work, confirm the Pencil Desktop app is running and the intended `.pen` file is open in that app.
+- After MCP initialization, allow 1–2 seconds for the Desktop handshake, then call `get_editor_state(include_schema: true)` before using other Pencil tools.
+- If `Transport closed` occurs, diagnose in this order: Desktop socket availability, duplicate Pencil MCP processes, then sandbox access to the socket. Request approved escalation only when the sandbox socket-access check requires it.
+- After `batch_design`, confirm the expected nodes exist and run `snapshot_layout`; do not treat a successful tool response alone as design verification.
+- Save through Pencil Desktop’s File > Save, then verify that the intended `.pen` file changed on disk as well as in Git status.
+- If `export_nodes` produces a background-only or otherwise empty PNG, compare it with the Pencil app canvas and do not report it as a valid export.
+- If a suspected 50px insert-coordinate offset appears, reproduce it with the smallest practical sample first. Do not apply an unverified global coordinate correction.
+- If MCP connectivity or `.pen` persistence is unstable, record it as a blocker and do not report the design task complete.
+
 Mobile UX requirements:
 
 - Interactive touch targets must be at least 44×44px.
