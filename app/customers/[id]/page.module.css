@@ -666,6 +666,167 @@
   line-height: 1.5;
 }
 
+.passState,
+.passError,
+.emptyPass,
+.passPermission {
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.passState,
+.passError {
+  display: flex;
+  min-height: 72px;
+  align-items: center;
+  gap: 9px;
+}
+
+.passState {
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+}
+
+.passError {
+  justify-content: space-between;
+  background: var(--status-danger-light);
+  color: var(--status-danger);
+}
+
+.passError button,
+.passCard button {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 700;
+}
+
+.emptyPass {
+  display: flex;
+  min-height: 144px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px dashed var(--border-default);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.emptyPass strong {
+  color: var(--text-primary);
+  font-size: 16px;
+}
+
+.passList {
+  display: grid;
+  gap: 12px;
+}
+
+.passCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.passCardTop,
+.passBalance {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.passCardTop > div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.passCardTop strong {
+  color: var(--text-primary);
+  font-size: 17px;
+}
+
+.passCardTop span,
+.passCard p,
+.passBalance span {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.passStatus {
+  min-height: 28px;
+  flex: 0 0 auto;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: var(--bg-secondary);
+  font-size: 12px !important;
+  font-weight: 700;
+}
+
+.passStatusactive {
+  background: var(--accent-light);
+  color: var(--accent-primary) !important;
+}
+
+.passStatuspaused,
+.passStatusexpired,
+.passStatusexhausted {
+  background: var(--status-warning-light);
+  color: var(--status-warning-strong) !important;
+}
+
+.passStatuscancelled {
+  background: var(--status-danger-light);
+  color: var(--status-danger) !important;
+}
+
+.passBalance {
+  align-items: baseline;
+  justify-content: flex-start;
+}
+
+.passBalance strong {
+  color: var(--accent-primary);
+  font-size: 28px;
+  line-height: 1.1;
+}
+
+.passCard button {
+  align-self: flex-start;
+  margin-top: 2px;
+  padding: 0 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  color: var(--accent-primary);
+}
+
+.passPermission {
+  margin-top: 10px;
+  background: var(--status-info-light, #e7f2f8);
+  color: var(--status-info, #356a8a);
+}
+
+.historyPass {
+  color: var(--accent-primary);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
 .sheetPrimaryButton,
 .dialogConfirmButton {
   width: 100%;

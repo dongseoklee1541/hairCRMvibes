@@ -56,7 +56,6 @@ insert into public.salon_service_defaults (id, name, default_duration_minutes, p
   ('f1520000-0000-0000-0000-000000000001', 'R15 기준 3만', 60, 30000, true, 901),
   ('f1520000-0000-0000-0000-000000000002', 'R15 무료', 60, 0, true, 902);
 
-set local role authenticated;
 set local "request.jwt.claim.sub" = 'f1500000-0000-0000-0000-000000000001';
 
 insert into public.appointments (id, customer_id, date, time, service, service_id, duration_minutes, status, actual_price_krw) values
@@ -69,6 +68,7 @@ insert into public.appointments (id, customer_id, date, time, service, service_i
   ('f1530000-0000-0000-0000-000000000007', 'f1510000-0000-0000-0000-000000000003', '2026-07-07', '10:00', 'client value ignored', 'f1520000-0000-0000-0000-000000000001', 60, 'confirmed', null),
   ('f1530000-0000-0000-0000-000000000008', 'f1510000-0000-0000-0000-000000000004', '2026-07-08', '10:00', 'client value ignored', 'f1520000-0000-0000-0000-000000000001', 60, 'confirmed', null);
 
+set local role authenticated;
 reset role;
 update public.customers set archived_at = now() where id = 'f1510000-0000-0000-0000-000000000002';
 update public.customers set archived_at = now(), merged_into_customer_id = 'f1510000-0000-0000-0000-000000000001' where id = 'f1510000-0000-0000-0000-000000000003';

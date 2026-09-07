@@ -137,9 +137,12 @@ function createSupabaseHarness() {
   }
 
   function rpc(name, args) {
+    if (name === 'list_appointment_session_pass_options') {
+      return Promise.resolve({ data: [], error: null });
+    }
     return enqueue({
       args,
-      kind: 'status',
+      kind: name === 'update_appointment_with_session_pass' ? 'edit' : 'status',
       name,
     }).promise;
   }

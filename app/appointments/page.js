@@ -15,7 +15,13 @@ import {
 } from 'lucide-react';
 
 import { supabase } from '@/lib/supabase';
+import { SessionPassPicker } from '@/components/sessionPass/SessionPassPicker';
 import { formatPriceKrw } from '@/lib/formatPrice';
+import {
+  getAppointmentPassUsage,
+  getMostRecentPassUsage,
+  normalizeSessionPassRpcRows,
+} from '@/lib/sessionPass';
 import {
   formatDateKey,
   getDaysInKstMonth,
@@ -61,6 +67,10 @@ function createEmptyEditForm() {
     original_actual_price_krw: null,
     actual_price_updated_at: null,
     actual_price_update_reason: '',
+    customer_id: '',
+    session_pass_id: '',
+    current_pass_id: null,
+    current_usage_state: null,
     memo: '',
   };
 }
@@ -100,6 +110,9 @@ export default function AppointmentsPage() {
   const [statusSavingById, setStatusSavingById] = useState(() => new Map());
   const [editSavingById, setEditSavingById] = useState(() => new Map());
   const [actualPriceSavingById, setActualPriceSavingById] = useState(() => new Map());
+  const [editPassOptions, setEditPassOptions] = useState([]);
+  const [editPassLoading, setEditPassLoading] = useState(false);
+  const [editPassError, setEditPassError] = useState('');
   const [editingAppointment, setEditingAppointment] = useState({ dateKey: null, id: null, sessionId: null });
   const [editForm, setEditForm] = useState(createEmptyEditForm);
   const mountedRef = useRef(false);
@@ -112,6 +125,9 @@ export default function AppointmentsPage() {
   const monthRequestIdRef = useRef(0);
   const dailyRequestIdRef = useRef(0);
   const serviceRequestIdRef = useRef(0);
+  const editPassRequestIdRef = useRef(0);
+  const statusRequestIdsRef = useRef(new Map());
+  const editRequestIdsRef = useRef(new Map());
 
   const daysInMonth = getDaysInKstMonth(year, month);
   const firstDay = getFirstWeekdayOfKstMonth(year, month);
@@ -233,7 +249,17 @@ export default function AppointmentsPage() {
         .from('appointments')
         .select(`
           *,
-          customers(name)
+          customers(name),
+          appointment_session_pass_usages(
+            id,
+            state,
+            session_pass_id,
+            reserved_at,
+            consumed_at,
+            released_at,
+            release_reason,
+            customer_session_passes(name,total_sessions,status,expires_on)
+          )
         `)
         .eq('date', target.dateKey)
         .order('time');
@@ -380,6 +406,39 @@ export default function AppointmentsPage() {
     return true;
   }, []);
 
+  const loadEditPassOptions = useCallback(async (customerId, serviceId) => {
+    const requestId = ++editPassRequestIdRef.current;
+    if (!customerId || !serviceId) {
+      setEditPassOptions([]);
+      setEditPassError('등록된 시술이 없는 예약은 횟수권을 연결할 수 없습니다.');
+      setEditPassLoading(false);
+      return;
+    }
+
+    try {
+      setEditPassLoading(true);
+      setEditPassError('');
+      const { data, error } = await supabase.rpc('list_appointment_session_pass_options', {
+        p_customer_id: customerId,
+        p_service_id: serviceId,
+      });
+      if (error) throw error;
+      if (requestId !== editPassRequestIdRef.current) return;
+      setEditPassOptions(normalizeSessionPassRpcRows(data));
+    } catch (error) {
+      if (requestId !== editPassRequestIdRef.current) return;
+      console.error('Error fetching appointment session passes:', error);
+      setEditPassOptions([]);
+      setEditPassError(
+        navigator.onLine
+          ? '횟수권을 불러오지 못했습니다. 다시 시도해주세요.'
+          : '오프라인에서는 횟수권을 확인할 수 없습니다.'
+      );
+    } finally {
+      if (requestId === editPassRequestIdRef.current) setEditPassLoading(false);
+    }
+  }, []);
+
   const startEditingAppointment = (appointment) => {
     if (!mountedRef.current) return;
 
@@ -388,6 +447,7 @@ export default function AppointmentsPage() {
     const originalServiceName = appointment.service || '';
     const originalPriceSnapshotKrw = appointment.price_snapshot_krw ?? null;
     const originalDurationMinutes = resolveAppointmentDurationMinutes(appointment, 60);
+    const currentUsage = getAppointmentPassUsage(appointment);
     const nextEditingAppointment = {
       dateKey: selection.dateKey,
       id: appointment.id,
@@ -413,8 +473,13 @@ export default function AppointmentsPage() {
       original_actual_price_krw: appointment.actual_price_krw ?? null,
       actual_price_updated_at: appointment.actual_price_updated_at ?? null,
       actual_price_update_reason: '',
+      customer_id: appointment.customer_id,
+      session_pass_id: currentUsage?.session_pass_id || '',
+      current_pass_id: currentUsage?.session_pass_id || null,
+      current_usage_state: currentUsage?.state || null,
       memo: appointment.memo || '',
     });
+    loadEditPassOptions(appointment.customer_id, appointment.service_id);
   };
 
   const closeEditingAppointment = useCallback((expected = null) => {
@@ -434,6 +499,9 @@ export default function AppointmentsPage() {
     editingAppointmentRef.current = emptyEditingAppointment;
     setEditingAppointment(emptyEditingAppointment);
     setEditForm(createEmptyEditForm());
+    editPassRequestIdRef.current += 1;
+    setEditPassOptions([]);
+    setEditPassError('');
     return true;
   }, []);
 
@@ -460,12 +528,24 @@ export default function AppointmentsPage() {
         service_changed: true,
         price_snapshot_krw: service.price_krw ?? null,
         duration_minutes: service.default_duration_minutes || prev.duration_minutes,
+        session_pass_id: '',
       };
     });
+    const service = serviceDefaults.find((item) => item.id === serviceId);
+    if (service) loadEditPassOptions(editForm.customer_id, service.id);
   };
 
   const handleStatusChange = async (appointment, nextStatus) => {
     const label = STATUS_LABELS[nextStatus] || nextStatus;
+    if (
+      nextStatus !== 'cancelled'
+      && editingAppointmentRef.current.id === appointment.id
+      && editForm.selected_service_id !== LEGACY_SERVICE_VALUE
+      && (editPassLoading || editPassError)
+    ) {
+      publishActionMessage(editPassError || '횟수권을 확인한 뒤 예약 상태를 변경해주세요.', latestSelectionRef.current.dateKey);
+      return;
+    }
     let cancelReason = null;
 
     if (nextStatus === 'cancelled') {
@@ -476,6 +556,27 @@ export default function AppointmentsPage() {
     if (!mountedRef.current) return;
     const mutationSelection = { ...latestSelectionRef.current };
     const mutationId = ++statusMutationIdRef.current;
+    const activeUsage = getAppointmentPassUsage(appointment);
+    const selectedPassId = nextStatus === 'cancelled'
+      ? null
+      : editingAppointmentRef.current.id === appointment.id
+        ? editForm.session_pass_id || null
+        : activeUsage?.session_pass_id || null;
+    const requestFingerprint = JSON.stringify({
+      appointmentId: appointment.id,
+      nextStatus,
+      cancelReason,
+      selectedPassId,
+    });
+    let requestId = statusRequestIdsRef.current.get(requestFingerprint);
+    if (!requestId) {
+      requestId = globalThis.crypto?.randomUUID?.();
+      if (!requestId) {
+        publishActionMessage('안전한 요청 ID를 만들 수 없습니다. 브라우저를 새로고침해주세요.', mutationSelection.dateKey);
+        return;
+      }
+      statusRequestIdsRef.current.set(requestFingerprint, requestId);
+    }
 
     try {
       publishActionMessage('', mutationSelection.dateKey);
@@ -485,13 +586,16 @@ export default function AppointmentsPage() {
         return next;
       });
       const { error } = await supabase.rpc('set_appointment_status', {
+        p_request_id: requestId,
         p_appointment_id: appointment.id,
         p_status: nextStatus,
         p_cancel_reason: cancelReason,
+        p_session_pass_id: selectedPassId,
       });
 
       if (error) throw error;
       if (!mountedRef.current) return;
+      statusRequestIdsRef.current.delete(requestFingerprint);
 
       publishActionMessage(
         `${appointment.customers?.name || '예약'} 상태를 ${label}(으)로 변경했습니다.`,
@@ -528,6 +632,10 @@ export default function AppointmentsPage() {
       || editSession.dateKey !== mutationSelection.dateKey
     ) return;
     const mutationId = ++editMutationIdRef.current;
+    if (editForm.selected_service_id !== LEGACY_SERVICE_VALUE && (editPassLoading || editPassError)) {
+      publishActionMessage(editPassError || '횟수권을 확인한 뒤 예약을 저장해주세요.', mutationSelection.dateKey);
+      return;
+    }
     if (!editForm.date || !editForm.time || !editForm.service.trim()) {
       publishActionMessage('날짜, 시간, 시술명을 모두 입력해주세요.', mutationSelection.dateKey);
       return;
@@ -558,25 +666,42 @@ export default function AppointmentsPage() {
         return next;
       });
       const updatePayload = {
+        appointment_id: appointment.id,
         date: editForm.date,
         time: editForm.time,
+        service_id: editForm.selected_service_id === LEGACY_SERVICE_VALUE
+          ? null
+          : editForm.selected_service_id,
+        service: editForm.service.trim(),
         duration: formatDurationMinutes(durationMinutes),
         duration_minutes: durationMinutes,
         memo: editForm.memo.trim() || null,
+        session_pass_id: appointment.status === 'cancelled' ? null : editForm.session_pass_id || null,
       };
-
-      if (editForm.service_changed) {
-        updatePayload.service_id = editForm.selected_service_id;
-        updatePayload.service = editForm.service.trim();
+      const requestFingerprint = JSON.stringify(updatePayload);
+      let requestId = editRequestIdsRef.current.get(requestFingerprint);
+      if (!requestId) {
+        requestId = globalThis.crypto?.randomUUID?.();
+        if (!requestId) throw new Error('안전한 요청 ID를 만들 수 없습니다. 브라우저를 새로고침해주세요.');
+        editRequestIdsRef.current.set(requestFingerprint, requestId);
       }
 
-      const { error } = await supabase
-        .from('appointments')
-        .update(updatePayload)
-        .eq('id', appointment.id);
+      const { error } = await supabase.rpc('update_appointment_with_session_pass', {
+        p_request_id: requestId,
+        p_appointment_id: updatePayload.appointment_id,
+        p_date: updatePayload.date,
+        p_time: updatePayload.time,
+        p_service_id: updatePayload.service_id,
+        p_service: updatePayload.service,
+        p_duration: updatePayload.duration,
+        p_duration_minutes: updatePayload.duration_minutes,
+        p_memo: updatePayload.memo,
+        p_session_pass_id: updatePayload.session_pass_id,
+      });
 
       if (error) throw error;
       if (!mountedRef.current) return;
+      editRequestIdsRef.current.delete(requestFingerprint);
 
       publishActionMessage(
         `${appointment.customers?.name || '예약'} 예약을 수정했습니다.`,
@@ -873,6 +998,11 @@ export default function AppointmentsPage() {
                         </div>
                         <span className="caption">약 {formatDurationMinutes(durationMinutes) || appt.duration || '미정'} 예상</span>
                         <span className={styles.priceText}>기준 {formatPriceKrw(appt.price_snapshot_krw)} · 실제 {appt.actual_price_krw == null ? '미입력' : formatPriceKrw(appt.actual_price_krw)}</span>
+                        {getMostRecentPassUsage(appt) ? (
+                          <span className={styles.passText}>
+                            횟수권 · {getMostRecentPassUsage(appt).customer_session_passes?.name || '연결됨'} · {getMostRecentPassUsage(appt).state === 'consumed' ? '사용 완료' : getMostRecentPassUsage(appt).state === 'released' ? '복구됨' : '1회 예약 중'}
+                          </span>
+                        ) : null}
                         {appt.memo ? <span className="caption">{appt.memo}</span> : null}
                         <div className={styles.apptActions}>
                           {status !== 'completed' ? (
@@ -982,6 +1112,19 @@ export default function AppointmentsPage() {
                               ))}
                             </select>
                           </label>
+                          <SessionPassPicker
+                            id={`appointment-session-pass-${appt.id}`}
+                            options={editPassOptions}
+                            value={editForm.session_pass_id}
+                            onChange={(sessionPassId) => setEditForm((current) => ({ ...current, session_pass_id: sessionPassId }))}
+                            loading={editPassLoading}
+                            error={editPassError}
+                            onRetry={() => loadEditPassOptions(editForm.customer_id, editForm.selected_service_id === LEGACY_SERVICE_VALUE ? null : editForm.selected_service_id)}
+                            disabled={isBusy}
+                            currentPassId={editForm.current_pass_id}
+                            currentUsageState={editForm.current_usage_state}
+                            compact
+                          />
                           <label className={styles.editField}>
                             <span>실제 시술금액 (선택)</span>
                             <input
@@ -1033,7 +1176,7 @@ export default function AppointmentsPage() {
                           <button type="button" className={styles.secondaryButton} onClick={() => closeEditingAppointment()} disabled={isBusy}>
                             취소
                           </button>
-                          <button type="submit" className={styles.primaryButton} disabled={isBusy}>
+                          <button type="submit" className={styles.primaryButton} disabled={isBusy || (editForm.selected_service_id !== LEGACY_SERVICE_VALUE && (editPassLoading || Boolean(editPassError)))}>
                             {editSavingById.has(appt.id) ? (
                               <Loader2 size={16} className="animate-spin" />
                             ) : (

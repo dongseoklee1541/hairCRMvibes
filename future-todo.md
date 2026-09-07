@@ -65,8 +65,8 @@
 | R-11 | Design Ready (PR #31 merged; implementation deferred) | 설계 PR #31을 `main@93c94bb`로 병합했고 목적별 채널, 공통 outbox/dry-run, 권한·개인정보·동의 경계와 Pencil 4개 frame을 보존했습니다. 구현은 보류했으며 코드·migration·provider·Cron·실제 발송은 없습니다. | 다른 roadmap 업무를 우선합니다. 재개 시 최신 기준을 재감사하고 30일 보존의 dry-run 전용 foundation만 별도 승인하며 live·attempt·manual-review·외부 dispatch는 provider/live gate 전까지 비활성화 |
 | R-12 | Done (production deployed; Preview role/PWA + Production public/API boundary verified) | PR #22 merge `main@7a107c4`, Vercel deployment `FxRGiDSgHQFXARsc2mUyCrsydtY8`, canonical R-12 설정 chunk·공개/PWA 자산·무인증 export `401 + no-store`를 확인했습니다. Node tests 10/10·100,005행과 전용 Preview anon 401/staff 403/owner 고객·예약 200, 모바일 UI/PWA cache, residue 0 근거를 유지합니다. Production DB는 비식별 count/RLS/grant/residue만 배포 전후 재확인했습니다. | 모바일·Safari Blob fallback 메모리, Vercel 함수 실행시간, 다중 페이지 비-snapshot 특성은 운영 규모 부하 검증 필요. Production 실제 owner CSV 생성은 개인정보 보관 책임 때문에 의도적으로 미실행 |
 | R-14 | In Progress (구현 완료 · 대표 사용자 검증 대기) | 구현 commit `c7eaaabaabb47cbe4b11fabb6aaaccc1c428cb67`, PR #25 merge `main@cdabf40982c1b8d2dcc196bacc116b3d399efa15`, GitHub Production deployment record `5424206017` success, canonical `https://hair-cr-mvibes.vercel.app`, 공개/PWA 자산 200·R-14 bundle marker, Cron 무인증 `401/no-store`, CSV export `dataset=customers` 무인증 `401/private/no-store`를 확인했습니다. 실제 고객·예약 데이터는 조회하거나 변경하지 않았습니다. | 실제 50~60대 여성 대표 사용자 2명에게 고객 찾기·새 예약 등록·예약 확인/상태 변경 과제를 관찰하고 막힘·오조작·용어 이해·완료 확신을 기록한 뒤 `Done` 여부 판단 |
-| R-15 | Done (production deployed; live migration applied; authenticated UI smoke pending) | PR #34 merge `main@52fa394`, implementation `a0f324f` + ignore `96bd4b7`. Vercel Production deployment success, Preview/Production에 `r15_customer_service_price` migration 적용. actual_price 컬럼·RPC·trigger·stats signature 검증 완료. 기존 예약 backfill 0. | 실제 owner/staff 로그인 UI smoke와 Production authenticated stats 조회는 후속 운영 검증. R-16은 별도 설계/승인 유지 |
-| R-16 | Proposed (설계 문서화 완료 · 구현 승인 없음) | 최신 `origin/main@ed5b07b`에서 횟수권 선행 구현이 없음을 확인하고 총 횟수+예약별 사용 원장, confirmed 예약 차감·completed 확정·cancelled 복구, row lock/unique 원자성 권장안을 문서화했습니다. 코드·DB·Pencil은 변경하지 않았습니다. | owner/staff 관리 권한, 만료·고객 병합 정책, RPC 통합 여부와 R-15 가격 경계를 결정한 뒤 별도 Implementation Plan 승인 |
+| R-15 | Done (production deployed; live migration applied; authenticated UI smoke pending) | PR #34 merge `main@52fa394`, implementation `a0f324f` + ignore `96bd4b7`. Vercel Production deployment success, Preview/Production에 `r15_customer_service_price` migration 적용. actual_price 컬럼·RPC·trigger·stats signature 검증 완료. 기존 예약 backfill 0. | 실제 owner/staff 로그인 UI smoke와 Production authenticated stats 조회는 후속 운영 검증. R-16 delivery는 별도 승인 유지 |
+| R-16 | In Progress (로컬 검증 완료 · Git 검토 단계) | 2026-09-06: 유실된 임시 worktree의 성공 패치 67건을 `output/recovery/r16-20260906/app` 사본으로 복구하고 Pen 디자인 6개 frame을 재구성했습니다. 조회 로딩/오류 중 예약·이력 저장 차단을 보완했습니다. PostgreSQL fresh/schema/upgrade·rollback/reapply digest 일치, SQL 회귀·동시성, Node 35/35·race 9/9·build, 두 모바일 viewport·PWA/offline/recovery·민감 cache 0건 통과. 상세 근거는 R-16 문서의 2026-09-06 절 참조. | 2026-09-07 승인에 따라 별도 worktree에서 Git 전달·Draft PR 검토 단계로 진행. 병합·배포·remote migration은 미수행. 실제 운영 smoke·실기기 검증 및 baseline CSS preload 경고는 후속 사항 |
 
 ## 교차 품질 개선 (2026-07-16)
 
@@ -113,7 +113,7 @@
 - `R-09` 통계 고도화(매출/객단가/재방문율): PR/live/Production release Done
 - `R-14` 쉬운 사용성 1차: 구현 완료·대표 사용자 검증 대기. 번호 미배정 후보 3개는 실제 사용자 관찰 뒤 승격 여부 판단
 - `R-15` 고객별 실제 시술금액 입력·수정: Done (PR #34 merge·Preview/Production migration·Vercel Production 배포 완료; authenticated UI smoke 대기)
-- `R-16` 고객별 횟수권: Proposed, R-15 가격 의미와 예약 차감·취소 복구·고객 병합 계약 결정 후 별도 구현 승인
+- `R-16` 고객별 횟수권: 로컬 구현·검증 완료, delivery pending. stage/commit/push/PR·배포·remote migration은 별도 승인
 
 ### Phase 2 기능 착수 기준 (2026-07-12 감사)
 - R-06/R-07은 재구현하지 않습니다. 미완료 실기기/browser/Preview 검증은 기능 완료 근거와 분리한 후속 운영 작업으로 추적합니다.
@@ -165,9 +165,9 @@
 - 실제 구현 착수는 별도 승인 후 진행하며, 구현 계획 문서는 본 로드맵을 참조합니다.
 
 ## 마지막 업데이트
-- 작성일: 2026-07-17
+- 최종 업데이트: 2026-07-20
 - R-15 release 기록: PR #34 merge `main@52fa394d783cb418883d413ef4796be32f8afcde` (구현 `a0f324f`, ignore `96bd4b7`). Vercel Preview READY, Production deployment success. Preview migration `20260717140419_r15_customer_service_price`, Production migration `20260717140540_r15_customer_service_price` + signature fix `r15_customer_service_price_stats_signature_fix` 적용. catalog 검증: actual_price 4컬럼, check/trigger/RPC, authenticated EXECUTE 허용·anon 차단, nonnull actual_price 0. 실제 고객·예약 데이터 변경 없음.
-- R-15/R-16 설계 기록: 최신 `origin/main@ed5b07bee005bd8d84d164a78c00e0adf38153ab`에서 R-08/R-09 가격 계약과 예약·고객 상세·고객 lifecycle을 읽기 전용 검토했습니다. R-15는 실제 시술금액을 기존 snapshot과 분리하는 안, R-16은 총 횟수와 예약별 사용 원장을 분리해 confirmed 차감·completed 확정·cancelled 복구하는 안을 권장안으로 문서화했습니다. 구현 승인, 코드·migration·Pencil·Production 변경은 없습니다.
+- R-16 로컬 구현·검증 기록: `main@b87eb6873f3ab873b5d7cc8c6e9db641bd1c6e4d` 기준 전용 worktree/branch에서 mutable 잔여 컬럼 없는 원장형 모델과 고객→횟수권 UUID→예약 잠금, request UUID idempotency, owner/staff·RLS/ACL, R-07/R-08/R-15 경계를 구현했습니다. DB replay·rollback·semantic digest·동시성, 합성 모바일 UI/PWA/cache, `npm test`, Production build를 통과했으며 원격 delivery와 remote migration은 수행하지 않았습니다.
 - R-10 구현/통합 기록: `origin/main@b225884`에서 시작해 R-14 변경과 Pencil node 공존을 보존했고, 승인된 A′ private HMAC invitation claim ledger·fail-closed gate·운영 runbook을 구현했습니다. implementation commit `fccf3753856abbe0c254813eafd48bcbfffafcb0`은 PR #26으로 `main@6cfb71e`에 merge됐으며, Preview/Production migration과 Vercel Production release는 완료됐습니다. Pencil transport 재검증은 별도 세션 blocker이고 `.pen` SHA-1은 불변입니다. Auth URL은 이번 release에서 변경하지 않았고, advisor WARN 및 authenticated owner smoke blocker 때문에 R-10은 `In Progress`입니다.
 - R-11 선행 설계/보류 기록: 설계 PR #31을 merge commit `93c94bbac22d263cdca5fcb6ab0ee6b7e7295523`으로 `main`에 반영했습니다. 구현은 보류하고 다른 roadmap 업무를 우선합니다. 재개 시 첫 단위는 dry-run run 집계와 `simulated` job/delivery만 30일 보존하는 foundation이며 live·attempt·manual-review·외부 dispatch는 비활성화합니다. 실제 발송의 최소 dedupe tombstone 보존, HMAC rotation, provider 증거 기반 manual-review, 법적 동의/SLA·VAPID는 별도 live gate입니다.
 - 2026-07-12 감사 직접 확인: GitHub PR #9~#15 merge, PR #15 merge commit `origin/main@a7a4186e76c9225c9273fa8474cea27440d36d40`; 당시 Supabase live migration 9개·R-07 RPC 7개/audit table 2개·고객 5건/예약 6건 비식별 count; canonical 공개/PWA 자산 200·Cron 무인증 401

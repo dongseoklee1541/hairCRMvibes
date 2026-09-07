@@ -8,7 +8,14 @@ import { formatPriceKrw } from '@/lib/formatPrice';
 import AppointmentDatePicker from '@/components/appointments/AppointmentDatePicker';
 import { AppointmentCustomerPicker } from '@/components/appointments/AppointmentCustomerPicker';
 import { CustomerQuickCreateSheet } from '@/components/customers/CustomerQuickCreateSheet';
+import { SessionPassPicker } from '@/components/sessionPass/SessionPassPicker';
 import { addDaysToDateKey, getTodayKstDateKey, getWeekdayFromDateKey } from '@/lib/dateTime';
+import {
+  clearRequestId,
+  createRequestFingerprint,
+  getOrCreateRequestId,
+  normalizeSessionPassRpcRows,
+} from '@/lib/sessionPass';
 import {
   buildClosedDateSet,
   DURATION_MINUTE_OPTIONS,
@@ -24,6 +31,8 @@ function NewAppointmentForm() {
   const searchParams = useSearchParams();
   const customerIdFromQuery = searchParams.get('customerId');
   const customerPickerRef = useRef(null);
+  const requestIdRef = useRef(null);
+  const passRequestIdRef = useRef(0);
   
   const [loading, setLoading] = useState(false);
   const [fetchingCustomers, setFetchingCustomers] = useState(true);
@@ -38,6 +47,9 @@ function NewAppointmentForm() {
   const [closedDateSet, setClosedDateSet] = useState(new Set());
   const [serviceDefaults, setServiceDefaults] = useState([]);
   const [businessHours, setBusinessHours] = useState([]);
+  const [sessionPassOptions, setSessionPassOptions] = useState([]);
+  const [sessionPassLoading, setSessionPassLoading] = useState(false);
+  const [sessionPassError, setSessionPassError] = useState('');
   const [operationSettings, setOperationSettings] = useState({
     default_service_id: '',
     default_service_name: '',
@@ -53,6 +65,7 @@ function NewAppointmentForm() {
     service: '',
     duration_minutes: 60,
     actual_price_krw: '',
+    session_pass_id: '',
     memo: '',
   });
   const [submitMessage, setSubmitMessage] = useState('');
@@ -192,11 +205,62 @@ function NewAppointmentForm() {
     }
   }, []);
 
+  const fetchSessionPassOptions = useCallback(async () => {
+    const customerId = formData.customer_id;
+    const serviceId = formData.service_id;
+    const requestId = ++passRequestIdRef.current;
+
+    if (!customerId || !serviceId) {
+      setSessionPassOptions([]);
+      setSessionPassError('');
+      setSessionPassLoading(false);
+      setFormData((current) => ({ ...current, session_pass_id: '' }));
+      return;
+    }
+
+    try {
+      setSessionPassLoading(true);
+      setSessionPassError('');
+      const { data, error } = await supabase.rpc('list_appointment_session_pass_options', {
+        p_customer_id: customerId,
+        p_service_id: serviceId,
+      });
+      if (error) throw error;
+      if (requestId !== passRequestIdRef.current) return;
+
+      const options = normalizeSessionPassRpcRows(data);
+      setSessionPassOptions(options);
+      setFormData((current) => {
+        const selected = options.find((option) => option.id === current.session_pass_id);
+        return selected?.is_available ? current : { ...current, session_pass_id: '' };
+      });
+    } catch (error) {
+      if (requestId !== passRequestIdRef.current) return;
+      console.error('Error fetching session pass options:', error);
+      setSessionPassOptions([]);
+      setSessionPassError(
+        navigator.onLine
+          ? '횟수권을 불러오지 못했습니다. 횟수권 없이 저장하거나 다시 시도해주세요.'
+          : '오프라인에서는 횟수권을 확인할 수 없습니다.'
+      );
+      setFormData((current) => ({ ...current, session_pass_id: '' }));
+    } finally {
+      if (requestId === passRequestIdRef.current) setSessionPassLoading(false);
+    }
+  }, [formData.customer_id, formData.service_id]);
+
   useEffect(() => {
     fetchCustomers();
     fetchClosedDays();
     fetchAppointmentSettings();
   }, [fetchCustomers, fetchClosedDays, fetchAppointmentSettings]);
+
+  useEffect(() => {
+    fetchSessionPassOptions();
+    return () => {
+      passRequestIdRef.current += 1;
+    };
+  }, [fetchSessionPassOptions]);
 
   const handleServiceChange = (serviceId) => {
     const matchedService = serviceDefaults.find((service) => service.id === serviceId);
@@ -205,6 +269,7 @@ function NewAppointmentForm() {
       service_id: matchedService?.id || '',
       service: matchedService?.name || '',
       duration_minutes: matchedService?.default_duration_minutes || prev.duration_minutes,
+      session_pass_id: '',
     }));
   };
 
@@ -217,7 +282,7 @@ function NewAppointmentForm() {
       const withoutDuplicate = current.filter((item) => item.id !== customer.id);
       return [...withoutDuplicate, customer].sort((a, b) => a.name.localeCompare(b.name, 'ko'));
     });
-    setFormData((current) => ({ ...current, customer_id: customer.id }));
+    setFormData((current) => ({ ...current, customer_id: customer.id, session_pass_id: '' }));
     setCustomerSuccessMessage(message);
     setQuickCreateName(null);
     focusCustomerPicker();
@@ -287,6 +352,14 @@ function NewAppointmentForm() {
       setSubmitMessage('모든 필수 항목을 입력해주세요.');
       return;
     }
+    if (!navigator.onLine) {
+      setSubmitMessage('오프라인에서는 예약과 횟수권 잔여를 안전하게 저장할 수 없습니다. 연결을 확인해주세요.');
+      return;
+    }
+    if (sessionPassLoading || sessionPassError) {
+      setSubmitMessage(sessionPassError || '횟수권을 확인한 뒤 예약을 등록해주세요.');
+      return;
+    }
 
     const actualPriceKrw = formData.actual_price_krw === ''
       ? null
@@ -304,25 +377,42 @@ function NewAppointmentForm() {
         return;
       }
 
-      const { error } = await supabase
-        .from('appointments')
-        .insert([
-          {
-            customer_id: formData.customer_id,
-            date: formData.date,
-            time: formData.time,
-            service_id: formData.service_id,
-            service: formData.service,
-            duration: formatDurationMinutes(formData.duration_minutes),
-            duration_minutes: formData.duration_minutes,
-            memo: formData.memo,
-            status: 'confirmed',
-            actual_price_krw: actualPriceKrw,
-          },
-        ]);
+      const requestPayload = {
+        customer_id: formData.customer_id,
+        date: formData.date,
+        time: formData.time,
+        service_id: formData.service_id,
+        service: formData.service,
+        duration: formatDurationMinutes(formData.duration_minutes),
+        duration_minutes: formData.duration_minutes,
+        memo: formData.memo.trim() || null,
+        status: 'confirmed',
+        session_pass_id: formData.session_pass_id || null,
+        actual_price_krw: actualPriceKrw,
+      };
+      const requestId = getOrCreateRequestId(
+        requestIdRef,
+        createRequestFingerprint(requestPayload)
+      );
+      const { error } = await supabase.rpc('create_appointment_with_session_pass', {
+        p_request_id: requestId,
+        p_customer_id: requestPayload.customer_id,
+        p_date: requestPayload.date,
+        p_time: requestPayload.time,
+        p_service_id: requestPayload.service_id,
+        p_service: requestPayload.service,
+        p_duration: requestPayload.duration,
+        p_duration_minutes: requestPayload.duration_minutes,
+        p_memo: requestPayload.memo,
+        p_status: requestPayload.status,
+        p_session_pass_id: requestPayload.session_pass_id,
+        p_actual_price_krw: requestPayload.actual_price_krw,
+        p_actual_price_update_reason: null,
+      });
 
       if (error) throw error;
 
+      clearRequestId(requestIdRef);
       router.push('/appointments');
       router.refresh();
     } catch (error) {
@@ -359,7 +449,7 @@ function NewAppointmentForm() {
             customers={customers}
             value={formData.customer_id}
             onChange={(customerId) => {
-              setFormData((current) => ({ ...current, customer_id: customerId }));
+              setFormData((current) => ({ ...current, customer_id: customerId, session_pass_id: '' }));
               setCustomerSuccessMessage('');
             }}
             onQuickCreate={(name) => setQuickCreateName(name)}
@@ -452,6 +542,17 @@ function NewAppointmentForm() {
             )}
           </div>
 
+          <SessionPassPicker
+            id="appointment-session-pass"
+            options={sessionPassOptions}
+            value={formData.session_pass_id}
+            onChange={(sessionPassId) => setFormData((current) => ({ ...current, session_pass_id: sessionPassId }))}
+            loading={sessionPassLoading}
+            error={sessionPassError}
+            onRetry={fetchSessionPassOptions}
+            disabled={loading || fetchingCustomers || fetchingSettings}
+          />
+
           <div className="form-group">
             <label className="form-label" htmlFor="appointment-actual-price">실제 시술금액 <span className={styles.optionalText}>선택</span></label>
             <div className="form-input">
@@ -538,6 +639,8 @@ function NewAppointmentForm() {
             fetchingCustomers ||
             fetchingClosedDays ||
             fetchingSettings ||
+            sessionPassLoading ||
+            Boolean(sessionPassError) ||
             Boolean(customerError) ||
             Boolean(closedDaysError) ||
             Boolean(settingsError) ||

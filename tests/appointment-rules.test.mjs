@@ -17,6 +17,13 @@ import {
   validateAppointmentBusinessHours,
 } from '../lib/appointmentRules.js';
 import { getDateKeyRange, getWeekdayFromDateKey } from '../lib/dateTime.js';
+import {
+  clearRequestId,
+  createRequestFingerprint,
+  getAppointmentPassUsage,
+  getMostRecentPassUsage,
+  getOrCreateRequestId,
+} from '../lib/sessionPass.js';
 
 const mondayBusinessHours = [
   {
@@ -160,5 +167,35 @@ test('일괄 휴무 대상은 전체 기간 또는 선택 요일만 생성한다
   assert.throws(
     () => buildBatchTargetDates('unknown', dateRange, null, getDateKeyRange, getWeekdayFromDateKey),
     /지원하지 않는 휴무일 모드입니다/,
+  );
+});
+
+test('동일 payload 재시도는 같은 request UUID를 재사용하고 성공 뒤 새 UUID를 만든다', () => {
+  const requestRef = { current: null };
+  const fingerprint = createRequestFingerprint({ service_id: 'service-a', customer_id: 'customer-a' });
+  const first = getOrCreateRequestId(requestRef, fingerprint);
+  const retry = getOrCreateRequestId(requestRef, fingerprint);
+
+  assert.equal(retry, first);
+  assert.equal(
+    createRequestFingerprint({ customer_id: 'customer-a', service_id: 'service-a' }),
+    fingerprint,
+  );
+
+  clearRequestId(requestRef);
+  const next = getOrCreateRequestId(requestRef, fingerprint);
+  assert.notEqual(next, first);
+});
+
+test('예약 횟수권 표시는 active 원장을 우선하고 없으면 released 이력을 보존한다', () => {
+  const released = { id: 'released', state: 'released', reserved_at: '2026-07-01T00:00:00Z' };
+  const reserved = { id: 'reserved', state: 'reserved', reserved_at: '2026-06-01T00:00:00Z' };
+  const appointment = { appointment_session_pass_usages: [released, reserved] };
+
+  assert.equal(getAppointmentPassUsage(appointment)?.id, 'reserved');
+  assert.equal(getMostRecentPassUsage(appointment)?.id, 'reserved');
+  assert.equal(
+    getMostRecentPassUsage({ appointment_session_pass_usages: [released] })?.id,
+    'released',
   );
 });
