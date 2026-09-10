@@ -303,6 +303,7 @@ do $$
 declare
   v_visible integer;
   v_rows integer;
+  v_result jsonb;
 begin
   select count(*)::integer
   into v_visible
@@ -319,12 +320,21 @@ begin
     raise exception 'R-08 smoke: staff가 active/inactive 서비스 전체를 읽지 못합니다.';
   end if;
 
-  update public.appointments
-  set memo = '기존 confirmed 무관한 수정'
-  where id = '83000000-0000-0000-0000-000000000099';
-  get diagnostics v_rows = row_count;
+  v_result := public.update_appointment_with_session_pass(
+    '83000000-0000-0000-0000-000000000099',
+    '83000000-0000-0000-0000-000000000099',
+    '2099-01-11',
+    '10:00',
+    null,
+    '기존 confirmed 자유입력',
+    null,
+    60,
+    '기존 confirmed 무관한 수정',
+    null
+  );
 
-  if v_rows <> 1 or not exists (
+  if v_result->>'appointment_id' <> '83000000-0000-0000-0000-000000000099'
+     or not exists (
     select 1
     from public.appointments a
     where a.id = '83000000-0000-0000-0000-000000000099'
@@ -333,7 +343,7 @@ begin
       and a.service = '기존 confirmed 자유입력'
       and a.memo = '기존 confirmed 무관한 수정'
   ) then
-    raise exception 'R-08 smoke: 기존 confirmed NULL service_id 행의 호환 수정이 실패했습니다.';
+    raise exception 'R-08 smoke: R-16 통합 RPC에서 기존 confirmed NULL service_id 행의 호환 수정이 실패했습니다.';
   end if;
 
   begin
@@ -362,6 +372,8 @@ begin
   end;
 end;
 $$;
+
+reset role;
 
 insert into public.appointments (
   id,
@@ -714,6 +726,8 @@ set local role authenticated;
 set local "request.jwt.claim.sub" = '80000000-0000-0000-0000-000000000001';
 
 do $$
+declare
+  v_result jsonb;
 begin
   insert into public.salon_service_defaults (
     id, name, default_duration_minutes, price_krw, sort_order
@@ -809,6 +823,8 @@ set local role authenticated;
 set local "request.jwt.claim.sub" = '80000000-0000-0000-0000-000000000002';
 
 do $$
+declare
+  v_result jsonb;
 begin
   if not exists (
     select 1
@@ -819,12 +835,18 @@ begin
     raise exception 'R-08 smoke: 마스터 가격 변경이 과거 snapshot을 변경했습니다.';
   end if;
 
-  update public.appointments
-  set
-    memo = '비활성 참조 예약의 무관한 수정',
-    service = '비활성 same-id 변조',
-    price_snapshot_krw = 1
-  where id = '83000000-0000-0000-0000-000000000005';
+  v_result := public.update_appointment_with_session_pass(
+    '83000000-0000-0000-0000-000000000105',
+    '83000000-0000-0000-0000-000000000005',
+    '2099-01-07',
+    '10:00',
+    '82000000-0000-0000-0000-000000000002',
+    '비활성 same-id 변조',
+    null,
+    60,
+    '비활성 참조 예약의 무관한 수정',
+    null
+  );
 
   if not exists (
     select 1
@@ -838,24 +860,33 @@ begin
   end if;
 
   begin
-    update public.appointments
-    set status = 'confirmed'
-    where id = '83000000-0000-0000-0000-000000000006';
+    perform public.set_appointment_status(
+      '83000000-0000-0000-0000-000000000106',
+      '83000000-0000-0000-0000-000000000006',
+      'confirmed',
+      null,
+      null
+    );
     raise exception 'R-08 smoke: 비활성 서비스로 completed -> confirmed 전환이 허용되었습니다.';
   exception
     when sqlstate '55000' then null;
   end;
 
   begin
-    insert into public.appointments (
-      customer_id, date, time, service, service_id, status
-    ) values (
+    perform public.create_appointment_with_session_pass(
+      '83000000-0000-0000-0000-000000000107',
       '81000000-0000-0000-0000-000000000001',
       '2099-01-09',
       '10:00',
-      '비활성 신규 선택',
       '82000000-0000-0000-0000-000000000002',
-      'completed'
+      '비활성 신규 선택',
+      null,
+      120,
+      null,
+      'completed',
+      null,
+      null,
+      null
     );
     raise exception 'R-08 smoke: completed 이력에 비활성 서비스를 새로 연결했습니다.';
   exception

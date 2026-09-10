@@ -629,7 +629,7 @@ function SettingsPageContent() {
     try {
       setSaving(true);
 
-      const { error } = await supabase.rpc('apply_closed_day_with_cancellations', {
+      const { data, error } = await supabase.rpc('apply_closed_day_with_cancellations', {
         p_closed_date: singleDate,
         p_cancel_ids: selectedConflictIds,
         p_note: note.trim() || null,
@@ -637,7 +637,12 @@ function SettingsPageContent() {
 
       if (error) throw error;
 
-      setFeedbackMessage(`${formatKoreanDate(singleDate)} 휴무일이 저장되었습니다.`);
+      const releasedCount = data?.released_session_count ?? 0;
+      setFeedbackMessage(
+        releasedCount > 0
+          ? `${formatKoreanDate(singleDate)} 휴무일을 저장하고 횟수권 예약 ${releasedCount}회를 복구했습니다.`
+          : `${formatKoreanDate(singleDate)} 휴무일이 저장되었습니다.`
+      );
       setConflicts([]);
       setSelectedConflictIds([]);
       setSheetOpen(false);
@@ -688,8 +693,12 @@ function SettingsPageContent() {
 
       const appliedDays = data?.applied_days ?? targetDates.length;
       const cancelledCount = data?.cancelled_count ?? currentImpact;
+      const releasedCount = data?.released_session_count ?? 0;
 
-      setFeedbackMessage(`${modeLabel} 휴무일 ${appliedDays}일을 저장하고 확정 예약 ${cancelledCount}건을 취소했습니다.`);
+      setFeedbackMessage(
+        `${modeLabel} 휴무일 ${appliedDays}일을 저장하고 확정 예약 ${cancelledCount}건을 취소했습니다.`
+        + (releasedCount > 0 ? ` 횟수권 예약 ${releasedCount}회도 복구했습니다.` : '')
+      );
       await fetchClosedDates();
       await calculateImpact();
     } catch (error) {

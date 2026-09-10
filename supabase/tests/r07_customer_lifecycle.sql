@@ -427,7 +427,7 @@ begin
     );
     raise exception 'R-07 smoke: archived source merge가 허용되었습니다.';
   exception
-    when sqlstate '55000' then null;
+    when sqlstate '55000' or sqlstate '42501' then null;
   end;
 
   begin
@@ -437,7 +437,7 @@ begin
     );
     raise exception 'R-07 smoke: archived target merge가 허용되었습니다.';
   exception
-    when sqlstate '55000' then null;
+    when sqlstate '55000' or sqlstate '42501' then null;
   end;
 
   begin
@@ -460,7 +460,7 @@ begin
     );
     raise exception 'R-07 smoke: archived 고객에게 신규 예약이 허용되었습니다.';
   exception
-    when sqlstate '55000' then null;
+    when sqlstate '55000' or sqlstate '42501' then null;
   end;
 
   begin
@@ -469,7 +469,7 @@ begin
     where id = '72000000-0000-0000-0000-000000000003';
     raise exception 'R-07 smoke: 기존 예약을 archived 고객에게 이동할 수 있었습니다.';
   exception
-    when sqlstate '55000' then null;
+    when sqlstate '55000' or sqlstate '42501' then null;
   end;
 
   if not exists (

@@ -1,11 +1,15 @@
 # R-16 고객별 횟수권
 
 ## 상태
-- Proposed (설계 문서화 완료 · 구현 승인 없음)
-- 기준: `origin/main@ed5b07bee005bd8d84d164a78c00e0adf38153ab`
+- In Progress (Preview 취소 검증 완료 · 재확정 보완 로컬 검증 완료)
+- 기준: `main@b87eb6873f3ab873b5d7cc8c6e9db641bd1c6e4d`
+- Git 전달 worktree: `/Users/idongseog/workspace/hairCRMvibes-r16-delivery-20260907`, `codex/r16-delivery-20260907`
+- 보존된 복구 사본: `/Users/idongseog/workspace/hairCRMvibes/output/recovery/r16-20260906/app` (Git worktree가 아닌 별도 파일 사본)
+- 과거 작업: `/private/tmp/hairCRMvibes-r16-customer-session-pass`, `codex/r16-customer-session-pass` — 구현 파일 및 `.git` 연결 파일 유실 확인
 - 우선순위: P1
 - 선행조건: R-02 예약 상태 전이, R-07 고객 lifecycle/병합, R-08 서비스 마스터, R-15 실제 시술금액 의미 확정
-- 최종 업데이트: 2026-07-16
+- 최종 업데이트: 2026-09-07
+- delivery 경계: stage/commit/push·Draft PR은 승인된 검토 범위. 병합, 수동 배포, remote DB migration은 별도 승인 대상
 
 ## 사용자 요구
 - 고객이 10회권 같은 횟수형 상품을 미리 등록해 둘 수 있어야 합니다.
@@ -14,12 +18,12 @@
 - 고객 상세에서 보유 횟수권, 남은 횟수와 사용 이력을 확인할 수 있어야 합니다.
 
 ## 현재 코드 근거
-- 고객·예약·서비스 마스터는 있지만 횟수권, 패키지, 사용 원장 테이블은 없습니다.
-- `/appointments/new`는 고객·서비스·날짜·시간을 선택한 뒤 `appointments`에 직접 insert합니다.
-- `/appointments`는 direct update와 `set_appointment_status` RPC를 함께 사용합니다.
-- `/customers/[id]`는 예약 기반 시술 이력을 표시하고 완료 이력을 추가할 수 있습니다.
-- R-03은 예약 충돌과 영업시간을 DB trigger로 보호하며, R-08은 서비스 snapshot을 DB trigger로 보존합니다.
-- R-07 고객 병합·보관·익명 처리 흐름에 신규 고객 소유 데이터의 처리 규칙을 추가해야 합니다.
+- `customer_session_passes`가 총 횟수·상태·KST 등록/만료일을 관리하고 `appointment_session_pass_usages`가 예약별 `reserved`/`consumed`/`released` 원장을 보존합니다.
+- mutable `remaining_sessions` 컬럼은 없으며 RPC 조회 시 `total_sessions - reserved/consumed`로 잔여를 계산합니다.
+- `/appointments/new`, `/appointments`, 고객 상세 완료 이력, 단일·일괄 휴무 취소는 예약과 usage를 같은 transaction에서 처리하는 RPC를 사용합니다. 앱의 `appointments` 및 usage 직접 DML은 없습니다.
+- `/customers/[id]`는 owner 등록·총 횟수·만료·pause/cancel 관리와 staff read-only 경계를 제공하며 예약/시술 이력에 usage 상태를 표시합니다.
+- active/paused 횟수권 또는 usage history가 있는 고객 merge를 차단하고, 익명 처리 시 횟수권 memo를 비웁니다.
+- R-03 충돌, R-07 lifecycle, R-08 snapshot, R-15 actual price 의미를 유지하며 기존 예약·고객에는 pass를 추정 연결하거나 backfill하지 않습니다.
 
 ## 핵심 원칙
 - `남은 횟수`를 사용자가 직접 수정하는 단일 숫자로 저장하지 않습니다.
@@ -29,7 +33,7 @@
 - 차감·복구·예약 상태 변경은 한 DB transaction에서 처리합니다.
 - 횟수권 사용은 결제나 매출 인식을 뜻하지 않습니다.
 
-## 권장 사용자 흐름
+## 구현 사용자 흐름
 
 ```text
 횟수권 등록
@@ -42,7 +46,7 @@
 
 고객이 횟수권을 사용하지 않는 예약은 기존 흐름을 유지합니다.
 
-## 권장 데이터 모델
+## 구현 데이터 모델
 
 ### `customer_session_passes`
 
@@ -85,7 +89,7 @@
 
 ## 서비스 범위 대안
 
-### A안 - 전체 시술형 또는 단일 서비스형 (MVP 권장)
+### A안 - 전체 시술형 또는 단일 서비스형 (MVP 채택)
 - `eligible_service_id=NULL`이면 모든 활성 서비스, non-NULL이면 해당 서비스에만 사용할 수 있습니다.
 - 10회권 요구를 충족하면서 검증과 UI가 단순합니다.
 
@@ -118,7 +122,7 @@
 
 ## 원자성과 동시성
 
-### A안 - 예약 mutation RPC로 통합 (권장)
+### 채택안 - 예약 mutation RPC로 통합
 - 새 예약 저장, 예약 편집, 상태 변경이 횟수권 사용 원장까지 한 transaction에서 처리됩니다.
 - 횟수권 row를 `SELECT ... FOR UPDATE`로 잠근 뒤 잔여를 재계산합니다.
 - 서로 다른 횟수권을 동시에 잠글 때는 UUID 정렬 순서로 잠가 deadlock을 줄입니다.
@@ -164,7 +168,7 @@
 - 390×844와 360×800에서 횟수권 카드, select/listbox, 숫자 입력, 키보드, bottom sheet 내부 scroll을 검증합니다.
 - 잔여 변경은 색상만으로 표현하지 않고 숫자·문구와 `aria-live` 상태로 알립니다.
 
-## 권한 정책 권장안
+## 구현 권한 정책
 
 | 작업 | owner | staff | anon/profileless |
 | --- | --- | --- | --- |
@@ -182,8 +186,8 @@
 - 보관 시 횟수권과 사용 원장은 삭제하지 않고 조회 전용으로 보존합니다.
 - 익명 처리 시 자유입력 memo에 개인정보가 남지 않도록 memo를 비우거나 비식별화하는 정책을 migration/RPC에 포함합니다.
 - 고객 병합은 활성 횟수권을 조용히 합치지 않습니다.
-- MVP 권장안은 source 고객에 active/paused 횟수권이 있으면 병합을 차단하고, owner가 별도 `transfer_session_pass` 흐름에서 대상·잔여·사용 이력을 확인한 뒤 이전하도록 하는 것입니다.
-- 횟수권 이전을 지원하지 않는 1차 구현이라면 active pass가 있는 고객 병합을 명시적으로 차단하고 이유를 안내합니다.
+- MVP 구현은 active/paused 횟수권 또는 usage history가 있는 고객의 병합을 차단하고 이유를 안내합니다.
+- 고객 간 횟수권 자동 이전과 `transfer_session_pass` 흐름은 제공하지 않습니다.
 - 기존 R-07 merge/undo RPC와 audit test를 반드시 회귀 검증합니다.
 
 ## R-15 가격과의 경계
@@ -192,12 +196,15 @@
 - 횟수권 사용 당일 추가로 받은 금액이 있다면 R-15의 `actual_price_krw`에 실제 추가 금액을 기록할 수 있습니다.
 - 횟수권 판매금액, 선수금, 사용 시 매출 인식은 별도 회계 범위이며 R-16 MVP에 포함하지 않습니다.
 
-## 구현 예상 범위
+## 구현 범위
 - `pencil-hairshopcrm.pen`
 - `app/appointments/new/page.js`, `app/appointments/new/page.module.css`
 - `app/appointments/page.js`, `app/appointments/page.module.css`
 - `app/customers/[id]/page.js`, `app/customers/[id]/page.module.css`
-- R-16 forward migration·rollback·SQL concurrency test
+- `components/sessionPass/SessionPassPicker.js`, `components/sessionPass/SessionPassPicker.module.css`, `lib/sessionPass.js`
+- `supabase/migrations/20260719150346_r16_customer_session_pass.sql`
+- `supabase/rollbacks/20260719150346_r16_customer_session_pass.down.sql`
+- R-16 fresh/upgrade/rollback/semantic/concurrency SQL·shell tests와 R-07/R-08/R-15 회귀 fixture
 - `set_appointment_status` 및 예약 create/edit mutation 경로
 - R-07 고객 lifecycle/merge 관련 RPC·test
 - `schema.sql`
@@ -216,17 +223,70 @@
 - 기존 고객·예약을 추정해 횟수권에 연결하지 않습니다.
 - 390×844·360×800과 production-mode PWA에서 loading/error/empty/offline/recovery와 cache 0건을 검증합니다.
 
-## 테스트 요구사항
-- 전체 forward migration fresh replay, rollback/reapply, `schema.sql` semantic parity
-- 총 1회·10회, 잔여 0, 만료 당일/전/후 KST date, paused/cancelled
-- 전체 시술형·단일 서비스형·비활성 서비스·서비스 변경
-- confirmed/completed/cancelled/re-confirm 상태 전이와 중복 요청 idempotency
-- 마지막 1회를 두 PostgreSQL session에서 동시에 예약하는 경쟁
-- 예약 저장 실패 시 appointment/usage 모두 0건인 원자성
-- owner/staff/profileless/anon/PUBLIC execute·table grant
-- R-03 충돌·영업시간, R-08 snapshot, R-07 merge/undo 회귀
-- `npm test`, `npm run build`
-- 390×844·360×800 mobile browser, PWA offline/recovery, 민감 cache 0건
+## 로컬 검증 결과 (2026-07-20)
+
+아래는 과거 작업 기록입니다. 당시 임시 worktree와 PNG 원본은 유실됐으며, 이 절의 node ID·hash·스크린샷 경로·console 결과를 현재 증거로 사용하지 않습니다. 최신 결과는 다음 복구 감사 절을 기준으로 합니다.
+
+- Pencil Desktop에서 R-16 node `VlzqR`, `fQBsS`, `inFJ9`, `HPb4U`, `ghTjF`, `mFV7a`의 `snapshot_layout problems=0`을 확인하고 저장했습니다. `.pen` SHA-256은 `97c791bd8d6dd9300e141be2fc109f289a932210ec9a3ba6c91669e42183f581`로 바뀌어 디스크 persistence도 확인했습니다.
+- 전체 forward migration fresh replay, R-15→R-16 upgrade 무 backfill, rollback→legacy RPC 복원→reapply, `schema.sql` fresh replay를 통과했습니다. migration DB와 schema DB의 semantic digest는 모두 `5b0d35f1d46a5446aba3070c48aef079`입니다.
+- 두 PostgreSQL session의 마지막 1회 경쟁은 정확히 1건만 성공했고, 동일 request UUID 동시 요청은 appointment·usage·private request ledger가 각각 1건만 남았습니다. 실패 원자성, 상태 전이, 서비스·pass 변경, KST 만료, 잔여 0, paused/cancelled를 통과했습니다.
+- owner/staff/profileless/anon/PUBLIC, RLS, Data API grant, SECURITY DEFINER `search_path=''`·명시적 authenticated EXECUTE 경계와 R-03/R-07/R-08/R-15 회귀를 통과했습니다.
+- `npm test`는 Node 35/35와 appointment race 9/9, 합성 env Production `npm run build`는 Next.js/PWA build와 `/offline.html` fallback 생성을 포함해 성공했습니다.
+- 합성 데이터만 사용해 390×844·360×800에서 owner 등록/관리, staff read-only, 새 예약 사용 가능·소진 disabled, 예약 reserved 표시, 편집 picker 배치, completed/cancelled/re-confirm, loading/error/empty/recovery, 44×44px, 가로 overflow 0, bottom sheet 키보드 축소·safe-area를 검증했습니다. 정상 화면 console error/warning은 0건입니다.
+- `/manifest.json`, `/icons/icon-192.png`, `/icons/icon-512.png`는 200, `/sw.js`는 scope `/`에서 activated/controller 상태였습니다. offline fallback을 두 viewport에서 확인하고 재연결 refresh 후 변경된 최신 합성 데이터를 다시 받았습니다.
+- Cache Storage는 `workbox-precache-v2-http://127.0.0.1:3101/` 1개, 정적 URL 54개였습니다. `/rest/v1`, `/auth/v1`, 고객/예약 route 문서, session-pass 표식, 외부 API URL은 각각 0건입니다.
+- 스크린샷은 `output/playwright/r16-customer-session-pass/before/`를 보존하고 `after/20260720_r16_*_final_*.png`에 최종 화면을 추가했습니다. 전화·고객·예약 내용은 비식별 합성 값만 사용했습니다.
+
+## 복구 및 재검증 결과 (2026-09-06)
+
+- base `b87eb687` 위에 두 세션의 성공한 패치 이벤트 67건을 정확한 문맥·줄 수 검증 후 적용했습니다. 소스·문서·SQL·테스트 25개와 합성 서버 1개가 복구됐습니다. Git commit으로 존재하지 않던 변경이며, main과 기존 worktree metadata는 수정하지 않았습니다.
+- Pen Desktop (`dev.pencil.desktop`)에서 과거 디자인 작업을 재구성했습니다. 원본 `.pen` 바이트 복구가 아니며 새 ID를 사용합니다. 현재 node는 `IeRVR`, `t5UzpA`, `OrA43`, `I0fst`, `yT3MH`, `iD397`이고 여섯 frame의 layout problem은 0건입니다. 현재 앱에서 확인한 실제 좌표에 맞춰 겹침을 교정했고 File > Save 후 디스크 SHA-256 `be5eeef5f310597b76c3368dde02084a7bec3bf833449c11bcdebd7ec3884856`을 확인했습니다.
+- 복구 후 실제 브라우저에서 횟수권 조회 실패 중 저장 버튼이 활성화되는 결함을 발견했습니다. 새 예약·예약 편집·완료 이력의 로딩/오류 저장 차단과 submit handler guard를 보완했습니다. 편집 중 완료/재확정도 차단하며 취소 및 서비스 연결 없는 legacy 이력은 기존 계약을 유지합니다. 이는 기존 오류 시 저장 금지 디자인을 구현하는 수정입니다.
+- PostgreSQL 17 별도 로컬 cluster에서 전체 15개 forward migration fresh replay, R-15→R-16 upgrade, rollback/reapply, `schema.sql` replay 및 R-07/R-08/R-09/R-10/R-15/R-16 SQL 검증이 통과했습니다. 세 DB digest는 모두 `e4c9ae453013f837e2fe2f36f02e8798`입니다. 기존 digest SQL에는 role OID가 포함되므로 과거 다른 cluster의 hash와 동일성을 완료 기준으로 사용하지 않았습니다.
+- 마지막 1회 경쟁과 동일 request UUID 동시 요청이 통과했습니다. 최종 catalog에서 대상 함수 15개는 모두 빈 search_path·PUBLIC/anon EXECUTE 차단, private helper는 authenticated EXECUTE도 차단됐습니다. 두 공개 원장은 RLS·authenticated SELECT-only입니다. fresh DB의 고객·예약·횟수권·usage fixture 잔여는 각각 0건입니다.
+- 최종 `npm test`: Node 35/35 + race 9/9. 합성 env `npm run build`: 성공. 새 예약·편집·이력의 강제 submit에서도 mutation 요청은 0건이며 재조회 성공 후 저장이 복구됩니다.
+- 390×844·360×800에서 before 6장 및 after를 새로 캡처했습니다. owner/staff, picker·잔여·소진 disabled, 상태 전이, loading/error/empty/retry, 가로 overflow 0, 44px 조작 영역, sheet·키보드 높이 축소를 확인했습니다. 취소 사유는 합성 입력을 사용했고 실기기 키보드는 검증하지 않았습니다.
+- PWA 자산 5개 HTTP 200, SW activated/controller 및 update 확인, 두 viewport offline fallback, 재연결 후 최신 합성 revision 복구를 통과했습니다. precache 1개·정적 URL 54개·고객/예약/Auth/API 민감 cache 0건입니다. 정상/PWA 복구 console 오류는 0건이며 CSS preload 경고 5건은 baseline에서도 재현되는 후속 사항입니다. 의도적으로 주입한 503 오류 시나리오는 별도 로그입니다.
+- 현재 증거: 복구 루트의 `evidence/restore-manifest.json`, `db-results.json`, `audit.log`, `npm-test-final.log`, `build-final.log`, `ui-guards.log`, `ui-status-final.log`, `pwa.log`, `pencil-final/`, `mobile/`. 상세 인계와 파일 hash는 복구 루트 `README.md`, `source-manifest.json`을 사용합니다.
+
+## Git 전달 및 검증 경계 (2026-09-07)
+
+- 사용자 승인 범위는 새 worktree 생성, 검증한 26개 파일 반영, 인계 문서 갱신, stage/commit/push, Draft PR 생성 및 CI·자동 Preview 상태 확인입니다. 병합·Production 배포·remote migration·기존 worktree/branch 삭제는 포함하지 않습니다.
+- 생성 직전 원격 `main`은 복구 기준 `b87eb6873f3ab873b5d7cc8c6e9db641bd1c6e4d`와 일치했고 기존 열린 PR은 없었습니다. 새 worktree에 26개 파일을 복사한 뒤 모든 SHA-256 일치를 확인했습니다. 이후 이 절과 두 roadmap 상태 문서만 전달 단계에 맞춰 갱신합니다.
+- 애플리케이션·DB·테스트·디자인 바이트는 2026-09-06 검증본을 그대로 사용합니다. 새 worktree에서 `npm test`, 합성 env `npm run build`, `git diff --check`를 다시 실행하고 PR의 현재 head에 대한 CI 결과를 확인합니다. 실행 결과와 PR 주소는 작업 인계 보고서 및 PR 메타데이터를 기준으로 합니다.
+- 기존 `main`과 다른 worktree의 사용자 파일·복구 증거는 보존합니다. 원래 유실된 worktree metadata는 별도 정리 대상입니다.
+
+- 로컬 코드·DB·합성 Production 브라우저/PWA 검증은 완료했습니다.
+- 실제 Production Auth/DB/고객·예약 데이터, Preview/Production 배포, remote migration은 조회하거나 변경하지 않았습니다.
+- R-16은 `Done`이 아닙니다. Git 검토 이후 실제 Supabase 연동 검증과 migration·release는 별도 Implementation Plan과 승인이 필요합니다.
+
+## Preview 검증 및 재확정 보완 (2026-09-10)
+
+### 전달된 버전과 실제 Preview 검증
+
+- Draft PR [#37](https://github.com/dongseoklee1541/hairCRMvibes/pull/37), head `aaa168a56bbafc136abf339acd757352b8e912ba`. 해당 head의 CI 및 Vercel 검사는 통과했습니다. PR은 Draft이며 병합하지 않았습니다.
+- `burtyhairCRM-preview`에 R-16 migration을 적용하고 owner/staff/profileless/anon SQL 계약 검사를 통과했습니다. 검사는 rollback으로 정리했으며 이후 합성 고객 1명·횟수권 2개·예약 3건으로 owner UI 흐름을 검증했습니다.
+- 실제 Preview 버튼에서 예약 C 취소 → released, 고객 상세와 DB 원장의 2회권 잔여 1회·예약 중 0회·사용 완료 1회, 1회권 잔여 1회를 확인했습니다. 재조회 후에도 유지됐습니다. 기존 취소 prompt는 인라인 사유/확정 폼으로 바뀌었습니다.
+- 근거는 main checkout의 `output/recovery/r16-20260906/preview-20260910/cancel-ui-fix-report.md`와 `cancel-preview-reverification.json`입니다. Production DB·배포는 변경하지 않았습니다.
+
+### 재확정 보완: 이번 로컬 변경
+
+- 기존 UI는 active usage만 찾아 취소된 예약의 확정·완료 RPC에 횟수권 ID 대신 null을 보냈습니다. 두 회귀 테스트와 기존 빌드의 모바일 화면에서 confirmed/released 상태를 재현했습니다.
+- `getAppointmentStatusPassUsage`는 active usage를 우선하며, cancelled 예약의 마지막 released 원장 중 `appointment_cancelled`인 원장을 재사용 후보로 고릅니다. 현재 취소 시각보다 오래된 복구는 제외해 미사용 재확정 후 재취소 시 과거 권을 되살리지 않습니다.
+- 편집 화면은 같은 후보를 초기 선택하되 released를 현재 reserved로 표시하지 않습니다. 사용자가 선택한 미사용/다른 횟수권을 우선합니다. 기존에 제거·교체·고객 처리로 복구한 원장은 자동 선택하지 않습니다.
+- 만료·중지·소진·시술 자격·잔여 및 동시성 검증은 기존 transaction RPC가 수행합니다. 실패하면 상태를 유지하고 원래 요청 UUID로 재시도하며 미사용으로 자동 전환하지 않습니다. DB migration/RPC/RLS 및 가격·캐시 계약 변경은 없습니다.
+- 기존 버튼과 picker의 잘못된 초기값/전달값만 바로잡는 micro bug fix이므로 `.pen` 변경 예외를 적용했습니다. 새 화면·레이아웃·의존성은 없습니다.
+- `npm test`: Node 35/35 + race 24/24, 총 59개 통과. 재확정/바로 완료, 복구 사유/시각, 만료·소진·중지 실패/재시도, 명시적 미사용/다른 권 선택을 포함합니다.
+- `NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54329 NEXT_PUBLIC_SUPABASE_ANON_KEY=r16-synthetic-test-key npm run build`: 성공. `git diff --check`: 통과.
+- 합성 API를 연결한 local production build의 390×844·360×800에서 before confirmed/released → after confirmed/reserved를 동일 fixture로 비교했습니다. 390×844에서 만료 오류와 취소 상태 유지도 확인했습니다. 실제 Preview에서 이번 재확정 변경을 실행한 결과와는 구분합니다.
+- 근거: main checkout의 `output/recovery/r16-20260906/reconfirm-20260910/README.md`, `tests.log`, `build.log`, 수정 전후 JPEG 4장과 오류 JPEG 1장. 실제 비밀번호·토큰·고객 정보는 저장하지 않았습니다.
+
+### 현재 남은 단계
+
+- 2026-09-10 추가 승인으로 이번 재확정 코드·테스트·문서의 커밋·푸시와 새 Preview 재검증을 진행합니다. 결과는 PR #37의 최신 head 및 로컬 검증 보고서의 전달 결과를 기준으로 확인하며, 이전 `aaa168a`의 CI/Preview 결과를 새 변경의 원격 검증으로 사용하지 않습니다.
+- commit/push 후 새 Preview에서 재확정·완료·미사용/다른 권 선택을 재검증하고 PR 최종 검토를 진행합니다. 병합·Production migration·배포는 별도 계획과 승인 대상입니다.
+- 기존 합성 예약 B의 완료/released 이력은 자동 보정하지 않았습니다. 재확정 보완은 과거 데이터 일괄 수정을 포함하지 않습니다.
+- 실제 모바일 IME/키보드 및 staff 브라우저 로그인을 검증하지 않았습니다. PWA/cache 로직은 변경하지 않아 이번 보완에서 전체 PWA 검사를 반복하지 않았습니다.
 
 ## Non-Goals
 - 선불금·결제·환불·매출 인식·영수증
@@ -245,16 +305,16 @@
 - 횟수권을 무료 시술 금액으로 처리하면 매출이 왜곡됩니다. R-15 실제 금액과 횟수권 사용을 분리합니다.
 - 고객 병합이 다른 고객의 잔여를 조용히 합칠 수 있습니다. active pass 병합 차단 또는 명시적 owner 이전을 사용합니다.
 
-## 구현 전 결정사항
-1. 횟수권 등록·수정을 owner 전용으로 할지 staff까지 허용할지
-2. 유효기간이 지난 뒤 이미 reserved인 예약을 그대로 인정할지(권장) 또는 반환할지
-3. active 횟수권 고객 병합을 차단할지, owner 확인형 이전을 1차 범위에 포함할지
-4. 예약 mutation을 RPC로 통합할지, trigger 기반으로 기존 direct write를 유지할지
-5. 횟수권 구매금액·추가금액 기록을 이번 범위와 분리할지
+## 확정된 구현 결정
+1. 횟수권 등록·총 횟수·만료·pause/cancel은 owner 전용이고 staff는 조회와 예약 사용·복구만 허용합니다.
+2. 만료 전에 reserved된 예약은 만료 후에도 유지합니다.
+3. active/paused 횟수권 또는 usage history가 있는 고객 merge를 차단하며 자동 이전하지 않습니다.
+4. 예약 create/edit/status와 휴무 취소를 transaction RPC로 통합합니다.
+5. 구매금액·선불금·환불·매출 인식은 R-16 MVP에서 분리하고 횟수권 사용을 `actual_price_krw=0`으로 자동 기록하지 않습니다.
 
 ## Rollback
 - 먼저 UI에서 신규 횟수권 선택·등록을 비활성화합니다.
 - active confirmed 예약과 `reserved` usage가 0인지 확인하고, 남아 있으면 자동 삭제하지 않고 명시적으로 해제·보존 결정을 받습니다.
 - 애플리케이션을 R-16 이전 버전으로 배포한 뒤 RPC execute 권한을 회수합니다.
 - 원장 데이터 보존 여부를 확인한 후 trigger/function/index/table을 역순으로 제거하는 검토된 rollback SQL을 사용합니다.
-- 구현 전 문서 단계에서는 코드·DB rollback이 없습니다.
+- 현재 복구 사본은 main에 적용하지 않았으므로 사용을 중단해 원래 작업 상태를 유지할 수 있습니다. 2026-09-06 disposable DB 3개와 data directory는 보존하고 서버만 정상 종료합니다. DB·worktree·branch 삭제는 별도 승인 작업입니다.

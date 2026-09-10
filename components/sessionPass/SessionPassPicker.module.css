@@ -1,0 +1,102 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.labelRow label {
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.labelRow label span {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.usageBadge {
+  min-height: 28px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: var(--accent-light);
+  color: var(--accent-primary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.selectShell,
+.state,
+.error {
+  display: flex;
+  min-height: 52px;
+  align-items: center;
+  gap: 9px;
+  border-radius: var(--radius-md);
+  padding: 0 12px;
+}
+
+.selectShell {
+  border: 1px solid var(--border-default);
+  background: var(--bg-primary);
+  color: var(--accent-primary);
+}
+
+.selectShell:focus-within {
+  border-color: var(--accent-primary);
+  outline: 2px solid color-mix(in srgb, var(--accent-primary) 20%, transparent);
+}
+
+.selectShell select {
+  min-width: 0;
+  min-height: 50px;
+  flex: 1;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 16px;
+}
+
+.state {
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.error {
+  justify-content: space-between;
+  background: var(--status-danger-light);
+  color: var(--status-danger);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.error button {
+  display: inline-flex;
+  min-height: 44px;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 5px;
+  color: inherit;
+  font-weight: 700;
+}
+
+.help {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.compact {
+  grid-column: 1 / -1;
+}

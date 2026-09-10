@@ -90,7 +90,7 @@ R-07 release 세션에서 catalog/ACL/RPC 29개 계약과 실제 owner/staff/ano
 | R-09 | [R-09-stats-advanced.md](./R-09-stats-advanced.md) | Done (production deployed; exact live migration/ACL/PWA verified) |
 | R-14 | [R-14-easy-usability-foundation.md](./R-14-easy-usability-foundation.md) | In Progress (구현 완료 · 대표 사용자 검증 대기; PR #25 merge `main@cdabf409`, Production deployment `5424206017` success, canonical 공개/PWA 자산 200·R-14 bundle marker, Cron 무인증 `401/no-store`, CSV export `dataset=customers` 무인증 `401/private/no-store` 확인; 실제 고객·예약 데이터 미조회·미변경) |
 | R-15 | [R-15-customer-service-price.md](./R-15-customer-service-price.md) | Done (production deployed; live migration applied; authenticated UI smoke pending) |
-| R-16 | [R-16-customer-session-pass.md](./R-16-customer-session-pass.md) | Proposed (설계 문서화 완료 · 구현 승인 없음) |
+| R-16 | [R-16-customer-session-pass.md](./R-16-customer-session-pass.md) | In Progress (Preview 취소 검증 완료 · 재확정 보완 로컬 검증 완료) |
 
 R-07 로컬 완료 게이트에는 등록·편집 미저장 상태의 브라우저 Back/Forward·내부 이동 확인, 제출 중 dirty 유지·지연 응답 stale route 차단, 저장 성공 시 대화상자 0건, 홈 390×844·360×800 지속 콘솔 0건, 새 브라우저 컨텍스트의 PWA/offline 재검증이 포함됩니다. Production release에서는 canonical PWA 핵심 자산과 Cron/DB/runtime log 경계를 추가 확인했습니다.
 
@@ -106,7 +106,7 @@ R-14는 Pencil Before/After 4쌍과 공통 상태 매트릭스, 공통 가독성
 
 R-15는 PR #34 merge `main@52fa394`로 코드·Pencil·migration이 반영됐고 Preview/Production DB에 `actual_price_krw`·`set_appointment_actual_price`·R-09 actual revenue 분리를 적용했습니다. 실제 매출은 completed + non-null `actual_price_krw`만 사용하며 snapshot fallback은 없습니다. 기존 예약 backfill은 하지 않았고 authenticated owner/staff UI smoke는 후속 검증입니다.
 
-R-16은 고객별 총 횟수와 예약별 사용 원장을 분리하고 confirmed 예약에서 `reserved`, completed에서 `consumed`, cancelled에서 `released`로 전이하는 설계입니다. 마지막 1회를 동시에 초과 예약하지 않도록 DB row lock, partial unique index와 단일 transaction을 요구하며, 횟수권 사용을 실제 금액 0원이나 매출로 자동 기록하지 않습니다. 고객 병합·만료·owner/staff 권한과 RPC 통합 여부는 구현 전 결정사항입니다.
+R-16은 2026-09-06 임시 worktree 유실을 확인한 뒤 성공 패치 67건을 `output/recovery/r16-20260906/app`으로 복구하고 Pen 디자인을 재구성했습니다. 고객별 총 횟수·예약 usage 원장, confirmed/reserved·completed/consumed·cancelled/released의 원자 전이, UUID 잠금·요청 중복 방지, owner 관리/staff 사용 계약을 유지합니다. 새 예약·편집·시술 이력의 조회 로딩/오류 중 저장 차단도 보완했습니다. fresh/schema/upgrade 및 rollback/reapply digest `e4c9ae453013f837e2fe2f36f02e8798` 일치, 동시성·SQL 회귀, Node 35/35·race 9/9·build, 두 모바일 viewport·PWA/offline/recovery·민감 cache 0건을 재검증했습니다. 기존 버전에도 발생하는 CSS preload 경고는 후속 사항입니다. 이후 Draft PR #37에 `aaa168a`까지 전달했고 Preview migration·SQL 역할 계약·owner 실제 취소 복구를 검증했습니다. 2026-09-10 재확정 보완은 로컬 Node 35/35·race 24/24·build·두 모바일 viewport 검증을 통과했으며 추가 Git 전달·Preview 검증 단계입니다. 병합·Production migration·운영 배포는 수행하지 않았습니다. 상세 증거는 R-16 문서의 복구 검증 및 Git 전달 절을 기준으로 합니다.
 
 ### 교차 품질 개선
 
@@ -119,7 +119,7 @@ R-16은 고객별 총 횟수와 예약별 사용 원장을 분리하고 confirme
 - 2026-07-13 `burtyhairCRM-preview` 전용 Supabase 프로젝트를 만들고 forward migration 11개를 순서대로 replay했습니다. Vercel에는 Preview 범위의 공개 URL/key만 추가했으며 기존 Production/Development 값은 변경하지 않았습니다.
 - R-12는 Preview의 synthetic owner/staff/anon·모바일/PWA 검증 후 PR #22 merge `main@7a107c4`와 Production deployment `FxRGiDSgHQFXARsc2mUyCrsydtY8`까지 완료했습니다. canonical R-12 bundle, 공개/PWA 자산과 무인증 `/api/export`의 `401 + no-store`를 확인했으며 Production 실제 CSV는 생성하지 않았습니다.
 - R-14의 Pencil·코드·합성 모바일 브라우저 검증은 `codex/r14-easy-usability-foundation`에서 완료했습니다. 실제 대표 사용자 과제 관찰 결과를 기록하기 전에는 `Done`으로 전환하지 않습니다.
-- R-15는 PR #34 merge `main@52fa394`, Vercel Production 배포, Preview/Production live migration까지 완료했습니다. R-16은 설계 문서만 유지하며 별도 승인 전 구현하지 않습니다.
+- R-15는 PR #34 merge `main@52fa394`, Vercel Production 배포, Preview/Production live migration까지 완료했습니다. R-16은 Draft PR #37 및 Preview migration·owner 취소 복구 검증까지 완료했습니다. 재확정 누락 보완과 최신 문서는 로컬 검증 완료 후 추가 Git 전달·Preview 검증 단계입니다. 다음 단계는 이 변경의 전달과 새 Preview 재검증이며, 병합·Production migration·배포는 별도 승인 후 진행합니다.
 
 ## 번호 미배정 사용성 후보
 

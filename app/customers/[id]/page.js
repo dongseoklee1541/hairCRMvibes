@@ -18,11 +18,13 @@ import {
   Scissors,
   ShieldAlert,
   Trash2,
+  TicketCheck,
   User,
   Users,
   X,
 } from 'lucide-react';
 import { useAuth } from '@/components/AuthProvider';
+import { SessionPassPicker } from '@/components/sessionPass/SessionPassPicker';
 import { supabase } from '@/lib/supabase';
 import { formatPriceKrw } from '@/lib/formatPrice';
 import {
@@ -33,6 +35,15 @@ import {
   KOREAN_WEEKDAYS_LONG,
 } from '@/lib/dateTime';
 import { formatDurationMinutes } from '@/lib/appointmentRules';
+import {
+  clearRequestId,
+  createRequestFingerprint,
+  getAppointmentPassUsage,
+  getMostRecentPassUsage,
+  getOrCreateRequestId,
+  normalizeSessionPassRpcRows,
+  SESSION_PASS_STATUS_LABELS,
+} from '@/lib/sessionPass';
 import styles from './page.module.css';
 
 function formatDate(date) {
@@ -57,7 +68,12 @@ function getLifecycleErrorMessage(error) {
   if (error?.code === '42501') return '원장 권한이 확인되지 않아 작업을 실행하지 못했습니다.';
   if (error?.code === '22023') return '요청 정보가 올바르지 않습니다. 입력값을 다시 확인해주세요.';
   if (error?.code === 'P0002') return '고객을 찾을 수 없습니다. 목록을 새로고침해주세요.';
-  if (error?.code === '55000') return '현재 고객 상태에서는 이 작업을 실행할 수 없습니다.';
+  if (error?.code === '55000') {
+    if (error?.message?.includes('횟수권')) {
+      return '활성·일시중지 횟수권 또는 사용 이력이 있어 고객 상태를 변경할 수 없습니다. 횟수권 원장을 먼저 확인해주세요.';
+    }
+    return '현재 고객 상태에서는 이 작업을 실행할 수 없습니다.';
+  }
   return '고객 상태를 변경하지 못했습니다. 잠시 후 다시 시도해주세요.';
 }
 
@@ -78,6 +94,21 @@ function getAppointmentErrorMessage(error) {
   return error?.message || '시술 이력을 추가하지 못했습니다. 잠시 후 다시 시도해주세요.';
 }
 
+function createEmptyPassForm() {
+  return {
+    id: null,
+    name: '',
+    eligible_service_id: '',
+    eligible_service_name: '',
+    total_sessions: 10,
+    purchased_on: getTodayKstDateKey(),
+    expires_on: '',
+    memo: '',
+    status: 'active',
+    updated_at: null,
+  };
+}
+
 export default function CustomerDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -90,8 +121,13 @@ export default function CustomerDetailPage() {
   const statusRef = useRef('loading');
   const actionLoadingRef = useRef(false);
   const historySavingRef = useRef(false);
+  const historyRequestIdRef = useRef(null);
+  const historyPassRequestIdRef = useRef(0);
   const [customer, setCustomer] = useState(null);
   const [history, setHistory] = useState([]);
+  const [sessionPasses, setSessionPasses] = useState([]);
+  const [sessionPassLoading, setSessionPassLoading] = useState(true);
+  const [sessionPassError, setSessionPassError] = useState('');
   const [serviceDefaults, setServiceDefaults] = useState([]);
   const [servicesLoading, setServicesLoading] = useState(true);
   const [servicesError, setServicesError] = useState('');
@@ -109,6 +145,12 @@ export default function CustomerDetailPage() {
   const [priceEditor, setPriceEditor] = useState(null);
   const [priceSaving, setPriceSaving] = useState(false);
   const [priceError, setPriceError] = useState('');
+  const [passEditor, setPassEditor] = useState(null);
+  const [passSaving, setPassSaving] = useState(false);
+  const [passError, setPassError] = useState('');
+  const [historyPassOptions, setHistoryPassOptions] = useState([]);
+  const [historyPassLoading, setHistoryPassLoading] = useState(false);
+  const [historyPassError, setHistoryPassError] = useState('');
   const dataRequestIdRef = useRef(0);
   const [historyForm, setHistoryForm] = useState({
     date: getTodayKstDateKey(),
@@ -118,6 +160,7 @@ export default function CustomerDetailPage() {
     duration_minutes: null,
     actual_price_krw: '',
     actual_price_update_reason: '',
+    session_pass_id: '',
     memo: '',
   });
 
@@ -154,7 +197,7 @@ export default function CustomerDetailPage() {
 
       const { data: historyData, error: historyQueryError } = await supabase
         .from('appointments')
-        .select('id,date,time,service,memo,status,service_id,duration_minutes,price_snapshot_krw,actual_price_krw,actual_price_updated_at,actual_price_updated_by,actual_price_update_reason')
+        .select('id,date,time,service,memo,status,service_id,duration_minutes,price_snapshot_krw,actual_price_krw,actual_price_updated_at,actual_price_updated_by,actual_price_update_reason,appointment_session_pass_usages(id,state,session_pass_id,reserved_at,consumed_at,released_at,customer_session_passes(name,total_sessions))')
         .eq('customer_id', customerId)
         .order('date', { ascending: false })
         .order('time', { ascending: false });
@@ -175,6 +218,59 @@ export default function CustomerDetailPage() {
           : '오프라인에서는 고객 정보를 불러올 수 없습니다.'
       );
       setStatus('error');
+    }
+  }, [customerId]);
+
+  const fetchSessionPasses = useCallback(async () => {
+    if (!customerId) return;
+    try {
+      setSessionPassLoading(true);
+      setSessionPassError('');
+      const { data, error } = await supabase.rpc('list_customer_session_passes', {
+        p_customer_id: customerId,
+      });
+      if (error) throw error;
+      setSessionPasses(normalizeSessionPassRpcRows(data));
+    } catch (error) {
+      console.error('횟수권 조회 오류:', error);
+      setSessionPasses([]);
+      setSessionPassError(
+        navigator.onLine
+          ? '횟수권을 불러오지 못했습니다. 다시 시도해주세요.'
+          : '오프라인에서는 횟수권을 확인할 수 없습니다.'
+      );
+    } finally {
+      setSessionPassLoading(false);
+    }
+  }, [customerId]);
+
+  const fetchHistoryPassOptions = useCallback(async (serviceId) => {
+    const requestId = ++historyPassRequestIdRef.current;
+    if (!serviceId) {
+      setHistoryPassOptions([]);
+      setHistoryPassError('등록된 시술을 선택하면 사용할 수 있는 횟수권을 확인합니다.');
+      setHistoryPassLoading(false);
+      return;
+    }
+    try {
+      setHistoryPassLoading(true);
+      setHistoryPassError('');
+      const { data, error } = await supabase.rpc('list_appointment_session_pass_options', {
+        p_customer_id: customerId,
+        p_service_id: serviceId,
+      });
+      if (error) throw error;
+      if (requestId !== historyPassRequestIdRef.current) return;
+      setHistoryPassOptions(normalizeSessionPassRpcRows(data));
+    } catch (error) {
+      if (requestId !== historyPassRequestIdRef.current) return;
+      console.error('완료 이력 횟수권 조회 오류:', error);
+      setHistoryPassOptions([]);
+      setHistoryPassError(
+        navigator.onLine ? '횟수권을 불러오지 못했습니다.' : '오프라인에서는 횟수권을 확인할 수 없습니다.'
+      );
+    } finally {
+      if (requestId === historyPassRequestIdRef.current) setHistoryPassLoading(false);
     }
   }, [customerId]);
 
@@ -206,6 +302,10 @@ export default function CustomerDetailPage() {
       dataRequestIdRef.current += 1;
     };
   }, [fetchData]);
+
+  useEffect(() => {
+    fetchSessionPasses();
+  }, [fetchSessionPasses]);
 
   useEffect(() => {
     fetchServiceDefaults();
@@ -246,7 +346,7 @@ export default function CustomerDetailPage() {
   }, [historySaving]);
 
   useEffect(() => {
-    if (!activeDialog && !showHistorySheet && !priceEditor) return undefined;
+    if (!activeDialog && !showHistorySheet && !priceEditor && !passEditor) return undefined;
 
     const previousOverflow = document.body.style.overflow;
     const trigger = dialogTriggerRef.current;
@@ -259,6 +359,7 @@ export default function CustomerDetailPage() {
         setActiveDialog(null);
         setShowHistorySheet(false);
         setPriceEditor(null);
+        setPassEditor(null);
         setPriceError('');
         setArchiveReason('');
         setAnonymizeConfirmation('');
@@ -303,7 +404,7 @@ export default function CustomerDetailPage() {
         pendingFocusRestoreRef.current = false;
       });
     };
-  }, [activeDialog, showHistorySheet, priceEditor]);
+  }, [activeDialog, showHistorySheet, priceEditor, passEditor, priceSaving]);
 
   const closeLifecycleDialog = () => {
     if (actionLoading) return;
@@ -363,9 +464,89 @@ export default function CustomerDetailPage() {
       duration_minutes: null,
       actual_price_krw: '',
       actual_price_update_reason: '',
+      session_pass_id: '',
       memo: '',
     });
+    setHistoryPassOptions([]);
+    setHistoryPassError('등록된 시술을 선택하면 사용할 수 있는 횟수권을 확인합니다.');
     setShowHistorySheet(true);
+  };
+
+  const openPassEditor = (event, sessionPass = null) => {
+    if (!isOwner || isReadOnly) return;
+    dialogTriggerRef.current = event.currentTarget;
+    setPassError('');
+    setPassEditor(sessionPass ? {
+      id: sessionPass.id,
+      name: sessionPass.name,
+      eligible_service_id: sessionPass.eligible_service_id || '',
+      eligible_service_name: sessionPass.eligible_service_name || '',
+      total_sessions: sessionPass.total_sessions,
+      purchased_on: sessionPass.purchased_on,
+      expires_on: sessionPass.expires_on || '',
+      memo: sessionPass.memo || '',
+      status: sessionPass.status,
+      updated_at: sessionPass.updated_at,
+    } : createEmptyPassForm());
+  };
+
+  const handlePassSubmit = async (event) => {
+    event.preventDefault();
+    if (!passEditor || passSaving) return;
+    if (!navigator.onLine) {
+      setPassError('오프라인에서는 횟수권을 저장할 수 없습니다. 연결을 확인해주세요.');
+      return;
+    }
+    const totalSessions = Number(passEditor.total_sessions);
+    if (!passEditor.name.trim() || !Number.isInteger(totalSessions) || totalSessions < 1) {
+      setPassError('횟수권 이름과 1회 이상의 총 횟수를 확인해주세요.');
+      return;
+    }
+    if (passEditor.expires_on && passEditor.expires_on < passEditor.purchased_on) {
+      setPassError('만료일은 등록일보다 빠를 수 없습니다.');
+      return;
+    }
+
+    setPassSaving(true);
+    setPassError('');
+    try {
+      const params = passEditor.id ? {
+        p_session_pass_id: passEditor.id,
+        p_name: passEditor.name.trim(),
+        p_eligible_service_id: passEditor.eligible_service_id || null,
+        p_total_sessions: totalSessions,
+        p_purchased_on: passEditor.purchased_on,
+        p_expires_on: passEditor.expires_on || null,
+        p_memo: passEditor.memo.trim() || null,
+        p_status: passEditor.status,
+        p_expected_updated_at: passEditor.updated_at,
+      } : {
+        p_customer_id: customerId,
+        p_name: passEditor.name.trim(),
+        p_eligible_service_id: passEditor.eligible_service_id || null,
+        p_total_sessions: totalSessions,
+        p_purchased_on: passEditor.purchased_on,
+        p_expires_on: passEditor.expires_on || null,
+        p_memo: passEditor.memo.trim() || null,
+      };
+      const { error } = await supabase.rpc(
+        passEditor.id ? 'update_customer_session_pass' : 'create_customer_session_pass',
+        params
+      );
+      if (error) throw error;
+      setPassEditor(null);
+      setFeedback(passEditor.id ? '횟수권 정보를 저장했습니다.' : '새 횟수권을 등록했습니다.');
+      await fetchSessionPasses();
+    } catch (error) {
+      if (error?.code === '40001') {
+        setPassError('다른 사용자가 횟수권을 먼저 수정했습니다. 닫고 최신 정보를 다시 확인해주세요.');
+        await fetchSessionPasses();
+      } else {
+        setPassError(error?.message || '횟수권을 저장하지 못했습니다. 잠시 후 다시 시도해주세요.');
+      }
+    } finally {
+      setPassSaving(false);
+    }
   };
 
   const handleHistoryServiceChange = (serviceId) => {
@@ -377,7 +558,9 @@ export default function CustomerDetailPage() {
         service_id: '',
         service: '',
         duration_minutes: null,
+        session_pass_id: '',
       }));
+      fetchHistoryPassOptions(null);
       return;
     }
 
@@ -389,7 +572,9 @@ export default function CustomerDetailPage() {
       service_id: service.id,
       service: service.name,
       duration_minutes: service.default_duration_minutes,
+      session_pass_id: '',
     }));
+    fetchHistoryPassOptions(service.id);
   };
 
   const handleHistorySubmit = async (event) => {
@@ -398,6 +583,10 @@ export default function CustomerDetailPage() {
 
     if (!service) {
       setHistoryError('시술명을 입력해주세요.');
+      return;
+    }
+    if (historyForm.service_id && (historyPassLoading || historyPassError)) {
+      setHistoryError(historyPassError || '횟수권을 확인한 뒤 이력을 저장해주세요.');
       return;
     }
 
@@ -422,6 +611,9 @@ export default function CustomerDetailPage() {
         service,
         memo: historyForm.memo.trim() || null,
         status: 'completed',
+        session_pass_id: historyForm.session_pass_id || null,
+        actual_price_krw: actualPriceKrw,
+        actual_price_update_reason: historyForm.actual_price_update_reason.trim() || null,
       };
 
       if (historyForm.service_id) {
@@ -433,39 +625,35 @@ export default function CustomerDetailPage() {
         payload.price_snapshot_krw = null;
       }
 
-      const { data: inserted, error } = await supabase
-        .from('appointments')
-        .insert(payload)
-        .select('id')
-        .single();
+      const requestId = getOrCreateRequestId(
+        historyRequestIdRef,
+        createRequestFingerprint(payload)
+      );
+      const { error } = await supabase.rpc('create_appointment_with_session_pass', {
+        p_request_id: requestId,
+        p_customer_id: payload.customer_id,
+        p_date: payload.date,
+        p_time: payload.time,
+        p_service_id: payload.service_id || null,
+        p_service: payload.service,
+        p_duration: payload.duration || null,
+        p_duration_minutes: payload.duration_minutes || null,
+        p_memo: payload.memo,
+        p_status: payload.status,
+        p_session_pass_id: payload.session_pass_id,
+        p_actual_price_krw: payload.actual_price_krw,
+        p_actual_price_update_reason: payload.actual_price_update_reason,
+      });
 
       if (error) throw error;
-
-      if (actualPriceKrw !== null) {
-        const { error: priceError } = await supabase.rpc('set_appointment_actual_price', {
-          p_appointment_id: inserted.id,
-          p_actual_price_krw: actualPriceKrw,
-          p_expected_actual_price_updated_at: null,
-          p_update_reason: historyForm.actual_price_update_reason.trim() || null,
-        });
-
-        if (priceError) {
-          setShowHistorySheet(false);
-          setFeedback(
-            '시술 이력은 저장됐지만 실제 시술금액을 기록하지 못했습니다. 이력의 금액 수정으로 다시 입력해 주세요.'
-          );
-          await fetchData();
-          return;
-        }
-      }
-
+      clearRequestId(historyRequestIdRef);
       setShowHistorySheet(false);
       setFeedback(
         actualPriceKrw === null
           ? '시술 이력을 추가했습니다.'
           : '시술 이력과 실제 시술금액을 저장했습니다.'
       );
-      await fetchData();
+      await Promise.all([fetchData(), fetchSessionPasses()]);
     } catch (error) {
       setHistoryError(getAppointmentErrorMessage(error));
       if (error?.code === '55000' && error?.message?.includes('서비스')) {
@@ -672,6 +860,71 @@ export default function CustomerDetailPage() {
         </div>
       </section>
 
+      <section className={styles.section} aria-labelledby="session-pass-title">
+        <div className={styles.sectionHeader}>
+          <div>
+            <h2 id="session-pass-title" className="heading-md">횟수권</h2>
+            <p>총 {sessionPasses.length}개 · 구매금액과 실제 시술금액은 별도</p>
+          </div>
+          {isOwner && !isReadOnly ? (
+            <button
+              type="button"
+              className={`${styles.addHistoryButton} min-h-[44px] focus-visible:outline-2`}
+              onClick={(event) => openPassEditor(event)}
+            >
+              <Plus size={18} aria-hidden="true" /> 등록
+            </button>
+          ) : null}
+        </div>
+
+        {sessionPassLoading ? (
+          <div className={styles.passState} role="status">
+            <Loader2 size={20} className="animate-spin" aria-hidden="true" /> 횟수권을 불러오는 중입니다.
+          </div>
+        ) : sessionPassError ? (
+          <div className={styles.passError} role="alert">
+            <span>{sessionPassError}</span>
+            <button type="button" onClick={fetchSessionPasses}><RefreshCw size={17} /> 다시 시도</button>
+          </div>
+        ) : sessionPasses.length === 0 ? (
+          <div className={styles.emptyPass}>
+            <TicketCheck size={28} aria-hidden="true" />
+            <strong>등록된 횟수권이 없습니다</strong>
+            <p>{isOwner ? '필요할 때 고객별 횟수권을 등록하세요.' : '원장이 등록하면 여기에서 잔여를 확인할 수 있습니다.'}</p>
+          </div>
+        ) : (
+          <div className={styles.passList}>
+            {sessionPasses.map((sessionPass) => (
+              <article key={sessionPass.id} className={styles.passCard}>
+                <div className={styles.passCardTop}>
+                  <div>
+                    <strong>{sessionPass.name}</strong>
+                    <span>{sessionPass.eligible_service_name || '모든 등록 시술'}</span>
+                  </div>
+                  <span className={`${styles.passStatus} ${styles[`passStatus${sessionPass.display_status}`] || ''}`}>
+                    {SESSION_PASS_STATUS_LABELS[sessionPass.display_status] || sessionPass.display_status}
+                  </span>
+                </div>
+                <div className={styles.passBalance}>
+                  <strong>{sessionPass.remaining_sessions}회</strong>
+                  <span>/ 총 {sessionPass.total_sessions}회</span>
+                </div>
+                <p>예약 중 {sessionPass.reserved_sessions}회 · 사용 완료 {sessionPass.consumed_sessions}회</p>
+                <p>{sessionPass.expires_on ? `${sessionPass.expires_on}까지` : '만료일 없음'} · 만료 전 예약분은 이후에도 유지</p>
+                {isOwner && !isReadOnly ? (
+                  <button type="button" onClick={(event) => openPassEditor(event, sessionPass)}>
+                    <Pencil size={16} aria-hidden="true" /> 총 횟수·만료·상태 관리
+                  </button>
+                ) : null}
+              </article>
+            ))}
+          </div>
+        )}
+        {!isOwner && isRoleReady ? (
+          <p className={styles.passPermission}>직원은 횟수권 조회와 예약 사용·복구만 할 수 있습니다.</p>
+        ) : null}
+      </section>
+
       <section className={styles.section} aria-labelledby="history-title">
         <div className={styles.sectionHeader}>
           <div>
@@ -700,6 +953,7 @@ export default function CustomerDetailPage() {
           ) : (
             history.map((item) => {
               const dateInfo = formatDate(item.date);
+              const passUsage = getMostRecentPassUsage(item);
               return (
                 <article key={item.id} className={styles.historyRow}>
                   <div className={styles.historyDate}>
@@ -714,6 +968,11 @@ export default function CustomerDetailPage() {
                         ? `실제 금액 미입력 · 예약 기준 ${formatPriceKrw(item.price_snapshot_krw)}`
                         : `실제 ${formatPriceKrw(item.actual_price_krw)} · 예약 기준 ${formatPriceKrw(item.price_snapshot_krw)}`}
                     </p>
+                    {passUsage ? (
+                      <p className={styles.historyPass}>
+                        횟수권 · {passUsage.customer_session_passes?.name || '연결됨'} · {passUsage.state === 'consumed' ? '사용 완료' : passUsage.state === 'released' ? '복구됨' : '1회 예약 중'}
+                      </p>
+                    ) : null}
                     {item.memo && <p className={styles.historyMemo}>{item.memo}</p>}
                   </div>
                   <span className={`${styles.appointmentBadge} ${styles[`appointment${item.status}`]}`}>
@@ -925,6 +1184,16 @@ export default function CustomerDetailPage() {
                   </small>
                 )}
               </label>
+              <SessionPassPicker
+                id="history-session-pass"
+                options={historyPassOptions}
+                value={historyForm.session_pass_id}
+                onChange={(sessionPassId) => setHistoryForm((current) => ({ ...current, session_pass_id: sessionPassId }))}
+                loading={historyPassLoading}
+                error={historyPassError}
+                onRetry={historyForm.service_id ? () => fetchHistoryPassOptions(historyForm.service_id) : undefined}
+                disabled={historySaving}
+              />
               <label>
                 <span><FileText size={15} aria-hidden="true" /> 메모 (선택)</span>
                 <textarea
@@ -965,10 +1234,114 @@ export default function CustomerDetailPage() {
               <button
                 type="submit"
                 className={`${styles.sheetPrimaryButton} min-h-[56px] focus-visible:outline-2 disabled:opacity-70`}
-                disabled={historySaving || !historyForm.service.trim()}
+                disabled={historySaving || !historyForm.service.trim() || (Boolean(historyForm.service_id) && (historyPassLoading || Boolean(historyPassError)))}
               >
                 {historySaving ? <Loader2 size={20} className="animate-spin" /> : <Check size={20} />}
                 {historySaving ? '저장 중' : '이력 저장'}
+              </button>
+            </form>
+          </section>
+        </div>
+      )}
+
+      {passEditor && (
+        <div className={styles.overlay} role="presentation" onMouseDown={() => !passSaving && setPassEditor(null)}>
+          <section
+            className={styles.bottomSheet}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="pass-editor-title"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <header className={styles.sheetHeader}>
+              <div>
+                <h2 id="pass-editor-title" className="heading-md">{passEditor.id ? '횟수권 관리' : '횟수권 등록'}</h2>
+                <p>구매금액·선불금·환불은 기록하지 않습니다.</p>
+              </div>
+              <button
+                ref={closeDialogRef}
+                type="button"
+                className={`${styles.closeButton} min-h-[44px]`}
+                onClick={() => setPassEditor(null)}
+                disabled={passSaving}
+                aria-label="횟수권 창 닫기"
+              >
+                <X size={20} aria-hidden="true" />
+              </button>
+            </header>
+            <form className={styles.historyForm} onSubmit={handlePassSubmit}>
+              <label>
+                <span>횟수권 이름</span>
+                <input
+                  value={passEditor.name}
+                  onChange={(event) => setPassEditor((current) => ({ ...current, name: event.target.value }))}
+                  maxLength={100}
+                  placeholder="예: 두피관리 10회권"
+                  disabled={passSaving}
+                  required
+                />
+              </label>
+              <label>
+                <span>적용 시술</span>
+                <select
+                  value={passEditor.eligible_service_id}
+                  onChange={(event) => setPassEditor((current) => ({ ...current, eligible_service_id: event.target.value }))}
+                  disabled={passSaving || servicesLoading}
+                >
+                  <option value="">모든 등록 시술</option>
+                  {passEditor.eligible_service_id && !serviceDefaults.some((service) => service.id === passEditor.eligible_service_id) ? (
+                    <option value={passEditor.eligible_service_id}>{passEditor.eligible_service_name || '현재 연결 시술'} · 사용 중지됨</option>
+                  ) : null}
+                  {serviceDefaults.map((service) => (
+                    <option key={service.id} value={service.id}>{service.name}</option>
+                  ))}
+                </select>
+              </label>
+              <div className={styles.twoColumns}>
+                <label>
+                  <span>총 횟수</span>
+                  <input
+                    type="number"
+                    min="1"
+                    step="1"
+                    inputMode="numeric"
+                    value={passEditor.total_sessions}
+                    onChange={(event) => setPassEditor((current) => ({ ...current, total_sessions: event.target.value }))}
+                    disabled={passSaving}
+                    required
+                  />
+                </label>
+                <label>
+                  <span>상태</span>
+                  <select
+                    value={passEditor.status}
+                    onChange={(event) => setPassEditor((current) => ({ ...current, status: event.target.value }))}
+                    disabled={passSaving || !passEditor.id}
+                  >
+                    <option value="active">사용 가능</option>
+                    <option value="paused">일시중지</option>
+                    <option value="cancelled">해지</option>
+                  </select>
+                </label>
+              </div>
+              <div className={styles.twoColumns}>
+                <label>
+                  <span>등록일</span>
+                  <input type="date" value={passEditor.purchased_on} onChange={(event) => setPassEditor((current) => ({ ...current, purchased_on: event.target.value }))} disabled={passSaving} required />
+                </label>
+                <label>
+                  <span>만료일 (선택)</span>
+                  <input type="date" value={passEditor.expires_on} onChange={(event) => setPassEditor((current) => ({ ...current, expires_on: event.target.value }))} disabled={passSaving} />
+                </label>
+              </div>
+              <label>
+                <span>내부 메모 (선택)</span>
+                <textarea value={passEditor.memo} onChange={(event) => setPassEditor((current) => ({ ...current, memo: event.target.value }))} maxLength={1000} disabled={passSaving} />
+              </label>
+              {passError ? <p className={styles.actionError} role="alert">{passError}</p> : null}
+              <button type="submit" className={`${styles.sheetPrimaryButton} min-h-[56px]`} disabled={passSaving}>
+                {passSaving ? <Loader2 size={20} className="animate-spin" /> : <Check size={20} />}
+                {passSaving ? '저장 중' : '횟수권 저장'}
               </button>
             </form>
           </section>
