@@ -13,7 +13,7 @@
 
 ## Phase 1 검증 기준
 - 기준일: 2026-07-13
-- 현재 Production 애플리케이션 release 기준: R-15 PR #34 merge `main@52fa394d783cb418883d413ef4796be32f8afcde` (구현 commit `a0f324f743809baad8a0be91550c6dc6daf075ae`; docs-only SSOT 동기화 PR은 별도)
+- 현재 Production 애플리케이션 release 기준: R-16 PR #37 merge `main@668cd099f397ea9cedcd86d8b216014554bf04aa` (검토 head `edff562`; docs-only SSOT 동기화 PR은 별도)
 - 2026-07-12 감사 착수 baseline은 PR #14 merge `2f915c2e8f7ec7e736a6ee4c315caa03113416ab`이었고, 감사 문서 PR #15 merge 후 최신 `origin/main`은 `a7a4186e76c9225c9273fa8474cea27440d36d40`입니다. 두 PR은 문서만 변경했으므로 Production 애플리케이션 release SHA와 구분합니다.
 - release 세션의 live Supabase migration/RLS/RPC/R-03 smoke, R-02 Playwright mobile smoke, Pencil R-02 `snapshot_layout`/export, `npm run build`, `git diff --check`, Vercel Production canonical smoke를 완료 근거로 사용합니다. 이번 감사에서는 현재 GitHub/Supabase catalog와 canonical 공개 endpoint만 읽기 전용으로 재확인했습니다.
 - Fresh DB 정책은 A안을 선택했습니다. `20260219000000_phase1_genesis_baseline.sql`을 포함한 forward migration 8개를 disposable PostgreSQL 17에서 전체 replay했고, 핵심 객체/RLS/RPC/예약 guard를 검증했습니다.
@@ -90,7 +90,7 @@ R-07 release 세션에서 catalog/ACL/RPC 29개 계약과 실제 owner/staff/ano
 | R-09 | [R-09-stats-advanced.md](./R-09-stats-advanced.md) | Done (production deployed; exact live migration/ACL/PWA verified) |
 | R-14 | [R-14-easy-usability-foundation.md](./R-14-easy-usability-foundation.md) | In Progress (구현 완료 · 대표 사용자 검증 대기; PR #25 merge `main@cdabf409`, Production deployment `5424206017` success, canonical 공개/PWA 자산 200·R-14 bundle marker, Cron 무인증 `401/no-store`, CSV export `dataset=customers` 무인증 `401/private/no-store` 확인; 실제 고객·예약 데이터 미조회·미변경) |
 | R-15 | [R-15-customer-service-price.md](./R-15-customer-service-price.md) | Done (production deployed; live migration applied; authenticated UI smoke pending) |
-| R-16 | [R-16-customer-session-pass.md](./R-16-customer-session-pass.md) | In Progress (Preview 취소 검증 완료 · 재확정 보완 로컬 검증 완료) |
+| R-16 | [R-16-customer-session-pass.md](./R-16-customer-session-pass.md) | Done (Production 배포·DB 적용·로그인 조회 검증 완료) |
 
 R-07 로컬 완료 게이트에는 등록·편집 미저장 상태의 브라우저 Back/Forward·내부 이동 확인, 제출 중 dirty 유지·지연 응답 stale route 차단, 저장 성공 시 대화상자 0건, 홈 390×844·360×800 지속 콘솔 0건, 새 브라우저 컨텍스트의 PWA/offline 재검증이 포함됩니다. Production release에서는 canonical PWA 핵심 자산과 Cron/DB/runtime log 경계를 추가 확인했습니다.
 
@@ -106,7 +106,7 @@ R-14는 Pencil Before/After 4쌍과 공통 상태 매트릭스, 공통 가독성
 
 R-15는 PR #34 merge `main@52fa394`로 코드·Pencil·migration이 반영됐고 Preview/Production DB에 `actual_price_krw`·`set_appointment_actual_price`·R-09 actual revenue 분리를 적용했습니다. 실제 매출은 completed + non-null `actual_price_krw`만 사용하며 snapshot fallback은 없습니다. 기존 예약 backfill은 하지 않았고 authenticated owner/staff UI smoke는 후속 검증입니다.
 
-R-16은 2026-09-06 임시 worktree 유실을 확인한 뒤 성공 패치 67건을 `output/recovery/r16-20260906/app`으로 복구하고 Pen 디자인을 재구성했습니다. 고객별 총 횟수·예약 usage 원장, confirmed/reserved·completed/consumed·cancelled/released의 원자 전이, UUID 잠금·요청 중복 방지, owner 관리/staff 사용 계약을 유지합니다. 새 예약·편집·시술 이력의 조회 로딩/오류 중 저장 차단도 보완했습니다. fresh/schema/upgrade 및 rollback/reapply digest `e4c9ae453013f837e2fe2f36f02e8798` 일치, 동시성·SQL 회귀, Node 35/35·race 9/9·build, 두 모바일 viewport·PWA/offline/recovery·민감 cache 0건을 재검증했습니다. 기존 버전에도 발생하는 CSS preload 경고는 후속 사항입니다. 이후 Draft PR #37에 `aaa168a`까지 전달했고 Preview migration·SQL 역할 계약·owner 실제 취소 복구를 검증했습니다. 2026-09-10 재확정 보완은 로컬 Node 35/35·race 24/24·build·두 모바일 viewport 검증을 통과했으며 추가 Git 전달·Preview 검증 단계입니다. 병합·Production migration·운영 배포는 수행하지 않았습니다. 상세 증거는 R-16 문서의 복구 검증 및 Git 전달 절을 기준으로 합니다.
+R-16은 복구·DB 회귀·모바일/PWA·Preview 검증을 거쳐 2026-09-11 운영에 반영했습니다. PR #37 merge `main@668cd099f397ea9cedcd86d8b216014554bf04aa`, 검토 head `edff562b821fd8a9763c8821a9a0545f1d710356`. Production migration `20260719150346`, Vercel `U8xemVbjjv8NqrfbvwuFezVk8sux`의 canonical 전환 완료. 기존 고객 7건·예약 7건의 개수와 전체 행 해시 보존, RLS/RPC 권한, 로그인 예약·고객·횟수권 조회를 확인했습니다. 취소 확인 폼과 취소 예약 재확정/바로 완료의 횟수권 복원, 명시적 미사용/다른 권 선택을 포함하며 Node 35/35·race 24/24·build와 Preview owner 원장 대조를 통과했습니다. 실기기 IME·설치/standalone·장시간 SW update, Production 횟수권 등록/예약 변경 및 staff 별도 로그인 검증은 후속 운영 검증입니다. 실제 운영 데이터로 쓰기 smoke를 수행하지 않았습니다.
 
 ### 교차 품질 개선
 
@@ -119,7 +119,7 @@ R-16은 2026-09-06 임시 worktree 유실을 확인한 뒤 성공 패치 67건�
 - 2026-07-13 `burtyhairCRM-preview` 전용 Supabase 프로젝트를 만들고 forward migration 11개를 순서대로 replay했습니다. Vercel에는 Preview 범위의 공개 URL/key만 추가했으며 기존 Production/Development 값은 변경하지 않았습니다.
 - R-12는 Preview의 synthetic owner/staff/anon·모바일/PWA 검증 후 PR #22 merge `main@7a107c4`와 Production deployment `FxRGiDSgHQFXARsc2mUyCrsydtY8`까지 완료했습니다. canonical R-12 bundle, 공개/PWA 자산과 무인증 `/api/export`의 `401 + no-store`를 확인했으며 Production 실제 CSV는 생성하지 않았습니다.
 - R-14의 Pencil·코드·합성 모바일 브라우저 검증은 `codex/r14-easy-usability-foundation`에서 완료했습니다. 실제 대표 사용자 과제 관찰 결과를 기록하기 전에는 `Done`으로 전환하지 않습니다.
-- R-15는 PR #34 merge `main@52fa394`, Vercel Production 배포, Preview/Production live migration까지 완료했습니다. R-16은 Draft PR #37 및 Preview migration·owner 취소 복구 검증까지 완료했습니다. 재확정 누락 보완과 최신 문서는 로컬 검증 완료 후 추가 Git 전달·Preview 검증 단계입니다. 다음 단계는 이 변경의 전달과 새 Preview 재검증이며, 병합·Production migration·배포는 별도 승인 후 진행합니다.
+- R-15 및 R-16은 코드 병합, Preview/Production migration과 운영 배포를 완료했습니다. R-16 최신 근거는 PR #37 `main@668cd09`, Production `U8xemVbjjv8NqrfbvwuFezVk8sux`와 R-16 상세 문서의 2026-09-11 반영 기록입니다. R-14 대표 사용자 검증 및 R-10 잔여 항목은 별도 상태를 유지합니다.
 
 ## 번호 미배정 사용성 후보
 
