@@ -138,7 +138,7 @@ function createSupabaseHarness() {
 
   function rpc(name, args) {
     if (name === 'list_appointment_session_pass_options') {
-      return Promise.resolve({ data: [], error: null });
+      return Promise.resolve({ data: mockHarness.passOptions, error: null });
     }
     return enqueue({
       args,
@@ -147,7 +147,7 @@ function createSupabaseHarness() {
     }).promise;
   }
 
-  return { from, requests, rpc };
+  return { from, requests, rpc, passOptions: [] };
 }
 
 function createAppointment({
@@ -593,3 +593,106 @@ test('현재 날짜의 실패만 오류로 표시하고 다시 시도는 같은 
   expect(document.body.textContent).toContain('재시도 고객');
   expect(screen.queryByRole('alert')).toBeNull();
 });
+
+function createCancelledPassAppointment() {
+  return {
+    ...createAppointment({ date: '2026-07-13', id: 'reopen', name: '재확정 합성 고객' }),
+    customer_id: 'synthetic-customer',
+    service_id: 'synthetic-service',
+    status: 'cancelled',
+    cancelled_at: '2026-07-13T01:00:00Z',
+    appointment_session_pass_usages: [{
+      id: 'latest-cancellation',
+      session_pass_id: 'pass-to-restore',
+      state: 'released',
+      reserved_at: '2026-07-12T01:00:00Z',
+      released_at: '2026-07-13T01:00:00Z',
+      release_reason: 'appointment_cancelled',
+      customer_session_passes: { name: '재확정 2회권' },
+    }],
+  };
+}
+
+test.each([['확정', 'confirmed'], ['완료', 'completed']])(
+  '취소 예약의 %s 버튼은 취소로 복구한 횟수권을 다시 전달한다',
+  async (button, status) => {
+    await renderLoadedDay(createCancelledPassAppointment());
+    fireEvent.click(screen.getByRole('button', { name: button, exact: true }));
+    const [request] = await waitForRequestCount('status', 1);
+    expect(request.args.p_status).toBe(status);
+    expect(request.args.p_session_pass_id).toBe('pass-to-restore');
+  }
+);
+
+test('여러 복구 원장은 마지막 복구 시각을 기준으로 취소 직전 횟수권을 복원한다', async () => {
+  const appointment = createCancelledPassAppointment();
+  appointment.appointment_session_pass_usages.unshift({
+    id: 'older-change', state: 'released', session_pass_id: 'old-pass',
+    reserved_at: '2026-07-12T02:00:00Z', released_at: '2026-07-12T03:00:00Z',
+    release_reason: 'pass_changed',
+  });
+  await renderLoadedDay(appointment);
+  fireEvent.click(screen.getByRole('button', { name: '확정', exact: true }));
+  const [request] = await waitForRequestCount('status', 1);
+  expect(request.args.p_session_pass_id).toBe('pass-to-restore');
+});
+
+test('미사용 재확정 뒤 다시 취소한 예약은 이전 취소의 횟수권을 되살리지 않는다', async () => {
+  const appointment = createCancelledPassAppointment();
+  appointment.cancelled_at = '2026-07-13T03:00:00Z';
+  await renderLoadedDay(appointment);
+  fireEvent.click(screen.getByRole('button', { name: '확정', exact: true }));
+  const [request] = await waitForRequestCount('status', 1);
+  expect(request.args.p_session_pass_id).toBeNull();
+});
+
+test.each(['pass_removed', 'pass_changed', 'customer_archived'])(
+  '마지막 복구 사유가 %s이면 과거 취소 횟수권을 되살리지 않는다',
+  async (reason) => {
+    const appointment = createCancelledPassAppointment();
+    appointment.appointment_session_pass_usages.push({
+      id: 'later-release', state: 'released', session_pass_id: 'removed-pass',
+      released_at: '2026-07-13T02:00:00Z', release_reason: reason,
+    });
+    await renderLoadedDay(appointment);
+    fireEvent.click(screen.getByRole('button', { name: '확정', exact: true }));
+    const [request] = await waitForRequestCount('status', 1);
+    expect(request.args.p_session_pass_id).toBeNull();
+  }
+);
+
+test.each(['만료된 횟수권', '소진된 횟수권', '중지된 횟수권'])(
+  '%s으로 재확정 실패 시 미사용으로 자동 재시도하지 않는다',
+  async (message) => {
+    await renderLoadedDay(createCancelledPassAppointment());
+    fireEvent.click(screen.getByRole('button', { name: '확정', exact: true }));
+    const [request] = await waitForRequestCount('status', 1);
+    await settleRequest(request, { data: null, error: { message } });
+    expect(screen.getByRole('status').textContent).toContain(message);
+    expect(requestsOfKind('status')).toHaveLength(1);
+    expect(requestsOfKind('daily')).toHaveLength(1);
+    fireEvent.click(screen.getByRole('button', { name: '확정', exact: true }));
+    const retry = (await waitForRequestCount('status', 2))[1];
+    expect(retry.args.p_session_pass_id).toBe('pass-to-restore');
+    expect(retry.args.p_request_id).toBe(request.args.p_request_id);
+  }
+);
+
+test.each([['', null], ['replacement-pass', 'replacement-pass']])(
+  '편집에서 명시적으로 고른 횟수권 값 %s를 재확정에 사용한다',
+  async (value, expected) => {
+    mockHarness.passOptions = [
+      { id: 'pass-to-restore', name: '재확정 2회권', total_sessions: 2, remaining_sessions: 0, is_available: false, unavailable_reason: 'exhausted' },
+      { id: 'replacement-pass', name: '다른 2회권', total_sessions: 2, remaining_sessions: 2, is_available: true },
+    ];
+    await renderLoadedDay(createCancelledPassAppointment());
+    fireEvent.click(screen.getByRole('button', { name: '수정', exact: true }));
+    const picker = await screen.findByLabelText(/횟수권 사용/);
+    expect(picker.value).toBe('pass-to-restore');
+    expect(screen.getByRole('option', { name: /재확정 2회권.*잔여 0회/ }).disabled).toBe(true);
+    fireEvent.change(picker, { target: { value } });
+    fireEvent.click(screen.getByRole('button', { name: '확정', exact: true }));
+    const [request] = await waitForRequestCount('status', 1);
+    expect(request.args.p_session_pass_id).toBe(expected);
+  }
+);

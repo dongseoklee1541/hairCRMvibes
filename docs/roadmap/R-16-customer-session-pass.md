@@ -1,7 +1,7 @@
 # R-16 고객별 횟수권
 
 ## 상태
-- In Progress (로컬 검증 완료 · Git 검토 단계)
+- In Progress (Preview 취소 검증 완료 · 재확정 보완 로컬 검증 완료)
 - 기준: `main@b87eb6873f3ab873b5d7cc8c6e9db641bd1c6e4d`
 - Git 전달 worktree: `/Users/idongseog/workspace/hairCRMvibes-r16-delivery-20260907`, `codex/r16-delivery-20260907`
 - 보존된 복구 사본: `/Users/idongseog/workspace/hairCRMvibes/output/recovery/r16-20260906/app` (Git worktree가 아닌 별도 파일 사본)
@@ -259,6 +259,34 @@
 - 로컬 코드·DB·합성 Production 브라우저/PWA 검증은 완료했습니다.
 - 실제 Production Auth/DB/고객·예약 데이터, Preview/Production 배포, remote migration은 조회하거나 변경하지 않았습니다.
 - R-16은 `Done`이 아닙니다. Git 검토 이후 실제 Supabase 연동 검증과 migration·release는 별도 Implementation Plan과 승인이 필요합니다.
+
+## Preview 검증 및 재확정 보완 (2026-09-10)
+
+### 전달된 버전과 실제 Preview 검증
+
+- Draft PR [#37](https://github.com/dongseoklee1541/hairCRMvibes/pull/37), head `aaa168a56bbafc136abf339acd757352b8e912ba`. 해당 head의 CI 및 Vercel 검사는 통과했습니다. PR은 Draft이며 병합하지 않았습니다.
+- `burtyhairCRM-preview`에 R-16 migration을 적용하고 owner/staff/profileless/anon SQL 계약 검사를 통과했습니다. 검사는 rollback으로 정리했으며 이후 합성 고객 1명·횟수권 2개·예약 3건으로 owner UI 흐름을 검증했습니다.
+- 실제 Preview 버튼에서 예약 C 취소 → released, 고객 상세와 DB 원장의 2회권 잔여 1회·예약 중 0회·사용 완료 1회, 1회권 잔여 1회를 확인했습니다. 재조회 후에도 유지됐습니다. 기존 취소 prompt는 인라인 사유/확정 폼으로 바뀌었습니다.
+- 근거는 main checkout의 `output/recovery/r16-20260906/preview-20260910/cancel-ui-fix-report.md`와 `cancel-preview-reverification.json`입니다. Production DB·배포는 변경하지 않았습니다.
+
+### 재확정 보완: 이번 로컬 변경
+
+- 기존 UI는 active usage만 찾아 취소된 예약의 확정·완료 RPC에 횟수권 ID 대신 null을 보냈습니다. 두 회귀 테스트와 기존 빌드의 모바일 화면에서 confirmed/released 상태를 재현했습니다.
+- `getAppointmentStatusPassUsage`는 active usage를 우선하며, cancelled 예약의 마지막 released 원장 중 `appointment_cancelled`인 원장을 재사용 후보로 고릅니다. 현재 취소 시각보다 오래된 복구는 제외해 미사용 재확정 후 재취소 시 과거 권을 되살리지 않습니다.
+- 편집 화면은 같은 후보를 초기 선택하되 released를 현재 reserved로 표시하지 않습니다. 사용자가 선택한 미사용/다른 횟수권을 우선합니다. 기존에 제거·교체·고객 처리로 복구한 원장은 자동 선택하지 않습니다.
+- 만료·중지·소진·시술 자격·잔여 및 동시성 검증은 기존 transaction RPC가 수행합니다. 실패하면 상태를 유지하고 원래 요청 UUID로 재시도하며 미사용으로 자동 전환하지 않습니다. DB migration/RPC/RLS 및 가격·캐시 계약 변경은 없습니다.
+- 기존 버튼과 picker의 잘못된 초기값/전달값만 바로잡는 micro bug fix이므로 `.pen` 변경 예외를 적용했습니다. 새 화면·레이아웃·의존성은 없습니다.
+- `npm test`: Node 35/35 + race 24/24, 총 59개 통과. 재확정/바로 완료, 복구 사유/시각, 만료·소진·중지 실패/재시도, 명시적 미사용/다른 권 선택을 포함합니다.
+- `NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54329 NEXT_PUBLIC_SUPABASE_ANON_KEY=r16-synthetic-test-key npm run build`: 성공. `git diff --check`: 통과.
+- 합성 API를 연결한 local production build의 390×844·360×800에서 before confirmed/released → after confirmed/reserved를 동일 fixture로 비교했습니다. 390×844에서 만료 오류와 취소 상태 유지도 확인했습니다. 실제 Preview에서 이번 재확정 변경을 실행한 결과와는 구분합니다.
+- 근거: main checkout의 `output/recovery/r16-20260906/reconfirm-20260910/README.md`, `tests.log`, `build.log`, 수정 전후 JPEG 4장과 오류 JPEG 1장. 실제 비밀번호·토큰·고객 정보는 저장하지 않았습니다.
+
+### 현재 남은 단계
+
+- 2026-09-10 추가 승인으로 이번 재확정 코드·테스트·문서의 커밋·푸시와 새 Preview 재검증을 진행합니다. 결과는 PR #37의 최신 head 및 로컬 검증 보고서의 전달 결과를 기준으로 확인하며, 이전 `aaa168a`의 CI/Preview 결과를 새 변경의 원격 검증으로 사용하지 않습니다.
+- commit/push 후 새 Preview에서 재확정·완료·미사용/다른 권 선택을 재검증하고 PR 최종 검토를 진행합니다. 병합·Production migration·배포는 별도 계획과 승인 대상입니다.
+- 기존 합성 예약 B의 완료/released 이력은 자동 보정하지 않았습니다. 재확정 보완은 과거 데이터 일괄 수정을 포함하지 않습니다.
+- 실제 모바일 IME/키보드 및 staff 브라우저 로그인을 검증하지 않았습니다. PWA/cache 로직은 변경하지 않아 이번 보완에서 전체 PWA 검사를 반복하지 않았습니다.
 
 ## Non-Goals
 - 선불금·결제·환불·매출 인식·영수증

@@ -19,6 +19,7 @@ import { SessionPassPicker } from '@/components/sessionPass/SessionPassPicker';
 import { formatPriceKrw } from '@/lib/formatPrice';
 import {
   getAppointmentPassUsage,
+  getAppointmentStatusPassUsage,
   getMostRecentPassUsage,
   normalizeSessionPassRpcRows,
 } from '@/lib/sessionPass';
@@ -527,7 +528,7 @@ export default function AppointmentsPage() {
       actual_price_updated_at: appointment.actual_price_updated_at ?? null,
       actual_price_update_reason: '',
       customer_id: appointment.customer_id,
-      session_pass_id: currentUsage?.session_pass_id || '',
+      session_pass_id: getAppointmentStatusPassUsage(appointment)?.session_pass_id || '',
       current_pass_id: currentUsage?.session_pass_id || null,
       current_usage_state: currentUsage?.state || null,
       memo: appointment.memo || '',
@@ -609,12 +610,12 @@ export default function AppointmentsPage() {
     if (!mountedRef.current) return;
     const mutationSelection = { ...latestSelectionRef.current };
     const mutationId = ++statusMutationIdRef.current;
-    const activeUsage = getAppointmentPassUsage(appointment);
+    const statusUsage = getAppointmentStatusPassUsage(appointment);
     const selectedPassId = nextStatus === 'cancelled'
       ? null
       : editingAppointmentRef.current.id === appointment.id
         ? editForm.session_pass_id || null
-        : activeUsage?.session_pass_id || null;
+        : statusUsage?.session_pass_id || null;
     const requestFingerprint = JSON.stringify({
       appointmentId: appointment.id,
       nextStatus,
