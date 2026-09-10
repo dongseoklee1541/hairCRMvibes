@@ -1,15 +1,15 @@
 # R-16 고객별 횟수권
 
 ## 상태
-- In Progress (Preview 취소 검증 완료 · 재확정 보완 로컬 검증 완료)
-- 기준: `main@b87eb6873f3ab873b5d7cc8c6e9db641bd1c6e4d`
+- Done (Production 배포·DB 적용·로그인 조회 검증 완료)
+- 운영 release 기준: `main@668cd099f397ea9cedcd86d8b216014554bf04aa` (PR #37, 검토 head `edff562`)
 - Git 전달 worktree: `/Users/idongseog/workspace/hairCRMvibes-r16-delivery-20260907`, `codex/r16-delivery-20260907`
 - 보존된 복구 사본: `/Users/idongseog/workspace/hairCRMvibes/output/recovery/r16-20260906/app` (Git worktree가 아닌 별도 파일 사본)
 - 과거 작업: `/private/tmp/hairCRMvibes-r16-customer-session-pass`, `codex/r16-customer-session-pass` — 구현 파일 및 `.git` 연결 파일 유실 확인
 - 우선순위: P1
 - 선행조건: R-02 예약 상태 전이, R-07 고객 lifecycle/병합, R-08 서비스 마스터, R-15 실제 시술금액 의미 확정
-- 최종 업데이트: 2026-09-07
-- delivery 경계: stage/commit/push·Draft PR은 승인된 검토 범위. 병합, 수동 배포, remote DB migration은 별도 승인 대상
+- 최종 업데이트: 2026-09-11
+- delivery: 사용자 승인으로 PR #37 병합·Production migration·배포 완료. 운영 데이터 backfill/쓰기 smoke, 계정·역할 변경, worktree/branch 삭제는 수행하지 않았습니다.
 
 ## 사용자 요구
 - 고객이 10회권 같은 횟수형 상품을 미리 등록해 둘 수 있어야 합니다.
@@ -281,12 +281,27 @@
 - 합성 API를 연결한 local production build의 390×844·360×800에서 before confirmed/released → after confirmed/reserved를 동일 fixture로 비교했습니다. 390×844에서 만료 오류와 취소 상태 유지도 확인했습니다. 실제 Preview에서 이번 재확정 변경을 실행한 결과와는 구분합니다.
 - 근거: main checkout의 `output/recovery/r16-20260906/reconfirm-20260910/README.md`, `tests.log`, `build.log`, 수정 전후 JPEG 4장과 오류 JPEG 1장. 실제 비밀번호·토큰·고객 정보는 저장하지 않았습니다.
 
-### 현재 남은 단계
+### 당시 남은 단계 (2026-09-10, 아래 운영 반영 기록으로 갱신)
 
 - 2026-09-10 추가 승인으로 이번 재확정 코드·테스트·문서의 커밋·푸시와 새 Preview 재검증을 진행합니다. 결과는 PR #37의 최신 head 및 로컬 검증 보고서의 전달 결과를 기준으로 확인하며, 이전 `aaa168a`의 CI/Preview 결과를 새 변경의 원격 검증으로 사용하지 않습니다.
 - commit/push 후 새 Preview에서 재확정·완료·미사용/다른 권 선택을 재검증하고 PR 최종 검토를 진행합니다. 병합·Production migration·배포는 별도 계획과 승인 대상입니다.
 - 기존 합성 예약 B의 완료/released 이력은 자동 보정하지 않았습니다. 재확정 보완은 과거 데이터 일괄 수정을 포함하지 않습니다.
 - 실제 모바일 IME/키보드 및 staff 브라우저 로그인을 검증하지 않았습니다. PWA/cache 로직은 변경하지 않아 이번 보완에서 전체 PWA 검사를 반복하지 않았습니다.
+
+## Production 반영 (2026-09-11)
+
+- 최신 Preview `edff562`에서 재확정→reserved, 완료→consumed, 취소→released, 취소→직접 완료, 명시적 미사용 유지 및 다른 횟수권 선택을 실제 owner UI와 DB 원장으로 대조했습니다. Node 35/35·race 24/24, `npm run build`와 해당 head의 GitHub/Vercel 검사는 통과했습니다.
+- PR [#37](https://github.com/dongseoklee1541/hairCRMvibes/pull/37)을 `main@668cd099f397ea9cedcd86d8b216014554bf04aa`로 병합했습니다. 병합 커밋의 [test-build](https://github.com/dongseoklee1541/hairCRMvibes/actions/runs/34495515603)도 성공했습니다.
+- Production Supabase는 `skcujebqxjvmzmaiddvb`이며 Vercel Production 환경 URL과 일치합니다. `20260719150346_r16_customer_session_pass.sql` 원본 SHA-256은 `2e0266c177286274f51f2cca82fe1c47c33cde6ec29b30b2171961f5413cdc25`입니다.
+- 기존 R15 RPC 및 migration history를 확인한 뒤 R16 한 건만 추가했습니다. 운영 R15 history의 두 timestamp는 그대로 보존했습니다.
+- 적용 SQL 전체를 편집기에서 복사해 준비 파일과 106,765자 완전 일치를 확인했습니다. 5초 lock timeout·120초 statement timeout, 고객/예약 쓰기 잠금, 전체 행 해시/개수 보존 검사, 9개 RPC의 SECURITY DEFINER/search_path/ACL 및 RLS/private 경계, 신규 원장 빈 상태 검사를 단일 트랜잭션으로 통과했습니다.
+- 고객 7건·예약 7건의 내용과 실제 시술금액은 그대로 유지됐습니다. 신규 pass/usage/request backfill은 없습니다.
+- [Production 배포](https://vercel.com/dongseoklee1541s-projects/hair-cr-mvibes/U8xemVbjjv8NqrfbvwuFezVk8sux)는 병합 commit으로 Ready가 된 뒤 DB 적용 후 승격했습니다. [운영 도메인](https://hair-cr-mvibes.vercel.app)의 Current 배포 연결을 확인했습니다.
+- Auto-assign Custom Production Domains를 사용자 승인으로 배포 중에만 비활성화했고, 승격 후 Enabled로 복원·새로고침 확인했습니다.
+- 로그인된 운영 세션에서 예약 화면, 고객 목록 7건, 고객 상세 횟수권 빈 상태가 스키마/권한 오류 없이 조회됐습니다. 고객·예약·횟수권 등록/수정/상태 변경은 수행하지 않았습니다. 해당 세션의 역할별 쓰기 권한을 UI만으로 검증했다고 주장하지 않습니다.
+- 개인정보가 포함된 운영 화면은 캡처하지 않았습니다. 기존 두 viewport 합성 before/after 및 Preview 검증 증거를 유지합니다. 이번 release는 코드·캐시 전략을 추가 변경하지 않았으므로 전체 PWA/실기기 검사는 반복하지 않았습니다.
+- 로컬 증거: `/Users/idongseog/workspace/hairCRMvibes/output/recovery/r16-20260906/production-20260911/`의 적용 SQL, preflight, DB 결과, 배포/설정 복원, 로그인 조회 결과. 비밀번호·토큰·고객 레코드는 저장하지 않았습니다.
+- 후속: 실기기 IME/설치/standalone/SW update, Production 실제 횟수권 쓰기와 staff 별도 로그인 검증. R-14·R-10 상태는 이 release로 변경하지 않습니다.
 
 ## Non-Goals
 - 선불금·결제·환불·매출 인식·영수증
@@ -313,8 +328,8 @@
 5. 구매금액·선불금·환불·매출 인식은 R-16 MVP에서 분리하고 횟수권 사용을 `actual_price_krw=0`으로 자동 기록하지 않습니다.
 
 ## Rollback
-- 먼저 UI에서 신규 횟수권 선택·등록을 비활성화합니다.
-- active confirmed 예약과 `reserved` usage가 0인지 확인하고, 남아 있으면 자동 삭제하지 않고 명시적으로 해제·보존 결정을 받습니다.
-- 애플리케이션을 R-16 이전 버전으로 배포한 뒤 RPC execute 권한을 회수합니다.
-- 원장 데이터 보존 여부를 확인한 후 trigger/function/index/table을 역순으로 제거하는 검토된 rollback SQL을 사용합니다.
-- 현재 복구 사본은 main에 적용하지 않았으므로 사용을 중단해 원래 작업 상태를 유지할 수 있습니다. 2026-09-06 disposable DB 3개와 data directory는 보존하고 서버만 정상 종료합니다. DB·worktree·branch 삭제는 별도 승인 작업입니다.
+- 마이그레이션 적용 중 오류는 전체 transaction rollback으로 기존 DB를 유지합니다.
+- 배포 전환 후에는 새 DB와 이전 앱의 예약 쓰기 계약이 다르므로 이전 앱만 단독으로 복원하지 않습니다.
+- 원장·예약 데이터를 보존하는 fix-forward를 우선합니다. pass/usage/request 데이터가 생긴 뒤에는 테이블을 제거하는 down SQL을 실행하지 않습니다.
+- 불가피한 rollback은 신규 쓰기 중단, 원장 보존/백업, DB·앱 호환성 및 복원 순서를 검토하고 별도 승인 후 수행합니다.
+- 기존 worktree, branch, 복구 사본과 스크린샷을 보존했습니다. DB·worktree·branch 삭제는 별도 cleanup 작업입니다.
