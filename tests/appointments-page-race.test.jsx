@@ -211,6 +211,93 @@ afterEach(() => {
   jest.restoreAllMocks();
 });
 
+test('취소 사유를 화면에서 입력하고 돌아가기나 Escape로 닫으면 예약을 변경하지 않는다', async () => {
+  const prompt = jest.spyOn(window, 'prompt').mockImplementation(() => {
+    throw new Error('브라우저 기본 입력창을 사용하면 안 됩니다.');
+  });
+  await renderLoadedDay(createAppointment({ date: '2026-07-13', id: 'cancel-dismiss', name: '합성 취소 고객' }));
+  const cancelButton = screen.getByRole('button', { name: '취소', exact: true });
+  fireEvent.click(cancelButton);
+  const input = screen.getByLabelText('취소 사유 (선택)');
+  expect(document.activeElement).toBe(input);
+  fireEvent.change(input, { target: { value: '일정 변경' } });
+  expect(document.activeElement).toBe(input);
+  fireEvent.keyDown(input, { key: 'Escape' });
+  expect(screen.queryByRole('form', { name: '예약 취소 확인' })).toBeNull();
+  expect(document.activeElement).toBe(cancelButton);
+  fireEvent.click(cancelButton);
+  fireEvent.click(screen.getByRole('button', { name: '돌아가기' }));
+  expect(requestsOfKind('status')).toHaveLength(0);
+  expect(prompt).not.toHaveBeenCalled();
+});
+
+test('취소 확정은 사유와 횟수권 해제를 한 번만 전송하고 실패 시 입력과 요청 ID를 유지한다', async () => {
+  const appointment = {
+    ...createAppointment({ date: '2026-07-13', id: 'cancel-retry', name: '합성 횟수권 고객' }),
+    appointment_session_pass_usages: [{ state: 'reserved', session_pass_id: 'synthetic-pass' }],
+  };
+  await renderLoadedDay(appointment);
+  fireEvent.click(screen.getByRole('button', { name: '취소', exact: true }));
+  expect(screen.getByText('취소하면 연결된 횟수권 1회가 복구됩니다.')).not.toBeNull();
+  fireEvent.change(screen.getByLabelText('취소 사유 (선택)'), { target: { value: '  고객 일정 변경  ' } });
+  const form = screen.getByRole('form', { name: '예약 취소 확인' });
+  act(() => {
+    fireEvent.submit(form);
+    fireEvent.submit(form);
+  });
+  const [first] = await waitForRequestCount('status', 1);
+  expect(first.name).toBe('set_appointment_status');
+  expect(first.args).toEqual({
+    p_request_id: expect.any(String),
+    p_appointment_id: appointment.id,
+    p_status: 'cancelled',
+    p_cancel_reason: '고객 일정 변경',
+    p_session_pass_id: null,
+  });
+  expect(screen.getByLabelText('취소 사유 (선택)').disabled).toBe(true);
+  fireEvent.keyDown(form, { key: 'Escape' });
+  expect(screen.getByRole('form', { name: '예약 취소 확인' })).not.toBeNull();
+  await settleRequest(first, { data: null, error: { message: '합성 네트워크 오류' } });
+  expect(screen.getByText('합성 네트워크 오류')).not.toBeNull();
+  expect(screen.getByLabelText('취소 사유 (선택)').value).toBe('  고객 일정 변경  ');
+  fireEvent.click(screen.getByRole('button', { name: '예약 취소 확정' }));
+  const retry = (await waitForRequestCount('status', 2))[1];
+  expect(retry.args.p_request_id).toBe(first.args.p_request_id);
+  await settleRequest(retry, { data: null, error: null });
+  const month = (await waitForRequestCount('month', 2))[1];
+  const daily = (await waitForRequestCount('daily', 2))[1];
+  await settleRequest(month, { data: [{ date: appointment.date }], error: null });
+  await settleRequest(daily, {
+    data: [{ ...appointment, status: 'cancelled', appointment_session_pass_usages: [{ state: 'released' }] }],
+    error: null,
+  });
+  expect(screen.queryByRole('form', { name: '예약 취소 확인' })).toBeNull();
+  expect(screen.getByText('복구됨', { exact: false })).not.toBeNull();
+  expect(screen.queryByRole('button', { name: '취소', exact: true })).toBeNull();
+});
+
+test('이전 예약의 취소 응답이 다른 날짜의 취소 사유를 지우지 않는다', async () => {
+  const appointmentA = createAppointment({ date: '2026-07-13', id: 'cancel-a', name: '합성 A' });
+  await renderLoadedDay(appointmentA);
+  fireEvent.click(screen.getByRole('button', { name: '취소', exact: true }));
+  fireEvent.click(screen.getByRole('button', { name: '예약 취소 확정' }));
+  const [mutationA] = await waitForRequestCount('status', 1);
+  fireEvent.click(screen.getByRole('button', { name: /2026년 7월 14일/ }));
+  const appointmentB = createAppointment({ date: '2026-07-14', id: 'cancel-b', name: '합성 B' });
+  const dailyB = (await waitForRequestCount('daily', 2))[1];
+  await settleRequest(dailyB, { data: [appointmentB], error: null });
+  expect(screen.queryByRole('form', { name: '예약 취소 확인' })).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: '취소', exact: true }));
+  fireEvent.change(screen.getByLabelText('취소 사유 (선택)'), { target: { value: 'B 예약 사유 보존' } });
+  await settleRequest(mutationA, { data: null, error: null });
+  const month = (await waitForRequestCount('month', 2))[1];
+  const refreshedB = (await waitForRequestCount('daily', 3))[2];
+  await settleRequest(month, { data: [{ date: appointmentB.date }], error: null });
+  await settleRequest(refreshedB, { data: [appointmentB], error: null });
+  expect(screen.getByLabelText('취소 사유 (선택)').value).toBe('B 예약 사유 보존');
+  expect(screen.queryByText(/합성 A 상태를/)).toBeNull();
+});
+
 test.each([
   ['성공', { data: [createAppointment({ date: '2026-07-13', id: 'a-late', name: 'A 늦은 고객' })], error: null }],
   ['실패', { data: null, error: { message: 'A 늦은 실패' } }],

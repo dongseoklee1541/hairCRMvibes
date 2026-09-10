@@ -86,6 +86,55 @@ function normalizeTimeValue(value, fallback = '10:00') {
   return String(value).slice(0, 5);
 }
 
+function AppointmentCancelForm({ appointment, reason, onReasonChange, saving, onClose, onConfirm }) {
+  const reasonRef = useRef(null);
+
+  useEffect(() => {
+    reasonRef.current?.focus();
+  }, []);
+
+  return (
+    <form
+      className={`${styles.editPanel} ${styles.cancelPanel}`}
+      aria-label="예약 취소 확인"
+      aria-busy={saving}
+      onSubmit={(event) => {
+        event.preventDefault();
+        if (!saving) onConfirm(reason.trim());
+      }}
+      onKeyDown={(event) => {
+        if (event.key === 'Escape' && !saving) {
+          event.preventDefault();
+          onClose();
+        }
+      }}
+    >
+      <p className="body-sm">취소 사유를 확인한 뒤 예약 취소를 확정해 주세요.</p>
+      {getAppointmentPassUsage(appointment) ? (
+        <p className={styles.fieldHint}>취소하면 연결된 횟수권 1회가 복구됩니다.</p>
+      ) : null}
+      <label className={styles.editField}>
+        <span>취소 사유 (선택)</span>
+        <input
+          ref={reasonRef}
+          value={reason}
+          onChange={(event) => onReasonChange(event.target.value)}
+          disabled={saving}
+        />
+      </label>
+      <div className={styles.editActions}>
+        <button type="button" className={styles.secondaryButton} onClick={onClose} disabled={saving}>
+          돌아가기
+        </button>
+        <button type="submit" className={styles.primaryButton} disabled={saving}>
+          {saving ? <Loader2 size={16} className="animate-spin" aria-hidden="true" /> : null}
+          <span>{saving ? '취소 처리 중' : '예약 취소 확정'}</span>
+        </button>
+      </div>
+    </form>
+  );
+}
+
 export default function AppointmentsPage() {
   const today = getTodayKstCalendarParts();
   const [year, setYear] = useState(today.year);
@@ -115,6 +164,9 @@ export default function AppointmentsPage() {
   const [editPassError, setEditPassError] = useState('');
   const [editingAppointment, setEditingAppointment] = useState({ dateKey: null, id: null, sessionId: null });
   const [editForm, setEditForm] = useState(createEmptyEditForm);
+  const [cancellingAppointment, setCancellingAppointment] = useState(null);
+  const cancelReturnFocusRef = useRef(null);
+  const statusInFlightIdsRef = useRef(new Set());
   const mountedRef = useRef(false);
   const latestSelectionRef = useRef(null);
   const editingAppointmentRef = useRef({ dateKey: null, id: null, sessionId: null });
@@ -355,6 +407,7 @@ export default function AppointmentsPage() {
   }, [fetchMonthData, monthKey]);
 
   useEffect(() => {
+    setCancellingAppointment(null);
     fetchDailyData(latestSelectionRef.current);
 
     return () => {
@@ -535,7 +588,14 @@ export default function AppointmentsPage() {
     if (service) loadEditPassOptions(editForm.customer_id, service.id);
   };
 
-  const handleStatusChange = async (appointment, nextStatus) => {
+  const closeCancellation = () => {
+    setCancellingAppointment(null);
+    cancelReturnFocusRef.current?.focus();
+  };
+
+  const handleStatusChange = async (appointment, nextStatus, cancelReason = null) => {
+    if (statusInFlightIdsRef.current.has(appointment.id)) return;
+    if (nextStatus === 'cancelled' && typeof cancelReason !== 'string') return;
     const label = STATUS_LABELS[nextStatus] || nextStatus;
     if (
       nextStatus !== 'cancelled'
@@ -546,13 +606,6 @@ export default function AppointmentsPage() {
       publishActionMessage(editPassError || '횟수권을 확인한 뒤 예약 상태를 변경해주세요.', latestSelectionRef.current.dateKey);
       return;
     }
-    let cancelReason = null;
-
-    if (nextStatus === 'cancelled') {
-      cancelReason = window.prompt('취소 사유를 입력하세요.', '고객 요청');
-      if (cancelReason === null) return;
-    }
-
     if (!mountedRef.current) return;
     const mutationSelection = { ...latestSelectionRef.current };
     const mutationId = ++statusMutationIdRef.current;
@@ -579,6 +632,7 @@ export default function AppointmentsPage() {
     }
 
     try {
+      statusInFlightIdsRef.current.add(appointment.id);
       publishActionMessage('', mutationSelection.dateKey);
       setStatusSavingById((current) => {
         const next = new Map(current);
@@ -596,6 +650,11 @@ export default function AppointmentsPage() {
       if (error) throw error;
       if (!mountedRef.current) return;
       statusRequestIdsRef.current.delete(requestFingerprint);
+      if (nextStatus === 'cancelled') {
+        setCancellingAppointment((current) => (
+          current?.id === appointment.id && current.dateKey === mutationSelection.dateKey ? null : current
+        ));
+      }
 
       publishActionMessage(
         `${appointment.customers?.name || '예약'} 상태를 ${label}(으)로 변경했습니다.`,
@@ -610,6 +669,7 @@ export default function AppointmentsPage() {
         mutationSelection.dateKey
       );
     } finally {
+      statusInFlightIdsRef.current.delete(appointment.id);
       if (mountedRef.current) {
         setStatusSavingById((current) => {
           if (current.get(appointment.id) !== mutationId) return current;
@@ -968,6 +1028,8 @@ export default function AppointmentsPage() {
                 const isBusy = statusSavingById.has(appt.id) || editSavingById.has(appt.id) || actualPriceSavingById.has(appt.id);
                 const isEditing = editingAppointment.dateKey === selectedDateKey
                   && editingAppointment.id === appt.id;
+                const isCancelling = cancellingAppointment?.dateKey === selectedDateKey
+                  && cancellingAppointment.id === appt.id;
                 const durationMinutes = resolveAppointmentDurationMinutes(appt, 60);
                 const status = appt.status || 'confirmed';
                 const actualPriceChanged = isEditing
@@ -1010,7 +1072,7 @@ export default function AppointmentsPage() {
                               type="button"
                               className={styles.actionButton}
                               onClick={() => handleStatusChange(appt, 'completed')}
-                              disabled={isBusy}
+                              disabled={isBusy || isCancelling}
                             >
                               <CheckCircle2 size={16} />
                               <span>완료</span>
@@ -1020,7 +1082,13 @@ export default function AppointmentsPage() {
                             <button
                               type="button"
                               className={styles.actionButton}
-                              onClick={() => handleStatusChange(appt, 'cancelled')}
+                              onClick={(event) => {
+                                cancelReturnFocusRef.current = event.currentTarget;
+                                if (!isCancelling) {
+                                  setCancellingAppointment({ id: appt.id, dateKey: selectedDateKey, reason: '고객 요청' });
+                                }
+                              }}
+                              aria-expanded={isCancelling}
                               disabled={isBusy}
                             >
                               <XCircle size={16} />
@@ -1032,7 +1100,7 @@ export default function AppointmentsPage() {
                               type="button"
                               className={styles.actionButton}
                               onClick={() => handleStatusChange(appt, 'confirmed')}
-                              disabled={isBusy}
+                              disabled={isBusy || isCancelling}
                             >
                               <RotateCcw size={16} />
                               <span>확정</span>
@@ -1042,7 +1110,7 @@ export default function AppointmentsPage() {
                             type="button"
                             className={styles.actionButton}
                             onClick={() => (isEditing ? closeEditingAppointment() : startEditingAppointment(appt))}
-                            disabled={isBusy}
+                            disabled={isBusy || isCancelling}
                           >
                             <Pencil size={16} />
                             <span>{isEditing ? '닫기' : '수정'}</span>
@@ -1051,7 +1119,20 @@ export default function AppointmentsPage() {
                       </div>
                     </div>
 
-                    {isEditing ? (
+                    {isCancelling ? (
+                      <AppointmentCancelForm
+                        appointment={appt}
+                        reason={cancellingAppointment.reason}
+                        onReasonChange={(reason) => setCancellingAppointment((current) => (
+                          current?.id === appt.id ? { ...current, reason } : current
+                        ))}
+                        saving={isBusy}
+                        onClose={closeCancellation}
+                        onConfirm={(reason) => handleStatusChange(appt, 'cancelled', reason)}
+                      />
+                    ) : null}
+
+                    {isEditing && !isCancelling ? (
                       <form className={styles.editPanel} onSubmit={(event) => handleEditSubmit(event, appt)}>
                         <div className={styles.editGrid}>
                           <label className={styles.editField}>

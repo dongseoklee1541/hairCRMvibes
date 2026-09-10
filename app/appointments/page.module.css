@@ -318,6 +318,15 @@
   gap: 12px;
 }
 
+.cancelPanel {
+  margin-left: 16px;
+}
+
+.cancelPanel input:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
 .editField {
   display: flex;
   flex-direction: column;
