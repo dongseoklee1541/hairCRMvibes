@@ -1,0 +1,137 @@
+{
+  "results": [
+    {
+      "viewport": "390x844",
+      "layout": {
+        "width": 390,
+        "height": 844,
+        "overflow": false,
+        "targets": [
+          {
+            "tag": "BUTTON",
+            "width": 44,
+            "height": 52
+          },
+          {
+            "tag": "INPUT",
+            "width": 350,
+            "height": 48
+          },
+          {
+            "tag": "INPUT",
+            "width": 350,
+            "height": 48
+          },
+          {
+            "tag": "BUTTON",
+            "width": 350,
+            "height": 56
+          }
+        ]
+      },
+      "continuousInput": true,
+      "replaceDelete": true,
+      "noIncrement": true,
+      "reasonInput": true,
+      "zeroAndNull": true,
+      "saveErrorRetry": true,
+      "offlineRecovery": true,
+      "pendingEscapeGuard": true,
+      "passFocus": true
+    },
+    {
+      "viewport": "360x800",
+      "layout": {
+        "width": 360,
+        "height": 800,
+        "overflow": false,
+        "targets": [
+          {
+            "tag": "BUTTON",
+            "width": 44,
+            "height": 52
+          },
+          {
+            "tag": "INPUT",
+            "width": 320,
+            "height": 48
+          },
+          {
+            "tag": "INPUT",
+            "width": 320,
+            "height": 48
+          },
+          {
+            "tag": "BUTTON",
+            "width": 320,
+            "height": 56
+          }
+        ]
+      },
+      "continuousInput": true,
+      "replaceDelete": true,
+      "noIncrement": true,
+      "reasonInput": true,
+      "zeroAndNull": true,
+      "saveErrorRetry": true,
+      "offlineRecovery": true,
+      "pendingEscapeGuard": true,
+      "passFocus": true
+    }
+  ],
+  "pageErrors": [],
+  "finalSyntheticState": {
+    "behavior": "success",
+    "appointment": {
+      "id": "33333333-3333-4333-8333-333333333333",
+      "customer_id": "11111111-1111-4111-8111-111111111111",
+      "date": "2026-09-11",
+      "time": "10:00:00",
+      "service": "테스트 시술",
+      "status": "completed",
+      "actual_price_krw": 65000,
+      "price_snapshot_krw": 80000,
+      "actual_price_updated_at": "2026-09-10T16:15:43.331Z",
+      "appointment_session_pass_usages": [],
+      "memo": ""
+    },
+    "writes": [
+      {
+        "p_appointment_id": "33333333-3333-4333-8333-333333333333",
+        "p_actual_price_krw": 75000,
+        "p_expected_actual_price_updated_at": "2026-09-11T00:00:00Z",
+        "p_update_reason": "현장 할인 적용"
+      },
+      {
+        "p_appointment_id": "33333333-3333-4333-8333-333333333333",
+        "p_actual_price_krw": null,
+        "p_expected_actual_price_updated_at": "2026-09-10T16:15:38.635Z",
+        "p_update_reason": "검증"
+      },
+      {
+        "p_appointment_id": "33333333-3333-4333-8333-333333333333",
+        "p_actual_price_krw": 0,
+        "p_expected_actual_price_updated_at": "2026-09-10T16:15:39.098Z",
+        "p_update_reason": "무료 시술 확인"
+      },
+      {
+        "p_appointment_id": "33333333-3333-4333-8333-333333333333",
+        "p_actual_price_krw": 60000,
+        "p_expected_actual_price_updated_at": "2026-09-10T16:15:39.454Z",
+        "p_update_reason": "재시도 확인"
+      },
+      {
+        "p_appointment_id": "33333333-3333-4333-8333-333333333333",
+        "p_actual_price_krw": 60000,
+        "p_expected_actual_price_updated_at": "2026-09-10T16:15:39.454Z",
+        "p_update_reason": "재시도 확인"
+      },
+      {
+        "p_appointment_id": "33333333-3333-4333-8333-333333333333",
+        "p_actual_price_krw": 65000,
+        "p_expected_actual_price_updated_at": "2026-09-10T16:15:42.534Z",
+        "p_update_reason": "연결 복구 확인"
+      }
+    ]
+  }
+}

@@ -115,12 +115,12 @@ export default function CustomerDetailPage() {
   const { role, isRoleReady } = useAuth();
   const customerId = params.id;
   const closeDialogRef = useRef(null);
+  const priceInputRef = useRef(null);
   const dialogTriggerRef = useRef(null);
   const pageFocusRef = useRef(null);
   const pendingFocusRestoreRef = useRef(false);
   const statusRef = useRef('loading');
-  const actionLoadingRef = useRef(false);
-  const historySavingRef = useRef(false);
+  const dialogSavingRef = useRef(false);
   const historyRequestIdRef = useRef(null);
   const historyPassRequestIdRef = useRef(0);
   const [customer, setCustomer] = useState(null);
@@ -165,6 +165,8 @@ export default function CustomerDetailPage() {
   });
 
   const isOwner = isRoleReady && role === 'owner';
+  const priceEditorId = priceEditor?.id;
+  const passEditorKey = passEditor ? passEditor.id || 'new' : null;
 
   const fetchData = useCallback(async () => {
     if (!customerId) return;
@@ -338,24 +340,27 @@ export default function CustomerDetailPage() {
   }, [status]);
 
   useEffect(() => {
-    actionLoadingRef.current = actionLoading;
-  }, [actionLoading]);
+    dialogSavingRef.current = actionLoading || historySaving || priceSaving || passSaving;
+  }, [actionLoading, historySaving, priceSaving, passSaving]);
 
+  // 입력 내용과 저장 상태가 바뀔 때는 포커스를 초기화하지 않습니다.
   useEffect(() => {
-    historySavingRef.current = historySaving;
-  }, [historySaving]);
-
-  useEffect(() => {
-    if (!activeDialog && !showHistorySheet && !priceEditor && !passEditor) return undefined;
+    if (status !== 'ready' || (!activeDialog && !showHistorySheet && !priceEditorId && !passEditorKey)) return undefined;
 
     const previousOverflow = document.body.style.overflow;
     const trigger = dialogTriggerRef.current;
     document.body.style.overflow = 'hidden';
-    closeDialogRef.current?.focus();
+    if (priceInputRef.current) {
+      priceInputRef.current.focus();
+      priceInputRef.current.select();
+    } else {
+      closeDialogRef.current?.focus();
+    }
 
     const modal = closeDialogRef.current?.closest('[role="dialog"], [role="alertdialog"]');
     const handleKeyDown = (event) => {
-        if (event.key === 'Escape' && !actionLoadingRef.current && !historySavingRef.current && !priceSaving) {
+      if (event.key === 'Escape' && !dialogSavingRef.current) {
+        event.preventDefault();
         setActiveDialog(null);
         setShowHistorySheet(false);
         setPriceEditor(null);
@@ -404,7 +409,7 @@ export default function CustomerDetailPage() {
         pendingFocusRestoreRef.current = false;
       });
     };
-  }, [activeDialog, showHistorySheet, priceEditor, passEditor, priceSaving]);
+  }, [activeDialog, showHistorySheet, priceEditorId, passEditorKey, status]);
 
   const closeLifecycleDialog = () => {
     if (actionLoading) return;
@@ -686,9 +691,14 @@ export default function CustomerDetailPage() {
       return;
     }
 
-    const actualPriceKrw = priceEditor.actual_price_krw === '' ? null : Number(priceEditor.actual_price_krw);
-    if (actualPriceKrw !== null && (!Number.isInteger(actualPriceKrw) || actualPriceKrw < 0)) {
+    const priceText = priceEditor.actual_price_krw;
+    if (!/^[0-9]*$/.test(priceText)) {
       setPriceError('실제 시술금액은 0원 이상의 정수로 입력해주세요.');
+      return;
+    }
+    const actualPriceKrw = priceText === '' ? null : Number(priceText);
+    if (actualPriceKrw !== null && (!Number.isSafeInteger(actualPriceKrw) || actualPriceKrw > 2147483647)) {
+      setPriceError('실제 시술금액은 2,147,483,647원 이하로 입력해주세요.');
       return;
     }
     if (actualPriceKrw === priceEditor.original_actual_price_krw) {
@@ -1377,10 +1387,10 @@ export default function CustomerDetailPage() {
               <label>
                 <span>실제 시술금액</span>
                 <input
-                  type="number"
-                  min="0"
-                  step="1"
+                  ref={priceInputRef}
+                  type="text"
                   inputMode="numeric"
+                  pattern="[0-9]*"
                   value={priceEditor.actual_price_krw}
                   onChange={(event) => setPriceEditor((current) => ({ ...current, actual_price_krw: event.target.value }))}
                   placeholder="미입력"
