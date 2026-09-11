@@ -195,7 +195,7 @@
 - Production connector history version은 local filename `20260716151141`과 다른 apply-time version을 사용
 - Production 첫 apply에서 stats returns table에 `repeat_rate` 누락이 있었고 즉시 follow-up migration으로 교정함
 
-## 2026-09-11 금액 입력 사용성 수정 — 로컬 검증 완료
+## 2026-09-11 금액 입력 사용성 수정 — 로컬·Preview 검증 완료
 
 ### 범위와 설계 예외
 - 기준: 최신 `origin/main@120f0c7`을 fast-forward한 `codex/actual-price-input-ux`, 전용 워크트리 `hairCRMvibes-actual-price-input-ux`.
@@ -228,7 +228,15 @@
 - 360×800: [수정 전](../../output/playwright/actual-price-input-ux/20260911_actual_price_before_360x800.png), [수정 후](../../output/playwright/actual-price-input-ux/20260911_actual_price_after_360x800.png), [오류 상태](../../output/playwright/actual-price-input-ux/20260911_actual_price_error_360x800.png).
 - 이미지와 로그의 고객·시술·계정은 모두 가상 값입니다. 실제 고객 기록이나 인증 정보는 사용하지 않았습니다.
 
+### Preview 배포·인증 후 검증
+- 구현 `474e9fe`의 작업 브랜치 Preview 배포를 완료했습니다. [Preview](https://hair-cr-mvibes-git-codex-actua-f50288-dongseoklee1541s-projects.vercel.app), GitHub deployment `6383775963` (Preview / success).
+- Preview owner 로그인 후 Codex 인앱 브라우저에서 390×844·360×800 연속 입력·기존 금액 전체 선택·삭제·사유 입력·최대값 오류·Escape 포커스 복귀를 검증했습니다.
+- 합성 완료 시술 한 건을 `75000 → 0 → null`로 저장하고 각 단계에서 새로고침 후 값 유지를 확인했습니다. 최종 금액은 원래의 미입력으로 복원했습니다. 기준금액·예약 상태·횟수권 잔여는 유지됐으며 가격 수정 시각·사유는 검증으로 갱신됐습니다.
+- 최소 44px 터치 영역, 가로 넘침 없음, 360×450 축소 높이의 저장 버튼 접근을 확인했습니다. 기록된 console error/warning 0건입니다.
+- [검증 기록과 전후 화면](../../output/playwright/actual-price-input-ux/preview-20260911/preview-verification.md), [구조화된 배포·검증 결과](../../output/playwright/actual-price-input-ux/preview-20260911/deployment.json).
+- 실기기 키보드·IME·standalone 및 staff 별도 로그인은 이 결과에 포함하지 않습니다. 추가 코드·의존성·DB 구조 변경은 없습니다.
+
 ### 남은 범위와 롤백
-- 위 기록은 로컬 검증 완료 시점의 결과입니다. 이후 사용자가 작업 브랜치의 Preview 반영과 테스트 진행을 승인했습니다. 코드·회귀 테스트·문서·가상 화면 증거를 해당 브랜치에 전달하며 운영 배포·병합·DB 구조 변경은 포함하지 않습니다. 실제 Preview 배포와 인증 검증 결과는 별도 실행 증거로 확인합니다.
+- 코드·회귀 테스트·로컬 및 Preview 검증 근거를 작업 브랜치에 전달합니다. 이 입력 수정의 운영 배포·병합·DB 구조 변경은 수행하지 않았습니다.
 - 실제 iOS/Android 키보드·IME 조합·standalone 동작, 로컬 프로덕션 preload 경고 원인, 운영 owner/staff 쓰기는 후속 검증입니다. 기존 PWA 설정을 바꾸지 않아 전체 PWA 회귀는 이번 범위에 포함하지 않았습니다.
 - 롤백은 이번 고객 상세 코드·테스트·테스트 스크립트·문서 변경만 역패치합니다. 최신 main 반영과 기존 사용자 작업, `.pen`, DB 데이터는 유지합니다.
