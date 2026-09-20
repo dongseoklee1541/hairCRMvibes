@@ -1,0 +1,67 @@
+{
+  "branch": "codex/actual-price-input-ux",
+  "base_commit": "120f0c7c20fa40797857893b91ec2655a1d346a1",
+  "deployed_commit": "474e9fe36a0f2cd0b7c7ded0e204dd4228a72725",
+  "github_deployment_id": 6383775963,
+  "vercel_deployment_id": "FoZchBQhJqmyby8ZeuAfUh8C6Q9v",
+  "state": "success",
+  "environment": "Preview",
+  "deployment_succeeded_at": "2026-09-11T00:23:41Z",
+  "url": "https://hair-cr-mvibes-git-codex-actua-f50288-dongseoklee1541s-projects.vercel.app",
+  "immutable_url": "https://hair-cr-mvibes-cqeqejeu9-dongseoklee1541s-projects.vercel.app",
+  "observed_supabase_host": "ygczvpiowtexsqupkxth.supabase.co",
+  "login_screen_loaded": true,
+  "authenticated_browser_tests": "passed_core_price_flow",
+  "local_tests": {
+    "node": 35,
+    "jest": 47,
+    "build": "passed",
+    "mobile_viewports": [
+      "390x844",
+      "360x800"
+    ]
+  },
+  "github_test_workflow": "not_triggered_for_branch_push",
+  "production_deployed": false,
+  "pr_created": false,
+  "merged": false,
+  "verified_at": "2026-09-11T03:52:05Z",
+  "login_resolution": "Confirmed Preview email applied; existing entered password succeeded. No password read, reset, or account changes.",
+  "preview_browser": {
+    "viewports": [
+      "390x844",
+      "360x800"
+    ],
+    "continuous_input": "75000; focus retained in both sizes",
+    "initial_value_selection": "75000 selected at range 0..5",
+    "input_type": "text",
+    "input_mode": "numeric",
+    "arrow_keys_do_not_increment": true,
+    "korean_reason_focus_retained": true,
+    "missing_required_reason_blocked": true,
+    "max_integer_exceeded_blocked": true,
+    "persisted_after_reload": [
+      75000,
+      0,
+      null
+    ],
+    "original_price_restored": true,
+    "fixture_metadata_note": "The test updated actual-price audit timestamp and reason. Original actual price restored to null; baseline, appointment state and pass counts unchanged in UI.",
+    "minimum_touch_target_px": 44,
+    "horizontal_overflow": false,
+    "reduced_viewport": {
+      "width": 360,
+      "height": 450,
+      "save_top": 370,
+      "save_bottom": 426
+    },
+    "escape_focus_restored": true,
+    "recorded_console_errors": 0,
+    "recorded_console_warnings": 0
+  },
+  "remaining": [
+    "Physical iOS/Android keyboard and IME",
+    "Standalone PWA verification",
+    "Production or staff authentication tests"
+  ]
+}
