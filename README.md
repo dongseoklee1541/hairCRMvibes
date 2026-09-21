@@ -39,9 +39,9 @@ npm run dev
 npm run dev        # 개발 서버
 npm run build      # 프로덕션 빌드와 PWA 산출물 생성
 npm run start      # 빌드된 앱 실행
-npm test           # Node 단위 테스트와 예약 화면 경쟁 상태 테스트
+npm test           # Node 단위 테스트와 예약·고객 입력 회귀 테스트
 npm run test:node  # 날짜·예약 규칙·CSV·표시 유틸 테스트
-npm run test:race  # 예약 화면 비동기 경쟁 상태 테스트
+npm run test:race  # 예약 비동기 경쟁 상태·고객 금액 입력 회귀 테스트
 ```
 
 현재 `lint`와 `typecheck` 전용 명령은 없습니다.

@@ -3,13 +3,16 @@
 ## 상태
 - Done (Production 배포·DB 적용·로그인 조회 검증 완료)
 - 운영 release 기준: `main@668cd099f397ea9cedcd86d8b216014554bf04aa` (PR #37, 검토 head `edff562`)
-- Git 전달 worktree: `/Users/idongseog/workspace/hairCRMvibes-r16-delivery-20260907`, `codex/r16-delivery-20260907`
+- 당시 Git 전달 worktree: `/Users/idongseog/workspace/hairCRMvibes-r16-delivery-20260907`, `codex/r16-delivery-20260907`
 - 보존된 복구 사본: `/Users/idongseog/workspace/hairCRMvibes/output/recovery/r16-20260906/app` (Git worktree가 아닌 별도 파일 사본)
 - 과거 작업: `/private/tmp/hairCRMvibes-r16-customer-session-pass`, `codex/r16-customer-session-pass` — 구현 파일 및 `.git` 연결 파일 유실 확인
 - 우선순위: P1
 - 선행조건: R-02 예약 상태 전이, R-07 고객 lifecycle/병합, R-08 서비스 마스터, R-15 실제 시술금액 의미 확정
-- 최종 업데이트: 2026-09-11
+- 운영 반영일: 2026-09-11
+- 최종 문서 점검: 2026-09-22 (운영 DB·인증 동작 재검증 없음)
 - delivery: 사용자 승인으로 PR #37 병합·Production migration·배포 완료. 운영 데이터 backfill/쓰기 smoke, 계정·역할 변경, worktree/branch 삭제는 수행하지 않았습니다.
+
+운영 반영 완료는 아래 2026-09-11 기록을 근거로 유지합니다. 이후 PR #39 입력 수정과 PR #40 문서 변경이 병합됐으므로 위 release SHA를 현재 main으로 사용하지 않습니다. 워크트리·복구 경로는 당시 이력이며 존재·branch·미보존 작업은 사용 직전에 확인합니다. 모바일 로그인 조사·실기기 IME·설치형 PWA는 사용자 보류, Production 횟수권 쓰기와 staff 별도 로그인은 미검증입니다. 과거 미완료 기록만으로 복구·DB 적용·배포를 다시 수행하지 않습니다.
 
 ## 사용자 요구
 - 고객이 10회권 같은 횟수형 상품을 미리 등록해 둘 수 있어야 합니다.

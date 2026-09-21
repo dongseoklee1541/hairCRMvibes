@@ -1,5 +1,7 @@
 # R-10 직원 초대 claim ledger 운영 runbook
 
+이 runbook은 실행 절차이며 실제 적용 상태는 [R-10 상세](../roadmap/R-10-role-management.md)를 확인합니다. 과거 flag·Auth URL·advisor 결과를 현재값으로 가정하지 않습니다. 이미 승인된 동일 범위는 다시 승인받지 않되 계정·권한·메일·DB·배포 변경은 각각 승인된 대상과 환경에 한정합니다.
+
 ## 범위와 안전 원칙
 
 이 문서는 `/api/staff/invitations`와 `private.staff_invitation_requests`를 운영·중지·복구할 때 사용합니다. 초대 route는 `R10_INVITATIONS_ENABLED`가 문자열 `true`일 때만 동작하며, 그 외 값은 fail-closed로 `503`, `invitation_maintenance`, `Cache-Control: private, no-store`를 반환합니다. 인증 헤더가 없는 요청은 flag와 무관하게 `401`, `Cache-Control: no-store, max-age=0`입니다.
@@ -25,8 +27,8 @@
 2. Auth user, profile, 동일 request의 provisioning audit evidence를 비식별 방식으로 확인합니다. `unknown`이 남아 있으면 활성화하지 않습니다.
 3. Auth URL과 Vercel Production env scope를 확인합니다. canonical redirect는 exact allowlist만 사용합니다.
 4. flag를 먼저 `false`인 상태로 새 deployment에 반영하고, unauthenticated 401과 authenticated maintenance 503 경계를 확인합니다.
-5. in-flight 0건을 확인한 뒤 Production의 `R10_INVITATIONS_ENABLED=true`를 설정하고 재배포합니다.
-6. 실제 초대 없이 공개 route, protected route의 무인증 경계, UI maintenance 문구, cache header만 검증합니다. owner 인증 smoke와 실제 메일 발송은 별도 승인 없이는 수행하지 않습니다.
+5. Auth URL·advisor gate 해소와 승인된 synthetic owner 검증을 확인합니다. 활성화·배포가 승인 범위에 포함되고 in-flight 0건일 때 Production의 `R10_INVITATIONS_ENABLED=true`를 설정하고 재배포합니다.
+6. 실제 초대 없이 공개 route, protected route의 무인증 경계, 활성 상태 UI와 cache header를 검증합니다. 실제 메일 발송은 활성화 승인에 명시적으로 포함되지 않았다면 수행하지 않습니다.
 
 ## 비식별 상태 집계와 unknown 조사
 

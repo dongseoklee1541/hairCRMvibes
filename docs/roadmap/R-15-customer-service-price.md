@@ -1,11 +1,24 @@
 # R-15 고객별 실제 시술금액 입력·수정
 
 ## 상태
-- Done (production deployed; live migration applied; authenticated UI smoke pending)
-- 기준: `origin/main@52fa394d783cb418883d413ef4796be32f8afcde`
+- Done (PR #39 병합·Production 배포 기록 확인)
+- 원기능 release 기준: PR #34 `main@52fa394d783cb418883d413ef4796be32f8afcde`
+- 입력 수정 release 기준: PR #39 `main@8f8e45cc4cd85850bbda6b7e1e34344a2173f2ea`
 - 우선순위: P1
-- 선행조건: R-08 서비스 마스터, R-09 통계 계약 재결정
-- 최종 업데이트: 2026-09-11
+- 충족된 선행조건: R-08 서비스 마스터, R-09 실제 매출 계약 확정
+- 최종 문서 점검: 2026-09-22 (로컬 코드·GitHub 병합/CI/Production 기록 확인)
+
+## 현재 계약과 남은 범위
+
+- PR #34에서 실제 금액 컬럼·RPC·R-09 실제 매출 계약을 구현했고, PR #39에서 고객 상세 금액창의 연속 입력·포커스 유지·브라우저 증감 제거를 반영했습니다. 병합/CI/Production 근거는 [2026-09-22 점검](./documentation-audit-2026-09-22.md)에 있습니다.
+- 실제 매출은 completed + non-null `actual_price_krw`만 집계하며 snapshot fallback과 기존 예약 추정 backfill은 없습니다. 빈값 `null`과 무료 `0`을 구분합니다. 아래 설계 대안·결정 게이트는 구현 전 기록이며 재승인할 미결정이 아닙니다.
+- 2026-09-11 Preview owner 로그인과 390×844·360×800 입력·저장·재조회 검증은 완료 기록입니다. staff 별도 로그인/쓰기와 Production authenticated stats는 미검증입니다.
+- 모바일 로그인 조사·실기기 키보드/IME·설치형 PWA 검증은 **사용자 보류**입니다. 이전 Preview 로그인 오류는 당시 관찰이며 현재 로그인 장애로 단정하거나 자동 재조사하지 않습니다. Preview owner 성공도 해당 모바일 새 자격 증명 문제의 해결 증거로 확대하지 않습니다.
+- 이번 점검은 canonical alias·Production 인증 동작을 재검증하지 않았습니다. 아래 `구현·release 결과` 이후의 기록을 현재 완료 근거로 읽습니다.
+
+## 구현 전 설계 기록
+
+다음 `사용자 요구`부터 `Rollback`까지는 원기능 구현 전의 문제·대안·계획을 보존한 기록입니다. 당시 코드 상태와 검토 표현을 현재 결함·추가 실행 지시로 사용하지 않습니다.
 
 ## 사용자 요구
 - 고객에게 실제로 적용한 시술 금액을 기록할 수 있어야 합니다.
@@ -13,7 +26,7 @@
 - 예약 후 또는 시술 완료 후에도 금액을 별도로 입력·수정할 수 있어야 합니다.
 - 고객 상세의 시술 이력에서 당시 금액을 확인하고 수정할 수 있어야 합니다.
 
-## 현재 코드 근거
+## 구현 전 코드 근거
 - `salon_service_defaults.price_krw`는 현재 서비스 마스터의 기본가격입니다.
 - `appointments.price_snapshot_krw`는 R-08 trigger가 서비스 선택 시 복사하는 예약 당시 기본가격 snapshot입니다.
 - `/appointments/new`는 서비스와 기본가격을 보여주지만 가격을 직접 입력하지 않고 DB trigger가 snapshot을 채웁니다.
@@ -105,7 +118,7 @@
 - 고객·예약·가격 응답은 기존 PWA `NetworkOnly` 경계를 유지하며 Cache Storage에 저장하지 않습니다.
 
 ## R-09 통계 결정 게이트
-현재 R-09의 `매출`은 완료 예약의 `price_snapshot_krw` 합계입니다. R-15 구현 전에 다음 중 하나를 명시적으로 승인해야 합니다.
+R-15 구현 전 R-09의 `매출`은 완료 예약의 `price_snapshot_krw` 합계였습니다. 당시 아래 대안을 검토해 A안을 승인·구현했습니다. 현재 계약은 상단과 구현·release 결과를 따릅니다.
 
 ### A안 - 실제 금액만 매출로 집계 (정확성 우선 권장)
 - 완료 + `actual_price_krw is not null`만 실제 매출과 실제 객단가에 포함합니다.
@@ -191,14 +204,14 @@
 - 기존 예약 actual_price backfill 0건, 실제 고객·예약 데이터 변경 없음
 
 ## 남은 리스크
-- 인증 후 owner/staff live UI 재렌더와 Production authenticated stats 조회 smoke는 미완전
+- Preview owner 입력 UI는 아래 2026-09-11 기록에서 검증했습니다. staff UI와 Production authenticated stats는 미검증입니다.
 - Production connector history version은 local filename `20260716151141`과 다른 apply-time version을 사용
 - Production 첫 apply에서 stats returns table에 `repeat_rate` 누락이 있었고 즉시 follow-up migration으로 교정함
 
 ## 2026-09-11 금액 입력 사용성 수정 — 로컬·Preview 검증 완료
 
 ### 범위와 설계 예외
-- 기준: 최신 `origin/main@120f0c7`을 fast-forward한 `codex/actual-price-input-ux`, 전용 워크트리 `hairCRMvibes-actual-price-input-ux`.
+- 당시 기준: `origin/main@120f0c7`을 fast-forward한 `codex/actual-price-input-ux`, 전용 워크트리 `hairCRMvibes-actual-price-input-ux`.
 - 고객 상세 `/customers/[id]`의 실제 시술금액 수정창에 한정합니다. `price_snapshot_krw`, 저장 RPC, 권한, 횟수권 원장 및 DB 스키마는 바꾸지 않습니다.
 - 사용자 승인 계획에 따라 기존 레이아웃·문구·저장 흐름을 유지하는 버그 수정으로 `AGENTS.md` §5의 micro-fix 예외를 적용했습니다. `pencil-hairshopcrm.pen` 변경은 없습니다. Pencil Desktop 동시 편집을 수행하지 않았습니다.
 
@@ -236,7 +249,13 @@
 - [검증 기록과 전후 화면](../../output/playwright/actual-price-input-ux/preview-20260911/preview-verification.md), [구조화된 배포·검증 결과](../../output/playwright/actual-price-input-ux/preview-20260911/deployment.json).
 - 실기기 키보드·IME·standalone 및 staff 별도 로그인은 이 결과에 포함하지 않습니다. 추가 코드·의존성·DB 구조 변경은 없습니다.
 
-### 남은 범위와 롤백
-- 코드·회귀 테스트·로컬 및 Preview 검증 근거를 작업 브랜치에 전달합니다. 이 입력 수정의 운영 배포·병합·DB 구조 변경은 수행하지 않았습니다.
+### 당시 남은 범위와 롤백 (2026-09-11)
+- 당시에는 작업 브랜치의 로컬·Preview 검증까지만 수행했습니다. 이후 PR #39가 2026-09-21 병합됐고 Production 배포 success가 확인됐습니다. DB 구조는 입력 수정에서 변경하지 않았습니다.
 - 실제 iOS/Android 키보드·IME 조합·standalone 동작, 로컬 프로덕션 preload 경고 원인, 운영 owner/staff 쓰기는 후속 검증입니다. 기존 PWA 설정을 바꾸지 않아 전체 PWA 회귀는 이번 범위에 포함하지 않았습니다.
 - 롤백은 이번 고객 상세 코드·테스트·테스트 스크립트·문서 변경만 역패치합니다. 최신 main 반영과 기존 사용자 작업, `.pen`, DB 데이터는 유지합니다.
+
+## 입력 수정 병합·배포 확인 (2026-09-22)
+
+PR [#39](https://github.com/dongseoklee1541/hairCRMvibes/pull/39)는 검토 head `6b97caa40a2a6ce37f536397d6b834cc0e9f4257`에서 2026-09-21 02:39:55 KST `8f8e45cc4cd85850bbda6b7e1e34344a2173f2ea`로 병합됐습니다. PR head 및 merge CI success, merge SHA의 GitHub Production deployment `6555714417` success를 2026-09-22 다시 확인했습니다. 상세 URL·시각은 [문서 점검 기록](./documentation-audit-2026-09-22.md)을 따릅니다.
+
+따라서 입력 수정은 로컬/Preview에만 남은 작업이 아닙니다. 이 확인은 기존 테스트를 다시 실행하거나 canonical alias·운영 쓰기·새 로그인·실기기 검증을 수행한 결과는 아닙니다. 사용자 보류와 미검증 범위는 위 현재 상태를 유지합니다.
