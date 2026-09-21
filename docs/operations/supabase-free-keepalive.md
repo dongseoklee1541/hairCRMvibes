@@ -38,9 +38,11 @@ openssl rand -hex 32
 [`scripts/haircrm-keychain`](./local-keychain-secrets.md)의 고정 alias와 비출력 명령으로 접근합니다.
 로컬 Keychain 사본은 Vercel Production 환경변수를 대체하는 원본이 아닙니다.
 
-## Production 적용 상태 (2026-07-12)
+## Production 적용 이력 (2026-07-12)
 
-- release 기준은 `main@16157f89976e41f5218377712d5d77026bc14417`, Vercel deployment는 `5z5MKHSAyxtLrRt6ACF3UZtLBGh7`입니다.
+아래 적용·사전 확인 절은 2026-07-12~13 당시 기록입니다. 현재 배포·env·Auth URL·Cron 상태는 관련 작업 재개 시 확인합니다. R-10 후속 적용·잔여 gate는 [R-10 상세](../roadmap/R-10-role-management.md)를 따릅니다.
+
+- 당시 release 기준은 `main@16157f89976e41f5218377712d5d77026bc14417`, Vercel deployment는 `5z5MKHSAyxtLrRt6ACF3UZtLBGh7`입니다.
 - 자동 Production build는 성공했지만 deployment가 `Staged` 상태이고 custom domain 할당이 생략돼, Dashboard에서 정확한 merge SHA를 Promote했습니다. 현재 canonical은 `https://hair-cr-mvibes.vercel.app`입니다.
 - Vercel Production에 `SUPABASE_SECRET_KEY`, `CRON_SECRET`이 Sensitive 변수로 존재함을 이름과 scope만 확인했습니다. 실제 값은 열거나 출력하지 않았습니다.
 - Cron Jobs는 Enabled이며 `/api/cron/supabase-keepalive`가 `17 3 * * *`로 등록됐습니다.
@@ -52,7 +54,7 @@ openssl rand -hex 32
 - Vercel Project `hair-cr-mvibes`에서 `SUPABASE_SECRET_KEY`가 `Sensitive / Production`으로 존재함을 값 조회 없이 다시 확인했습니다.
 - R-10의 `GET /api/staff`, `POST /api/staff/invitations`만 Auth 사용자 식별/초대를 위해 Admin client를 사용합니다. 응답에는 마스킹된 email만 포함하고 raw email·token·secret은 기록하지 않습니다.
 - `PATCH /api/staff/[userId]/role`은 caller access token과 owner-only `change_staff_role` RPC만 사용합니다.
-- Supabase Auth Site URL은 현재 `http://localhost:3000`, Redirect URL은 0개로 확인됐습니다. canonical `/invite/accept` 허용 전에는 Production 초대 수락 링크를 완료할 수 없으며, 외부 Auth URL 설정은 별도 release gate입니다.
+- 당시 Supabase Auth Site URL은 `http://localhost:3000`, Redirect URL은 0개로 확인됐습니다. canonical `/invite/accept` 허용 전에는 Production 초대 수락 링크를 완료할 수 없으며, 외부 Auth URL 설정은 별도 release gate입니다.
 - 전용 Preview Supabase와 Vercel Preview 공개 URL/key 격리는 R-12에서 완료됐지만, R-10 Admin route용 Preview server secret은 이번 범위에서 추가·변경·검증하지 않았습니다. 실제 Preview/Production 초대는 모두 금지합니다.
 
 ## 배포 후 검증

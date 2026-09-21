@@ -1,14 +1,17 @@
 # R-11 알림 자동화 선행 설계
 
 ## 상태
-- Design Ready (PR #31 merged; implementation deferred)
+- Design Ready (설계 완료 · 구현 보류)
 - 우선순위: P2
 - 설계 브랜치: `codex/r11-notification-design`
 - 최초 기준: `origin/codex/r10-role-management@0d14192b665779cf7476a2c77fa7ac4985bfb45b` (이력)
 - R-10 최종 병합 기준: PR #26 merge `main@6cfb71e88cbe4bbfd3a8469a3c5b4487a3ccb449`
-- 현재 설계 기준: PR #31 merge `origin/main@93c94bbac22d263cdca5fcb6ab0ee6b7e7295523`
+- 병합된 설계 기준: PR #31 merge `origin/main@93c94bbac22d263cdca5fcb6ab0ee6b7e7295523`
 - 구현 재개 조건: 최신 `main`·provider·법령·요금제·예약 계약을 다시 감사하고 별도 R-11 Implementation Plan을 승인
-- 최종 업데이트: 2026-07-16
+- 설계 결정일: 2026-07-16
+- 최종 문서 점검: 2026-09-22 (구현 보류 유지; provider·외부 설정 재조회 없음)
+
+2026-09-22 저장소 점검에서 R-11 구현 추가 근거는 확인되지 않았습니다. 아래 설계의 provider·법령·요금제 설명은 당시 검토이며 현재 서비스 상태나 법적 판단이 아닙니다. 재개 전 필요한 외부 계약을 확인하되 이 문서 점검을 구현 재개 승인으로 취급하지 않습니다. 이후 재개 요청에 구체적인 구현 범위의 승인이 포함되면 AGENTS.md에 따라 같은 단계를 다시 승인받지 않습니다.
 
 ## 2026-07-16 결정 기록 — 구현 보류와 첫 실행 단위
 - PR #31은 merge commit `93c94bbac22d263cdca5fcb6ab0ee6b7e7295523`으로 `main`에 병합됐습니다.
@@ -375,6 +378,9 @@ owner 전용 `/settings`는 staff가 접근할 수 없으므로 staff의 자기 
 - 설계 당시 R-11 고유 커밋만 `origin/main@d8e6e8a` 위로 재배치해 공유 SSOT를 동기화했고, 이후 PR #31 merge `main@93c94bb`로 반영했습니다. R-10의 `main` 병합은 충족됐으며 R-11 구현은 현재 보류 상태입니다.
 
 ## 구현 예상 범위 — 별도 승인 필요
+
+아래 R-11 경로는 설계상의 생성/변경 후보이며 아직 존재하는 파일 목록이 아닙니다. dry-run과 live 범위를 함께 나열한 원설계이므로 재개 시 승인된 단계에 필요한 파일만 선택합니다.
+
 - `supabase/migrations/<timestamp>_r11_notification_automation.sql`
 - `supabase/rollbacks/<timestamp>_r11_notification_automation.down.sql`
 - `schema.sql`

@@ -96,7 +96,9 @@ scripts/haircrm-keychain cron-request \
 허용 URL은 canonical `https://hair-cr-mvibes.vercel.app/api/cron/supabase-keepalive` 하나뿐이며 query, fragment, userinfo, 다른 host/path는 거부합니다. proxy와 TLS key logging 환경변수를 제거하고 `curl -v`, trace, redirect, 사용자 지정 header 옵션은 제공하지 않습니다.
 응답 본문은 출력하지 않고 HTTP `200`, `application/json` content type, 정확한 `{"ok":true}` payload를 모두 만족할 때만 성공으로 처리합니다. 본문은 1KiB로 제한한 0600 임시 파일에서 메모리로 읽어 검증한 뒤 즉시 삭제합니다. 향후 `404`가 발생하면 새 Production deployment가 `Staged` 상태로 canonical에 Promote되지 않았는지 먼저 확인합니다.
 
-## 최신 Production 검증 (2026-07-12)
+## Production 검증 이력 (2026-07-12)
+
+이 절은 당시 결과이며 현재 비밀·접근 권한·배포 상태를 보증하지 않습니다. 관련 운영 점검이 승인됐을 때 필요한 명령만 재실행합니다. 문서 점검을 위해 Keychain을 읽거나 self-test 항목을 생성하지 않습니다.
 
 - wrapper commit `c8e2307`은 PR #13을 통해 `main@16157f89976e41f5218377712d5d77026bc14417`에 merge됐습니다.
 - `self-test` 공개 canary 10회 반복 읽기와 정확한 cleanup을 통과했습니다.

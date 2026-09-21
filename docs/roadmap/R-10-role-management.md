@@ -1,13 +1,23 @@
 # R-10 Role Management
 
 ## 상태
-- In Progress (PR #26 merge·live migration·Production release 완료; Auth URL과 초대 enablement blocker 잔여)
+- In Progress (Auth URL·보안 경고·owner 검증 잔여)
 - 구현 브랜치: `codex/r10-role-management`
 - 최초 구현 기준: `origin/main@b2258844642fae0d7a5f07798a95c9a3091cd502`
 - 구현 commit: `fccf3753856abbe0c254813eafd48bcbfffafcb0`
 - PR: [#26](https://github.com/dongseoklee1541/hairCRMvibes/pull/26) merged
-- 최신 Production application 기준: `origin/main@6cfb71e88cbe4bbfd3a8469a3c5b4487a3ccb449`
-- 최종 업데이트: 2026-07-14
+- R-10 당시 Production release 기준: `origin/main@6cfb71e88cbe4bbfd3a8469a3c5b4487a3ccb449`
+- 마지막 원격 검증 기록: 2026-07-14
+- 최종 문서 점검: 2026-09-22 (원격 Auth/flag/advisor 재조회 없음)
+
+## 현재 판정과 재개 조건
+
+- 구현·PR #26 병합·Preview/Production migration·배포는 아래 2026-07-14 release 근거로 완료입니다. 초기 인덱스의 `live 미적용`은 이 release 이전 기록입니다.
+- Auth URL·advisor hardening·authenticated owner smoke를 해소했다는 후속 근거가 없어 In Progress를 유지합니다. 초대 활성화 gate는 닫혀 있습니다.
+- `R10_INVITATIONS_ENABLED=false`, dashboard sign-in/CLI token 부재, 경고 건수, Pencil transport 실패는 **당시 관찰**입니다. 이번 점검에서 현재 지속 여부를 확인하지 않았습니다. 필요한 후속 작업이 승인됐을 때 해당 환경만 재확인하고, 과거 장애 때문에 다른 허용된 문서·코드 작업을 중단하지 않습니다.
+- 다음 행동: 승인된 범위에서 Auth 설정·advisor·접근 경로 재확인 → 필요한 변경 계획 → 합성 owner 검증. 실제 초대·계정·역할 변경과 flag 활성화는 승인된 대상/환경에 한정합니다. [운영 runbook](../operations/r10-invitation-ledger.md)을 따릅니다.
+
+이하 구현·검증·release 절의 환경값·hash·접근 실패는 2026-07-14 당시 기록입니다.
 
 ## 목표
 - owner가 앱에서 직원 초대 상태를 확인하고 기존 `profiles.role`을 안전하게 변경합니다.
@@ -44,7 +54,7 @@
 - before 캡처는 `output/playwright/r10-role-management/20260713_r10_settings_before_390x844.png`와 `20260713_r10_settings_before_360x800.png`입니다.
 - after 캡처는 같은 디렉터리의 `20260713_r10_settings_after_*`, `20260713_r10_team_after_*`, `20260713_r10_role_confirmation_after_390x844.png`, `20260713_r10_forbidden_after_390x844.png`입니다.
 - 최신 main과 통합한 Pencil node는 직원 목록 `v5otbf`, 초대 상태 `ckGvh`, 역할 변경 `CaBNI`, 시스템 상태 `PtvkE`이며 네 node 모두 layout problem 0건입니다. R-12 설정 `rYt9h`와 `DataBackupCard` `mVQYv`, R-14 Home Before `U1DsdP`와 After `e8e2Nz`도 같은 SSOT에 보존했고 각각 layout problem 0건입니다. 파일 SHA-1은 최초 `9b4f4b0ad1b07b92b10d296aefd109cfd72597ef`, R-10 설계 저장 `c2dff27286addba3c990040bd68a06bcbe9be51a`, R-12 통합·초안 정리 `140b7833a1a1eec4a0a93843919fbde13722a8e3`, 최신 R-14 main 충돌 해소 `a2019b2e78c386bc589f0003de090e051b0d358b` 순으로 변경됐습니다.
-- A′ 추가 UI 변경은 레이아웃·정보구조가 아니라 `in_progress`/`unknown` 안전 문구 보강이므로 별도 Pencil 편집을 하지 않는 micro-copy 예외로 승인됐습니다. 디스크의 `.pen` SHA-1은 `a2019b2e78c386bc589f0003de090e051b0d358b`로 불변이지만, 이번 세션의 Pencil 앱 transport 연결 실패로 node/layout read-only 재검증은 blocked입니다. 연결이 복구되면 기존 R-10 node를 다시 읽기 전용 검증합니다.
+- A′ 추가 UI 변경은 레이아웃·정보구조가 아니라 `in_progress`/`unknown` 안전 문구 보강이므로 별도 Pencil 편집을 하지 않는 micro-copy 예외로 승인됐습니다. 디스크의 `.pen` SHA-1은 `a2019b2e78c386bc589f0003de090e051b0d358b`로 불변이지만, 이번 세션의 Pencil 앱 transport 연결 실패로 node/layout read-only 재검증은 blocked입니다. 후속 설계 작업에 필요할 때 연결과 해당 R-10 node를 다시 읽기 전용 확인합니다. 이 과거 장애를 현재 설계 차단으로 자동 승계하지 않습니다.
 
 ## 검증 결과
 - PostgreSQL 17 disposable DB에서 forward migration 13/13과 R-07/R-08/R-09/R-10 회귀를 통과했습니다. migration replay DB와 `schema.sql` replay DB의 R-10 semantic catalog diff는 없고, `20260713143746` ledger migration 657행은 `schema.sql` 마지막 657행과 byte-identical입니다.
@@ -76,7 +86,7 @@
 - stale `claimed`와 Admin API의 timeout/모호한 오류는 `unknown`으로 유지해 자동 takeover/reinvite를 금지합니다. `unknown`은 active unique index를 계속 점유하며 자동 만료·재전송·직접 UPDATE/DELETE로 해제하지 않습니다. 운영자는 비식별 ledger 상태와 Auth user/profile/동일 request provisioning audit을 대조하고 세 증거가 일치할 때만 reconcile로 `provisioned` 처리합니다. 증거가 없거나 상충하면 초대 route를 중지하고 incident로 유지하며, 감사 가능한 별도 resolution 계약이 승인되기 전에는 임의 해제하지 않습니다.
 - HMAC key를 겸하는 `SUPABASE_SECRET_KEY`가 회전하면 기존 active fingerprint와 새 fingerprint가 달라져 at-most-once 장벽을 우회할 수 있습니다. 회전은 초대 route `503 + no-store` 선중지 → in-flight 0 → 기존 key의 active `claimed`/`auth_succeeded`/`unknown` 0 확인 → 모든 server instance secret 교체·재배포 → 새 key smoke와 old active 0 재확인 → route 재개의 순서로만 진행합니다. 기존 fingerprint를 재계산·삭제하지 않습니다.
 
-## 현재 release blocker
+## 미해결 gate 기록 (2026-07-14, 현재 설정 재확인 필요)
 - Supabase Auth Site/Redirect URL은 dashboard 인증 및 management access token 부재로 설정하지 못했습니다. canonical invite accept 경로를 허용하기 전에는 초대 route를 활성화하지 않습니다.
 - Preview/Production advisor의 R-10 `SECURITY DEFINER` execute WARN 6건과 Production GraphQL exposure WARN 1건은 권한 경계를 바꾸지 않고 별도 hardening 검토로 남겨 둡니다. 이 상태에서 `R10_INVITATIONS_ENABLED=true`로 전환하지 않습니다.
 - authenticated owner의 실제 로그인·초대·역할 변경 smoke는 실제 side effect 방지 범위 때문에 수행하지 않았습니다. Auth URL 설정과 advisor hardening 후 별도 승인된 synthetic/운영 검증이 필요합니다.
