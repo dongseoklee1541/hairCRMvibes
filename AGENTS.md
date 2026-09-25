@@ -1,6 +1,6 @@
 # AGENTS.md — Hair CRM 작업 규칙
 
-이 파일은 저장소 전체의 지속 규칙입니다. 하위 디렉터리에 더 구체적인 `AGENTS.md` 또는 `AGENTS.override.md`가 있으면 함께 확인합니다. 전역 지침의 사용자 설정 보존·파괴적 삭제·워크트리 정리·GitHub 인증 fallback·모델 선택·위임 규칙은 그대로 적용하며 여기서 반복하지 않습니다.
+이 파일은 저장소 전체의 지속 규칙입니다. 하위 디렉터리에 더 구체적인 `AGENTS.md` 또는 `AGENTS.override.md`가 있으면 함께 확인합니다. 전역 지침의 사용자 설정 보존·파괴적 삭제·워크트리 정리·모델 선택·위임 규칙은 그대로 적용하며 여기서 반복하지 않습니다. GitHub 게시 경로는 아래 §2.5를 따릅니다.
 
 ## 0) 문서 역할과 시작점
 
@@ -46,6 +46,12 @@
 - 같은 checkout을 다른 세션이 수정 중이면 겹치지 않는 읽기 작업을 하거나 승인 범위의 별도 worktree/branch에서 구현합니다. 업무별 branch를 합칠 때는 계획에 이유를 기록합니다.
 - 병렬 작업이 승인된 경우 파일 소유권·서버 포트·출력 경로를 분리합니다. 다른 작업의 서버를 종료하거나 같은 `.next`에 동시에 쓰지 않습니다.
 - Pencil Desktop의 활성 문서는 공유됩니다. worktree가 달라도 동시 편집하지 않습니다.
+
+### 2.5 GitHub 게시 도구와 재인증
+
+전역 AGENTS.md의 `GitHub Publishing: CLI First`를 따릅니다. Git은 `git`, PR 생성·조회·병합은 `gh`를 우선하며, 인증 실패 시 사용자 재인증을 요청하고 브라우저·connector로 자동 대체하지 않습니다. 게시 승인과 base/head·CI·병합 가능 상태 확인은 유지합니다.
+
+이 저장소에 로컬 계정 매핑이 설정돼 있으면 PR 작업은 `git gh-account pr ...`, 계정·권한 확인은 `git gh-account check`를 사용합니다. 호스트 전체의 `gh auth switch`로 다른 저장소의 계정을 바꾸지 않습니다. 네트워크 제한을 인증 만료로 단정하지 않으며 최초 로그인·Git helper 연결·복구는 [저장소별 GitHub 계정 절차](docs/operations/github-account-workflow.md)를 따릅니다.
 
 ## 3) 코드·환경 기준
 

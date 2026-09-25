@@ -1,0 +1,179 @@
+#!/usr/bin/env python3
+"""저장소별 gh 프로필과 Git HTTPS 인증을 연결하는 로컬 실행 도구."""
+
+import json
+import os
+from pathlib import Path
+import re
+import shlex
+import subprocess
+import sys
+from urllib.parse import urlsplit
+
+
+class AccountError(Exception):
+    pass
+
+
+def git_value(*args):
+    result = subprocess.run(["git", *args], capture_output=True, text=True)
+    if result.returncode:
+        raise AccountError("저장소별 계정 설정을 읽을 수 없습니다. 운영 문서의 설정 절차를 확인하세요.")
+    return result.stdout.strip()
+
+
+def context():
+    root = Path(git_value("rev-parse", "--show-toplevel")).resolve()
+    account = git_value("config", "--local", "--get", "haircrm.githubAccount")
+    repository = git_value("config", "--local", "--get", "haircrm.githubRepository")
+    profile = Path(git_value("config", "--local", "--get", "haircrm.ghConfigDir")).expanduser()
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9-]{0,38}", account):
+        raise AccountError("GitHub 계정 이름 설정이 올바르지 않습니다.")
+    if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repository):
+        raise AccountError("GitHub 저장소 설정이 올바르지 않습니다.")
+    default_profile = Path(os.environ.get("XDG_CONFIG_HOME", str(Path.home() / ".config"))) / "gh"
+    if not profile.is_absolute() or profile.resolve() == default_profile.resolve() or profile.resolve().is_relative_to(root):
+        raise AccountError("gh 프로필은 저장소 밖의 별도 절대 경로여야 합니다. 기본 프로필은 사용할 수 없습니다.")
+    origin = urlsplit(git_value("remote", "get-url", "origin"))
+    if (origin.scheme != "https" or origin.netloc != "github.com" or origin.query or origin.fragment
+            or origin.path.lstrip("/").removesuffix(".git").lower() != repository.lower()):
+        raise AccountError("origin이 지정된 GitHub HTTPS 저장소와 다릅니다. 자동 변경하지 않습니다.")
+    if any(os.environ.get(key) for key in ("GH_TOKEN", "GITHUB_TOKEN")):
+        raise AccountError("GH_TOKEN/GITHUB_TOKEN이 전용 프로필을 덮어쓸 수 있습니다. 해당 명령의 환경에서 해제하세요.")
+    env = os.environ.copy()
+    env.update(GH_CONFIG_DIR=str(profile), GH_HOST="github.com", GH_REPO=repository, GH_PROMPT_DISABLED="1")
+    for key in ("GH_DEBUG", "DEBUG"):
+        env.pop(key, None)
+    return account, repository, profile, env
+
+
+def login_hint(profile):
+    return (f"GH_CONFIG_DIR={shlex.quote(str(profile))} gh auth login "
+            "--hostname github.com --git-protocol https --web")
+
+
+def api(env, endpoint, query):
+    try:
+        result = subprocess.run(["gh", "api", endpoint, "--jq", query], env=env,
+                                capture_output=True, text=True, timeout=20)
+    except subprocess.TimeoutExpired as exc:
+        raise AccountError("GitHub 조회가 시간 초과됐습니다. 연결 상태를 확인하세요. 인증 만료로 단정하지 않습니다.") from exc
+    if result.returncode:
+        # 원본 오류/HTTP 디버그 내용을 출력하지 않고 실패 종류만 전달합니다.
+        error = result.stderr.lower()
+        if "401" in error or "bad credentials" in error or "gh auth login" in error:
+            raise AccountError("인증 확인이 필요합니다. 네트워크가 가능한 환경에서 전용 프로필로 재인증하세요.")
+        if "403" in error or "404" in error:
+            raise AccountError("저장소 접근이 거부됐습니다. 계정·저장소 권한·SSO 상태를 확인하세요.")
+        raise AccountError("GitHub 조회 실패: DNS·네트워크·sandbox 상태를 먼저 확인하세요. 인증 만료로 단정하지 않습니다.")
+    return result.stdout.strip()
+
+
+def check(account, repository, profile, env):
+    if not (profile / "hosts.yml").is_file():
+        raise AccountError(f"전용 프로필에 최초 로그인이 필요합니다. {account} 계정으로 직접 실행하세요:\n{login_hint(profile)}")
+    actual = api(env, "user", ".login")
+    if actual.lower() != account.lower():
+        raise AccountError(f"전용 프로필의 실제 로그인 계정이 {account}와 다릅니다. 작업을 중단했습니다.")
+    if api(env, f"repos/{repository}", ".permissions.push") != "true":
+        raise AccountError(f"{account} 계정에 대상 저장소의 쓰기 권한이 없습니다. 권한을 자동 변경하지 않습니다.")
+
+
+def credential_request(account, repository):
+    payload = sys.stdin.read(16385)
+    if len(payload) > 16384:
+        raise AccountError("Git credential 요청이 너무 큽니다.")
+    fields = dict(line.split("=", 1) for line in payload.splitlines() if "=" in line)
+    if (fields.get("protocol") != "https" or fields.get("host") != "github.com"
+            or fields.get("path", "").removesuffix(".git").lower() != repository.lower()
+            or fields.get("username", account).lower() != account.lower()):
+        raise AccountError("Git credential 요청의 호스트·저장소·계정이 설정과 다릅니다.")
+    return payload
+
+
+def enable_git(account):
+    common = Path(git_value("rev-parse", "--git-common-dir")).resolve()
+    installed = common / "haircrm-account" / "gh-account"
+    if Path(__file__).resolve() != installed or not installed.is_file():
+        raise AccountError("설치된 명령인 git gh-account enable-git으로 실행하세요.")
+    settings = {
+        "credential.https://github.com.helper": ["", "!" + shlex.quote(str(installed)) + " credential-helper"],
+        "credential.https://github.com.useHttpPath": ["true"],
+        "credential.https://github.com.username": [account],
+    }
+    previous = {}
+    for key in settings:
+        result = subprocess.run(["git", "config", "--local", "--get-all", key], capture_output=True, text=True)
+        if result.returncode not in (0, 1):
+            raise AccountError("기존 Git credential 설정을 확인할 수 없습니다.")
+        previous[key] = result.stdout.splitlines()
+    backup = installed.parent / "credential-config.before.json"
+    if not backup.exists():
+        with backup.open("x", encoding="utf-8") as stream:
+            os.chmod(backup, 0o600)
+            json.dump(previous, stream, indent=2)
+            stream.write("\n")
+    for key, values in settings.items():
+        result = subprocess.run(["git", "config", "--local", "--replace-all", key, values[0]], capture_output=True)
+        if result.returncode:
+            raise AccountError("Git credential 설정 저장에 실패했습니다. 백업을 보존하고 해당 키를 확인하세요.")
+        for value in values[1:]:
+            result = subprocess.run(["git", "config", "--local", "--add", key, value], capture_output=True)
+            if result.returncode:
+                raise AccountError("Git helper 추가에 실패했습니다. 백업을 보존하고 해당 키를 확인하세요.")
+    print("Git HTTPS 인증도 전용 계정에 연결했습니다. 기본 gh 프로필은 변경하지 않았습니다.")
+
+
+def main():
+    args = sys.argv[1:]
+    helper = args[:1] == ["credential-helper"]
+    try:
+        if helper and args[1:] in (["store"], ["erase"]):
+            # 저장·삭제는 gh 로그인/로그아웃에서만 수행합니다.
+            return 0
+        if not args or args == ["--help"]:
+            print("사용법: git gh-account check | git gh-account enable-git | git gh-account pr <gh pr 인자>\n"
+                  "또는: ./scripts/gh-account check | ./scripts/gh-account pr <인자>\n"
+                  "credential-helper는 Git 내부 전용이며 직접 실행하지 마세요.")
+            return 0
+        if helper and args != ["credential-helper", "get"]:
+            return 0
+        if not helper and args not in (["check"], ["enable-git"]) and args[0] != "pr":
+            raise AccountError("check, enable-git, pr 명령만 지원합니다. 계정 전환·토큰 조회는 지원하지 않습니다.")
+        account, repository, profile, env = context()
+        payload = credential_request(account, repository) if helper else None
+        if args[0] == "pr":
+            for arg in args[1:]:
+                if arg == "--repo" or arg.startswith("--repo=") or arg.startswith("-R") or arg in ("--web", "-w"):
+                    raise AccountError("저장소 재지정과 브라우저 실행 옵션은 허용하지 않습니다.")
+                if re.match(r"https?://", arg):
+                    url = urlsplit(arg)
+                    if (url.scheme != "https" or url.netloc != "github.com"
+                            or not url.path.lstrip("/").lower().startswith(repository.lower() + "/pull/")):
+                        raise AccountError("다른 저장소의 PR URL은 사용할 수 없습니다.")
+        check(account, repository, profile, env)
+        if args == ["enable-git"]:
+            enable_git(account)
+            return 0
+        if args == ["check"]:
+            print(json.dumps({"account": account, "repository": repository,
+                              "profile": str(profile), "push": True}, ensure_ascii=False))
+            return 0
+        if helper:
+            # gh가 자격증명을 Git에 직접 전달합니다. 이 도구는 토큰을 읽거나 저장하지 않습니다.
+            result = subprocess.run(["gh", "auth", "git-credential", "get"], env=env, input=payload, text=True)
+            if result.returncode:
+                print("quit=true\n")
+            return result.returncode
+        return subprocess.call(["gh", *args, "--repo", repository], env=env)
+    except (AccountError, OSError) as error:
+        if helper:
+            # 다른 helper나 터미널 입력으로 잘못된 계정을 재사용하지 않습니다.
+            print("quit=true\n")
+        message = str(error) if isinstance(error, AccountError) else "필요한 실행 파일 또는 경로에 접근할 수 없습니다."
+        print(f"gh-account: {message}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
