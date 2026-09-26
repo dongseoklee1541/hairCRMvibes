@@ -1,21 +1,22 @@
 # R-10 Role Management
 
 ## 상태
-- In Progress (Auth URL·보안 경고·owner 검증 잔여)
+- In Progress (보안 경고·owner 검증 잔여)
 - 구현 브랜치: `codex/r10-role-management`
 - 최초 구현 기준: `origin/main@b2258844642fae0d7a5f07798a95c9a3091cd502`
 - 구현 commit: `fccf3753856abbe0c254813eafd48bcbfffafcb0`
 - PR: [#26](https://github.com/dongseoklee1541/hairCRMvibes/pull/26) merged
 - R-10 당시 Production release 기준: `origin/main@6cfb71e88cbe4bbfd3a8469a3c5b4487a3ccb449`
-- 마지막 원격 검증 기록: 2026-07-14
-- 최종 문서 점검: 2026-09-22 (원격 Auth/flag/advisor 재조회 없음)
+- 최초 release 검증 기록: 2026-07-14
+- 최신 원격 설정·catalog 점검: 2026-09-26 ([점검 결과와 변경안](./security-audit-2026-09-26.md)); 실제 owner/staff smoke는 미검증; 2026-09-27 Vercel Production 설정 flag=false 확인
 
 ## 현재 판정과 재개 조건
 
 - 구현·PR #26 병합·Preview/Production migration·배포는 아래 2026-07-14 release 근거로 완료입니다. 초기 인덱스의 `live 미적용`은 이 release 이전 기록입니다.
-- Auth URL·advisor hardening·authenticated owner smoke를 해소했다는 후속 근거가 없어 In Progress를 유지합니다. 초대 활성화 gate는 닫혀 있습니다.
-- `R10_INVITATIONS_ENABLED=false`, dashboard sign-in/CLI token 부재, 경고 건수, Pencil transport 실패는 **당시 관찰**입니다. 이번 점검에서 현재 지속 여부를 확인하지 않았습니다. 필요한 후속 작업이 승인됐을 때 해당 환경만 재확인하고, 과거 장애 때문에 다른 허용된 문서·코드 작업을 중단하지 않습니다.
-- 다음 행동: 승인된 범위에서 Auth 설정·advisor·접근 경로 재확인 → 필요한 변경 계획 → 합성 owner 검증. 실제 초대·계정·역할 변경과 flag 활성화는 승인된 대상/환경에 한정합니다. [운영 runbook](../operations/r10-invitation-ledger.md)을 따릅니다.
+- Auth URL 적용·재조회는 완료했고 advisor hardening·authenticated owner smoke가 남아 In Progress를 유지합니다. 초대 활성화 gate는 닫혀 있습니다.
+- 2026-09-26 관리 화면과 catalog SELECT에서 양 환경의 Site URL=`http://localhost:3000`, Redirect URL 0개, R-10 6개 함수의 본문·ACL·owner 검사 계약과 private 원장의 직접 접근 차단을 확인했습니다. authenticated EXECUTE 경고를 없애려고 정상 owner RPC 권한을 일괄 회수하지 않습니다. 이후 사용자 승인으로 환경별 Auth URL을 적용하고 새로고침 후 반영을 확인했습니다. 변경 전 점검과 적용 후 값은 위 점검 기록에서 구분합니다.
+- `R10_INVITATIONS_ENABLED=false`는 2026-09-27 Vercel Production 설정에서 재확인했습니다. 기존 배포 환경 snapshot은 미검증입니다. Pencil transport 실패는 **과거 관찰**이며 현재 지속 여부를 확인하지 않았습니다. Supabase 관리 접근은 사용자 로그인 후 가능해졌습니다. CLI의 대상 프로젝트 접근 문제와 관리 화면 접근을 구분하고 과거 장애를 현재 모든 경로의 실패로 간주하지 않습니다.
+- 다음 행동: 잔여 운영 정책 판단 → 승인된 합성 owner 검증. 2026-09-27 ACL migration 양 환경 적용·권한 검증·대상 Advisor 경고 해소는 완료했습니다. 완료된 Auth URL 적용은 반복하지 않습니다. 실제 초대·계정·역할 변경과 flag 활성화는 승인된 대상/환경에 한정합니다. [운영 runbook](../operations/r10-invitation-ledger.md)을 따릅니다.
 
 이하 구현·검증·release 절의 환경값·hash·접근 실패는 2026-07-14 당시 기록입니다.
 
@@ -86,7 +87,7 @@
 - stale `claimed`와 Admin API의 timeout/모호한 오류는 `unknown`으로 유지해 자동 takeover/reinvite를 금지합니다. `unknown`은 active unique index를 계속 점유하며 자동 만료·재전송·직접 UPDATE/DELETE로 해제하지 않습니다. 운영자는 비식별 ledger 상태와 Auth user/profile/동일 request provisioning audit을 대조하고 세 증거가 일치할 때만 reconcile로 `provisioned` 처리합니다. 증거가 없거나 상충하면 초대 route를 중지하고 incident로 유지하며, 감사 가능한 별도 resolution 계약이 승인되기 전에는 임의 해제하지 않습니다.
 - HMAC key를 겸하는 `SUPABASE_SECRET_KEY`가 회전하면 기존 active fingerprint와 새 fingerprint가 달라져 at-most-once 장벽을 우회할 수 있습니다. 회전은 초대 route `503 + no-store` 선중지 → in-flight 0 → 기존 key의 active `claimed`/`auth_succeeded`/`unknown` 0 확인 → 모든 server instance secret 교체·재배포 → 새 key smoke와 old active 0 재확인 → route 재개의 순서로만 진행합니다. 기존 fingerprint를 재계산·삭제하지 않습니다.
 
-## 미해결 gate 기록 (2026-07-14, 현재 설정 재확인 필요)
+## 미해결 gate 기록 (2026-07-14 이력; 최신 판정은 상단 점검 기록)
 - Supabase Auth Site/Redirect URL은 dashboard 인증 및 management access token 부재로 설정하지 못했습니다. canonical invite accept 경로를 허용하기 전에는 초대 route를 활성화하지 않습니다.
 - Preview/Production advisor의 R-10 `SECURITY DEFINER` execute WARN 6건과 Production GraphQL exposure WARN 1건은 권한 경계를 바꾸지 않고 별도 hardening 검토로 남겨 둡니다. 이 상태에서 `R10_INVITATIONS_ENABLED=true`로 전환하지 않습니다.
 - authenticated owner의 실제 로그인·초대·역할 변경 smoke는 실제 side effect 방지 범위 때문에 수행하지 않았습니다. Auth URL 설정과 advisor hardening 후 별도 승인된 synthetic/운영 검증이 필요합니다.
