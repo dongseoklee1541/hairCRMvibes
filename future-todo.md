@@ -12,6 +12,8 @@
 - PR #39 금액 입력 수정은 병합·Production 배포 성공 기록 확인. PR #40 Astra·브라우저 작업 지침도 병합 완료입니다. 상세 근거와 확인 한계는 [문서 점검 기록](./docs/roadmap/documentation-audit-2026-09-22.md)을 따릅니다.
 - 2026-09-26 Supabase Production·Preview의 Auth URL·Advisor와 R-10 함수/권한/RLS catalog를 읽기 전용 확인했습니다. [보안 점검 결과와 변경안](./docs/roadmap/security-audit-2026-09-26.md)을 참고합니다. 이후 승인된 Auth URL 설정은 양 환경에 적용·재조회 완료했으며 DB 권한·데이터는 변경하지 않았습니다. 실제 owner/staff 동작과 Vercel 초대 flag 값·canonical alias·실기기는 미검증입니다.
 
+- 2026-09-27 후속: 사용자 승인으로 ACL migration을 양 환경에 적용했습니다. Production의 대상 함수 실행 권한과 Advisor 경고 해소를 확인했으며, 함수·트리거·사용자 데이터는 보존했습니다. 위 09-26의 DB 권한 미변경은 준비 시점 기록입니다.
+
 ## 우선순위 기준
 
 - `P0`: 보안/데이터 보호, 예약 운영 연속성, 운영 중단 리스크를 직접 줄이는 항목
@@ -78,7 +80,7 @@
 | [R-14](./docs/roadmap/R-14-easy-usability-foundation.md) | In Progress (구현 완료 · 대표 사용자 검증 대기) | PR #25·Production 기록, 대표 사용자 결과 없음 | 대표 사용자 2명 관찰을 별도 일정·범위로 정한 뒤 판정; 자동 재개하지 않음 |
 | [R-15](./docs/roadmap/R-15-customer-service-price.md) | Done (PR #39 병합·Production 배포 기록 확인) | PR #34 원기능 + #39 입력 수정. 2026-09-22 GitHub 병합·CI·Production success 재확인, Preview owner 검증 기록 보존 | staff UI·Production authenticated stats는 미검증. 모바일 로그인 조사·실기기 IME·설치형 PWA는 사용자 보류 |
 | [R-16](./docs/roadmap/R-16-customer-session-pass.md) | Done | 2026-09-11 PR #37·Production DB/배포·로그인 조회 완료 기록 | Production 쓰기·staff 별도 로그인은 미검증; 실기기 IME/PWA는 보류 |
-| [R-10](./docs/roadmap/R-10-role-management.md) | In Progress (보안 경고·owner 검증 잔여) | PR #26 migration·배포 완료 기록. 2026-09-26 양 환경 Auth URL 적용·재조회 완료. RPC 6개 본문·ACL·private 원장 접근 차단 확인 | ACL migration 로컬 준비·검증 완료 → 적용 범위 승인·원격 검증 → 합성 owner 검증. 현재 Vercel flag·실제 owner/staff smoke는 미검증 |
+| [R-10](./docs/roadmap/R-10-role-management.md) | In Progress (보안 경고·owner 검증 잔여) | PR #26 migration·배포 완료 기록. 2026-09-26 양 환경 Auth URL 적용·재조회 완료. RPC 6개 본문·ACL·private 원장 접근 차단 확인 | ACL migration 양 환경 적용·권한 검증·대상 Advisor 경고 해소 완료 → 잔여 운영 정책·합성 owner 검증. 현재 Vercel flag·실제 owner/staff smoke는 미검증 |
 | [R-11](./docs/roadmap/R-11-notification-automation.md) | Design Ready (설계 완료 · 구현 보류) | PR #31 설계 병합 기록; 저장소에 구현 추가 근거 없음 | 명시적 재개 시 최신 계약을 확인하고 dry-run 전용 foundation 범위 승인 |
 | [R-12](./docs/roadmap/R-12-csv-export-backup.md) | Done | PR #22·Preview 역할/모바일/PWA·Production 공개/API 기록 | 대량 export 부하·모바일 Blob 메모리는 미검증; Production 실제 CSV 생성은 미실행 |
 

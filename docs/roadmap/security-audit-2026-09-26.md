@@ -81,3 +81,16 @@ Auth URL 정리 후 RLS 자동 적용 함수 ACL만 별도 migration-first 작�
 사용자가 1번 준비를 승인해 `20260926000000_rls_auto_enable_execute_hardening.sql`, schema.sql 동기화와 합성 SQL 회귀 검증을 준비했습니다. [적용·검증·복구 절차](../operations/rls-auto-enable-hardening.md)를 따릅니다. 별도 로컬 PostgreSQL 17 클러스터에서 함수 부재·재실행·역할 행렬·5종 DDL의 자동 RLS와 변경된 계약/상속 권한의 중단을 검증했습니다. 서버는 종료했고 임시 데이터 디렉터리는 보존했습니다. 원격 DB 적용과 실제 플랫폼 함수의 DDL 회귀·Advisor 해소는 미실행입니다.
 
 검증 환경은 PostgreSQL 17.10(Homebrew), 운영 점검 버전은 17.6입니다. SQL 회귀는 `psql -X -h "$task_pg_dir/socket" -p 55439 -U postgres -d postgres -f tests/sql/rls-auto-enable-hardening.sql`로 통과했습니다. 전체 Supabase migration chain replay는 미실행입니다. 격리 소스 복사본 `/private/tmp/haircrm-acl-build-hdvog8k9`에서 합성 Supabase 환경값으로 `npm run build`를 통과했습니다. 최초 sandbox 실행의 Google Fonts DNS 실패 후 허용된 네트워크 실행에서 성공했으며 저장소의 PWA 생성물은 변경하지 않았습니다. `schema.sql`과 새 migration 블록 일치, 문서 링크·공백, `git diff --check`도 확인했습니다. 이 준비물은 로컬 검증 범위이며 원격 DB에 적용하지 않았습니다.
+
+## 2026-09-27 ACL 원격 적용·검증
+
+사용자의 후속 진행 승인으로 Preview → Production 순서로 `20260926000000`을 적용했습니다. 과거 이력의 환경별 버전 차이는 보존했습니다. 관리 SQL 편집기에서 파일과 정확히 대조한 migration과 해당 migration history INSERT만 BEGIN/COMMIT 한 트랜잭션으로 실행했습니다. 이력의 `statements[1]`에는 원본 migration을 기록했으며 자동 snippet 저장은 사용하지 않았습니다.
+
+- Preview: 대상 함수 부재 재확인, migration은 no-op, 이력 version/name 조회로 기록 확인.
+- Production: 사전 함수 본문 정규화 MD5=`2965a64617834a07860d67f971780883`, owner postgres, event_trigger, definer, search_path=pg_catalog, ensure_rls 활성 상태를 재확인. 적용 직전 트랜잭션에도 본문 해시 검사를 추가했습니다.
+- 적용 후 anon EXECUTE=false, authenticated EXECUTE=false, service_role EXECUTE=true. 별도 재조회 ACL=`{postgres=X/postgres,service_role=X/postgres}`, owner·search_path·트리거 활성(`O`)·DDL tag 보존. 함수 본문 해시 불변.
+- Production 이력 version=`20260926000000`, name=`rls_auto_enable_execute_hardening`, 원문 statement MD5=`2a132ce2d4fce8138112ae84c5be5414`가 로컬 migration과 일치했습니다.
+- Security Advisor Rerun linter 후 Errors 0, Warnings 35, Info 2. 가상 스크롤의 경고 35개 전체를 읽어 `rls_auto_enable` 대상 없음 확인. 남은 경고는 GraphQL 객체 12개·로그인 사용자 SECURITY DEFINER 함수 22개·유출 비밀번호 보호 1개입니다. 이 건수는 확인 시점의 UI 결과입니다.
+- 운영에서 테스트 테이블/계정·고객 데이터를 생성하거나 초대 발송·역할 변경은 하지 않았습니다. 플랫폼 함수의 실제 DDL 회귀는 로컬 fixture 검증과 구분해 원격 미실행으로 유지합니다. 실제 owner/staff smoke, Vercel flag 현재값과 나머지 운영 정책 판단은 잔여입니다.
+
+위의 원격 미적용·미승인 표현은 2026-09-26 준비 시점 기록이며, 현재 적용 상태는 이 절을 따릅니다.

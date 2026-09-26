@@ -2,7 +2,7 @@
 
 ## 준비 상태와 범위
 
-2026-09-26 로컬 준비·격리 DB 검증 완료. **원격 미적용**이며 운영 적용 승인은 별도입니다. [점검 기록](../roadmap/security-audit-2026-09-26.md)의 Production에만 존재하는 플랫폼 event trigger가 대상입니다.
+2026-09-26 로컬 준비·격리 DB 검증 후 사용자 후속 승인으로 2026-09-27 Preview·Production에 적용했습니다. Production ACL·트리거·migration 이력과 Advisor 경고 해소를 확인했습니다. [점검 기록](../roadmap/security-audit-2026-09-26.md)의 Production에만 존재하는 플랫폼 event trigger가 대상입니다.
 
 - migration: [20260926000000_rls_auto_enable_execute_hardening.sql](../../supabase/migrations/20260926000000_rls_auto_enable_execute_hardening.sql)
 - `schema.sql` 마지막에 동일한 조건부 블록을 동기화했습니다. 새 DB에 플랫폼 함수를 만들어 넣지 않습니다.
@@ -47,7 +47,7 @@ psql -X -v ON_ERROR_STOP=1 -h "$task_pg_dir/socket" -p 55439 -U postgres -d post
 
 통과 항목: 함수 부재 skip, 반복 적용, anon/authenticated/PUBLIC 회수와 service_role 보존, 함수 정의·owner·설정 보존, EXECUTE가 없는 일반 DDL 사용자에 의한 CREATE TABLE/CTAS/SELECT INTO/partitioned table/partition 5종 RLS 활성화. search_path 변경·트리거 비활성·상속 EXECUTE는 예상 오류로 중단합니다. 테스트 로그의 이 세 ERROR는 실패 경로 검증입니다.
 
-운영 적용 후에는 위 catalog와 아래 권한 SELECT를 재조회합니다. Production에서 테스트 테이블 생성은 이번 준비 범위에 포함하지 않습니다. 실제 운영 함수에 대한 DDL 회귀와 Supabase Advisor 경고 해소는 아직 미검증입니다.
+운영 적용 후에는 위 catalog와 아래 권한 SELECT를 재조회합니다. Production에서 테스트 테이블 생성은 이번 준비 범위에 포함하지 않습니다. 실제 운영 함수에 대한 DDL 회귀는 미실행이며, Supabase Advisor의 대상 함수 경고 해소는 2026-09-27 확인했습니다.
 
 ```sql
 select has_function_privilege('anon', oid, 'EXECUTE') as anon_execute,

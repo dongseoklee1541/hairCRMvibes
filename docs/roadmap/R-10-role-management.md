@@ -16,7 +16,7 @@
 - Auth URL 적용·재조회는 완료했고 advisor hardening·authenticated owner smoke가 남아 In Progress를 유지합니다. 초대 활성화 gate는 닫혀 있습니다.
 - 2026-09-26 관리 화면과 catalog SELECT에서 양 환경의 Site URL=`http://localhost:3000`, Redirect URL 0개, R-10 6개 함수의 본문·ACL·owner 검사 계약과 private 원장의 직접 접근 차단을 확인했습니다. authenticated EXECUTE 경고를 없애려고 정상 owner RPC 권한을 일괄 회수하지 않습니다. 이후 사용자 승인으로 환경별 Auth URL을 적용하고 새로고침 후 반영을 확인했습니다. 변경 전 점검과 적용 후 값은 위 점검 기록에서 구분합니다.
 - `R10_INVITATIONS_ENABLED=false`와 Pencil transport 실패는 **과거 관찰**이며 이번에 현재 지속 여부를 확인하지 않았습니다. Supabase 관리 접근은 사용자 로그인 후 가능해졌습니다. CLI의 대상 프로젝트 접근 문제와 관리 화면 접근을 구분하고 과거 장애를 현재 모든 경로의 실패로 간주하지 않습니다.
-- 다음 행동: 로컬 준비·검증한 ACL migration의 적용 범위 승인·원격 검증 → 승인된 합성 owner 검증. 완료된 Auth URL 적용은 반복하지 않습니다. 실제 초대·계정·역할 변경과 flag 활성화는 승인된 대상/환경에 한정합니다. [운영 runbook](../operations/r10-invitation-ledger.md)을 따릅니다.
+- 다음 행동: 잔여 운영 정책·Vercel flag 확인 → 승인된 합성 owner 검증. 2026-09-27 ACL migration 양 환경 적용·권한 검증·대상 Advisor 경고 해소는 완료했습니다. 완료된 Auth URL 적용은 반복하지 않습니다. 실제 초대·계정·역할 변경과 flag 활성화는 승인된 대상/환경에 한정합니다. [운영 runbook](../operations/r10-invitation-ledger.md)을 따릅니다.
 
 이하 구현·검증·release 절의 환경값·hash·접근 실패는 2026-07-14 당시 기록입니다.
 
