@@ -2,7 +2,7 @@
 
 현재 상태·다음 행동의 요약은 [future-todo.md](../../future-todo.md), 작업별 계약·검증·release 근거는 아래 상세 문서에 둡니다. 이 인덱스는 탐색과 상태를 연결하며 상세 결과를 복제하지 않습니다.
 
-- 문서 점검: 2026-09-22 KST, 로컬/GitHub `main@cd0f3eb`. [PR #39/#40와 확인 한계](./documentation-audit-2026-09-22.md)
+- 최신 점검: 2026-09-26 KST, PR #42 병합 `main@a8ce414`. [R-01·R-10 설정·catalog 점검과 변경안](./security-audit-2026-09-26.md). [PR #39/#40 문서 점검 이력](./documentation-audit-2026-09-22.md)은 당시 근거로 유지합니다.
 - 모바일 로그인 조사·실기기 IME·설치형 PWA는 사용자 보류입니다. 관련 상세 문서의 과거 후속 목록을 자동 실행하지 않습니다.
 
 ## 정식 업무
@@ -18,7 +18,7 @@
 | R-07 | [R-07-customer-edit-delete-dedupe.md](./R-07-customer-edit-delete-dedupe.md) | Done |
 | R-08 | [R-08-service-master.md](./R-08-service-master.md) | Done |
 | R-09 | [R-09-stats-advanced.md](./R-09-stats-advanced.md) | Done |
-| R-10 | [R-10-role-management.md](./R-10-role-management.md) | In Progress (Auth URL·보안 경고·owner 검증 잔여) |
+| R-10 | [R-10-role-management.md](./R-10-role-management.md) | In Progress (보안 경고·owner 검증 잔여) |
 | R-11 | [R-11-notification-automation.md](./R-11-notification-automation.md) | Design Ready (설계 완료 · 구현 보류) |
 | R-12 | [R-12-csv-export-backup.md](./R-12-csv-export-backup.md) | Done |
 | R-13 | [R-13-appointment-customer-search-quick-create.md](./R-13-appointment-customer-search-quick-create.md) | Done |
@@ -29,7 +29,7 @@
 ## 다음 행동의 경계
 
 - **R-14:** 구현·배포와 합성 모바일 검증은 완료 기록이 있습니다. [대표 사용자 프로토콜](./R-14-user-validation-protocol.md)은 결과가 아닌 준비 자료이며 실제 2명 관찰 전에는 Done으로 바꾸지 않습니다.
-- **R-10:** 2026-07-14 migration·배포 기록을 재사용합니다. Auth URL·advisor 경고·owner smoke는 해소 근거가 없어 진행 중이며, 오래된 dashboard 인증 장애와 `flag=false` 기록을 현재 설정값으로 단정하지 않습니다. 재개 시 [운영 runbook](../operations/r10-invitation-ledger.md)으로 현재 상태부터 확인합니다.
+- **R-10:** 2026-09-26 양 환경 Auth URL 적용·재조회와 RPC 본문·권한 계약 확인을 완료했습니다. 경고는 의도된 owner 검사와 불필요한 실행 권한을 구분해 [보안 점검 기록](./security-audit-2026-09-26.md)에 정리했습니다. ACL migration 로컬 준비·검증은 완료했고 다음은 적용 범위 승인·원격 검증이며, 실제 owner smoke·현재 Vercel flag는 미검증입니다.
 - **R-11:** 설계 병합 이후 구현 보류입니다. 재개가 승인되면 dry-run 전용 foundation부터 진행하고 live/provider/발송 gate는 별도로 유지합니다.
 - **R-15:** 입력 포커스·증감 제거는 PR #39 병합 및 Production success 기록이 확인됐습니다. Preview owner·두 viewport 검증은 2026-09-11의 근거이며 모바일 새 로그인·실기기·staff/Production 권한 검증과 구분합니다.
 - **R-16:** 2026-09-11 운영 반영 완료 기록을 유지합니다. 과거 미완료 기록만으로 원장 복구·병합·DB 적용을 다시 시작하지 않습니다.

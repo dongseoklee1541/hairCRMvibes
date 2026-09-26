@@ -6,11 +6,11 @@
 - 본 문서는 현재 상태·다음 행동과 상대적 실행 순서(Phase)를 관리합니다. 완료 근거와 과거 기록은 로드맵 상세 문서에 둡니다.
 - 범위는 워크스페이스 코드베이스와 `pencil-hairshopcrm.pen` 분석 결과를 기반으로 한 정식 로드맵 16개와 번호 미배정 사용성 후보 3개입니다.
 
-## 현재 기준 (2026-09-22 KST 문서 점검)
+## 현재 기준 (2026-09-26 KST 점검)
 
-- 로컬 `main`과 GitHub `main`: `cd0f3ebf25b98c9d7dd772101f7798fc4f413009` (PR #40). 이 값은 확인 시점 기록이며 다음 세션 시작 시 다시 확인합니다.
+- 로컬 `main`과 GitHub `main`: `a8ce41478891ce249b596fa1528aab5de1ec157d` (계정 도구 PR #42 병합). PR·병합 후 CI와 Vercel 검사 success를 확인했습니다. 이 값은 점검 시점 기록이며 다음 세션 시작 시 다시 확인합니다.
 - PR #39 금액 입력 수정은 병합·Production 배포 성공 기록 확인. PR #40 Astra·브라우저 작업 지침도 병합 완료입니다. 상세 근거와 확인 한계는 [문서 점검 기록](./docs/roadmap/documentation-audit-2026-09-22.md)을 따릅니다.
-- 이번 점검은 Git/공개 배포 메타데이터와 문서·코드의 읽기 전용 대조입니다. Supabase 설정·DB·계정, canonical alias의 현재 연결, 인증/브라우저/실기기 동작은 재검증하지 않았습니다.
+- 2026-09-26 Supabase Production·Preview의 Auth URL·Advisor와 R-10 함수/권한/RLS catalog를 읽기 전용 확인했습니다. [보안 점검 결과와 변경안](./docs/roadmap/security-audit-2026-09-26.md)을 참고합니다. 이후 승인된 Auth URL 설정은 양 환경에 적용·재조회 완료했으며 DB 권한·데이터는 변경하지 않았습니다. 실제 owner/staff 동작과 Vercel 초대 flag 값·canonical alias·실기기는 미검증입니다.
 
 ## 우선순위 기준
 
@@ -78,7 +78,7 @@
 | [R-14](./docs/roadmap/R-14-easy-usability-foundation.md) | In Progress (구현 완료 · 대표 사용자 검증 대기) | PR #25·Production 기록, 대표 사용자 결과 없음 | 대표 사용자 2명 관찰을 별도 일정·범위로 정한 뒤 판정; 자동 재개하지 않음 |
 | [R-15](./docs/roadmap/R-15-customer-service-price.md) | Done (PR #39 병합·Production 배포 기록 확인) | PR #34 원기능 + #39 입력 수정. 2026-09-22 GitHub 병합·CI·Production success 재확인, Preview owner 검증 기록 보존 | staff UI·Production authenticated stats는 미검증. 모바일 로그인 조사·실기기 IME·설치형 PWA는 사용자 보류 |
 | [R-16](./docs/roadmap/R-16-customer-session-pass.md) | Done | 2026-09-11 PR #37·Production DB/배포·로그인 조회 완료 기록 | Production 쓰기·staff 별도 로그인은 미검증; 실기기 IME/PWA는 보류 |
-| [R-10](./docs/roadmap/R-10-role-management.md) | In Progress (Auth URL·보안 경고·owner 검증 잔여) | PR #26·Preview/Production migration·배포 완료 기록. Auth URL/advisor/owner smoke 해소 근거 없음 | 재개 승인 시 설정·경고·인증 경로부터 재확인. 초대 활성화 차단 유지; 2026-09-22 원격 설정 미조회 |
+| [R-10](./docs/roadmap/R-10-role-management.md) | In Progress (보안 경고·owner 검증 잔여) | PR #26 migration·배포 완료 기록. 2026-09-26 양 환경 Auth URL 적용·재조회 완료. RPC 6개 본문·ACL·private 원장 접근 차단 확인 | ACL migration 로컬 준비·검증 완료 → 적용 범위 승인·원격 검증 → 합성 owner 검증. 현재 Vercel flag·실제 owner/staff smoke는 미검증 |
 | [R-11](./docs/roadmap/R-11-notification-automation.md) | Design Ready (설계 완료 · 구현 보류) | PR #31 설계 병합 기록; 저장소에 구현 추가 근거 없음 | 명시적 재개 시 최신 계약을 확인하고 dry-run 전용 foundation 범위 승인 |
 | [R-12](./docs/roadmap/R-12-csv-export-backup.md) | Done | PR #22·Preview 역할/모바일/PWA·Production 공개/API 기록 | 대량 export 부하·모바일 Blob 메모리는 미검증; Production 실제 CSV 생성은 미실행 |
 
@@ -124,5 +124,7 @@ R-12는 완료, R-10은 잔여 gate로 진행 중, R-11은 설계 완료·구현
 상태 표기·근거 재사용·상충 처리·세 문서 동기화는 [로드맵 인덱스의 갱신 규칙](./docs/roadmap/README.md#갱신-규칙)을 따릅니다. 기능 ID는 재사용하지 않고 후보 승격은 별도 승인 때 다음 번호를 부여합니다. 우선순위 변경 이유는 해당 상세 문서에 남깁니다.
 
 ## 마지막 업데이트
+
+- 2026-09-26: PR #42 main 병합·동기화, R-01·R-10 운영 설정과 catalog 읽기 전용 점검. 이후 승인된 환경별 Auth URL을 적용·재조회 완료. 권한 정리 후보와 실제 owner 검증은 잔여.
 
 - 2026-09-22: PR #39/#40 원격 근거 확인, R-10/R-14/R-11 잔여 상태와 보류 경계 정리, 오래된 누적 기록을 [release·감사 이력](./docs/roadmap/release-history-2026-07-to-09.md)으로 분리.

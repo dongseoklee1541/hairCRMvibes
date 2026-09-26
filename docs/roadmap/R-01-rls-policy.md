@@ -67,6 +67,9 @@
   - `Allow all access`와 `auth.role()`은 R-01 이전 legacy forward/rollback SQL과 문서의 이력 설명에만 남아 있음
 
 ## 남은 리스크
+
+2026-09-26 [설정·catalog 점검](./security-audit-2026-09-26.md)에서 Production의 GraphQL 설치, `rls_auto_enable` 실행 권한과 활성 이벤트 트리거, 유출 비밀번호 보호 비활성을 확인했습니다. 아래 항목은 최초 release의 후속 목록이며 최신 분류·미검증 범위는 점검 기록을 따릅니다. 기존 RLS 구현 완료 상태는 유지합니다.
+
 - Supabase advisor가 signed-in GraphQL table exposure를 보고합니다. anon 공개는 아니지만 GraphQL 사용 여부에 따라 비활성화 또는 노출 정책을 별도 결정해야 합니다.
 - 기존 `public.rls_auto_enable()`은 anon/authenticated가 실행 가능한 `SECURITY DEFINER` 함수로 advisor 경고가 남습니다. Phase 1 신규 함수는 아니지만 별도 보안 hardening 우선순위로 다뤄야 합니다.
 - Auth leaked-password protection이 비활성화되어 있다는 advisor 경고가 남습니다. 애플리케이션 migration이 아니라 Supabase Auth 운영 설정에서 결정해야 합니다.
