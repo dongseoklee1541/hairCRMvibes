@@ -80,7 +80,7 @@
 | [R-14](./docs/roadmap/R-14-easy-usability-foundation.md) | In Progress (구현 완료 · 대표 사용자 검증 대기) | PR #25·Production 기록, 대표 사용자 결과 없음 | 대표 사용자 2명 관찰을 별도 일정·범위로 정한 뒤 판정; 자동 재개하지 않음 |
 | [R-15](./docs/roadmap/R-15-customer-service-price.md) | Done (PR #39 병합·Production 배포 기록 확인) | PR #34 원기능 + #39 입력 수정. 2026-09-22 GitHub 병합·CI·Production success 재확인, Preview owner 검증 기록 보존 | staff UI·Production authenticated stats는 미검증. 모바일 로그인 조사·실기기 IME·설치형 PWA는 사용자 보류 |
 | [R-16](./docs/roadmap/R-16-customer-session-pass.md) | Done | 2026-09-11 PR #37·Production DB/배포·로그인 조회 완료 기록 | Production 쓰기·staff 별도 로그인은 미검증; 실기기 IME/PWA는 보류 |
-| [R-10](./docs/roadmap/R-10-role-management.md) | In Progress (보안 경고·owner 검증 잔여) | PR #26 migration·배포 완료 기록. 2026-09-26 양 환경 Auth URL 적용·재조회 완료. RPC 6개 본문·ACL·private 원장 접근 차단 확인 | ACL migration 양 환경 적용·권한 검증·대상 Advisor 경고 해소 완료 → 잔여 운영 정책·합성 owner 검증. 현재 Vercel flag·실제 owner/staff smoke는 미검증 |
+| [R-10](./docs/roadmap/R-10-role-management.md) | In Progress (보안 경고·owner 검증 잔여) | PR #26 migration·배포 완료 기록. 2026-09-26 양 환경 Auth URL 적용·재조회 완료. RPC 6개 본문·ACL·private 원장 접근 차단 확인 | ACL migration 양 환경 적용·권한 검증·대상 Advisor 경고 해소 완료 → 잔여 운영 정책·합성 owner 검증. Vercel Production 설정 flag=false 재확인; 실제 owner/staff smoke는 미검증 |
 | [R-11](./docs/roadmap/R-11-notification-automation.md) | Design Ready (설계 완료 · 구현 보류) | PR #31 설계 병합 기록; 저장소에 구현 추가 근거 없음 | 명시적 재개 시 최신 계약을 확인하고 dry-run 전용 foundation 범위 승인 |
 | [R-12](./docs/roadmap/R-12-csv-export-backup.md) | Done | PR #22·Preview 역할/모바일/PWA·Production 공개/API 기록 | 대량 export 부하·모바일 Blob 메모리는 미검증; Production 실제 CSV 생성은 미실행 |
 

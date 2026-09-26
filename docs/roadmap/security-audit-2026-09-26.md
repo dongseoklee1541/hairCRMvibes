@@ -94,3 +94,7 @@ Auth URL 정리 후 RLS 자동 적용 함수 ACL만 별도 migration-first 작�
 - 운영에서 테스트 테이블/계정·고객 데이터를 생성하거나 초대 발송·역할 변경은 하지 않았습니다. 플랫폼 함수의 실제 DDL 회귀는 로컬 fixture 검증과 구분해 원격 미실행으로 유지합니다. 실제 owner/staff smoke, Vercel flag 현재값과 나머지 운영 정책 판단은 잔여입니다.
 
 위의 원격 미적용·미승인 표현은 2026-09-26 준비 시점 기록이며, 현재 적용 상태는 이 절을 따릅니다.
+
+### Vercel 설정 재확인
+
+2026-09-27 Ego의 Vercel 프로젝트 Environment Variables에서 이름을 `R10_INVITATIONS_ENABLED`로 한정해 Production 값 `false`를 읽었습니다. 값을 변경하거나 다른 비밀값을 펼치지 않았습니다. 이는 현재 프로젝트 설정의 확인이며 기존 배포가 사용한 환경 snapshot이나 owner/staff 실제 동작 검증은 아닙니다. 앞 절의 Vercel flag 미검증 상태는 이 설정 조회로 갱신됐습니다.
