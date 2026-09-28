@@ -1,0 +1,38 @@
+{
+  "at": "2026-09-28T11:17:46.549Z",
+  "base": "https://hair-cr-mvibes.vercel.app",
+  "checks": [
+    {
+      "width": 390,
+      "height": 844,
+      "http": 200,
+      "newLoginLabels": true,
+      "passwordToggle": true,
+      "layout": {
+        "viewport": 390,
+        "width": 390,
+        "toggleHeight": 44
+      },
+      "staffUnauthenticatedStatus": 401,
+      "staffCacheControl": "no-store, max-age=0",
+      "protectedPageRedirect": true,
+      "pageErrors": []
+    },
+    {
+      "width": 360,
+      "height": 800,
+      "http": 200,
+      "newLoginLabels": true,
+      "passwordToggle": true,
+      "layout": {
+        "viewport": 360,
+        "width": 360,
+        "toggleHeight": 44
+      },
+      "staffUnauthenticatedStatus": 401,
+      "staffCacheControl": "no-store, max-age=0",
+      "protectedPageRedirect": true,
+      "pageErrors": []
+    }
+  ]
+}
