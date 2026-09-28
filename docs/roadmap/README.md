@@ -28,8 +28,8 @@
 
 ## 다음 행동의 경계
 
-- **R-14:** 구현·배포와 합성 모바일 검증은 완료 기록이 있습니다. [대표 사용자 프로토콜](./R-14-user-validation-protocol.md)은 결과가 아닌 준비 자료이며 실제 2명 관찰 전에는 Done으로 바꾸지 않습니다.
-- **R-10:** 2026-09-26 양 환경 Auth URL 적용·재조회와 RPC 본문·권한 계약 확인을 완료했습니다. 경고는 의도된 owner 검사와 불필요한 실행 권한을 구분해 [보안 점검 기록](./security-audit-2026-09-26.md)에 정리했습니다. 2026-09-27 ACL migration 양 환경 적용·권한 검증·대상 Advisor 경고 해소는 완료됐으며, Vercel Production 설정 flag=false를 재확인했습니다. 실제 owner smoke는 미검증입니다.
+- **R-14:** [60대 여성 주 사용자 가정의 Astra 피드백](./R-14-astra-usability-review-2026-09-27.md)을 준비했습니다. [피드백 수정·로컬 검증](./astra-feedback-remediation-2026-09-27.md)을 완료했으며 미배포·실제 관찰 결과와 구분합니다. 구현·배포와 합성 모바일 검증은 완료 기록이 있습니다. [대표 사용자 프로토콜](./R-14-user-validation-protocol.md)은 결과가 아닌 준비 자료이며 실제 2명 관찰 전에는 Done으로 바꾸지 않습니다.
+- **R-10:** [Astra 사전 검토](./R-10-astra-review-2026-09-27.md)의 초대 재시도 결함 F1/F2의 수정·합성 재검증·Astra 재검토는 로컬에서 완료했으며 미배포입니다. 2026-09-26 양 환경 Auth URL 적용·재조회와 RPC 본문·권한 계약 확인을 완료했습니다. 경고는 의도된 owner 검사와 불필요한 실행 권한을 구분해 [보안 점검 기록](./security-audit-2026-09-26.md)에 정리했습니다. 2026-09-27 ACL migration 양 환경 적용·권한 검증·대상 Advisor 경고 해소는 완료됐으며, Vercel Production 설정 flag=false를 재확인했습니다. 실제 owner smoke는 미검증입니다.
 - **R-11:** 설계 병합 이후 구현 보류입니다. 재개가 승인되면 dry-run 전용 foundation부터 진행하고 live/provider/발송 gate는 별도로 유지합니다.
 - **R-15:** 입력 포커스·증감 제거는 PR #39 병합 및 Production success 기록이 확인됐습니다. Preview owner·두 viewport 검증은 2026-09-11의 근거이며 모바일 새 로그인·실기기·staff/Production 권한 검증과 구분합니다.
 - **R-16:** 2026-09-11 운영 반영 완료 기록을 유지합니다. 과거 미완료 기록만으로 원장 복구·병합·DB 적용을 다시 시작하지 않습니다.

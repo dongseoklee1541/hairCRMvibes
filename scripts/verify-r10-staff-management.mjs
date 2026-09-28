@@ -472,8 +472,17 @@ test('failed re-invite replay is reported as unknown instead of false success', 
     'invitation_outcome_unknown',
   );
   assert.equal(inviteCount, 1);
-  assert.equal(provisionCount, 1);
-  assert.equal(ledger.rows.get(REQUEST_ID).state, 'provisioned');
+  await expectStaffError(
+    () => inviteStaffMember(
+      { email: EMAIL, requestId: REQUEST_ID_2, redirectTo: 'http://localhost:3000/invite/accept' },
+      dependencies,
+    ),
+    'invitation_outcome_unknown',
+  );
+  assert.equal(inviteCount, 1);
+  assert.equal(provisionCount, 0);
+  assert.equal(ledger.rows.get(REQUEST_ID).state, 'unknown');
+  assert.equal(ledger.rows.has(REQUEST_ID_2), false);
 });
 
 test('confirmed profileless user is repaired without another invitation', async () => {

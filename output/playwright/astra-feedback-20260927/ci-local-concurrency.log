@@ -1,0 +1,1 @@
+R-10 concurrency smoke passed: one cross-demotion committed, one target owner remains, and concurrent invite claims produced one token-bearing acquisition plus one tokenless replay.

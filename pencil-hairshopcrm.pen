@@ -1,5 +1,5 @@
 {
-  "version": "2.14",
+  "version": "2.19",
   "children": [
     {
       "type": "frame",
@@ -28474,6 +28474,7 @@
           "strokeWidth": {
             "top": 1
           },
+          "strokeLinejoin": "round",
           "padding": [
             6,
             4,
@@ -35842,6 +35843,7 @@
           "strokeWidth": {
             "top": 1
           },
+          "strokeLinejoin": "round",
           "padding": [
             6,
             4,
@@ -41402,6 +41404,1552 @@
               "fontWeight": "600"
             }
           ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "tM0Z7",
+      "x": 24552,
+      "y": 0,
+      "name": "Astra 20260927 / 새 예약 / 고객 미선택과 조회 복구",
+      "clip": true,
+      "width": 360,
+      "height": 800,
+      "fill": "$bg-primary",
+      "layout": "vertical",
+      "gap": 16,
+      "padding": 16,
+      "children": [
+        {
+          "type": "text",
+          "id": "udhPy",
+          "name": "제목",
+          "fill": "$text-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "새 예약",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-primary",
+          "fontSize": 24,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "NEEv6",
+          "name": "고객 선택 라벨",
+          "fill": "$text-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "고객 · 필수",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-primary",
+          "fontSize": 16,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "kY3AS",
+          "name": "고객을 선택해 주세요",
+          "width": "fill_container",
+          "height": 48,
+          "fill": "$bg-surface",
+          "cornerRadius": 12,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "Db5W0",
+              "name": "고객을 선택해 주세요 문구",
+              "fill": "$text-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "고객을 선택해 주세요",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-primary",
+              "fontSize": 16,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "fZoSx",
+          "name": "휴무 오류",
+          "fill": "$text-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "휴무일을 확인하지 못했습니다. 다시 불러와 주세요.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-primary",
+          "fontSize": 16,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "WIUiH",
+          "name": "휴무일 다시 불러오기",
+          "width": "fill_container",
+          "height": 48,
+          "fill": "$bg-surface",
+          "cornerRadius": 12,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "GZNqa",
+              "name": "휴무일 다시 불러오기 문구",
+              "fill": "$text-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "휴무일 다시 불러오기",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-primary",
+              "fontSize": 16,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "WS4RE",
+          "name": "시술 오류",
+          "fill": "$text-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "시술을 확인하지 못했습니다. 다시 불러와 주세요.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-primary",
+          "fontSize": 16,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "sOhnv",
+          "name": "시술 다시 불러오기",
+          "width": "fill_container",
+          "height": 48,
+          "fill": "$bg-surface",
+          "cornerRadius": 12,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "jhimv",
+              "name": "시술 다시 불러오기 문구",
+              "fill": "$text-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "시술 다시 불러오기",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-primary",
+              "fontSize": 16,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "j0GPr",
+          "name": "횟수권 오류",
+          "fill": "$text-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "횟수권을 확인한 뒤 예약을 등록할 수 있습니다.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-primary",
+          "fontSize": 16,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "QdXy1",
+          "name": "횟수권 다시 불러오기",
+          "width": "fill_container",
+          "height": 48,
+          "fill": "$bg-surface",
+          "cornerRadius": 12,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "ehYUA",
+              "name": "횟수권 다시 불러오기 문구",
+              "fill": "$text-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "횟수권 다시 불러오기",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-primary",
+              "fontSize": 16,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "i9RgBh",
+          "name": "차단 이유",
+          "fill": "$text-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "고객과 시술을 선택하고 조회를 완료해 주세요.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-primary",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "ax6nU",
+          "name": "예약 등록",
+          "width": "fill_container",
+          "height": 48,
+          "fill": "$bg-surface",
+          "cornerRadius": 12,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "vo0UN",
+              "name": "예약 등록 문구",
+              "fill": "$text-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "예약 등록",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-primary",
+              "fontSize": 16,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "tRfhc",
+      "x": 24992,
+      "y": 0,
+      "name": "Astra 20260927 / 예약 수정 / 두 저장의 범위",
+      "clip": true,
+      "width": 360,
+      "height": 800,
+      "fill": "$bg-primary",
+      "layout": "vertical",
+      "gap": 16,
+      "padding": 16,
+      "children": [
+        {
+          "type": "text",
+          "id": "O9SQk",
+          "name": "제목",
+          "fill": "$text-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "예약 수정",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-primary",
+          "fontSize": 24,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "hEGf0",
+          "name": "예약 그룹",
+          "fill": "$text-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "예약 정보 · 수정한 내용이 있습니다",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-primary",
+          "fontSize": 16,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "bpyBM",
+          "name": "시간  오후 2:00",
+          "width": "fill_container",
+          "height": 48,
+          "fill": "$bg-surface",
+          "cornerRadius": 12,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "s7veOZ",
+              "name": "시간  오후 2:00 문구",
+              "fill": "$text-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "시간  오후 2:00",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-primary",
+              "fontSize": 16,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "eLsiv",
+          "name": "금액 그룹",
+          "fill": "$text-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "시술금액 · 아직 저장하지 않았습니다",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-primary",
+          "fontSize": 16,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "r1o4p",
+          "name": "35,000원",
+          "width": "fill_container",
+          "height": 48,
+          "fill": "$bg-surface",
+          "cornerRadius": 12,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "ovMLn",
+              "name": "35,000원 문구",
+              "fill": "$text-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "35,000원",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-primary",
+              "fontSize": 16,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "E3n3p",
+          "name": "시술금액 저장",
+          "width": "fill_container",
+          "height": 48,
+          "fill": "$bg-surface",
+          "cornerRadius": 12,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "ff72T",
+              "name": "시술금액 저장 문구",
+              "fill": "$text-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "시술금액 저장",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-primary",
+              "fontSize": 16,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "P5P3A5",
+          "name": "금액 안내",
+          "fill": "$text-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "금액과 예약 정보는 각각 저장해 주세요.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-primary",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "PowV7",
+          "name": "금액 성공",
+          "fill": "$text-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "시술금액을 저장했습니다. 예약 정보는 아래 버튼으로 저장해 주세요.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-primary",
+          "fontSize": 16,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "EWj0G",
+          "name": "예약 정보 저장",
+          "width": "fill_container",
+          "height": 48,
+          "fill": "$bg-surface",
+          "cornerRadius": 12,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "Cz46a",
+              "name": "예약 정보 저장 문구",
+              "fill": "$text-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "예약 정보 저장",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-primary",
+              "fontSize": 16,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "ozUJq",
+      "x": 25432,
+      "y": 0,
+      "name": "Astra 20260927 / 로그인 / 오류와 비밀번호 확인",
+      "clip": true,
+      "width": 360,
+      "height": 800,
+      "fill": "$bg-primary",
+      "layout": "vertical",
+      "gap": 16,
+      "padding": 16,
+      "children": [
+        {
+          "type": "text",
+          "id": "WdejG",
+          "name": "제목",
+          "fill": "$text-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "미용실 CRM 로그인",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-primary",
+          "fontSize": 24,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "n7vlH",
+          "name": "이메일",
+          "fill": "$text-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "이메일",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-primary",
+          "fontSize": 16,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "L79Fl",
+          "name": "이메일을 입력하세요",
+          "width": "fill_container",
+          "height": 48,
+          "fill": "$bg-surface",
+          "cornerRadius": 12,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "HGAlI",
+              "name": "이메일을 입력하세요 문구",
+              "fill": "$text-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "이메일을 입력하세요",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-primary",
+              "fontSize": 16,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "TTncs",
+          "name": "비밀번호",
+          "fill": "$text-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "비밀번호",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-primary",
+          "fontSize": 16,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "Vw6jB",
+          "name": "••••••••   비밀번호 보기",
+          "width": "fill_container",
+          "height": 48,
+          "fill": "$bg-surface",
+          "cornerRadius": 12,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "UOTLa",
+              "name": "••••••••   비밀번호 보기 문구",
+              "fill": "$text-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "••••••••   비밀번호 보기",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-primary",
+              "fontSize": 16,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "B7Rmr",
+          "name": "입력 오류",
+          "fill": "$text-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "이메일 또는 비밀번호를 확인해 주세요.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-primary",
+          "fontSize": 16,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "g2lDT1",
+          "name": "로그인",
+          "width": "fill_container",
+          "height": 48,
+          "fill": "$bg-surface",
+          "cornerRadius": 12,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "cazsF",
+              "name": "로그인 문구",
+              "fill": "$text-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "로그인",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-primary",
+              "fontSize": 16,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "dyWsi",
+          "name": "권한 안내",
+          "fill": "$text-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "계정이 없거나 이용이 어려우면 관리자에게 문의해 주세요.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-primary",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "nehlA",
+      "x": 25872,
+      "y": 0,
+      "name": "Astra 20260927 / 날짜 선택 / 360px",
+      "clip": true,
+      "width": 360,
+      "height": 800,
+      "fill": "$bg-primary",
+      "layout": "vertical",
+      "gap": 16,
+      "padding": 16,
+      "children": [
+        {
+          "type": "text",
+          "id": "Vm6uv",
+          "name": "제목",
+          "fill": "$text-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "예약 날짜",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-primary",
+          "fontSize": 24,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "aODaz",
+          "name": "날짜 행 0",
+          "width": "fill_container",
+          "height": 44,
+          "gap": 2,
+          "children": [
+            {
+              "type": "frame",
+              "id": "u9X7Oa",
+              "name": "날짜 1",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "YUGQl",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "1",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "kLo7l",
+              "name": "날짜 2",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "puz1q",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "2",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "rXvLK",
+              "name": "날짜 3",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "XsV3O",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "3",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "cOnYa",
+              "name": "날짜 4",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "FiH1B",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "4",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "SLesD",
+              "name": "날짜 5",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "wqc83",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "5",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "rguBj",
+              "name": "날짜 6",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "TKDRS",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "6",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "YbvmH",
+              "name": "날짜 7",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "iqDKU",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "7",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "RBayh",
+          "name": "날짜 행 1",
+          "width": "fill_container",
+          "height": 44,
+          "gap": 2,
+          "children": [
+            {
+              "type": "frame",
+              "id": "Z7N34",
+              "name": "날짜 8",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "XnaYl",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "8",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "MpwOU",
+              "name": "날짜 9",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "JoK3Y",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "9",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "g3FbpH",
+              "name": "날짜 10",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Q4sOso",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "10",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "R9hcbn",
+              "name": "날짜 11",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "LLXUr",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "11",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "dUaxY",
+              "name": "날짜 12",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "T7MzM",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "12",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "wEiiB",
+              "name": "날짜 13",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "pcJOy",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "13",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "T4jDv",
+              "name": "날짜 14",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "eTLbj",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "14",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "l8hto",
+          "name": "날짜 행 2",
+          "width": "fill_container",
+          "height": 44,
+          "gap": 2,
+          "children": [
+            {
+              "type": "frame",
+              "id": "e5byMc",
+              "name": "날짜 15",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "hrQvF",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "15",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "N6zR2x",
+              "name": "날짜 16",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "G3EHgQ",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "16",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "GMgEt",
+              "name": "날짜 17",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "KpR89",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "17",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "OR3ad",
+              "name": "날짜 18",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "vOvmu",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "18",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "tgWnb",
+              "name": "날짜 19",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "EPI2e",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "19",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "bZQby",
+              "name": "날짜 20",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "TCKVP",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "20",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "dZ6p6",
+              "name": "날짜 21",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "T1XAXF",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "21",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Yx0I9",
+          "name": "날짜 행 3",
+          "width": "fill_container",
+          "height": 44,
+          "gap": 2,
+          "children": [
+            {
+              "type": "frame",
+              "id": "iGM8s",
+              "name": "날짜 22",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "GFA16",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "22",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "kzIoa",
+              "name": "날짜 23",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "ttc95",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "23",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "GdQyQ",
+              "name": "날짜 24",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "xuYev",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "24",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "g7bb6x",
+              "name": "날짜 25",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "HzFME",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "25",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "qjQpJ",
+              "name": "날짜 26",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "W7CYxV",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "26",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "wW0z8",
+              "name": "날짜 27",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Y6BbhI",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "27",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "q28QoN",
+              "name": "날짜 28",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "g08bu8",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "28",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "phuJ1",
+          "name": "날짜 행 4",
+          "width": "fill_container",
+          "height": 44,
+          "gap": 2,
+          "children": [
+            {
+              "type": "frame",
+              "id": "E0Xjl",
+              "name": "날짜 29",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Lfw2y",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "29",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "tveQZ",
+              "name": "날짜 30",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "z4rXY",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "30",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "t5EF96",
+              "name": "날짜 31",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "wqy4N",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "content": "31",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "W2Q9a9",
+              "name": "날짜 32",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "o2Uhx",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Je0Fr",
+              "name": "날짜 33",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "khcy2",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "GI8H8",
+              "name": "날짜 34",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "IX97T",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "npCSE",
+              "name": "날짜 35",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$bg-surface",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "zJkPF",
+                  "name": "날짜 숫자",
+                  "fill": "$text-primary",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "eddbE",
+          "name": "설계 기준",
+          "fill": "$text-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "360px에서 날짜 가로 45px 이상 · 높이 44px",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-primary",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "L3VJN",
+      "x": 26312,
+      "y": 0,
+      "name": "Astra 20260927 / 직원 초대 / 결과 미확정 재시도",
+      "clip": true,
+      "width": 360,
+      "height": 800,
+      "fill": "$bg-primary",
+      "layout": "vertical",
+      "gap": 16,
+      "padding": 16,
+      "children": [
+        {
+          "type": "text",
+          "id": "c1MkuV",
+          "name": "제목",
+          "fill": "$text-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "직원 초대",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-primary",
+          "fontSize": 24,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "ybPTM",
+          "name": "synthetic@example.com",
+          "width": "fill_container",
+          "height": 48,
+          "fill": "$bg-surface",
+          "cornerRadius": 12,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "eUYVm",
+              "name": "synthetic@example.com 문구",
+              "fill": "$text-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "synthetic@example.com",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-primary",
+              "fontSize": 16,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "fmgdM",
+          "name": "미확정 안내",
+          "fill": "$text-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "전송 결과를 확인하지 못했습니다. 같은 이메일로 다시 확인하면 이전 요청을 이어서 확인합니다.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-primary",
+          "fontSize": 16,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "LYkYB",
+          "name": "초대 요청 확인",
+          "width": "fill_container",
+          "height": 48,
+          "fill": "$bg-surface",
+          "cornerRadius": 12,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "DG2xg",
+              "name": "초대 요청 확인 문구",
+              "fill": "$text-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "초대 요청 확인",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-primary",
+              "fontSize": 16,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "DRITZ",
+          "name": "운영 확인",
+          "fill": "$text-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "전송 결과가 불명확합니다. 관리자 확인 전에는 다시 보내지 마세요.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-primary",
+          "fontSize": 16,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "l1j3Wm",
+          "name": "수락 상태",
+          "fill": "$text-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "수락 대기",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-primary",
+          "fontSize": 14,
+          "fontWeight": "normal"
         }
       ]
     }

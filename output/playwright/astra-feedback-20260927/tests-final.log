@@ -1,0 +1,265 @@
+
+> hair-crm-vibes@0.1.0 test
+> npm run test:node && npm run test:r10 && npm run test:race
+
+
+> hair-crm-vibes@0.1.0 test:node
+> NODE_OPTIONS=--disable-warning=MODULE_TYPELESS_PACKAGE_JSON node --test tests/date-time.test.mjs tests/appointment-rules.test.mjs tests/csv-export.test.mjs tests/presentation-utils.test.mjs
+
+TAP version 13
+# Subtest: 소요시간 표시와 legacy 문자열 파싱은 분 단위 값을 보존한다
+ok 1 - 소요시간 표시와 legacy 문자열 파싱은 분 단위 값을 보존한다
+  ---
+  duration_ms: 0.666833
+  type: 'test'
+  ...
+# Subtest: 시간 문자열과 겹침 판정은 끝점이 맞닿은 예약을 중복으로 보지 않는다
+ok 2 - 시간 문자열과 겹침 판정은 끝점이 맞닿은 예약을 중복으로 보지 않는다
+  ---
+  duration_ms: 0.165542
+  type: 'test'
+  ...
+# Subtest: 영업 시작과 종료 경계에 정확히 맞는 예약은 허용한다
+ok 3 - 영업 시작과 종료 경계에 정확히 맞는 예약은 허용한다
+  ---
+  duration_ms: 0.140541
+  type: 'test'
+  ...
+# Subtest: 영업시간을 벗어나는 예약은 거부한다
+ok 4 - 영업시간을 벗어나는 예약은 거부한다
+  ---
+  duration_ms: 0.067375
+  type: 'test'
+  ...
+# Subtest: 휴게시간과 맞닿는 예약은 허용하고 실제로 겹치는 예약은 거부한다
+ok 5 - 휴게시간과 맞닿는 예약은 허용하고 실제로 겹치는 예약은 거부한다
+  ---
+  duration_ms: 0.129083
+  type: 'test'
+  ...
+# Subtest: 휴무일과 잘못된 시간 값은 명확한 오류를 반환한다
+ok 6 - 휴무일과 잘못된 시간 값은 명확한 오류를 반환한다
+  ---
+  duration_ms: 0.118042
+  type: 'test'
+  ...
+# Subtest: 예약 충돌 검색은 소요시간과 legacy duration을 함께 고려한다
+ok 7 - 예약 충돌 검색은 소요시간과 legacy duration을 함께 고려한다
+  ---
+  duration_ms: 0.144958
+  type: 'test'
+  ...
+# Subtest: 휴무일 집합은 빈 값을 제외하고 날짜 키만 유지한다
+ok 8 - 휴무일 집합은 빈 값을 제외하고 날짜 키만 유지한다
+  ---
+  duration_ms: 0.069917
+  type: 'test'
+  ...
+# Subtest: 취소 대상 추출은 확정 예약만 선택한다
+ok 9 - 취소 대상 추출은 확정 예약만 선택한다
+  ---
+  duration_ms: 1.047167
+  type: 'test'
+  ...
+# Subtest: 일괄 휴무 대상은 전체 기간 또는 선택 요일만 생성한다
+ok 10 - 일괄 휴무 대상은 전체 기간 또는 선택 요일만 생성한다
+  ---
+  duration_ms: 43.051625
+  type: 'test'
+  ...
+# Subtest: 동일 payload 재시도는 같은 request UUID를 재사용하고 성공 뒤 새 UUID를 만든다
+ok 11 - 동일 payload 재시도는 같은 request UUID를 재사용하고 성공 뒤 새 UUID를 만든다
+  ---
+  duration_ms: 2.325875
+  type: 'test'
+  ...
+# Subtest: 예약 횟수권 표시는 active 원장을 우선하고 없으면 released 이력을 보존한다
+ok 12 - 예약 횟수권 표시는 active 원장을 우선하고 없으면 released 이력을 보존한다
+  ---
+  duration_ms: 0.112583
+  type: 'test'
+  ...
+# Subtest: CSV는 UTF-8 BOM과 CRLF를 사용하고 모든 셀을 인용하며 수식을 무력화한다
+ok 13 - CSV는 UTF-8 BOM과 CRLF를 사용하고 모든 셀을 인용하며 수식을 무력화한다
+  ---
+  duration_ms: 1.692375
+  type: 'test'
+  ...
+# Subtest: CSV 스트림은 첫 페이지 이후 데이터를 순서대로 요청하고 청크로 내보낸다
+ok 14 - CSV 스트림은 첫 페이지 이후 데이터를 순서대로 요청하고 청크로 내보낸다
+  ---
+  duration_ms: 41.786666
+  type: 'test'
+  ...
+# Subtest: CSV 스트림은 기존 100페이지 상한을 넘어서도 계속 내보낸다
+ok 15 - CSV 스트림은 기존 100페이지 상한을 넘어서도 계속 내보낸다
+  ---
+  duration_ms: 41.198708
+  type: 'test'
+  ...
+# Subtest: 인증 헤더가 없으면 Supabase 클라이언트를 만들기 전에 401을 반환한다
+ok 16 - 인증 헤더가 없으면 Supabase 클라이언트를 만들기 전에 401을 반환한다
+  ---
+  duration_ms: 2.015416
+  type: 'test'
+  ...
+# Subtest: staff 사용자는 서버의 명시적 owner 검사에서 403을 받는다
+ok 17 - staff 사용자는 서버의 명시적 owner 검사에서 403을 받는다
+  ---
+  duration_ms: 0.771708
+  type: 'test'
+  ...
+# Subtest: owner는 사용자 JWT와 anon key로 페이지 조회 후 CSV를 받는다
+ok 18 - owner는 사용자 JWT와 anon key로 페이지 조회 후 CSV를 받는다
+  ---
+  duration_ms: 0.824458
+  type: 'test'
+  ...
+# Subtest: 조회 오류 응답과 로그에는 Supabase 상세정보가 노출되지 않는다
+ok 19 - 조회 오류 응답과 로그에는 Supabase 상세정보가 노출되지 않는다
+  ---
+  duration_ms: 0.366833
+  type: 'test'
+  ...
+# Subtest: 후속 페이지 조회 오류는 스트림을 중단하고 상세정보를 노출하지 않는다
+ok 20 - 후속 페이지 조회 오류는 스트림을 중단하고 상세정보를 노출하지 않는다
+  ---
+  duration_ms: 0.648584
+  type: 'test'
+  ...
+# Subtest: 예약 데이터셋도 고정된 백업 헤더로 CSV를 생성한다
+ok 21 - 예약 데이터셋도 고정된 백업 헤더로 CSV를 생성한다
+  ---
+  duration_ms: 0.570417
+  type: 'test'
+  ...
+# Subtest: 허용하지 않은 데이터셋은 인증 전에 400으로 거부한다
+ok 22 - 허용하지 않은 데이터셋은 인증 전에 400으로 거부한다
+  ---
+  duration_ms: 0.718041
+  type: 'test'
+  ...
+# Subtest: KST 자정 경계에서 날짜 키가 정확히 다음 날로 바뀐다
+ok 23 - KST 자정 경계에서 날짜 키가 정확히 다음 날로 바뀐다
+  ---
+  duration_ms: 45.007917
+  type: 'test'
+  ...
+# Subtest: 날짜 키 생성과 파싱은 월 인덱스 계약을 유지한다
+ok 24 - 날짜 키 생성과 파싱은 월 인덱스 계약을 유지한다
+  ---
+  duration_ms: 1.255459
+  type: 'test'
+  ...
+# Subtest: 날짜 덧셈은 월말, 윤년, 연말을 넘어서도 KST 날짜 키를 유지한다
+ok 25 - 날짜 덧셈은 월말, 윤년, 연말을 넘어서도 KST 날짜 키를 유지한다
+  ---
+  duration_ms: 0.440542
+  type: 'test'
+  ...
+# Subtest: 월 달력 메타데이터는 윤년과 요일을 정확히 계산한다
+ok 26 - 월 달력 메타데이터는 윤년과 요일을 정확히 계산한다
+  ---
+  duration_ms: 0.13675
+  type: 'test'
+  ...
+# Subtest: 날짜 차이와 상대 날짜 문구는 KST 날짜 키 단위로 계산된다
+ok 27 - 날짜 차이와 상대 날짜 문구는 KST 날짜 키 단위로 계산된다
+  ---
+  duration_ms: 0.203875
+  type: 'test'
+  ...
+# Subtest: 날짜 범위는 양끝을 포함하고 역방향과 상한 초과를 거부한다
+ok 28 - 날짜 범위는 양끝을 포함하고 역방향과 상한 초과를 거부한다
+  ---
+  duration_ms: 1.278459
+  type: 'test'
+  ...
+# Subtest: 가격은 미설정, 무료, 유료를 같은 문구 규칙으로 표시한다
+ok 29 - 가격은 미설정, 무료, 유료를 같은 문구 규칙으로 표시한다
+  ---
+  duration_ms: 13.588417
+  type: 'test'
+  ...
+# Subtest: 고객 검색은 이름과 메모를 데이터베이스 필터로 만든다
+ok 30 - 고객 검색은 이름과 메모를 데이터베이스 필터로 만든다
+  ---
+  duration_ms: 0.657333
+  type: 'test'
+  ...
+# Subtest: 전화번호 검색은 숫자만 추려 정규화 전화번호 필터를 함께 사용한다
+ok 31 - 전화번호 검색은 숫자만 추려 정규화 전화번호 필터를 함께 사용한다
+  ---
+  duration_ms: 0.144459
+  type: 'test'
+  ...
+# Subtest: PostgREST 필터 구문만 입력하면 전체 고객 조회로 바뀌지 않는다
+ok 32 - PostgREST 필터 구문만 입력하면 전체 고객 조회로 바뀌지 않는다
+  ---
+  duration_ms: 0.118542
+  type: 'test'
+  ...
+# Subtest: 고객 목록 요청은 화면에 필요한 최소 필드만 선택하고 검색 전용 필드를 반환하지 않는다
+ok 33 - 고객 목록 요청은 화면에 필요한 최소 필드만 선택하고 검색 전용 필드를 반환하지 않는다
+  ---
+  duration_ms: 14.60625
+  type: 'test'
+  ...
+# Subtest: 고객 목록 요청은 exact count와 50개 단위 pagination을 사용한다
+ok 34 - 고객 목록 요청은 exact count와 50개 단위 pagination을 사용한다
+  ---
+  duration_ms: 1.445167
+  type: 'test'
+  ...
+# Subtest: 보관 고객 요청은 활성 고객 요청과 반대 필터를 사용한다
+ok 35 - 보관 고객 요청은 활성 고객 요청과 반대 필터를 사용한다
+  ---
+  duration_ms: 1.720625
+  type: 'test'
+  ...
+1..35
+# tests 35
+# suites 0
+# pass 35
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 156.879625
+
+> hair-crm-vibes@0.1.0 test:r10
+> node scripts/verify-r10-staff-management.mjs
+
+PASS strict bearer and input validation
+PASS invitation maintenance flag is exact true and fails closed before downstream calls
+PASS unauthenticated invitation requests remain 401 before maintenance gate
+PASS server configuration requires the secret only for admin work
+PASS invite redirect accepts only canonical production or matching localhost origins
+PASS staff directory joins auth users but exposes only masked email
+PASS new invitation provisions initial staff after owner authorization
+PASS confirmed member duplicate stops before invite or provision
+PASS unconfirmed existing user is re-invited with idempotent provisioning
+PASS failed re-invite replay is reported as unknown instead of false success
+PASS confirmed profileless user is repaired without another invitation
+PASS confirmed profileless recovery uses the active canonical ledger request
+PASS mismatched Admin invite email is quarantined as unknown before provisioning
+PASS partial invite failure is repairable and retry remains idempotent
+PASS successful invite replay does not send another Auth email
+PASS used request id is rejected before inviting a different new email
+PASS concurrent requests for one active fingerprint call Admin invite at most once
+PASS claimed replay is fail-closed and never exposes a claim token
+PASS Auth success waits for user visibility without another email attempt
+PASS unknown public response is non-retryable and contains no email or token
+PASS role changes expose only minimal changed or unchanged state
+PASS database and Auth errors map to stable public codes without raw details
+PASS 22 R-10 server contract checks
+
+> hair-crm-vibes@0.1.0 test:race
+> jest --runInBand --runTestsByPath tests/appointments-page-race.test.jsx tests/customer-price-input.test.jsx tests/staff-invitation-retry.test.jsx tests/login-feedback.test.jsx tests/staff-auth-lifecycle.test.jsx
+
+
+Test Suites: 5 passed, 5 total
+Tests:       54 passed, 54 total
+Snapshots:   0 total
+Time:        4.653 s, estimated 5 s
+Ran all test suites within paths "tests/appointments-page-race.test.jsx", "tests/customer-price-input.test.jsx", "tests/staff-invitation-retry.test.jsx", "tests/login-feedback.test.jsx", "tests/staff-auth-lifecycle.test.jsx".

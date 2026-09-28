@@ -435,7 +435,7 @@ test('A 예약 수정 완료 후에는 이동한 월·날짜 B만 새로고침�
   await renderLoadedDay(appointmentA);
 
   fireEvent.click(screen.getByRole('button', { name: '수정' }));
-  fireEvent.click(screen.getByRole('button', { name: '저장' }));
+  fireEvent.click(screen.getByRole('button', { name: '예약 정보 저장' }));
   const [editA] = await waitForRequestCount('edit', 1);
 
   fireEvent.click(screen.getByRole('button', { name: '다음 달' }));
@@ -450,7 +450,7 @@ test('A 예약 수정 완료 후에는 이동한 월·날짜 B만 새로고침�
   await settleRequest(dailyRequests[1], { data: [appointmentB], error: null });
 
   fireEvent.click(screen.getByRole('button', { name: '수정' }));
-  expect(screen.getByRole('button', { name: '저장' })).not.toBeNull();
+  expect(screen.getByRole('button', { name: '예약 정보 저장' })).not.toBeNull();
 
   await settleRequest(editA, { data: null, error: null });
 
@@ -464,7 +464,7 @@ test('A 예약 수정 완료 후에는 이동한 월·날짜 B만 새로고침�
 
   expect(screen.getByRole('heading', { name: /8월 1일.*예약/ })).not.toBeNull();
   expect(document.body.textContent).toContain('편집 B 고객');
-  expect(screen.getByRole('button', { name: '저장' })).not.toBeNull();
+  expect(screen.getByRole('button', { name: '예약 정보 저장' })).not.toBeNull();
   expect(screen.queryByText(/수정 A 고객 예약을 수정/)).toBeNull();
 });
 
@@ -477,7 +477,7 @@ test('겹친 예약 수정 중 이전 날짜로 돌아가도 해당 예약의 �
   await renderLoadedDay(appointmentA);
 
   fireEvent.click(screen.getByRole('button', { name: '수정' }));
-  fireEvent.click(screen.getByRole('button', { name: '저장' }));
+  fireEvent.click(screen.getByRole('button', { name: '예약 정보 저장' }));
   const [editA] = await waitForRequestCount('edit', 1);
 
   fireEvent.click(screen.getByRole('button', { name: /2026년 7월 14일/ }));
@@ -490,7 +490,7 @@ test('겹친 예약 수정 중 이전 날짜로 돌아가도 해당 예약의 �
   await settleRequest(dailyB, { data: [appointmentB], error: null });
 
   fireEvent.click(screen.getByRole('button', { name: '수정' }));
-  fireEvent.click(screen.getByRole('button', { name: '저장' }));
+  fireEvent.click(screen.getByRole('button', { name: '예약 정보 저장' }));
   const editB = (await waitForRequestCount('edit', 2))[1];
 
   fireEvent.click(screen.getByRole('button', { name: /2026년 7월 13일/ }));

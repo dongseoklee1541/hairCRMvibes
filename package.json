@@ -6,9 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "npm run test:node && npm run test:race",
+    "test": "npm run test:node && npm run test:r10 && npm run test:race",
     "test:node": "NODE_OPTIONS=--disable-warning=MODULE_TYPELESS_PACKAGE_JSON node --test tests/date-time.test.mjs tests/appointment-rules.test.mjs tests/csv-export.test.mjs tests/presentation-utils.test.mjs",
-    "test:race": "jest --runInBand --runTestsByPath tests/appointments-page-race.test.jsx tests/customer-price-input.test.jsx"
+    "test:race": "jest --runInBand --runTestsByPath tests/appointments-page-race.test.jsx tests/customer-price-input.test.jsx tests/staff-invitation-retry.test.jsx tests/login-feedback.test.jsx tests/staff-auth-lifecycle.test.jsx",
+    "test:r10": "node scripts/verify-r10-staff-management.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.95.3",

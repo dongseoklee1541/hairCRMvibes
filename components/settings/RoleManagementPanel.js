@@ -165,7 +165,7 @@ function upsertInvitedStaff(currentStaff, payload) {
 }
 
 export default function RoleManagementPanel() {
-  const { session, user } = useAuth();
+  const { session, user, pendingStaffInvitations } = useAuth();
   const accessToken = session?.access_token || '';
   const [staff, setStaff] = useState([]);
   const [directoryStatus, setDirectoryStatus] = useState('loading');
@@ -178,6 +178,11 @@ export default function RoleManagementPanel() {
   const [roleErrorMessage, setRoleErrorMessage] = useState('');
   const [roleFeedback, setRoleFeedback] = useState('');
   const inviteSubmittingRef = useRef(false);
+  const mountedRef = useRef(true);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => { mountedRef.current = false; };
+  }, []);
   const roleSubmittingRef = useRef(false);
   const returnFocusRef = useRef(null);
 
@@ -224,6 +229,13 @@ export default function RoleManagementPanel() {
       return;
     }
 
+    const requests = pendingStaffInvitations;
+    if (!requests) {
+      setInviteFeedback({ kind: 'error', message: ERROR_MESSAGES.backend_failure });
+      return;
+    }
+    const requestId = requests.get(normalizedEmail) || globalThis.crypto.randomUUID();
+    requests.set(normalizedEmail, requestId);
     inviteSubmittingRef.current = true;
     setInviteSubmitting(true);
     setInviteFeedback(EMPTY_FEEDBACK);
@@ -233,11 +245,14 @@ export default function RoleManagementPanel() {
         method: 'POST',
         body: {
           email: normalizedEmail,
-          requestId: globalThis.crypto.randomUUID(),
+          requestId,
         },
       });
 
+      // If the screen disappeared, keep the ID for a user-visible replay later.
+      if (!mountedRef.current) return;
       setStaff((currentStaff) => upsertInvitedStaff(currentStaff, payload));
+      if (requests.get(normalizedEmail) === requestId) requests.delete(normalizedEmail);
       setInviteEmail('');
       setDirectoryStatus('ready');
 
@@ -265,6 +280,7 @@ export default function RoleManagementPanel() {
         });
       }
     } catch (error) {
+      if (!mountedRef.current) return;
       const code = getErrorCode(error);
       setInviteFeedback({
         kind: code === 'duplicate_invite'
@@ -277,11 +293,13 @@ export default function RoleManagementPanel() {
             ].includes(code)
             ? 'pending'
             : 'error',
-        message: getErrorMessage(code),
+        message: code === 'network_error'
+          ? '연결을 확인한 뒤 초대 요청 확인을 눌러주세요. 같은 요청을 이어서 확인합니다.'
+          : getErrorMessage(code),
       });
     } finally {
       inviteSubmittingRef.current = false;
-      setInviteSubmitting(false);
+      if (mountedRef.current) setInviteSubmitting(false);
     }
   };
 
@@ -427,7 +445,7 @@ export default function RoleManagementPanel() {
             ) : (
               <>
                 <UserPlus size={18} aria-hidden="true" />
-                초대 보내기
+                {pendingStaffInvitations?.has(inviteEmail.trim().toLowerCase()) ? '초대 요청 확인' : '초대 보내기'}
               </>
             )}
           </button>

@@ -82,7 +82,7 @@
 
 ### 5.1 Pencil Desktop
 
-기본 경로는 Desktop MCP입니다. 활성 `.pen` 절대 경로·단독 편집·저장 검증을 포함한 [Pencil 작업 절차](docs/operations/pencil-desktop-workflow.md)를 설계 작업 시 따릅니다.
+기본 경로는 Desktop MCP입니다. 현재 도구 목록·스키마를 먼저 확인하고 과거 API 이름을 가정하지 않습니다. 필요한 화면만 읽고 변경 범위의 구조·시각 검증과 디스크 저장을 구분합니다. 활성 `.pen` 절대 경로·단독 편집·저장 검증을 포함한 [Pencil 작업 절차](docs/operations/pencil-desktop-workflow.md)를 설계 작업 시 따릅니다.
 
 ## 6) 필수 검증
 

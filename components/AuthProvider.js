@@ -30,6 +30,7 @@ const AuthContext = createContext({
   loading: true,
   isAuthReady: false,
   isRoleReady: false,
+  pendingStaffInvitations: null,
   signIn: async () => {
     throw new Error('Auth provider is not ready.');
   },
@@ -51,6 +52,12 @@ export function AuthProvider({ children }) {
   const previousPathnameRef = useRef(pathname);
 
   const user = session?.user || null;
+  const pendingInvitationsRef = useRef({ userId: user?.id, requests: new Map() });
+  if (pendingInvitationsRef.current.userId !== user?.id) {
+    pendingInvitationsRef.current = { userId: user?.id, requests: new Map() };
+  }
+  // Survives AuthGate role rechecks, but never crosses a signed-in user boundary.
+  const pendingStaffInvitations = pendingInvitationsRef.current.requests;
 
   const resolveRole = useCallback(async (currentUser) => {
     const requestId = roleRequestRef.current + 1;
@@ -334,6 +341,7 @@ export function AuthProvider({ children }) {
       signIn,
       signOut,
       refreshAuth,
+      pendingStaffInvitations,
     }),
     [
       user,
@@ -346,6 +354,7 @@ export function AuthProvider({ children }) {
       signIn,
       signOut,
       refreshAuth,
+      pendingStaffInvitations,
     ]
   );
 
