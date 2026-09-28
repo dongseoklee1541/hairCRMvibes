@@ -1,0 +1,56 @@
+
+> hair-crm-vibes@0.1.0 build
+> next build
+
+   ▲ Next.js 15.5.20
+
+   Creating an optimized production build ...
+ ✓ (pwa) Compiling for server...
+ ✓ (pwa) Compiling for server...
+ ✓ (pwa) Compiling for client (static)...
+ ○ (pwa) Service worker: /private/tmp/haircrm-feedback-build-tjilndeo/public/sw.js
+ ○ (pwa)   URL: /sw.js
+ ○ (pwa)   Scope: /
+ ○ (pwa) This app will fallback to these precached routes when fetching from the cache and the network fails:
+ ○ (pwa)   Documents (pages): /offline.html
+ ○ (pwa) Custom runtimeCaching array found, using it instead of the default one.
+ ✓ Compiled successfully in 8.3s
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/15) ...
+   Generating static pages (3/15) 
+   Generating static pages (7/15) 
+   Generating static pages (11/15) 
+ ✓ Generating static pages (15/15)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /                                    6.91 kB         166 kB
+├ ○ /_not-found                            987 B         106 kB
+├ ƒ /api/cron/supabase-keepalive           138 B         105 kB
+├ ƒ /api/export                            138 B         105 kB
+├ ƒ /api/staff                             138 B         105 kB
+├ ƒ /api/staff/[userId]/role               138 B         105 kB
+├ ƒ /api/staff/invitations                 138 B         105 kB
+├ ○ /appointments                        9.11 kB         172 kB
+├ ○ /appointments/new                    10.1 kB         178 kB
+├ ○ /customers                             138 B         105 kB
+├ ƒ /customers/[id]                        14 kB         177 kB
+├ ƒ /customers/[id]/edit                 3.03 kB         166 kB
+├ ○ /customers/duplicates                10.3 kB         169 kB
+├ ○ /customers/new                       2.02 kB         165 kB
+├ ○ /invite/accept                       4.36 kB         163 kB
+├ ƒ /login                               3.42 kB         159 kB
+├ ○ /settings                            13.8 kB         176 kB
+├ ○ /settings/team                       7.17 kB         170 kB
+└ ○ /stats                               5.47 kB         161 kB
++ First Load JS shared by all             105 kB
+  ├ chunks/142349c9-1ba4f9de0bde7598.js  54.2 kB
+  ├ chunks/386-e1f9cc1d58ecf8c3.js       48.5 kB
+  └ other shared chunks (total)          1.99 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

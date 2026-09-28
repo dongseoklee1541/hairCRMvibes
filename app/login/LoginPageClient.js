@@ -13,6 +13,7 @@ export default function LoginPageClient({ from = '/' }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const redirectTo = useMemo(() => {
     return from.startsWith('/') ? from : '/';
@@ -37,7 +38,15 @@ export default function LoginPageClient({ from = '/' }) {
       router.push(redirectTo);
       router.refresh();
     } catch (error) {
-      setErrorMessage(error?.message || '로그인 중 오류가 발생했습니다.');
+      const messages = {
+        invalid_credentials: '이메일 또는 비밀번호를 확인해 주세요.',
+        email_not_confirmed: '이메일의 초대 링크를 먼저 확인해 주세요.',
+        over_request_rate_limit: '잠시 기다린 뒤 다시 로그인해 주세요.',
+        over_email_send_rate_limit: '잠시 기다린 뒤 다시 로그인해 주세요.',
+      };
+      setErrorMessage(!navigator.onLine || error?.name === 'AuthRetryableFetchError'
+        ? '인터넷 연결을 확인한 뒤 다시 로그인해 주세요.'
+        : messages[error?.code] || '로그인하지 못했습니다. 잠시 후 다시 시도하거나 관리자에게 문의해 주세요.');
     }
   };
 
@@ -52,11 +61,13 @@ export default function LoginPageClient({ from = '/' }) {
 
           <form onSubmit={handleSubmit} className="flex-col" style={{ gap: 12 }}>
             <div className="form-group">
-              <label className="form-label">이메일</label>
+              <label className="form-label" htmlFor="login-email">이메일</label>
               <div className="form-input">
                 <input
+                  id="login-email"
+                  aria-describedby={errorMessage ? "login-error" : undefined}
                   type="email"
-                  placeholder="owner@salon.com"
+                  placeholder="이메일을 입력하세요"
                   autoComplete="username"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -67,10 +78,12 @@ export default function LoginPageClient({ from = '/' }) {
             </div>
 
             <div className="form-group">
-              <label className="form-label">비밀번호</label>
+              <label className="form-label" htmlFor="login-password">비밀번호</label>
               <div className="form-input">
                 <input
-                  type="password"
+                  id="login-password"
+                  aria-describedby={errorMessage ? "login-error" : undefined}
+                  type={showPassword ? "text" : "password"}
                   placeholder="********"
                   autoComplete="current-password"
                   value={password}
@@ -78,10 +91,13 @@ export default function LoginPageClient({ from = '/' }) {
                   required
                   disabled={loading}
                 />
+                <button type="button" className={styles.passwordToggle} aria-label={showPassword ? '비밀번호 숨기기' : '비밀번호 보기'} aria-pressed={showPassword} onClick={() => setShowPassword(value => !value)}>
+                  {showPassword ? '숨기기' : '보기'}
+                </button>
               </div>
             </div>
 
-            {errorMessage ? <p className={styles.loginMessage}>{errorMessage}</p> : null}
+            {errorMessage ? <p id="login-error" role="alert" className={styles.loginMessage}>{errorMessage}</p> : null}
 
             <button type="submit" className="btn-primary" disabled={loading || !email || !password}>
               {loading ? (

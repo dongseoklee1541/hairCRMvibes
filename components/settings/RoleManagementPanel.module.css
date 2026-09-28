@@ -80,7 +80,7 @@
 
 .inviteForm > label {
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
 }
 
@@ -139,7 +139,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   line-height: 1.45;
 }
@@ -178,7 +178,7 @@
   background: var(--accent-light);
   color: var(--accent-primary);
   padding: 6px 10px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
 }
 
@@ -191,7 +191,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -220,7 +220,7 @@
 
 .systemState span {
   max-width: 260px;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.5;
 }
 
@@ -286,7 +286,7 @@
   padding: 4px 8px;
   display: inline-flex;
   align-items: center;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
   line-height: 1;
 }
@@ -316,7 +316,7 @@
   flex-wrap: wrap;
   gap: 6px 8px;
   color: var(--text-tertiary);
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .invite_active {
@@ -332,7 +332,7 @@
 
 .selfGuard {
   color: var(--status-warning-strong);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -341,7 +341,7 @@
   border-radius: 12px;
   background: var(--bg-surface);
   color: var(--text-primary);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
 }
 

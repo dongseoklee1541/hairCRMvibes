@@ -1,0 +1,46 @@
+BEGIN
+psql:supabase/migrations/20260926000000_rls_auto_enable_execute_hardening.sql:38: NOTICE:  rls_auto_enable() absent; no ACL change required
+DO
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE FUNCTION
+CREATE EVENT TRIGGER
+GRANT
+GRANT
+SELECT 1
+SAVEPOINT
+ALTER FUNCTION
+psql:supabase/migrations/20260926000000_rls_auto_enable_execute_hardening.sql:38: ERROR:  rls_auto_enable contract changed; inspect before applying ACL hardening
+CONTEXT:  PL/pgSQL function inline_code_block line 23 at RAISE
+ROLLBACK
+SAVEPOINT
+ALTER EVENT TRIGGER
+psql:supabase/migrations/20260926000000_rls_auto_enable_execute_hardening.sql:38: ERROR:  rls_auto_enable contract changed; inspect before applying ACL hardening
+CONTEXT:  PL/pgSQL function inline_code_block line 23 at RAISE
+ROLLBACK
+SAVEPOINT
+REVOKE
+psql:supabase/migrations/20260926000000_rls_auto_enable_execute_hardening.sql:38: ERROR:  rls_auto_enable unexpected effective privileges; ACL change rolled back
+CONTEXT:  PL/pgSQL function inline_code_block line 33 at RAISE
+ROLLBACK
+SAVEPOINT
+CREATE ROLE
+GRANT
+GRANT ROLE
+psql:supabase/migrations/20260926000000_rls_auto_enable_execute_hardening.sql:38: ERROR:  rls_auto_enable unexpected effective privileges; ACL change rolled back
+CONTEXT:  PL/pgSQL function inline_code_block line 33 at RAISE
+ROLLBACK
+DO
+DO
+SET
+CREATE TABLE
+SELECT 1
+SELECT 1
+CREATE TABLE
+CREATE TABLE
+RESET
+DO
+ROLLBACK
+PASS: absent function, replay, role matrix, unchanged definition, five DDL RLS cases

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useMemo, useRef, Suspense } from 'rea
 import { useRouter, useSearchParams } from 'next/navigation';
 import { X, ChevronDown, Check, Clock, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/components/AuthProvider';
 import { formatPriceKrw } from '@/lib/formatPrice';
 import AppointmentDatePicker from '@/components/appointments/AppointmentDatePicker';
 import { AppointmentCustomerPicker } from '@/components/appointments/AppointmentCustomerPicker';
@@ -28,6 +29,7 @@ import styles from './page.module.css';
 
 function NewAppointmentForm() {
   const router = useRouter();
+  const { role } = useAuth();
   const searchParams = useSearchParams();
   const customerIdFromQuery = searchParams.get('customerId');
   const customerPickerRef = useRef(null);
@@ -98,7 +100,7 @@ function NewAppointmentForm() {
       const requestedCustomer = data?.find((customer) => customer.id === customerIdFromQuery);
       setFormData((prev) => {
         const currentCustomer = data?.find((customer) => customer.id === prev.customer_id);
-        const nextCustomerId = currentCustomer?.id || requestedCustomer?.id || data?.[0]?.id || '';
+        const nextCustomerId = currentCustomer?.id || requestedCustomer?.id || '';
         return { ...prev, customer_id: nextCustomerId };
       });
     } catch (error) {
@@ -240,7 +242,7 @@ function NewAppointmentForm() {
       setSessionPassOptions([]);
       setSessionPassError(
         navigator.onLine
-          ? '횟수권을 불러오지 못했습니다. 횟수권 없이 저장하거나 다시 시도해주세요.'
+          ? '횟수권을 불러오지 못했습니다. 다시 불러온 뒤 예약을 등록해 주세요.'
           : '오프라인에서는 횟수권을 확인할 수 없습니다.'
       );
       setFormData((current) => ({ ...current, session_pass_id: '' }));
@@ -475,6 +477,11 @@ function NewAppointmentForm() {
                 ? '휴무일 정보를 불러오는 중입니다...'
                 : closedDaysError || '휴무일은 달력에서 선택하지 못하게 표시됩니다.'}
             </p>
+            {closedDaysError && (
+              <button type="button" className="btn-secondary" onClick={fetchClosedDays} disabled={loading || fetchingClosedDays}>
+                휴무일 다시 불러오기
+              </button>
+            )}
           </div>
 
           {/* Time */}
@@ -502,11 +509,16 @@ function NewAppointmentForm() {
               </div>
             ) : settingsError ? (
               <div className={styles.serviceStateError} role="alert">
-                {settingsError}
+                <p>{settingsError}</p>
+                <button type="button" className="btn-secondary" onClick={fetchAppointmentSettings} disabled={loading || fetchingSettings}>
+                  시술 다시 불러오기
+                </button>
               </div>
             ) : serviceDefaults.length === 0 ? (
               <div className={styles.serviceStateError} role="alert">
-                예약 가능한 시술이 없습니다. 설정에서 시술을 추가하거나 다시 사용하도록 바꾼 뒤 예약해 주세요.
+                {role === 'owner'
+                  ? '예약 가능한 시술이 없습니다. 설정에서 시술을 추가하거나 다시 사용하도록 바꾼 뒤 예약해 주세요.'
+                  : '예약 가능한 시술이 없습니다. 관리자에게 시술 등록을 요청해 주세요.'}
               </div>
             ) : (
               <>
@@ -645,6 +657,7 @@ function NewAppointmentForm() {
             Boolean(closedDaysError) ||
             Boolean(settingsError) ||
             customers.length === 0 ||
+            !formData.customer_id ||
             !selectedService
           }
         >

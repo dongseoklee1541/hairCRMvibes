@@ -50,6 +50,18 @@ alter event trigger ensure_rls disable;
 \set ON_ERROR_STOP on
 rollback to savepoint disabled_trigger;
 
+savepoint service_public_only;
+revoke execute on function public.rls_auto_enable() from service_role;
+\set ON_ERROR_STOP off
+\ir ../../supabase/migrations/20260926000000_rls_auto_enable_execute_hardening.sql
+\if :ERROR
+\else
+  \echo FAIL: expected refusal when service_role depends on PUBLIC
+  \quit 1
+\endif
+\set ON_ERROR_STOP on
+rollback to savepoint service_public_only;
+
 savepoint inherited_execute;
 create role rls_inherited;
 grant execute on function public.rls_auto_enable() to rls_inherited;

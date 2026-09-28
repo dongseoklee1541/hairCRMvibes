@@ -715,7 +715,7 @@ export default function AppointmentsPage() {
 
     const actualPriceKrw = editForm.actual_price_krw === '' ? null : Number(editForm.actual_price_krw);
     if (actualPriceKrw !== editForm.original_actual_price_krw) {
-      publishActionMessage('실제 시술금액은 아래의 별도 저장 버튼으로 먼저 저장해주세요.', mutationSelection.dateKey);
+      publishActionMessage('시술금액을 먼저 저장한 뒤 예약 정보를 저장해 주세요.', mutationSelection.dateKey);
       return;
     }
 
@@ -850,7 +850,7 @@ export default function AppointmentsPage() {
         actual_price_updated_at: next?.actual_price_updated_at ?? current.actual_price_updated_at,
         actual_price_update_reason: '',
       }));
-      publishActionMessage('실제 시술금액을 저장했습니다.', mutationSelection.dateKey);
+      publishActionMessage('시술금액을 저장했습니다. 예약 정보는 아래 버튼으로 저장해 주세요.', mutationSelection.dateKey);
       await refreshAppointments();
     } catch (error) {
       if (!mountedRef.current || editingAppointmentRef.current.sessionId !== editSession.sessionId) return;
@@ -1241,9 +1241,12 @@ export default function AppointmentsPage() {
                             disabled={isBusy || !actualPriceChanged}
                           >
                             {actualPriceSavingById.has(appt.id) ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
-                            실제 금액 저장
+                            시술금액 저장
                           </button>
-                          <span className={styles.fieldHint}>실제 금액은 예약 정보와 별도로 저장되어 충돌 시 다른 수정 내용을 덮어쓰지 않습니다.</span>
+                          <span className={styles.fieldHint} role="status">
+                            {actualPriceChanged ? '시술금액을 아직 저장하지 않았습니다.' : '시술금액에 저장할 변경이 없습니다.'}
+                            {' '}금액과 예약 정보는 각각 저장해 주세요.
+                          </span>
                         </div>
                         <label className={styles.editField}>
                           <span>메모</span>
@@ -1264,7 +1267,7 @@ export default function AppointmentsPage() {
                             ) : (
                               <Save size={16} />
                             )}
-                            <span>저장</span>
+                            <span>예약 정보 저장</span>
                           </button>
                         </div>
                       </form>

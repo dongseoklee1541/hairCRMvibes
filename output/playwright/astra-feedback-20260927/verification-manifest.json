@@ -1,0 +1,48 @@
+{
+  "baseHead": "76b64f60f594071583aea7c8a030c1a9ee095ff9",
+  "status": "local implementation verified; not committed or deployed",
+  "nodeTests": 35,
+  "r10ContractChecks": 22,
+  "jestTests": 54,
+  "viewports": [
+    [
+      390,
+      844
+    ],
+    [
+      360,
+      800
+    ]
+  ],
+  "penVersion": "1.2.14",
+  "files": {
+    ".github/workflows/test-build.yml": "7d630230405b537c00a0229b22d902103b456e264cb4576a552e5890c6740b0c",
+    "AGENTS.md": "f9544f3feaf8e0fc42035c836cebd01f0635ff81650e2fb6633de76ee6d06fb9",
+    "app/appointments/new/page.js": "ab09f5b16d5399e8434aec946bb3a52e2f065f9a7a4ced62355fa8dd9554461e",
+    "app/appointments/page.js": "c5b4057fbcf6f465a52a0466b4b0927b072b11d1e3dfee2a6f9cbcee10d62ebf",
+    "app/appointments/page.module.css": "dc7ee7cee460b390acdece72d26e7263e10c5abbfb39aa3c44b7bb832e49ae62",
+    "app/login/LoginPageClient.js": "4dc5375036b97f154dee1ad12baf386bcd389c3031981b129cb6085e3f80beba",
+    "app/login/page.module.css": "9026c0c94260e14bc7c08661e4ba866d5626bddcbbe3b7c05261246af74565f4",
+    "components/AuthProvider.js": "48c8b536c74b9c59c11a0ef47d6551ff97c40c6f7d8cff1064bfd1b6aff043d9",
+    "components/appointments/AppointmentDatePicker.module.css": "ffa0cd3fe6f618113651254798fdfef1819df79930d7b1e4826d8693dd583b3c",
+    "components/settings/RoleManagementPanel.js": "f092a61a29028ae8955fc17fcc2dfdc20ed9bfff25e114a82155fd13ab949966",
+    "components/settings/RoleManagementPanel.module.css": "1a9d500749649be203d22ae0e1b41e8fe857932974f13023703490b2cd116d87",
+    "docs/operations/pencil-desktop-workflow.md": "b3e3155b234fcd518bbbd72ad99789aa11b381a437e632e13866f95a0990187e",
+    "docs/roadmap/R-10-role-management.md": "c2dd098ba121bc46a755e40e6ddb0690544c1cef61637340dd79c7dc7ef0d2ce",
+    "docs/roadmap/R-14-easy-usability-foundation.md": "ed74272dcaf5985f087aa311c81d596614d856c020f1e6087c824283bdade98d",
+    "docs/roadmap/README.md": "50924935b412a20d0360ce1f4d48c40a4cc2777734f425c393247cc17172f6eb",
+    "future-todo.md": "ef36e69be93f3f56906d499ee555f9c0154972e557fb946d17d31f9f226453a4",
+    "lib/server/staffManagementCore.mjs": "7d609a75bf1cb1b455e43cb409c2c2709578079485e7a35a9593d9e063192d2e",
+    "package.json": "ca0bf4a703bf0e489c549df701401371f799d44271e9ca5fe47f847ba999e003",
+    "pencil-hairshopcrm.pen": "aa6c294a1ef5f6872f63f828d0421a7382c4010d453826dafc9f02323ce1041f",
+    "scripts/verify-r10-staff-management.mjs": "356d9ea1b5428c2a08f007e009e90f1118584ce8959be4bda8f76e0a56567d6d",
+    "tests/appointments-page-race.test.jsx": "1806214e5f4d550fb7f30af03906ed353b5025917a27a6ad9f8cd55827aeb23f",
+    "tests/sql/rls-auto-enable-hardening.sql": "35ef4ac51ce0cca40f2ea5ac7ab118ab41e26f0a1254184f4c3fcd17f0ee8f0f",
+    "tests/login-feedback.test.jsx": "998e0b332387ba47e91cc465807016f4a897cc48287cb965bf4a4ec671939da5",
+    "tests/staff-invitation-retry.test.jsx": "eed0ba3655ec5e446fe0c8a3444a99b8a8b46d78cb979084284aaefa82d62420",
+    "tests/staff-auth-lifecycle.test.jsx": "7ed69535c6b2bb089f69be37aca8252f2962864b21ad4bc4b4ad9123dbaa155c",
+    "docs/roadmap/R-10-astra-review-2026-09-27.md": "b29c19137178e689764c92d24aa22c931bbb6c0cdf0087037f6c1ff7f68d17fb",
+    "docs/roadmap/R-14-astra-usability-review-2026-09-27.md": "3a2bf882808e78bb256dfa9ac7fe8e7b8f2ce22983f81465fb39cd4f7848b959",
+    "docs/roadmap/astra-feedback-remediation-2026-09-27.md": "93fd30b174345ff440218f77a9a18f852f6c0ab9bc6bc35e32c68853ba60ddfe"
+  }
+}

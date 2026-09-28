@@ -68,7 +68,7 @@
   padding: 14px 16px;
   border-radius: var(--radius-md);
   background: var(--status-warning-light, #fcebdf);
-  color: var(--status-warning, #9a5a2b);
+  color: var(--status-warning-strong, #9a5a2b);
   font-size: 14px;
   line-height: 1.5;
 }
@@ -81,7 +81,7 @@
   gap: 7px;
   border-radius: 10px;
   background: var(--bg-surface);
-  color: var(--status-warning, #9a5a2b);
+  color: var(--status-warning-strong, #9a5a2b);
   font-size: 14px;
   font-weight: 700;
 }
