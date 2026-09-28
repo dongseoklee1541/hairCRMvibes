@@ -8,7 +8,7 @@
 
 ## 현재 기준 (2026-09-28 KST 배포 점검)
 
-- 로컬 `main`과 GitHub `main`: `a8ce41478891ce249b596fa1528aab5de1ec157d` (계정 도구 PR #42 병합). PR·병합 후 CI와 Vercel 검사 success를 확인했습니다. 이 값은 점검 시점 기록이며 다음 세션 시작 시 다시 확인합니다.
+- 2026-09-26 당시 로컬 `main`과 GitHub `main`: `a8ce41478891ce249b596fa1528aab5de1ec157d` (계정 도구 PR #42 병합). PR·병합 후 CI와 Vercel 검사 success를 확인했습니다. 이 값은 점검 시점 기록이며 다음 세션 시작 시 다시 확인합니다.
 - PR #39 금액 입력 수정은 병합·Production 배포 성공 기록 확인. PR #40 Astra·브라우저 작업 지침도 병합 완료입니다. 상세 근거와 확인 한계는 [문서 점검 기록](./docs/roadmap/documentation-audit-2026-09-22.md)을 따릅니다.
 - 2026-09-26 Supabase Production·Preview의 Auth URL·Advisor와 R-10 함수/권한/RLS catalog를 읽기 전용 확인했습니다. [보안 점검 결과와 변경안](./docs/roadmap/security-audit-2026-09-26.md)을 참고합니다. 이후 승인된 Auth URL 설정은 양 환경에 적용·재조회 완료했으며 DB 권한·데이터는 변경하지 않았습니다. 실제 owner/staff 동작과 Vercel 초대 flag 값·canonical alias·실기기는 미검증입니다.
 
