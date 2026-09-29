@@ -1,15 +1,18 @@
 ---
 id: TASK-27
 title: Backlog 전면 전환 저장소 반영·main 병합
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-09-29 15:21'
-updated_date: '2026-09-29 15:21'
+updated_date: '2026-09-29 15:36'
 labels:
   - publication
   - approved-git-and-auto-deploy
 dependencies:
   - TASK-26
+references:
+  - 'https://github.com/dongseoklee1541/hairCRMvibes/pull/46'
+  - 'https://github.com/dongseoklee1541/hairCRMvibes/actions/runs/36590544813'
 documentation:
   - backlog/docs/releases/doc-45 - backlog-publication-20260930.md
 type: chore
@@ -26,10 +29,10 @@ Backlog 전면 이관은 TASK-26의 로컬 완료 범위다. 2026-09-30 사용�
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 전환 파일만 별도 branch에 commit/push하고 main을 base로 PR을 생성한다.
-- [ ] #2 실제 PR head의 필수 CI·mergeability를 확인한 뒤 main에 병합한다.
-- [ ] #3 병합 commit의 main CI 및 연동 Production 자동 배포 상태를 각각 확인한다.
-- [ ] #4 게시·배포 근거와 남은 한계는 Backlog task/doc에 남기고 기존 사용자 산출물을 보존한다.
+- [x] #1 전환 파일만 별도 branch에 commit/push하고 main을 base로 PR을 생성한다.
+- [x] #2 실제 PR head의 필수 CI·mergeability를 확인한 뒤 main에 병합한다.
+- [x] #3 병합 commit의 main CI 및 연동 Production 자동 배포 상태를 각각 확인한다.
+- [x] #4 게시·배포 근거와 남은 한계는 Backlog task/doc에 남기고 기존 사용자 산출물을 보존한다.
 <!-- AC:END -->
 
 ## Implementation Plan
@@ -46,4 +49,12 @@ Backlog 전면 이관은 TASK-26의 로컬 완료 범위다. 2026-09-30 사용�
 
 <!-- SECTION:NOTES:BEGIN -->
 사전 확인: 저장소 전용 계정 dongseoklee1541 auth 및 permissions.push=true. origin/main은 b095a7546a16169b6706ab8b520b1e38c7776f14, 작업 branch codex/backlog-md-migration. Git helper/프로필/전역 설정은 바꾸지 않았다. 로컬 이관 감사 40개 원문·CLI·관계/링크·보존 및 격리 build 통과를 재사용한다.
+
+PR #46 main 병합 완료: reviewed head bd156804841f1e45e76dd503a6fbfd763d8e62de, merge a678dfbc037cd1c4ddde18f2e6cc1e16d4495e6d, 2026-09-30 00:29:06 KST. PR CI/Preview와 merge main CI 36590544813 success, Production deployment 6738697657(environment=Production, state=success) 직접 확인. 실제 결과/한계는 doc-45 및 output/backlog-publication-20260930의 JSON에 기록. 기존 보호 파일3334개·user untracked 보존. branch/worktree 삭제·archive·운영/계정/권한·보류 작업은 실행하지 않음. 결과 기록만 후속 문서 PR로 반영하고 해당 PR CI/자동 배포를 확인한다.
 <!-- SECTION:NOTES:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+Backlog 전환 commit bd15680을 PR #46으로 main@a678dfb에 병합했다. PR head와 merge의 기존 CI·Preview/Production 자동 배포가 모두 성공했고 Production deployment 6738697657를 직접 확인했다. 기존 사용자/증거3334개와 보류 경계를 유지하며 실제 결과/검증 한계를 doc-45에 기록했다. 결과 기록만 후속 문서 PR로 저장한다.
+<!-- SECTION:FINAL_SUMMARY:END -->

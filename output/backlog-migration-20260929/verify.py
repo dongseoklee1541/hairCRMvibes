@@ -157,7 +157,7 @@ for setting in ['auto_commit: false','remote_operations: false','check_active_br
 if not PUBLICATION:
     check(subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()==MANIFEST['baseline'],'HEAD changed')
     check(subprocess.check_output(['git','branch','--show-current'],text=True).strip()=='main','branch changed')
-changed=subprocess.check_output(['git','diff','--name-only'],text=True).splitlines()
+changed=[p for p in subprocess.check_output(['git','diff','--name-only','-z']).decode().split('\0') if p]
 allowed=set(MANIFEST['documents'])|{'AGENTS.md','README.md','package.json','package-lock.json'}
 if PUBLICATION:
     allowed|={p for p in changed if p.startswith(('backlog/','output/backlog-migration-20260929/','output/backlog-publication-20260930/'))}

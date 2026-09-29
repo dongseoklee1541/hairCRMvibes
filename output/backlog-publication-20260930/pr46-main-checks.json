@@ -1,0 +1,37 @@
+{
+  "sha": "a678dfbc037cd1c4ddde18f2e6cc1e16d4495e6d",
+  "checked_at_utc": "2026-09-29T15:32:32.035914+00:00",
+  "run": {
+    "conclusion": "success",
+    "created_at": "2026-09-29T15:29:09Z",
+    "head_branch": "main",
+    "head_sha": "a678dfbc037cd1c4ddde18f2e6cc1e16d4495e6d",
+    "html_url": "https://github.com/dongseoklee1541/hairCRMvibes/actions/runs/36590544813",
+    "id": 36590544813,
+    "status": "completed",
+    "updated_at": "2026-09-29T15:30:21Z"
+  },
+  "status": {
+    "state": "success",
+    "statuses": [
+      {
+        "context": "Vercel",
+        "created_at": "2026-09-29T15:29:56Z",
+        "description": "Deployment has completed",
+        "state": "success",
+        "target_url": "https://vercel.com/dongseoklee1541s-projects/hair-cr-mvibes/DW3t1uFajCSnBSZkSW6VqpZeSWAS"
+      }
+    ]
+  },
+  "deployments": [
+    {
+      "created_at": "2026-09-29T15:29:56Z",
+      "environment": "Production",
+      "id": 6738697657,
+      "ref": "a678dfbc037cd1c4ddde18f2e6cc1e16d4495e6d",
+      "sha": "a678dfbc037cd1c4ddde18f2e6cc1e16d4495e6d",
+      "statuses_url": "https://api.github.com/repos/dongseoklee1541/hairCRMvibes/deployments/6738697657/statuses",
+      "updated_at": "2026-09-29T15:29:56Z"
+    }
+  ]
+}

@@ -3,7 +3,7 @@ id: doc-45
 title: backlog-publication-20260930
 type: other
 created_date: '2026-09-29 15:21'
-updated_date: '2026-09-29 15:23'
+updated_date: '2026-09-29 15:41'
 tags:
   - publication
   - release
@@ -32,8 +32,33 @@ tags:
 
 ## 게시 결과
 
-실제 commit·PR·head/merge·CI·deployment·확인 시각은 실행 후 이 문서와 task에 추가한다. PR 병합/배포 기록과 현재 task 상태를 수동 상태표로 병행 관리하지 않는다.
+실제 commit·PR·head/merge·CI·deployment·확인 시각은 아래 실행 기록을 따른다. 현재 작업 상태의 원본은 연결 task이며 이 문서는 날짜별 게시·검증 근거다.
 
 ## 게시 전 로그 형식 교정
 
 공백 검사의 terminal carriage return/끝 공백 지적만 교정했다. [읽기용 build.log](../../../output/backlog-migration-20260929/build.log)는 결과·명령·본문을 유지해 정규화했고 [원시 로그 gzip](../../../output/backlog-migration-20260929/build.raw.log.gz)은 원래 바이트를 그대로 보존한다. 원시 SHA-256: `f10448c346af030c01e3868bffa2e488e8bd2eaebd6275c7a912989e88395dee`. 기존 사용자 증거/복구 파일은 변경하지 않았다.
+
+## PR #46 저장소 반영·Production 배포 결과
+
+- 전환 commit: `bd156804841f1e45e76dd503a6fbfd763d8e62de`. stage manifest와 commit 파일 144개가 정확히 일치. 앱/Pencil/SQL/기존 사용자 증거는 commit에 포함하지 않음.
+- [PR #46](https://github.com/dongseoklee1541/hairCRMvibes/pull/46): base main, head codex/backlog-md-migration, 검토 head `bd15680`. PR test-build·Vercel Preview·Preview Comments success. [PR CI](https://github.com/dongseoklee1541/hairCRMvibes/actions/runs/36590109342).
+- 모든 검사가 통과한 뒤 Draft→ready 및 CLEAN/MERGEABLE, 같은 head SHA를 확인하고 `git gh-account pr merge 46 --merge --match-head-commit bd156804841f1e45e76dd503a6fbfd763d8e62de`로 병합. --admin/--delete-branch를 사용하지 않음. 기존 delete_branch_on_merge=false도 변경하지 않음.
+- merge: `a678dfbc037cd1c4ddde18f2e6cc1e16d4495e6d`, 2026-09-30 00:29:06 KST (GitHub UTC 2026-09-29T15:29:06Z).
+- 해당 merge의 [main CI](https://github.com/dongseoklee1541/hairCRMvibes/actions/runs/36590544813) success. 기존 npm ci/test·격리 PostgreSQL R-10 SQL/동시성·npm build 검사 포함. PR head 검사와 merge 검사를 구분.
+- [Vercel main 배포](https://vercel.com/dongseoklee1541s-projects/hair-cr-mvibes/DW3t1uFajCSnBSZkSW6VqpZeSWAS) success. GitHub deployment `6738697657`, sha/ref=`a678dfb...`, environment=Production, statuses state=success. 배포 기록 시각 2026-09-30 00:29:56 KST.
+- 로컬 main을 origin/main에 fast-forward로 동기화했다. 추가 로컬 merge commit/reset/stash/사용자 파일 정리를 수행하지 않음.
+- 기존 보호 파일3,334개 SHA-256 동일·기존 미추적 사용자 파일 전부 보존. worktree/branch를 자동 제거하거나 archive하지 않음.
+
+이 결과를 task/doc에 저장하는 후속 PR은 게시 문서·감사 JSON·검증 산출물만 반영한다. 감사 스크립트의 변경 경로 읽기는 `git diff --name-only -z`로 교정해 한글 파일명을 정확히 처리하며 전역 Git 설정은 바꾸지 않는다. 최초 이관의 native 생성일·원문40개의 기준 commit/hash·기존 로컬 검증 날짜를 바꾸지 않는다. 추가 앱/DB/환경/Pencil 변경·운영/실기기 검증 없이 해당 후속 head의 기존 CI·자동 배포 상태만 확인한다.
+
+## 실제 원격 근거 파일
+
+- [PR/head/merge 원격 조회](../../../output/backlog-publication-20260930/pr46-merged.json)
+- [merge SHA의 main CI·Vercel·Production 목록](../../../output/backlog-publication-20260930/pr46-main-checks.json)
+- [Production deployment 상태 직접 조회](../../../output/backlog-publication-20260930/pr46-production.json)
+- [병합 후 기존 사용자/증거 보존 확인](../../../output/backlog-publication-20260930/postmerge-preservation.json)
+- [게시 전 이관 감사](../../../output/backlog-publication-20260930/preflight-verification.json)
+
+## 남은 검증 경계
+
+이것은 GitHub/CI/deployment metadata의 실제 확인이다. canonical alias를 별도로 변경·재조회하거나 운영 UI/auth/owner/staff·메일·실제 고객/예약·R-10 flag·DB·실기기 IME/설치형 PWA를 smoke하지 않았다. 기능의 미검증·보류는 해당 task에 그대로 유지한다. 과거 증거 경로8개/기존 glob1개는 여전히 역사적 미확인이며 새로 만들거나 삭제하지 않았다. 전역 gh/모델/설정·MCP·hook·계정/권한을 바꾸지 않았다.
