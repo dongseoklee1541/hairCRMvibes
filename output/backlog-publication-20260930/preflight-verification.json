@@ -1,0 +1,22 @@
+{
+  "ok": true,
+  "stats": {
+    "source_documents": 40,
+    "original_bytes": 445606,
+    "preserved_code_blocks": 24,
+    "preserved_table_rows": 390,
+    "local_markdown_links_checked": 1380,
+    "tasks": 27,
+    "statuses": {
+      "Done": 16,
+      "To Do": 2,
+      "Waiting Validation": 4,
+      "On Hold": 4,
+      "In Progress": 1
+    },
+    "cli_surfaces": "task list/view, doc list/view/search, draft list/view, decision list, search task/document/decision, board view, doctor",
+    "version": "1.53.0",
+    "checks_failed": 0
+  },
+  "errors": []
+}

@@ -1,76 +1,59 @@
-# 사용성 후보: 예약 등록 완료 확인 강화
+# 이동 안내
 
-## 상태
-- Candidate (정식 R ID 미배정)
-- 평가 시점: R-14 대표 사용자 검증 이후
-- 구현 승인: 없음
-- 최종 업데이트: 2026-07-13
+2026-09-29 KST부터 이 경로의 편집을 종료했습니다. 작업·문서 관리는 Backlog.md에서 수행합니다.
 
-## 가설
-예약 저장 직후 큰 완료 표시와 핵심 예약 요약, 다음 행동을 보여주면 저장 여부에 대한 불안과 중복 등록을 줄일 수 있습니다.
+- 전체 원문·계약·날짜별 근거: [doc-25](../../backlog/docs/candidates/doc-25%20-%20candidate-appointment-save-confirmation.md)
+- 현재 작업/후보: [DRAFT-1](../../backlog/drafts/draft-1%20-%20%EC%82%AC%EC%9A%A9%EC%84%B1-%ED%9B%84%EB%B3%B4-%EC%98%88%EC%95%BD-%EB%93%B1%EB%A1%9D-%EC%99%84%EB%A3%8C-%ED%99%95%EC%9D%B8-%EA%B0%95%ED%99%94.md)
+- 탐색: [doc-42](../../backlog/docs/doc-42%20-%20backlog-catalog.md)
+- 관리 절차: [doc-41](../../backlog/docs/operations/doc-41%20-%20backlog-workflow.md)
+- 이관표: [doc-43](../../backlog/docs/migration/doc-43%20-%20backlog-migration-20260929.md)
 
-## 현재 근거
-- `app/appointments/new/page.js`는 insert 성공 직후 `/appointments`로 이동하고 새 예약 화면 안에서는 성공 요약을 보여주지 않습니다.
-- 이동한 예약 목록에서 등록한 날짜가 현재 선택 날짜와 다르면 사용자가 방금 저장한 예약을 즉시 찾지 못할 수 있습니다.
-- 실제 사용자가 현재 이동을 성공으로 이해하는지, 저장 버튼을 다시 누르거나 뒤로 돌아가는지는 아직 관찰하지 않았습니다.
+기존 경로는 외부 링크 연결용 이동 안내입니다. 본문·현재 상태표·체크리스트를 다시 작성하지 않습니다.
 
-## 후보 범위
-- 저장 성공 후 고객명, 날짜, 시간, 시술명을 읽기 쉬운 요약으로 보여줍니다.
-- `예약 목록 보기`와 `같은 날 예약 추가`처럼 다음 행동을 명시합니다.
-- 성공 상태를 텍스트, 아이콘, 접근성 live announcement로 전달합니다.
-- 저장 중에는 중복 제출을 차단하고, 성공 뒤 브라우저 뒤로 가기로 같은 payload가 재전송되지 않게 합니다.
-- 성공 UI가 닫히거나 이동한 뒤 민감정보를 브라우저 저장소에 남기지 않습니다.
+<a id="사용성-후보-예약-등록-완료-확인-강화"></a>
+[사용성 후보: 예약 등록 완료 확인 강화](../../backlog/docs/candidates/doc-25%20-%20candidate-appointment-save-confirmation.md#사용성-후보-예약-등록-완료-확인-강화)
 
-## 범위 밖
-- 고객에게 SMS·Push·카카오 알림 발송
-- 예약 승인 절차나 결제
-- 데이터베이스 저장 계약 변경
-- 영구적인 성공 이력 또는 로컬 알림함
+<a id="상태"></a>
+[상태](../../backlog/docs/candidates/doc-25%20-%20candidate-appointment-save-confirmation.md#상태)
 
-## 채택 판단
+<a id="가설"></a>
+[가설](../../backlog/docs/candidates/doc-25%20-%20candidate-appointment-save-confirmation.md#가설)
 
-### 채택 신호
-- 대표 사용자가 저장 후 `등록된 건가요?`라고 묻거나 방금 등록한 예약을 찾지 못합니다.
-- 같은 고객·시간 예약을 다시 입력하려는 행동이 관찰됩니다.
-- 저장 성공과 오류를 구분하지 못해 화면을 반복 이동합니다.
+<a id="현재-근거"></a>
+[현재 근거](../../backlog/docs/candidates/doc-25%20-%20candidate-appointment-save-confirmation.md#현재-근거)
 
-### 보류 신호
-- 예약 목록 이동과 새 카드 표시만으로 모든 대표 사용자가 성공을 즉시 이해합니다.
-- 별도 완료 단계가 빠른 연속 예약 등록에 불필요한 탭을 추가합니다.
-- R-14의 공통 성공 피드백 개선만으로 불확실성이 해소됩니다.
+<a id="후보-범위"></a>
+[후보 범위](../../backlog/docs/candidates/doc-25%20-%20candidate-appointment-save-confirmation.md#후보-범위)
 
-R-14 검증에서 저장 확신 문제가 남을 때만 별도 완료 흐름을 정식 승격합니다.
+<a id="범위-밖"></a>
+[범위 밖](../../backlog/docs/candidates/doc-25%20-%20candidate-appointment-save-confirmation.md#범위-밖)
 
-## 승격 시 UX 대안
+<a id="채택-판단"></a>
+[채택 판단](../../backlog/docs/candidates/doc-25%20-%20candidate-appointment-save-confirmation.md#채택-판단)
 
-### A안 - 저장 후 완료 sheet
-- 현재 맥락을 유지하면서 큰 완료 표시와 다음 행동을 제공할 수 있습니다.
-- 브라우저 뒤로 가기와 focus 복원을 명확히 설계해야 합니다.
+<a id="채택-신호"></a>
+[채택 신호](../../backlog/docs/candidates/doc-25%20-%20candidate-appointment-save-confirmation.md#채택-신호)
 
-### B안 - 예약 목록의 일회성 완료 배너와 새 예약 강조
-- 추가 단계가 적고 목록에서 결과를 바로 확인할 수 있습니다.
-- 등록 날짜로 목록이 정확히 이동하고 해당 예약이 보이도록 해야 합니다.
+<a id="보류-신호"></a>
+[보류 신호](../../backlog/docs/candidates/doc-25%20-%20candidate-appointment-save-confirmation.md#보류-신호)
 
-R-14 사용자 검증에서 연속 예약 속도와 저장 확신을 비교해 대안을 선택합니다.
+<a id="승격-시-ux-대안"></a>
+[승격 시 UX 대안](../../backlog/docs/candidates/doc-25%20-%20candidate-appointment-save-confirmation.md#승격-시-ux-대안)
 
-## 승격 시 완료 기준
-- Pencil에서 저장 중, 성공, 목록 이동, 연속 등록, 저장 오류 상태를 설계합니다.
-- 성공 요약의 고객명·날짜·시간·시술명이 실제 insert payload와 일치합니다.
-- 성공 상태는 `role=status` 또는 동등한 접근성 방식으로 한 번 명확히 전달됩니다.
-- 빠른 연속 탭, 네트워크 지연, 뒤로 가기에도 중복 insert가 발생하지 않습니다.
-- 390×844와 360×800에서 성공 요약과 다음 행동이 첫 화면에 읽히고 safe-area에 가리지 않습니다.
-- 대표 사용자가 도움 없이 저장 성공을 설명하고 원하는 다음 행동을 선택할 수 있습니다.
+<a id="a안---저장-후-완료-sheet"></a>
+[A안 - 저장 후 완료 sheet](../../backlog/docs/candidates/doc-25%20-%20candidate-appointment-save-confirmation.md#a안---저장-후-완료-sheet)
 
-## 개인정보·상태 원칙
-- 성공 요약은 현재 메모리 상태로만 표시하고 localStorage, IndexedDB, Cache Storage에 저장하지 않습니다.
-- 메모와 전화번호는 성공 요약에 표시하지 않습니다.
-- 새로 고침 뒤 성공 상태를 복원하기 위해 민감한 payload를 URL에 넣지 않습니다.
-- 오류를 성공처럼 보이지 않게 insert 결과가 확인된 뒤에만 완료 상태로 전환합니다.
+<a id="b안---예약-목록의-일회성-완료-배너와-새-예약-강조"></a>
+[B안 - 예약 목록의 일회성 완료 배너와 새 예약 강조](../../backlog/docs/candidates/doc-25%20-%20candidate-appointment-save-confirmation.md#b안---예약-목록의-일회성-완료-배너와-새-예약-강조)
 
-## 위험
-- 완료 화면이 연속 예약 작업을 느리게 만들 수 있습니다.
-- 목록 이동과 성공 sheet를 동시에 사용하면 뒤로 가기 이력이 복잡해질 수 있습니다.
-- 성공 payload를 URL이나 저장소로 전달하면 고객정보 노출 위험이 생깁니다.
+<a id="승격-시-완료-기준"></a>
+[승격 시 완료 기준](../../backlog/docs/candidates/doc-25%20-%20candidate-appointment-save-confirmation.md#승격-시-완료-기준)
 
-## 승격 규칙
-이 문서는 번호를 예약하지 않습니다. 채택이 승인된 시점에 당시의 다음 사용 가능 R 번호와 새 R 문서를 만들고, 이 문서는 결정 근거를 남기는 후보 기록으로 유지합니다.
+<a id="개인정보상태-원칙"></a>
+[개인정보·상태 원칙](../../backlog/docs/candidates/doc-25%20-%20candidate-appointment-save-confirmation.md#개인정보상태-원칙)
+
+<a id="위험"></a>
+[위험](../../backlog/docs/candidates/doc-25%20-%20candidate-appointment-save-confirmation.md#위험)
+
+<a id="승격-규칙"></a>
+[승격 규칙](../../backlog/docs/candidates/doc-25%20-%20candidate-appointment-save-confirmation.md#승격-규칙)

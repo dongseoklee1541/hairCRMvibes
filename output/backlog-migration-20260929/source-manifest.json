@@ -1,0 +1,1514 @@
+{
+  "baseline": "b095a7546a16169b6706ab8b520b1e38c7776f14",
+  "migration_date": "2026-09-29 KST",
+  "documents": {
+    "future-todo.md": {
+      "id": "doc-1",
+      "path": "backlog/docs/history/doc-1 - historic-future-todo-20260928.md",
+      "source": "future-todo.md",
+      "source_sha256": "c989ebd491d0438c1f5332d9d6c8bdb1e1afff5d8d5d4037402ce5cef7977a68"
+    },
+    "docs/roadmap/R-01-rls-policy.md": {
+      "id": "doc-2",
+      "path": "backlog/docs/features/doc-2 - R-01-rls-policy.md",
+      "source": "docs/roadmap/R-01-rls-policy.md",
+      "source_sha256": "e57ffd97be9cd624c3f83ef5ea712d749a2f6c58fb2c9ac8e201cc91b24939d8"
+    },
+    "docs/roadmap/R-02-appointment-edit-cancel-status.md": {
+      "id": "doc-3",
+      "path": "backlog/docs/features/doc-3 - R-02-appointment-edit-cancel-status.md",
+      "source": "docs/roadmap/R-02-appointment-edit-cancel-status.md",
+      "source_sha256": "8d6980c98f95b8e42e48d906816158bc487be96432892c2a4defc1f441f91996"
+    },
+    "docs/roadmap/R-03-booking-conflict-business-hours.md": {
+      "id": "doc-4",
+      "path": "backlog/docs/features/doc-4 - R-03-booking-conflict-business-hours.md",
+      "source": "docs/roadmap/R-03-booking-conflict-business-hours.md",
+      "source_sha256": "ae24a68ffd6566d65f62623c35e107d473ddcb73cf8738aa4782aff5d3aa0876"
+    },
+    "docs/roadmap/R-04-kst-date-time-consistency.md": {
+      "id": "doc-5",
+      "path": "backlog/docs/features/doc-5 - R-04-kst-date-time-consistency.md",
+      "source": "docs/roadmap/R-04-kst-date-time-consistency.md",
+      "source_sha256": "8d03491e16f81569a78c6f2e5bfdf47340b390fb977f5808bbd9acf5ca03bfb6"
+    },
+    "docs/roadmap/R-05-settings-page.md": {
+      "id": "doc-6",
+      "path": "backlog/docs/features/doc-6 - R-05-settings-page.md",
+      "source": "docs/roadmap/R-05-settings-page.md",
+      "source_sha256": "c7fd67a21250fddcddf8d0b3aa4230fb1ddaf727d34584b5b9feb9c66de2fcd5"
+    },
+    "docs/roadmap/R-06-pwa-completion.md": {
+      "id": "doc-7",
+      "path": "backlog/docs/features/doc-7 - R-06-pwa-completion.md",
+      "source": "docs/roadmap/R-06-pwa-completion.md",
+      "source_sha256": "39c56190f28eb926fcf187496ed16cf1493c8a2f3199282e9cd85eb8a55dcbb1"
+    },
+    "docs/roadmap/R-07-customer-edit-delete-dedupe.md": {
+      "id": "doc-8",
+      "path": "backlog/docs/features/doc-8 - R-07-customer-edit-delete-dedupe.md",
+      "source": "docs/roadmap/R-07-customer-edit-delete-dedupe.md",
+      "source_sha256": "42e9a67823bd7a74eb951aa5130696c6757ec16aee03c666db0d52821c8707ce"
+    },
+    "docs/roadmap/R-08-service-master.md": {
+      "id": "doc-9",
+      "path": "backlog/docs/features/doc-9 - R-08-service-master.md",
+      "source": "docs/roadmap/R-08-service-master.md",
+      "source_sha256": "7574b3f3ebf0fc3f89fd502262ba9401a8dad5f2f1a5918bd0f6ab0e3f60dd42"
+    },
+    "docs/roadmap/R-09-stats-advanced.md": {
+      "id": "doc-10",
+      "path": "backlog/docs/features/doc-10 - R-09-stats-advanced.md",
+      "source": "docs/roadmap/R-09-stats-advanced.md",
+      "source_sha256": "5d771c02c6eb4d97bf725f940f756f51600f82d43088101ce5651192625d9fb8"
+    },
+    "docs/roadmap/R-10-astra-review-2026-09-27.md": {
+      "id": "doc-11",
+      "path": "backlog/docs/features/doc-11 - R-10-astra-review-2026-09-27.md",
+      "source": "docs/roadmap/R-10-astra-review-2026-09-27.md",
+      "source_sha256": "b29c19137178e689764c92d24aa22c931bbb6c0cdf0087037f6c1ff7f68d17fb"
+    },
+    "docs/roadmap/R-10-role-management.md": {
+      "id": "doc-12",
+      "path": "backlog/docs/features/doc-12 - R-10-role-management.md",
+      "source": "docs/roadmap/R-10-role-management.md",
+      "source_sha256": "0e9e45a92dd07f22700aae2f9f5350047e4422852cbc547c854aed9bfcf33ad1"
+    },
+    "docs/roadmap/R-11-notification-automation.md": {
+      "id": "doc-13",
+      "path": "backlog/docs/features/doc-13 - R-11-notification-automation.md",
+      "source": "docs/roadmap/R-11-notification-automation.md",
+      "source_sha256": "fe152203a3c06a21c91cc6a1b149043a77e2c155f2a1d2c11bac04c7aa890a2c"
+    },
+    "docs/roadmap/R-12-csv-export-backup.md": {
+      "id": "doc-14",
+      "path": "backlog/docs/features/doc-14 - R-12-csv-export-backup.md",
+      "source": "docs/roadmap/R-12-csv-export-backup.md",
+      "source_sha256": "2a2ed863ab2186a22f7533a406ce08acad2a04c12752709712ece88874daf699"
+    },
+    "docs/roadmap/R-13-appointment-customer-search-quick-create.md": {
+      "id": "doc-15",
+      "path": "backlog/docs/features/doc-15 - R-13-appointment-customer-search-quick-create.md",
+      "source": "docs/roadmap/R-13-appointment-customer-search-quick-create.md",
+      "source_sha256": "3f48280966b288e79361a65a420048937425f7aa5fddaa33df86cb3255e3ffb8"
+    },
+    "docs/roadmap/R-14-astra-usability-review-2026-09-27.md": {
+      "id": "doc-16",
+      "path": "backlog/docs/features/doc-16 - R-14-astra-usability-review-2026-09-27.md",
+      "source": "docs/roadmap/R-14-astra-usability-review-2026-09-27.md",
+      "source_sha256": "3a2bf882808e78bb256dfa9ac7fe8e7b8f2ce22983f81465fb39cd4f7848b959"
+    },
+    "docs/roadmap/R-14-easy-usability-foundation.md": {
+      "id": "doc-17",
+      "path": "backlog/docs/features/doc-17 - R-14-easy-usability-foundation.md",
+      "source": "docs/roadmap/R-14-easy-usability-foundation.md",
+      "source_sha256": "11f5e362f72968decdfbcd4d7ee9661c74ac732c5861a3a5b675e2bb7daade61"
+    },
+    "docs/roadmap/R-14-user-validation-protocol.md": {
+      "id": "doc-18",
+      "path": "backlog/docs/features/doc-18 - R-14-user-validation-protocol.md",
+      "source": "docs/roadmap/R-14-user-validation-protocol.md",
+      "source_sha256": "e6507ebb63c6e8073e44902675cb9c8d0248842b8645b37f3b489027bd8ab8e2"
+    },
+    "docs/roadmap/R-15-customer-service-price.md": {
+      "id": "doc-19",
+      "path": "backlog/docs/features/doc-19 - R-15-customer-service-price.md",
+      "source": "docs/roadmap/R-15-customer-service-price.md",
+      "source_sha256": "753fc71093fb00d93e9cae04a0410ab77ead2ab246e3e781f612e19f8707132c"
+    },
+    "docs/roadmap/R-16-customer-session-pass.md": {
+      "id": "doc-20",
+      "path": "backlog/docs/features/doc-20 - R-16-customer-session-pass.md",
+      "source": "docs/roadmap/R-16-customer-session-pass.md",
+      "source_sha256": "4819af5f7889e58cb45d1db8f779f1c82ba2fef862478b28d871d2852dc3421e"
+    },
+    "docs/roadmap/README.md": {
+      "id": "doc-21",
+      "path": "backlog/docs/history/doc-21 - historic-roadmap-index-20260928.md",
+      "source": "docs/roadmap/README.md",
+      "source_sha256": "c264ee0505a32a0039a05168c00c8c48036c62dbef8d1c62ef830ec64412b943"
+    },
+    "docs/roadmap/ai-slop-remediation-2026-07-16.md": {
+      "id": "doc-22",
+      "path": "backlog/docs/history/doc-22 - ai-slop-remediation-2026-07-16.md",
+      "source": "docs/roadmap/ai-slop-remediation-2026-07-16.md",
+      "source_sha256": "b9fb566ae5978676a11fcd1283d49121b10a880ba8df24e6578c3b5946b06a90"
+    },
+    "docs/roadmap/astra-feedback-release-2026-09-28.md": {
+      "id": "doc-23",
+      "path": "backlog/docs/history/doc-23 - astra-feedback-release-2026-09-28.md",
+      "source": "docs/roadmap/astra-feedback-release-2026-09-28.md",
+      "source_sha256": "5b05e36b5e2173052ccb7e09560f48ab41619f8563c44d07c5a6154a87c573b1"
+    },
+    "docs/roadmap/astra-feedback-remediation-2026-09-27.md": {
+      "id": "doc-24",
+      "path": "backlog/docs/history/doc-24 - astra-feedback-remediation-2026-09-27.md",
+      "source": "docs/roadmap/astra-feedback-remediation-2026-09-27.md",
+      "source_sha256": "6da205dcf4174567025162f2d6a8186cf3d54f8a90c7ed0fd912365a68189499"
+    },
+    "docs/roadmap/candidate-appointment-save-confirmation.md": {
+      "id": "doc-25",
+      "path": "backlog/docs/candidates/doc-25 - candidate-appointment-save-confirmation.md",
+      "source": "docs/roadmap/candidate-appointment-save-confirmation.md",
+      "source_sha256": "e1b8427a4c28b54854720e538ccff342a89e3c2af9ba1c05be14c6f6f35fa95e"
+    },
+    "docs/roadmap/candidate-repeat-last-service.md": {
+      "id": "doc-26",
+      "path": "backlog/docs/candidates/doc-26 - candidate-repeat-last-service.md",
+      "source": "docs/roadmap/candidate-repeat-last-service.md",
+      "source_sha256": "f8a5d106e016b74f47b69f7ad088c53a526c7770f166511b80e45ae3c312e1e5"
+    },
+    "docs/roadmap/candidate-today-centered-home.md": {
+      "id": "doc-27",
+      "path": "backlog/docs/candidates/doc-27 - candidate-today-centered-home.md",
+      "source": "docs/roadmap/candidate-today-centered-home.md",
+      "source_sha256": "0e06c5e1df3a9795ac3eef9d430d1076235b11aa82dcbe481a3c64b486bc37a1"
+    },
+    "docs/roadmap/documentation-audit-2026-09-22.md": {
+      "id": "doc-28",
+      "path": "backlog/docs/history/doc-28 - documentation-audit-2026-09-22.md",
+      "source": "docs/roadmap/documentation-audit-2026-09-22.md",
+      "source_sha256": "ffa9c98ca929574b7e9ba200e597ba9b4af0875e38fd570267c8407b55879df3"
+    },
+    "docs/roadmap/phase-2-execution-prompt.md": {
+      "id": "doc-29",
+      "path": "backlog/docs/history/doc-29 - phase-2-execution-prompt.md",
+      "source": "docs/roadmap/phase-2-execution-prompt.md",
+      "source_sha256": "66805a19077b6547c4625d9406fa7868c4eb20b7b487425dc3356b77b313e4aa"
+    },
+    "docs/roadmap/release-history-2026-07-to-09.md": {
+      "id": "doc-30",
+      "path": "backlog/docs/history/doc-30 - release-history-2026-07-to-09.md",
+      "source": "docs/roadmap/release-history-2026-07-to-09.md",
+      "source_sha256": "2232068f9afe377f6fcea132f048aa1d7a22168800cccbd045e4be14ff104897"
+    },
+    "docs/roadmap/security-audit-2026-09-26.md": {
+      "id": "doc-31",
+      "path": "backlog/docs/history/doc-31 - security-audit-2026-09-26.md",
+      "source": "docs/roadmap/security-audit-2026-09-26.md",
+      "source_sha256": "6bc6bded5f5dcc081880308d88065cfacd786ff1c0c34554038e546fe89db150"
+    },
+    "docs/operations/browser-validation-workflow.md": {
+      "id": "doc-32",
+      "path": "backlog/docs/operations/doc-32 - browser-validation-workflow.md",
+      "source": "docs/operations/browser-validation-workflow.md",
+      "source_sha256": "6203e456355a1538da93a4b572e750b8bef55bbef4aadf9a914cd5c0bfeb13fd"
+    },
+    "docs/operations/csv-backup-handling.md": {
+      "id": "doc-33",
+      "path": "backlog/docs/operations/doc-33 - csv-backup-handling.md",
+      "source": "docs/operations/csv-backup-handling.md",
+      "source_sha256": "cd809bde558e181418b99e7e3e33853dce2fbd21e37d3f346f7b92e2072ab1cf"
+    },
+    "docs/operations/github-account-workflow.md": {
+      "id": "doc-34",
+      "path": "backlog/docs/operations/doc-34 - github-account-workflow.md",
+      "source": "docs/operations/github-account-workflow.md",
+      "source_sha256": "f777088e1ff1630f0fbdf8c418d370d666d1e7b2cffe7c88895a1f6af0df8925"
+    },
+    "docs/operations/local-keychain-secrets.md": {
+      "id": "doc-35",
+      "path": "backlog/docs/operations/doc-35 - local-keychain-secrets.md",
+      "source": "docs/operations/local-keychain-secrets.md",
+      "source_sha256": "981e71d2b1227a0e6c96a88bdbf14b37f047b292f5fc4b577e5fb9d2ca51e594"
+    },
+    "docs/operations/migration-release-workflow.md": {
+      "id": "doc-36",
+      "path": "backlog/docs/operations/doc-36 - migration-release-workflow.md",
+      "source": "docs/operations/migration-release-workflow.md",
+      "source_sha256": "53b8b5f44c34c73c912f1c6d9fa0158bccd9b4de2c326db8abf86d48671d8521"
+    },
+    "docs/operations/pencil-desktop-workflow.md": {
+      "id": "doc-37",
+      "path": "backlog/docs/operations/doc-37 - pencil-desktop-workflow.md",
+      "source": "docs/operations/pencil-desktop-workflow.md",
+      "source_sha256": "b3e3155b234fcd518bbbd72ad99789aa11b381a437e632e13866f95a0990187e"
+    },
+    "docs/operations/r10-invitation-ledger.md": {
+      "id": "doc-38",
+      "path": "backlog/docs/operations/doc-38 - r10-invitation-ledger.md",
+      "source": "docs/operations/r10-invitation-ledger.md",
+      "source_sha256": "f26f84f467a2b201e57759250fae2ae9202cf00445e7cfb6d7f583d305e33029"
+    },
+    "docs/operations/rls-auto-enable-hardening.md": {
+      "id": "doc-39",
+      "path": "backlog/docs/operations/doc-39 - rls-auto-enable-hardening.md",
+      "source": "docs/operations/rls-auto-enable-hardening.md",
+      "source_sha256": "a55f483e17e781baa9a0d80e3c1137de91f022be2dea58a2a18464ddbb0e0501"
+    },
+    "docs/operations/supabase-free-keepalive.md": {
+      "id": "doc-40",
+      "path": "backlog/docs/operations/doc-40 - supabase-free-keepalive.md",
+      "source": "docs/operations/supabase-free-keepalive.md",
+      "source_sha256": "afab7f3bf263957a32a6ee144a302b8e86d2484932ce3931065c37f7fa47e764"
+    }
+  },
+  "tasks": {
+    "R-01": {
+      "id": "TASK-1",
+      "path": "backlog/tasks/task-1 - R-01-RLS-정책-정리.md",
+      "legacy_id": "R-01",
+      "priority": "P0",
+      "status": "Done",
+      "source": "docs/roadmap/R-01-rls-policy.md"
+    },
+    "R-02": {
+      "id": "TASK-2",
+      "path": "backlog/tasks/task-2 - R-02-예약-수정·취소·상태변경.md",
+      "legacy_id": "R-02",
+      "priority": "P0",
+      "status": "Done",
+      "source": "docs/roadmap/R-02-appointment-edit-cancel-status.md"
+    },
+    "R-03": {
+      "id": "TASK-3",
+      "path": "backlog/tasks/task-3 - R-03-더블부킹·영업시간-충돌-방지.md",
+      "legacy_id": "R-03",
+      "priority": "P0",
+      "status": "Done",
+      "source": "docs/roadmap/R-03-booking-conflict-business-hours.md"
+    },
+    "R-04": {
+      "id": "TASK-4",
+      "path": "backlog/tasks/task-4 - R-04-KST-날짜·시간-정합성.md",
+      "legacy_id": "R-04",
+      "priority": "P0",
+      "status": "Done",
+      "source": "docs/roadmap/R-04-kst-date-time-consistency.md"
+    },
+    "R-05": {
+      "id": "TASK-5",
+      "path": "backlog/tasks/task-5 - R-05-설정-페이지.md",
+      "legacy_id": "R-05",
+      "priority": "P0",
+      "status": "Done",
+      "source": "docs/roadmap/R-05-settings-page.md"
+    },
+    "R-06": {
+      "id": "TASK-6",
+      "path": "backlog/tasks/task-6 - R-06-PWA-기반과-캐시-전략.md",
+      "legacy_id": "R-06",
+      "priority": "P1",
+      "status": "Done",
+      "source": "docs/roadmap/R-06-pwa-completion.md"
+    },
+    "R-07": {
+      "id": "TASK-7",
+      "path": "backlog/tasks/task-7 - R-07-고객-편집·삭제·중복-처리.md",
+      "legacy_id": "R-07",
+      "priority": "P1",
+      "status": "Done",
+      "source": "docs/roadmap/R-07-customer-edit-delete-dedupe.md"
+    },
+    "R-08": {
+      "id": "TASK-8",
+      "path": "backlog/tasks/task-8 - R-08-서비스-마스터와-예약-snapshot.md",
+      "legacy_id": "R-08",
+      "priority": "P1",
+      "status": "Done",
+      "source": "docs/roadmap/R-08-service-master.md"
+    },
+    "R-09": {
+      "id": "TASK-9",
+      "path": "backlog/tasks/task-9 - R-09-통계-고도화.md",
+      "legacy_id": "R-09",
+      "priority": "P1",
+      "status": "Done",
+      "source": "docs/roadmap/R-09-stats-advanced.md"
+    },
+    "R-10": {
+      "id": "TASK-10",
+      "path": "backlog/tasks/task-10 - R-10-직원-초대·역할-관리-구현과-배포.md",
+      "legacy_id": "R-10",
+      "priority": "P2",
+      "status": "Done",
+      "source": "docs/roadmap/R-10-role-management.md"
+    },
+    "R-11": {
+      "id": "TASK-11",
+      "path": "backlog/tasks/task-11 - R-11-알림-자동화-설계-완료·구현-보류.md",
+      "legacy_id": "R-11",
+      "priority": "P2",
+      "status": "On Hold",
+      "source": "docs/roadmap/R-11-notification-automation.md"
+    },
+    "R-12": {
+      "id": "TASK-12",
+      "path": "backlog/tasks/task-12 - R-12-CSV-내보내기·백업.md",
+      "legacy_id": "R-12",
+      "priority": "P2",
+      "status": "Done",
+      "source": "docs/roadmap/R-12-csv-export-backup.md"
+    },
+    "R-13": {
+      "id": "TASK-13",
+      "path": "backlog/tasks/task-13 - R-13-예약-고객-검색·빠른-등록.md",
+      "legacy_id": "R-13",
+      "priority": "P1",
+      "status": "Done",
+      "source": "docs/roadmap/R-13-appointment-customer-search-quick-create.md"
+    },
+    "R-14": {
+      "id": "TASK-14",
+      "path": "backlog/tasks/task-14 - R-14-쉬운-사용성-기반-구현과-배포.md",
+      "legacy_id": "R-14",
+      "priority": "P1",
+      "status": "Done",
+      "source": "docs/roadmap/R-14-easy-usability-foundation.md"
+    },
+    "R-15": {
+      "id": "TASK-15",
+      "path": "backlog/tasks/task-15 - R-15-고객별-실제-시술금액.md",
+      "legacy_id": "R-15",
+      "priority": "P1",
+      "status": "Done",
+      "source": "docs/roadmap/R-15-customer-service-price.md"
+    },
+    "R-16": {
+      "id": "TASK-16",
+      "path": "backlog/tasks/task-16 - R-16-고객별-횟수권.md",
+      "legacy_id": "R-16",
+      "priority": "P1",
+      "status": "Done",
+      "source": "docs/roadmap/R-16-customer-session-pass.md"
+    },
+    "r10-validation": {
+      "id": "TASK-17",
+      "path": "backlog/tasks/task-17 - R-10-실제-owner-staff-검증과-초대-활성화-gate.md",
+      "status": "Waiting Validation",
+      "priority": "P2",
+      "source_features": [
+        "R-10"
+      ]
+    },
+    "r14-observation": {
+      "id": "TASK-18",
+      "path": "backlog/tasks/task-18 - R-14-대표-사용자-2명-관찰.md",
+      "status": "Waiting Validation",
+      "priority": "P1",
+      "source_features": [
+        "R-14"
+      ]
+    },
+    "mobile-login": {
+      "id": "TASK-19",
+      "path": "backlog/tasks/task-19 - 모바일-새-로그인-조사-—-사용자-보류.md",
+      "status": "On Hold",
+      "priority": "P1",
+      "source_features": [
+        "R-15"
+      ]
+    },
+    "device-ime": {
+      "id": "TASK-20",
+      "path": "backlog/tasks/task-20 - 실기기-키보드·IME-검증-—-사용자-보류.md",
+      "status": "On Hold",
+      "priority": "P1",
+      "source_features": [
+        "R-13",
+        "R-15",
+        "R-16"
+      ]
+    },
+    "installed-pwa": {
+      "id": "TASK-21",
+      "path": "backlog/tasks/task-21 - 실기기-설치형-PWA·standalone·SW-update-—-사용자-보류.md",
+      "status": "On Hold",
+      "priority": "P1",
+      "source_features": [
+        "R-06"
+      ]
+    },
+    "security": {
+      "id": "TASK-22",
+      "path": "backlog/tasks/task-22 - 보안-후속-정책·신규-profile·Advisor·MFA-확인.md",
+      "status": "To Do",
+      "priority": "P0",
+      "source_features": [
+        "R-01",
+        "R-10"
+      ]
+    },
+    "role-validation": {
+      "id": "TASK-23",
+      "path": "backlog/tasks/task-23 - 완료-기능의-실제-역할별-UI·운영-쓰기-검증-공백.md",
+      "status": "Waiting Validation",
+      "priority": "P1",
+      "source_features": [
+        "R-05",
+        "R-07",
+        "R-08",
+        "R-09",
+        "R-12",
+        "R-13",
+        "R-15",
+        "R-16"
+      ]
+    },
+    "load-validation": {
+      "id": "TASK-24",
+      "path": "backlog/tasks/task-24 - 예약·시간대·CSV-부하와-환경-검증-공백.md",
+      "status": "Waiting Validation",
+      "priority": "P1",
+      "source_features": [
+        "R-02",
+        "R-03",
+        "R-04",
+        "R-12"
+      ]
+    },
+    "pwa-followup": {
+      "id": "TASK-25",
+      "path": "backlog/tasks/task-25 - PWA-고정-URL-precache·등록-차단-환경-후속.md",
+      "status": "To Do",
+      "priority": "P1",
+      "source_features": [
+        "R-06"
+      ]
+    },
+    "migration": {
+      "id": "TASK-26",
+      "path": "backlog/tasks/task-26 - 작업·설계·검증·운영-문서를-Backlog.md로-전면-전환.md"
+    }
+  },
+  "drafts": {
+    "docs/roadmap/candidate-appointment-save-confirmation.md": {
+      "id": "DRAFT-1",
+      "path": "backlog/drafts/draft-1 - 사용성-후보-예약-등록-완료-확인-강화.md",
+      "source": "docs/roadmap/candidate-appointment-save-confirmation.md",
+      "status": "Draft"
+    },
+    "docs/roadmap/candidate-repeat-last-service.md": {
+      "id": "DRAFT-2",
+      "path": "backlog/drafts/draft-2 - 사용성-후보-지난-시술-그대로-재예약.md",
+      "source": "docs/roadmap/candidate-repeat-last-service.md",
+      "status": "Draft"
+    },
+    "docs/roadmap/candidate-today-centered-home.md": {
+      "id": "DRAFT-3",
+      "path": "backlog/drafts/draft-3 - 사용성-후보-오늘-예약-중심-홈.md",
+      "source": "docs/roadmap/candidate-today-centered-home.md",
+      "status": "Draft"
+    }
+  },
+  "decisions": [
+    {
+      "id": "decision-1",
+      "path": "backlog/decisions/decision-1 - Backlog-only-management.md",
+      "status": "accepted"
+    },
+    {
+      "id": "decision-2",
+      "path": "backlog/decisions/decision-2 - R-03-confirmed-slot-guard.md",
+      "source": "docs/roadmap/R-03-booking-conflict-business-hours.md",
+      "sections": [
+        "## 정책 결정"
+      ],
+      "legacy_id": "R-03",
+      "status": "accepted"
+    },
+    {
+      "id": "decision-3",
+      "path": "backlog/decisions/decision-3 - R-05-normalized-settings.md",
+      "source": "docs/roadmap/R-05-settings-page.md",
+      "sections": [
+        "## 데이터 모델 결정"
+      ],
+      "legacy_id": "R-05",
+      "status": "accepted"
+    },
+    {
+      "id": "decision-4",
+      "path": "backlog/decisions/decision-4 - R-06-network-only-sensitive-data.md",
+      "source": "docs/roadmap/R-06-pwa-completion.md",
+      "sections": [
+        "## 선행조건"
+      ],
+      "legacy_id": "R-06",
+      "status": "accepted"
+    },
+    {
+      "id": "decision-5",
+      "path": "backlog/decisions/decision-5 - R-07-lifecycle-and-explicit-merge.md",
+      "source": "docs/roadmap/R-07-customer-edit-delete-dedupe.md",
+      "sections": [
+        "## 확정 정책"
+      ],
+      "legacy_id": "R-07",
+      "status": "accepted"
+    },
+    {
+      "id": "decision-6",
+      "path": "backlog/decisions/decision-6 - R-08-service-snapshot-and-trigger.md",
+      "source": "docs/roadmap/R-08-service-master.md",
+      "sections": [
+        "## 채택한 모델",
+        "## 채택한 저장·권한 경계"
+      ],
+      "legacy_id": "R-08",
+      "status": "accepted"
+    },
+    {
+      "id": "decision-7",
+      "path": "backlog/decisions/decision-7 - R-09-and-R-15-revenue-contract.md",
+      "source": "docs/roadmap/R-15-customer-service-price.md",
+      "sections": [
+        "## 현재 계약과 남은 범위",
+        "## 용어와 가격 의미",
+        "## 대안 비교",
+        "## R-09 통계 결정 게이트",
+        "## 구현·release 결과"
+      ],
+      "legacy_id": "R-15",
+      "status": "accepted"
+    },
+    {
+      "id": "decision-8",
+      "path": "backlog/decisions/decision-8 - R-10-server-only-claim-ledger.md",
+      "source": "docs/roadmap/R-10-role-management.md",
+      "sections": [
+        "## 선택한 방식",
+        "## A′ claim ledger 결정"
+      ],
+      "legacy_id": "R-10",
+      "status": "accepted"
+    },
+    {
+      "id": "decision-9",
+      "path": "backlog/decisions/decision-9 - R-11-channel-C-and-dry-run.md",
+      "source": "docs/roadmap/R-11-notification-automation.md",
+      "sections": [
+        "## 2026-07-16 결정 기록",
+        "## 채널 대안과 결정"
+      ],
+      "legacy_id": "R-11",
+      "status": "accepted"
+    },
+    {
+      "id": "decision-10",
+      "path": "backlog/decisions/decision-10 - R-11-proposed-model-and-live-gates.md",
+      "source": "docs/roadmap/R-11-notification-automation.md",
+      "sections": [
+        "## 제안 데이터 모델",
+        "## 현재 결정 상태와 구현 전 게이트"
+      ],
+      "legacy_id": "R-11",
+      "status": "proposed"
+    },
+    {
+      "id": "decision-11",
+      "path": "backlog/decisions/decision-11 - R-12-export-privacy-and-retention.md",
+      "source": "docs/roadmap/R-12-csv-export-backup.md",
+      "sections": [
+        "## 개인정보·권한·보관 경계",
+        "## CSV 계약"
+      ],
+      "legacy_id": "R-12",
+      "status": "accepted"
+    },
+    {
+      "id": "decision-12",
+      "path": "backlog/decisions/decision-12 - R-16-pass-scope-and-atomic-ledger.md",
+      "source": "docs/roadmap/R-16-customer-session-pass.md",
+      "sections": [
+        "## 핵심 원칙",
+        "## 서비스 범위 대안",
+        "## 확정된 구현 결정"
+      ],
+      "legacy_id": "R-16",
+      "status": "accepted"
+    }
+  ],
+  "extra_docs": {
+    "workflow": {
+      "id": "doc-41",
+      "path": "backlog/docs/operations/doc-41 - backlog-workflow.md"
+    },
+    "catalog": {
+      "id": "doc-42",
+      "path": "backlog/docs/doc-42 - backlog-catalog.md"
+    },
+    "migration": {
+      "id": "doc-43",
+      "path": "backlog/docs/migration/doc-43 - backlog-migration-20260929.md"
+    },
+    "validation": {
+      "id": "doc-44",
+      "path": "backlog/docs/migration/doc-44 - backlog-migration-validation-20260929.md"
+    }
+  },
+  "link_changes": [
+    {
+      "source": "docs/roadmap/R-15-customer-service-price.md",
+      "from": "./documentation-audit-2026-09-22.md",
+      "to": "../docs/history/doc-28%20-%20documentation-audit-2026-09-22.md"
+    },
+    {
+      "source": "docs/roadmap/R-12-csv-export-backup.md",
+      "from": "../operations/csv-backup-handling.md",
+      "to": "../docs/operations/doc-33%20-%20csv-backup-handling.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/documentation-audit-2026-09-22.md",
+      "to": "doc-28%20-%20documentation-audit-2026-09-22.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/security-audit-2026-09-26.md",
+      "to": "doc-31%20-%20security-audit-2026-09-26.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/astra-feedback-release-2026-09-28.md",
+      "to": "doc-23%20-%20astra-feedback-release-2026-09-28.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/candidate-today-centered-home.md",
+      "to": "../candidates/doc-27%20-%20candidate-today-centered-home.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/candidate-repeat-last-service.md",
+      "to": "../candidates/doc-26%20-%20candidate-repeat-last-service.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/candidate-appointment-save-confirmation.md",
+      "to": "../candidates/doc-25%20-%20candidate-appointment-save-confirmation.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/R-01-rls-policy.md",
+      "to": "../features/doc-2%20-%20R-01-rls-policy.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/R-02-appointment-edit-cancel-status.md",
+      "to": "../features/doc-3%20-%20R-02-appointment-edit-cancel-status.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/R-03-booking-conflict-business-hours.md",
+      "to": "../features/doc-4%20-%20R-03-booking-conflict-business-hours.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/R-04-kst-date-time-consistency.md",
+      "to": "../features/doc-5%20-%20R-04-kst-date-time-consistency.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/R-05-settings-page.md",
+      "to": "../features/doc-6%20-%20R-05-settings-page.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/R-06-pwa-completion.md",
+      "to": "../features/doc-7%20-%20R-06-pwa-completion.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/R-07-customer-edit-delete-dedupe.md",
+      "to": "../features/doc-8%20-%20R-07-customer-edit-delete-dedupe.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/R-08-service-master.md",
+      "to": "../features/doc-9%20-%20R-08-service-master.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/R-13-appointment-customer-search-quick-create.md",
+      "to": "../features/doc-15%20-%20R-13-appointment-customer-search-quick-create.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/R-09-stats-advanced.md",
+      "to": "../features/doc-10%20-%20R-09-stats-advanced.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/R-14-easy-usability-foundation.md",
+      "to": "../features/doc-17%20-%20R-14-easy-usability-foundation.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/R-14-astra-usability-review-2026-09-27.md",
+      "to": "../features/doc-16%20-%20R-14-astra-usability-review-2026-09-27.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/R-15-customer-service-price.md",
+      "to": "../features/doc-19%20-%20R-15-customer-service-price.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/R-16-customer-session-pass.md",
+      "to": "../features/doc-20%20-%20R-16-customer-session-pass.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/R-10-role-management.md",
+      "to": "../features/doc-12%20-%20R-10-role-management.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/R-10-astra-review-2026-09-27.md",
+      "to": "../features/doc-11%20-%20R-10-astra-review-2026-09-27.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/R-11-notification-automation.md",
+      "to": "../features/doc-13%20-%20R-11-notification-automation.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/R-12-csv-export-backup.md",
+      "to": "../features/doc-14%20-%20R-12-csv-export-backup.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/ai-slop-remediation-2026-07-16.md",
+      "to": "doc-22%20-%20ai-slop-remediation-2026-07-16.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/release-history-2026-07-to-09.md",
+      "to": "doc-30%20-%20release-history-2026-07-to-09.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/R-03-booking-conflict-business-hours.md",
+      "to": "../features/doc-4%20-%20R-03-booking-conflict-business-hours.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/R-11-notification-automation.md",
+      "to": "../features/doc-13%20-%20R-11-notification-automation.md"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/README.md#갱신-규칙",
+      "to": "doc-21%20-%20historic-roadmap-index-20260928.md#갱신-규칙"
+    },
+    {
+      "source": "future-todo.md",
+      "from": "./docs/roadmap/release-history-2026-07-to-09.md",
+      "to": "doc-30%20-%20release-history-2026-07-to-09.md"
+    },
+    {
+      "source": "docs/roadmap/R-01-rls-policy.md",
+      "from": "./security-audit-2026-09-26.md",
+      "to": "../history/doc-31%20-%20security-audit-2026-09-26.md"
+    },
+    {
+      "source": "docs/roadmap/R-10-astra-review-2026-09-27.md",
+      "from": "./astra-feedback-remediation-2026-09-27.md",
+      "to": "../history/doc-24%20-%20astra-feedback-remediation-2026-09-27.md"
+    },
+    {
+      "source": "docs/roadmap/R-10-astra-review-2026-09-27.md",
+      "from": "../operations/r10-invitation-ledger.md",
+      "to": "../operations/doc-38%20-%20r10-invitation-ledger.md"
+    },
+    {
+      "source": "docs/roadmap/R-10-role-management.md",
+      "from": "./security-audit-2026-09-26.md",
+      "to": "../history/doc-31%20-%20security-audit-2026-09-26.md"
+    },
+    {
+      "source": "docs/roadmap/R-10-role-management.md",
+      "from": "./R-10-astra-review-2026-09-27.md",
+      "to": "doc-11%20-%20R-10-astra-review-2026-09-27.md"
+    },
+    {
+      "source": "docs/roadmap/R-10-role-management.md",
+      "from": "./astra-feedback-remediation-2026-09-27.md",
+      "to": "../history/doc-24%20-%20astra-feedback-remediation-2026-09-27.md"
+    },
+    {
+      "source": "docs/roadmap/R-10-role-management.md",
+      "from": "./astra-feedback-release-2026-09-28.md",
+      "to": "../history/doc-23%20-%20astra-feedback-release-2026-09-28.md"
+    },
+    {
+      "source": "docs/roadmap/R-10-role-management.md",
+      "from": "../operations/r10-invitation-ledger.md",
+      "to": "../operations/doc-38%20-%20r10-invitation-ledger.md"
+    },
+    {
+      "source": "docs/roadmap/R-10-role-management.md",
+      "from": "../operations/r10-invitation-ledger.md",
+      "to": "../operations/doc-38%20-%20r10-invitation-ledger.md"
+    },
+    {
+      "source": "docs/roadmap/R-12-csv-export-backup.md",
+      "from": "../operations/csv-backup-handling.md",
+      "to": "../operations/doc-33%20-%20csv-backup-handling.md"
+    },
+    {
+      "source": "docs/roadmap/R-14-astra-usability-review-2026-09-27.md",
+      "from": "./astra-feedback-remediation-2026-09-27.md",
+      "to": "../history/doc-24%20-%20astra-feedback-remediation-2026-09-27.md"
+    },
+    {
+      "source": "docs/roadmap/R-14-astra-usability-review-2026-09-27.md",
+      "from": "./R-14-user-validation-protocol.md",
+      "to": "doc-18%20-%20R-14-user-validation-protocol.md"
+    },
+    {
+      "source": "docs/roadmap/R-14-astra-usability-review-2026-09-27.md",
+      "from": "./R-10-astra-review-2026-09-27.md",
+      "to": "doc-11%20-%20R-10-astra-review-2026-09-27.md"
+    },
+    {
+      "source": "docs/roadmap/R-14-easy-usability-foundation.md",
+      "from": "./R-14-user-validation-protocol.md",
+      "to": "doc-18%20-%20R-14-user-validation-protocol.md"
+    },
+    {
+      "source": "docs/roadmap/R-14-easy-usability-foundation.md",
+      "from": "./R-14-astra-usability-review-2026-09-27.md",
+      "to": "doc-16%20-%20R-14-astra-usability-review-2026-09-27.md"
+    },
+    {
+      "source": "docs/roadmap/R-14-easy-usability-foundation.md",
+      "from": "./astra-feedback-remediation-2026-09-27.md",
+      "to": "../history/doc-24%20-%20astra-feedback-remediation-2026-09-27.md"
+    },
+    {
+      "source": "docs/roadmap/R-14-easy-usability-foundation.md",
+      "from": "./astra-feedback-release-2026-09-28.md",
+      "to": "../history/doc-23%20-%20astra-feedback-release-2026-09-28.md"
+    },
+    {
+      "source": "docs/roadmap/R-14-easy-usability-foundation.md",
+      "from": "./candidate-today-centered-home.md",
+      "to": "../candidates/doc-27%20-%20candidate-today-centered-home.md"
+    },
+    {
+      "source": "docs/roadmap/R-14-easy-usability-foundation.md",
+      "from": "./candidate-repeat-last-service.md",
+      "to": "../candidates/doc-26%20-%20candidate-repeat-last-service.md"
+    },
+    {
+      "source": "docs/roadmap/R-14-easy-usability-foundation.md",
+      "from": "./candidate-appointment-save-confirmation.md",
+      "to": "../candidates/doc-25%20-%20candidate-appointment-save-confirmation.md"
+    },
+    {
+      "source": "docs/roadmap/R-14-user-validation-protocol.md",
+      "from": "../../AGENTS.md#2-승인-범위와-작업-흐름",
+      "to": "../../../AGENTS.md#2-승인-범위와-작업-흐름"
+    },
+    {
+      "source": "docs/roadmap/R-15-customer-service-price.md",
+      "from": "./documentation-audit-2026-09-22.md",
+      "to": "../history/doc-28%20-%20documentation-audit-2026-09-22.md"
+    },
+    {
+      "source": "docs/roadmap/R-15-customer-service-price.md",
+      "from": "../../output/playwright/actual-price-input-ux/20260911_actual_price_before_390x844.png",
+      "to": "../../../output/playwright/actual-price-input-ux/20260911_actual_price_before_390x844.png"
+    },
+    {
+      "source": "docs/roadmap/R-15-customer-service-price.md",
+      "from": "../../output/playwright/actual-price-input-ux/20260911_actual_price_after_390x844.png",
+      "to": "../../../output/playwright/actual-price-input-ux/20260911_actual_price_after_390x844.png"
+    },
+    {
+      "source": "docs/roadmap/R-15-customer-service-price.md",
+      "from": "../../output/playwright/actual-price-input-ux/20260911_actual_price_error_390x844.png",
+      "to": "../../../output/playwright/actual-price-input-ux/20260911_actual_price_error_390x844.png"
+    },
+    {
+      "source": "docs/roadmap/R-15-customer-service-price.md",
+      "from": "../../output/playwright/actual-price-input-ux/20260911_actual_price_before_360x800.png",
+      "to": "../../../output/playwright/actual-price-input-ux/20260911_actual_price_before_360x800.png"
+    },
+    {
+      "source": "docs/roadmap/R-15-customer-service-price.md",
+      "from": "../../output/playwright/actual-price-input-ux/20260911_actual_price_after_360x800.png",
+      "to": "../../../output/playwright/actual-price-input-ux/20260911_actual_price_after_360x800.png"
+    },
+    {
+      "source": "docs/roadmap/R-15-customer-service-price.md",
+      "from": "../../output/playwright/actual-price-input-ux/20260911_actual_price_error_360x800.png",
+      "to": "../../../output/playwright/actual-price-input-ux/20260911_actual_price_error_360x800.png"
+    },
+    {
+      "source": "docs/roadmap/R-15-customer-service-price.md",
+      "from": "../../output/playwright/actual-price-input-ux/preview-20260911/preview-verification.md",
+      "to": "../../../output/playwright/actual-price-input-ux/preview-20260911/preview-verification.md"
+    },
+    {
+      "source": "docs/roadmap/R-15-customer-service-price.md",
+      "from": "../../output/playwright/actual-price-input-ux/preview-20260911/deployment.json",
+      "to": "../../../output/playwright/actual-price-input-ux/preview-20260911/deployment.json"
+    },
+    {
+      "source": "docs/roadmap/R-15-customer-service-price.md",
+      "from": "./documentation-audit-2026-09-22.md",
+      "to": "../history/doc-28%20-%20documentation-audit-2026-09-22.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "../../future-todo.md",
+      "to": "doc-1%20-%20historic-future-todo-20260928.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./security-audit-2026-09-26.md",
+      "to": "doc-31%20-%20security-audit-2026-09-26.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./documentation-audit-2026-09-22.md",
+      "to": "doc-28%20-%20documentation-audit-2026-09-22.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./R-01-rls-policy.md",
+      "to": "../features/doc-2%20-%20R-01-rls-policy.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./R-02-appointment-edit-cancel-status.md",
+      "to": "../features/doc-3%20-%20R-02-appointment-edit-cancel-status.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./R-03-booking-conflict-business-hours.md",
+      "to": "../features/doc-4%20-%20R-03-booking-conflict-business-hours.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./R-04-kst-date-time-consistency.md",
+      "to": "../features/doc-5%20-%20R-04-kst-date-time-consistency.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./R-05-settings-page.md",
+      "to": "../features/doc-6%20-%20R-05-settings-page.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./R-06-pwa-completion.md",
+      "to": "../features/doc-7%20-%20R-06-pwa-completion.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./R-07-customer-edit-delete-dedupe.md",
+      "to": "../features/doc-8%20-%20R-07-customer-edit-delete-dedupe.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./R-08-service-master.md",
+      "to": "../features/doc-9%20-%20R-08-service-master.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./R-09-stats-advanced.md",
+      "to": "../features/doc-10%20-%20R-09-stats-advanced.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./R-10-role-management.md",
+      "to": "../features/doc-12%20-%20R-10-role-management.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./R-11-notification-automation.md",
+      "to": "../features/doc-13%20-%20R-11-notification-automation.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./R-12-csv-export-backup.md",
+      "to": "../features/doc-14%20-%20R-12-csv-export-backup.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./R-13-appointment-customer-search-quick-create.md",
+      "to": "../features/doc-15%20-%20R-13-appointment-customer-search-quick-create.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./R-14-easy-usability-foundation.md",
+      "to": "../features/doc-17%20-%20R-14-easy-usability-foundation.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./R-15-customer-service-price.md",
+      "to": "../features/doc-19%20-%20R-15-customer-service-price.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./R-16-customer-session-pass.md",
+      "to": "../features/doc-20%20-%20R-16-customer-session-pass.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./R-14-astra-usability-review-2026-09-27.md",
+      "to": "../features/doc-16%20-%20R-14-astra-usability-review-2026-09-27.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./astra-feedback-remediation-2026-09-27.md",
+      "to": "doc-24%20-%20astra-feedback-remediation-2026-09-27.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./astra-feedback-release-2026-09-28.md",
+      "to": "doc-23%20-%20astra-feedback-release-2026-09-28.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./R-14-user-validation-protocol.md",
+      "to": "../features/doc-18%20-%20R-14-user-validation-protocol.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./R-10-astra-review-2026-09-27.md",
+      "to": "../features/doc-11%20-%20R-10-astra-review-2026-09-27.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./security-audit-2026-09-26.md",
+      "to": "doc-31%20-%20security-audit-2026-09-26.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./candidate-today-centered-home.md",
+      "to": "../candidates/doc-27%20-%20candidate-today-centered-home.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./candidate-repeat-last-service.md",
+      "to": "../candidates/doc-26%20-%20candidate-repeat-last-service.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./candidate-appointment-save-confirmation.md",
+      "to": "../candidates/doc-25%20-%20candidate-appointment-save-confirmation.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "../operations/browser-validation-workflow.md",
+      "to": "../operations/doc-32%20-%20browser-validation-workflow.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "../operations/pencil-desktop-workflow.md",
+      "to": "../operations/doc-37%20-%20pencil-desktop-workflow.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "../operations/migration-release-workflow.md",
+      "to": "../operations/doc-36%20-%20migration-release-workflow.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./release-history-2026-07-to-09.md",
+      "to": "doc-30%20-%20release-history-2026-07-to-09.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./phase-2-execution-prompt.md",
+      "to": "doc-29%20-%20phase-2-execution-prompt.md"
+    },
+    {
+      "source": "docs/roadmap/README.md",
+      "from": "./ai-slop-remediation-2026-07-16.md",
+      "to": "doc-22%20-%20ai-slop-remediation-2026-07-16.md"
+    },
+    {
+      "source": "docs/roadmap/astra-feedback-release-2026-09-28.md",
+      "from": "../../output/playwright/astra-release-20260928/production-verification.json",
+      "to": "../../../output/playwright/astra-release-20260928/production-verification.json"
+    },
+    {
+      "source": "docs/roadmap/astra-feedback-release-2026-09-28.md",
+      "from": "../../output/playwright/astra-release-20260928/production_login_390x844.png",
+      "to": "../../../output/playwright/astra-release-20260928/production_login_390x844.png"
+    },
+    {
+      "source": "docs/roadmap/astra-feedback-release-2026-09-28.md",
+      "from": "../../output/playwright/astra-release-20260928/production_login_360x800.png",
+      "to": "../../../output/playwright/astra-release-20260928/production_login_360x800.png"
+    },
+    {
+      "source": "docs/roadmap/astra-feedback-release-2026-09-28.md",
+      "from": "../../output/playwright/astra-release-20260928/page-errors.json",
+      "to": "../../../output/playwright/astra-release-20260928/page-errors.json"
+    },
+    {
+      "source": "docs/roadmap/astra-feedback-release-2026-09-28.md",
+      "from": "./astra-feedback-remediation-2026-09-27.md",
+      "to": "doc-24%20-%20astra-feedback-remediation-2026-09-27.md"
+    },
+    {
+      "source": "docs/roadmap/astra-feedback-remediation-2026-09-27.md",
+      "from": "./astra-feedback-release-2026-09-28.md",
+      "to": "doc-23%20-%20astra-feedback-release-2026-09-28.md"
+    },
+    {
+      "source": "docs/roadmap/astra-feedback-remediation-2026-09-27.md",
+      "from": "./R-10-astra-review-2026-09-27.md",
+      "to": "../features/doc-11%20-%20R-10-astra-review-2026-09-27.md"
+    },
+    {
+      "source": "docs/roadmap/astra-feedback-remediation-2026-09-27.md",
+      "from": "./R-14-astra-usability-review-2026-09-27.md",
+      "to": "../features/doc-16%20-%20R-14-astra-usability-review-2026-09-27.md"
+    },
+    {
+      "source": "docs/roadmap/astra-feedback-remediation-2026-09-27.md",
+      "from": "../../output/playwright/astra-feedback-20260927/after-measurements.json",
+      "to": "../../../output/playwright/astra-feedback-20260927/after-measurements.json"
+    },
+    {
+      "source": "docs/roadmap/astra-feedback-remediation-2026-09-27.md",
+      "from": "../../output/playwright/astra-feedback-20260927/staff-measurements.json",
+      "to": "../../../output/playwright/astra-feedback-20260927/staff-measurements.json"
+    },
+    {
+      "source": "docs/roadmap/astra-feedback-remediation-2026-09-27.md",
+      "from": "../../output/playwright/astra-feedback-20260927/",
+      "to": "../../../output/playwright/astra-feedback-20260927"
+    },
+    {
+      "source": "docs/roadmap/astra-feedback-remediation-2026-09-27.md",
+      "from": "../../output/playwright/astra-feedback-20260927/before_new_360x800.png",
+      "to": "../../../output/playwright/astra-feedback-20260927/before_new_360x800.png"
+    },
+    {
+      "source": "docs/roadmap/astra-feedback-remediation-2026-09-27.md",
+      "from": "../../output/playwright/astra-feedback-20260927/after_new_360x800.png",
+      "to": "../../../output/playwright/astra-feedback-20260927/after_new_360x800.png"
+    },
+    {
+      "source": "docs/roadmap/astra-feedback-remediation-2026-09-27.md",
+      "from": "../../output/playwright/astra-feedback-20260927/before_calendar_360x800.png",
+      "to": "../../../output/playwright/astra-feedback-20260927/before_calendar_360x800.png"
+    },
+    {
+      "source": "docs/roadmap/astra-feedback-remediation-2026-09-27.md",
+      "from": "../../output/playwright/astra-feedback-20260927/after_calendar_360x800.png",
+      "to": "../../../output/playwright/astra-feedback-20260927/after_calendar_360x800.png"
+    },
+    {
+      "source": "docs/roadmap/astra-feedback-remediation-2026-09-27.md",
+      "from": "../../output/playwright/astra-feedback-20260927/before_edit_360x800.png",
+      "to": "../../../output/playwright/astra-feedback-20260927/before_edit_360x800.png"
+    },
+    {
+      "source": "docs/roadmap/astra-feedback-remediation-2026-09-27.md",
+      "from": "../../output/playwright/astra-feedback-20260927/after_edit_360x800.png",
+      "to": "../../../output/playwright/astra-feedback-20260927/after_edit_360x800.png"
+    },
+    {
+      "source": "docs/roadmap/astra-feedback-remediation-2026-09-27.md",
+      "from": "../../output/playwright/astra-feedback-20260927/before_login_360x800.png",
+      "to": "../../../output/playwright/astra-feedback-20260927/before_login_360x800.png"
+    },
+    {
+      "source": "docs/roadmap/astra-feedback-remediation-2026-09-27.md",
+      "from": "../../output/playwright/astra-feedback-20260927/after_login_360x800.png",
+      "to": "../../../output/playwright/astra-feedback-20260927/after_login_360x800.png"
+    },
+    {
+      "source": "docs/roadmap/astra-feedback-remediation-2026-09-27.md",
+      "from": "../../output/playwright/astra-feedback-20260927/before_staff_360x800.png",
+      "to": "../../../output/playwright/astra-feedback-20260927/before_staff_360x800.png"
+    },
+    {
+      "source": "docs/roadmap/astra-feedback-remediation-2026-09-27.md",
+      "from": "../../output/playwright/astra-feedback-20260927/after_staff_360x800.png",
+      "to": "../../../output/playwright/astra-feedback-20260927/after_staff_360x800.png"
+    },
+    {
+      "source": "docs/roadmap/astra-feedback-remediation-2026-09-27.md",
+      "from": "../../output/playwright/astra-feedback-20260927/design/",
+      "to": "../../../output/playwright/astra-feedback-20260927/design"
+    },
+    {
+      "source": "docs/roadmap/astra-feedback-remediation-2026-09-27.md",
+      "from": "../operations/pencil-desktop-workflow.md",
+      "to": "../operations/doc-37%20-%20pencil-desktop-workflow.md"
+    },
+    {
+      "source": "docs/roadmap/documentation-audit-2026-09-22.md",
+      "from": "./R-15-customer-service-price.md",
+      "to": "../features/doc-19%20-%20R-15-customer-service-price.md"
+    },
+    {
+      "source": "docs/roadmap/documentation-audit-2026-09-22.md",
+      "from": "../../AGENTS.md",
+      "to": "../../../AGENTS.md"
+    },
+    {
+      "source": "docs/roadmap/documentation-audit-2026-09-22.md",
+      "from": "../../README.md",
+      "to": "../../../README.md"
+    },
+    {
+      "source": "docs/roadmap/documentation-audit-2026-09-22.md",
+      "from": "../../future-todo.md",
+      "to": "doc-1%20-%20historic-future-todo-20260928.md"
+    },
+    {
+      "source": "docs/roadmap/documentation-audit-2026-09-22.md",
+      "from": "./README.md",
+      "to": "doc-21%20-%20historic-roadmap-index-20260928.md"
+    },
+    {
+      "source": "docs/roadmap/documentation-audit-2026-09-22.md",
+      "from": "./R-10-role-management.md",
+      "to": "../features/doc-12%20-%20R-10-role-management.md"
+    },
+    {
+      "source": "docs/roadmap/documentation-audit-2026-09-22.md",
+      "from": "./R-11-notification-automation.md",
+      "to": "../features/doc-13%20-%20R-11-notification-automation.md"
+    },
+    {
+      "source": "docs/roadmap/documentation-audit-2026-09-22.md",
+      "from": "./R-14-easy-usability-foundation.md",
+      "to": "../features/doc-17%20-%20R-14-easy-usability-foundation.md"
+    },
+    {
+      "source": "docs/roadmap/documentation-audit-2026-09-22.md",
+      "from": "./R-15-customer-service-price.md",
+      "to": "../features/doc-19%20-%20R-15-customer-service-price.md"
+    },
+    {
+      "source": "docs/roadmap/documentation-audit-2026-09-22.md",
+      "from": "./R-16-customer-session-pass.md",
+      "to": "../features/doc-20%20-%20R-16-customer-session-pass.md"
+    },
+    {
+      "source": "docs/roadmap/documentation-audit-2026-09-22.md",
+      "from": "./R-14-user-validation-protocol.md",
+      "to": "../features/doc-18%20-%20R-14-user-validation-protocol.md"
+    },
+    {
+      "source": "docs/roadmap/documentation-audit-2026-09-22.md",
+      "from": "./phase-2-execution-prompt.md",
+      "to": "doc-29%20-%20phase-2-execution-prompt.md"
+    },
+    {
+      "source": "docs/roadmap/documentation-audit-2026-09-22.md",
+      "from": "../operations/local-keychain-secrets.md",
+      "to": "../operations/doc-35%20-%20local-keychain-secrets.md"
+    },
+    {
+      "source": "docs/roadmap/documentation-audit-2026-09-22.md",
+      "from": "../operations/supabase-free-keepalive.md",
+      "to": "../operations/doc-40%20-%20supabase-free-keepalive.md"
+    },
+    {
+      "source": "docs/roadmap/documentation-audit-2026-09-22.md",
+      "from": "../operations/r10-invitation-ledger.md",
+      "to": "../operations/doc-38%20-%20r10-invitation-ledger.md"
+    },
+    {
+      "source": "docs/roadmap/documentation-audit-2026-09-22.md",
+      "from": "../operations/pencil-desktop-workflow.md",
+      "to": "../operations/doc-37%20-%20pencil-desktop-workflow.md"
+    },
+    {
+      "source": "docs/roadmap/documentation-audit-2026-09-22.md",
+      "from": "../operations/migration-release-workflow.md",
+      "to": "../operations/doc-36%20-%20migration-release-workflow.md"
+    },
+    {
+      "source": "docs/roadmap/documentation-audit-2026-09-22.md",
+      "from": "./release-history-2026-07-to-09.md",
+      "to": "doc-30%20-%20release-history-2026-07-to-09.md"
+    },
+    {
+      "source": "docs/roadmap/phase-2-execution-prompt.md",
+      "from": "./R-10-role-management.md",
+      "to": "../features/doc-12%20-%20R-10-role-management.md"
+    },
+    {
+      "source": "docs/roadmap/phase-2-execution-prompt.md",
+      "from": "../../AGENTS.md",
+      "to": "../../../AGENTS.md"
+    },
+    {
+      "source": "docs/roadmap/phase-2-execution-prompt.md",
+      "from": "../operations/r10-invitation-ledger.md",
+      "to": "../operations/doc-38%20-%20r10-invitation-ledger.md"
+    },
+    {
+      "source": "docs/roadmap/release-history-2026-07-to-09.md",
+      "from": "../../future-todo.md",
+      "to": "doc-1%20-%20historic-future-todo-20260928.md"
+    },
+    {
+      "source": "docs/roadmap/release-history-2026-07-to-09.md",
+      "from": "./README.md",
+      "to": "doc-21%20-%20historic-roadmap-index-20260928.md"
+    },
+    {
+      "source": "docs/roadmap/release-history-2026-07-to-09.md",
+      "from": "../operations/migration-release-workflow.md",
+      "to": "../operations/doc-36%20-%20migration-release-workflow.md"
+    },
+    {
+      "source": "docs/roadmap/release-history-2026-07-to-09.md",
+      "from": "./ai-slop-remediation-2026-07-16.md",
+      "to": "doc-22%20-%20ai-slop-remediation-2026-07-16.md"
+    },
+    {
+      "source": "docs/roadmap/security-audit-2026-09-26.md",
+      "from": "../operations/rls-auto-enable-hardening.md",
+      "to": "../operations/doc-39%20-%20rls-auto-enable-hardening.md"
+    },
+    {
+      "source": "docs/operations/browser-validation-workflow.md",
+      "from": "../../AGENTS.md",
+      "to": "../../../AGENTS.md"
+    },
+    {
+      "source": "docs/operations/github-account-workflow.md",
+      "from": "../../AGENTS.md",
+      "to": "../../../AGENTS.md"
+    },
+    {
+      "source": "docs/operations/github-account-workflow.md",
+      "from": "../../scripts/gh-account",
+      "to": "../../../scripts/gh-account"
+    },
+    {
+      "source": "docs/operations/migration-release-workflow.md",
+      "from": "../roadmap/README.md",
+      "to": "../history/doc-21%20-%20historic-roadmap-index-20260928.md"
+    },
+    {
+      "source": "docs/operations/migration-release-workflow.md",
+      "from": "../../AGENTS.md#25-github-게시-도구와-재인증",
+      "to": "../../../AGENTS.md#25-github-게시-도구와-재인증"
+    },
+    {
+      "source": "docs/operations/migration-release-workflow.md",
+      "from": "../roadmap/R-10-role-management.md",
+      "to": "../features/doc-12%20-%20R-10-role-management.md"
+    },
+    {
+      "source": "docs/operations/migration-release-workflow.md",
+      "from": "../roadmap/R-15-customer-service-price.md",
+      "to": "../features/doc-19%20-%20R-15-customer-service-price.md"
+    },
+    {
+      "source": "docs/operations/migration-release-workflow.md",
+      "from": "../roadmap/R-16-customer-session-pass.md#rollback",
+      "to": "../features/doc-20%20-%20R-16-customer-session-pass.md#rollback"
+    },
+    {
+      "source": "docs/operations/migration-release-workflow.md",
+      "from": "./r10-invitation-ledger.md",
+      "to": "doc-38%20-%20r10-invitation-ledger.md"
+    },
+    {
+      "source": "docs/operations/migration-release-workflow.md",
+      "from": "./supabase-free-keepalive.md",
+      "to": "doc-40%20-%20supabase-free-keepalive.md"
+    },
+    {
+      "source": "docs/operations/migration-release-workflow.md",
+      "from": "./local-keychain-secrets.md",
+      "to": "doc-35%20-%20local-keychain-secrets.md"
+    },
+    {
+      "source": "docs/operations/migration-release-workflow.md",
+      "from": "./browser-validation-workflow.md",
+      "to": "doc-32%20-%20browser-validation-workflow.md"
+    },
+    {
+      "source": "docs/operations/pencil-desktop-workflow.md",
+      "from": "../../AGENTS.md",
+      "to": "../../../AGENTS.md"
+    },
+    {
+      "source": "docs/operations/r10-invitation-ledger.md",
+      "from": "../roadmap/R-10-role-management.md",
+      "to": "../features/doc-12%20-%20R-10-role-management.md"
+    },
+    {
+      "source": "docs/operations/rls-auto-enable-hardening.md",
+      "from": "../roadmap/security-audit-2026-09-26.md",
+      "to": "../history/doc-31%20-%20security-audit-2026-09-26.md"
+    },
+    {
+      "source": "docs/operations/rls-auto-enable-hardening.md",
+      "from": "../../supabase/migrations/20260926000000_rls_auto_enable_execute_hardening.sql",
+      "to": "../../../supabase/migrations/20260926000000_rls_auto_enable_execute_hardening.sql"
+    },
+    {
+      "source": "docs/operations/rls-auto-enable-hardening.md",
+      "from": "./migration-release-workflow.md",
+      "to": "doc-36%20-%20migration-release-workflow.md"
+    },
+    {
+      "source": "docs/operations/rls-auto-enable-hardening.md",
+      "from": "../../tests/sql/rls-auto-enable-hardening.sql",
+      "to": "../../../tests/sql/rls-auto-enable-hardening.sql"
+    },
+    {
+      "source": "docs/operations/supabase-free-keepalive.md",
+      "from": "./local-keychain-secrets.md",
+      "to": "doc-35%20-%20local-keychain-secrets.md"
+    },
+    {
+      "source": "docs/operations/supabase-free-keepalive.md",
+      "from": "../roadmap/R-10-role-management.md",
+      "to": "../features/doc-12%20-%20R-10-role-management.md"
+    }
+  ],
+  "source_bodies": {
+    "future-todo.md": "ba9da882ffdbb2c0e2bb3ce0f809b3b015a583634d8195c3bd14e723f7a48825",
+    "docs/roadmap/R-01-rls-policy.md": "963252eae36a2d7c8917347027b3facec2032200863ad0293b83e112c2f10dad",
+    "docs/roadmap/R-02-appointment-edit-cancel-status.md": "8d6980c98f95b8e42e48d906816158bc487be96432892c2a4defc1f441f91996",
+    "docs/roadmap/R-03-booking-conflict-business-hours.md": "ae24a68ffd6566d65f62623c35e107d473ddcb73cf8738aa4782aff5d3aa0876",
+    "docs/roadmap/R-04-kst-date-time-consistency.md": "8d03491e16f81569a78c6f2e5bfdf47340b390fb977f5808bbd9acf5ca03bfb6",
+    "docs/roadmap/R-05-settings-page.md": "c7fd67a21250fddcddf8d0b3aa4230fb1ddaf727d34584b5b9feb9c66de2fcd5",
+    "docs/roadmap/R-06-pwa-completion.md": "39c56190f28eb926fcf187496ed16cf1493c8a2f3199282e9cd85eb8a55dcbb1",
+    "docs/roadmap/R-07-customer-edit-delete-dedupe.md": "42e9a67823bd7a74eb951aa5130696c6757ec16aee03c666db0d52821c8707ce",
+    "docs/roadmap/R-08-service-master.md": "7574b3f3ebf0fc3f89fd502262ba9401a8dad5f2f1a5918bd0f6ab0e3f60dd42",
+    "docs/roadmap/R-09-stats-advanced.md": "5d771c02c6eb4d97bf725f940f756f51600f82d43088101ce5651192625d9fb8",
+    "docs/roadmap/R-10-astra-review-2026-09-27.md": "27ef98073297cea802bfe21116bf15892f192d807836a6dc0c7f3f6161833684",
+    "docs/roadmap/R-10-role-management.md": "a246996dc30d2a87cebe043e202e6fa73b981f02cc4a74e0013acedc62574b02",
+    "docs/roadmap/R-11-notification-automation.md": "fe152203a3c06a21c91cc6a1b149043a77e2c155f2a1d2c11bac04c7aa890a2c",
+    "docs/roadmap/R-12-csv-export-backup.md": "60e196e3b60e84c89e47a2f1aa1f43b7c30441298c93933da54d808bb22e98f2",
+    "docs/roadmap/R-13-appointment-customer-search-quick-create.md": "3f48280966b288e79361a65a420048937425f7aa5fddaa33df86cb3255e3ffb8",
+    "docs/roadmap/R-14-astra-usability-review-2026-09-27.md": "05146f3bbdb583ecbdcff737297444f53304f7766faa55908e5eef211c658853",
+    "docs/roadmap/R-14-easy-usability-foundation.md": "a0aea696c6b0ecdca6f2aa61f2efe04084ffda34d3fad620dc1659089b717d0e",
+    "docs/roadmap/R-14-user-validation-protocol.md": "6e086ba80451174f1fd007f3ce5733a3dda90277425e744a4e3ea13292ef568c",
+    "docs/roadmap/R-15-customer-service-price.md": "325ca05d8a353d14096915618598b285b1175b58f9913c0056fb6b3e85f9754f",
+    "docs/roadmap/R-16-customer-session-pass.md": "4819af5f7889e58cb45d1db8f779f1c82ba2fef862478b28d871d2852dc3421e",
+    "docs/roadmap/README.md": "6506dfa6568b35a00920e435964894d70bb8fbb3d7ee5dd9eaaddabf57750ff9",
+    "docs/roadmap/ai-slop-remediation-2026-07-16.md": "b9fb566ae5978676a11fcd1283d49121b10a880ba8df24e6578c3b5946b06a90",
+    "docs/roadmap/astra-feedback-release-2026-09-28.md": "8e18c0dc08fc8fe3dbb427a4732e1729fdab32faa1f52767847c60c2bd1590a9",
+    "docs/roadmap/astra-feedback-remediation-2026-09-27.md": "1606cab9dbc7f30cc42038af94dd5236580d20b0809bcaba014bf555f25d2978",
+    "docs/roadmap/candidate-appointment-save-confirmation.md": "e1b8427a4c28b54854720e538ccff342a89e3c2af9ba1c05be14c6f6f35fa95e",
+    "docs/roadmap/candidate-repeat-last-service.md": "f8a5d106e016b74f47b69f7ad088c53a526c7770f166511b80e45ae3c312e1e5",
+    "docs/roadmap/candidate-today-centered-home.md": "0e06c5e1df3a9795ac3eef9d430d1076235b11aa82dcbe481a3c64b486bc37a1",
+    "docs/roadmap/documentation-audit-2026-09-22.md": "7251fc56dd8772b43770eff17b6779b95ef1ec724671da1a04abe3ecb525a9d9",
+    "docs/roadmap/phase-2-execution-prompt.md": "6816130b245a5a3d95328f3fdb3cee8f64c4053aa91e9a73f3fc5788c846f4a6",
+    "docs/roadmap/release-history-2026-07-to-09.md": "56815cb9c794aa6d97a75c91a47b7d86c1b4b73baf189bac01997df959ae64cf",
+    "docs/roadmap/security-audit-2026-09-26.md": "e06294d1c77a53a89c43db030d896b513f793b8aaa1df7380ed734589241d134",
+    "docs/operations/browser-validation-workflow.md": "d151023f055230444cb8db7702e476725cccedf61cc882d45decef01c4c7191f",
+    "docs/operations/csv-backup-handling.md": "cd809bde558e181418b99e7e3e33853dce2fbd21e37d3f346f7b92e2072ab1cf",
+    "docs/operations/github-account-workflow.md": "4e14d93f1432dd8c6a107e04a83ed19878faba948b5acf89bdd2070615fa6cd0",
+    "docs/operations/local-keychain-secrets.md": "981e71d2b1227a0e6c96a88bdbf14b37f047b292f5fc4b577e5fb9d2ca51e594",
+    "docs/operations/migration-release-workflow.md": "0a6fd2f3f5923dff70ca3ad4059679acb9273c4a5891b30afd180ee06101bf99",
+    "docs/operations/pencil-desktop-workflow.md": "06bd3a164c8f31ec924307af62ddf4544bb0d1f3423ea46abbb641ebdc34d8aa",
+    "docs/operations/r10-invitation-ledger.md": "4938d88da64b91fa33cdaa53480356818a75fabd1cf02ff9cbd6add0bebd502e",
+    "docs/operations/rls-auto-enable-hardening.md": "b92239108302b40f382bc867e2a299db7c2d7ff433f76ad3cf0a7520b2502347",
+    "docs/operations/supabase-free-keepalive.md": "1304409068a183e9a74bc9c62572f0898a3da97480e19e296bb2a2a6ee1674e6"
+  }
+}

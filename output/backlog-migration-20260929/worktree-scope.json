@@ -1,0 +1,16 @@
+[
+  {
+    "cwd": "/Users/idongseog/workspace/hairCRMvibes",
+    "branch": "main",
+    "HEAD": "b095a7546a16169b6706ab8b520b1e38c7776f14",
+    "task_id": "TASK-26",
+    "status": "Done"
+  },
+  {
+    "cwd": "/Users/idongseog/.codex/worktrees/backlog-migration-checks/hairCRMvibes",
+    "branch": "",
+    "HEAD": "b095a7546a16169b6706ab8b520b1e38c7776f14",
+    "task_id": "TASK-26",
+    "status": "In Progress"
+  }
+]

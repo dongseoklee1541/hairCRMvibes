@@ -1,93 +1,59 @@
-# R-09 Stats Advanced
+# 이동 안내
 
-## 상태
-- Done (PR merged; exact live migration and Production release verified)
-- 구현 브랜치: `codex/r09-stats-advanced`
-- 기준: `origin/main@a360cea279abd250670dfd47ca6e8cd213b7131c`
-- 최종 업데이트: 2026-07-12
+2026-09-29 KST부터 이 경로의 편집을 종료했습니다. 작업·문서 관리는 Backlog.md에서 수행합니다.
 
-## Release 결과
-- PR #20이 Vercel checks 성공 후 merge됐고 `main@b63f9a3771409776593c6ad61727e24c68082186`이 되었습니다.
-- Supabase live history는 local filename과 같은 11번째 `20260712124959_r09_stats_advanced`입니다. connector 적용 시 생성된 실행시각 version은 SQL 재실행 없이 history만 local version으로 교정했습니다.
-- live 함수는 `SECURITY INVOKER`, `STABLE`, 빈 `search_path`, authenticated EXECUTE 허용, anon EXECUTE 차단, PUBLIC 차단을 catalog에서 확인했습니다.
-- Vercel Production deployment `dpl_FBDsYn26v2ZXiJthe5z97vsJDwk2`가 merge SHA로 READY이고 `hair-cr-mvibes.vercel.app` canonical alias가 연결됐습니다.
-- canonical `/stats` 비로그인 `/login?from=%2Fstats` redirect와 root/login/manifest/SW/offline/favicon/192·512 icon 200, SW active/controller, 미캐시 URL offline fallback, console error/warning 0건을 확인했습니다.
-- Cron 무인증 경계는 `401 + application/json + no-store`로 유지됩니다. Production 고객·예약 fixture나 실제 데이터 RPC smoke는 수행하지 않았습니다.
+- 전체 원문·계약·날짜별 근거: [doc-10](../../backlog/docs/features/doc-10%20-%20R-09-stats-advanced.md)
+- 현재 작업/후보: [TASK-9](../../backlog/tasks/task-9%20-%20R-09-%ED%86%B5%EA%B3%84-%EA%B3%A0%EB%8F%84%ED%99%94.md)
+- 탐색: [doc-42](../../backlog/docs/doc-42%20-%20backlog-catalog.md)
+- 관리 절차: [doc-41](../../backlog/docs/operations/doc-41%20-%20backlog-workflow.md)
+- 이관표: [doc-43](../../backlog/docs/migration/doc-43%20-%20backlog-migration-20260929.md)
 
-## 구현 결과
-- `/stats`의 `appointments.*`, `customers(id, name)`, 브라우저 원본 집계를 제거하고 `get_stats_summary(p_start_date, p_end_date)` RPC 한 번으로 교체했습니다.
-- 사용자 선택 KST 시작일·종료일을 inclusive date 범위로 사용하며 최대 366일만 허용합니다.
-- 매출, 유료 완료 객단가, 완료 건수, 가격 미입력 건수·비율·원인 구분, 재방문 고객률, 서비스별 상위 5개 집계를 반환합니다.
-- loading, error/retry, empty, 가격 부분 데이터, 0원 완료, 기간 선택 상태를 분리했습니다. 기간 입력 중에는 호출하지 않고 적용 시 한 번만 POST하며 request sequence guard로 이전 응답을 폐기합니다.
+기존 경로는 외부 링크 연결용 이동 안내입니다. 본문·현재 상태표·체크리스트를 다시 작성하지 않습니다.
 
-## 확정 지표 계약
+<a id="r-09-stats-advanced"></a>
+[R-09 Stats Advanced](../../backlog/docs/features/doc-10%20-%20R-09-stats-advanced.md#r-09-stats-advanced)
 
-### 매출·객단가
-- 매출은 `status='completed'`이고 `price_snapshot_krw is not null`인 snapshot을 합산합니다. 0원은 합계에 포함하지만 가격 NULL은 추정하지 않습니다.
-- 객단가는 `status='completed'`이고 `price_snapshot_krw > 0`인 유료 완료 예약만 분자·분모에 사용합니다.
-- confirmed/cancelled는 제외하며 현재 존재하지 않는 no-show를 신설·추정하지 않습니다.
+<a id="상태"></a>
+[상태](../../backlog/docs/features/doc-10%20-%20R-09-stats-advanced.md#상태)
 
-### 가격 데이터 품질
-- 가격 NULL 완료 예약을 건수와 완료 예약 대비 비율로 반환합니다.
-- `service_id is null`과 `service_id is not null`을 각각 자유입력/서비스 연결 보조 분류로 반환하되 snapshot 회귀라고 자동 단정하지 않습니다.
-- 기존 서비스·예약의 가격 또는 service FK를 현재 마스터 값으로 backfill하지 않습니다.
+<a id="release-결과"></a>
+[Release 결과](../../backlog/docs/features/doc-10%20-%20R-09-stats-advanced.md#release-결과)
 
-### 재방문율
-- 선택 기간 내 완료 예약 고객을 분모로, 같은 기간 완료 예약이 2건 이상인 고객을 분자로 사용합니다.
-- 기간 이전 이력이나 첫 방문 제외 관찰 창은 사용하지 않습니다.
-- 완료 고객 분모가 0이면 `NULL`을 반환하고 UI는 `데이터 없음`으로 표현합니다.
+<a id="구현-결과"></a>
+[구현 결과](../../backlog/docs/features/doc-10%20-%20R-09-stats-advanced.md#구현-결과)
 
-### 시술별 지표
-- 예약 당시 text `service`와 `price_snapshot_krw` snapshot으로 집계합니다.
-- 건수, 매출, 유료 건수·객단가, 가격 미입력 건수만 반환하고 상위 5개로 제한합니다.
-- 현재 서비스 마스터 이름·가격으로 과거 이력을 재분류하지 않습니다.
+<a id="확정-지표-계약"></a>
+[확정 지표 계약](../../backlog/docs/features/doc-10%20-%20R-09-stats-advanced.md#확정-지표-계약)
 
-## DB·권한 설계
-- 기간 검증과 의미가 확정된 KPI를 한 번에 반환하는 aggregate RPC를 선택했습니다. 임의 기간 필터와 raw row 조합을 허용하는 view보다 반환·권한 경계가 좁습니다.
-- 함수는 `STABLE SECURITY INVOKER`, 빈 `search_path`, 완전 수식 테이블명을 사용합니다.
-- 함수 내부에서 `auth.uid()`와 `profiles.role in ('owner','staff')`를 확인합니다. 현재 appointment/service 가격은 두 역할 모두 읽을 수 있어 owner/staff 동일 집계를 허용했습니다.
-- `PUBLIC`, `anon`, `authenticated`의 기본 EXECUTE를 모두 회수한 뒤 `authenticated`에만 명시적으로 부여합니다. profile이 없거나 허용 역할이 아니면 `42501`로 차단합니다.
-- 응답에는 고객 ID·이름·전화번호·메모와 예약 ID·원본 row가 없습니다.
-- 범위가 최대 366일이고 현재 데이터 규모에서 별도 index 근거가 없어 index를 추가하지 않았습니다.
+<a id="매출객단가"></a>
+[매출·객단가](../../backlog/docs/features/doc-10%20-%20R-09-stats-advanced.md#매출객단가)
 
-## 변경 파일
-- `pencil-hairshopcrm.pen`
-- `app/stats/page.js`
-- `app/stats/page.module.css`
-- `supabase/migrations/20260712124959_r09_stats_advanced.sql`
-- `supabase/rollbacks/20260712124959_r09_stats_advanced.down.sql`
-- `supabase/tests/r09_stats_advanced.sql`
-- `schema.sql`
-- `future-todo.md`, `docs/roadmap/README.md`, `docs/roadmap/phase-2-execution-prompt.md`
+<a id="가격-데이터-품질"></a>
+[가격 데이터 품질](../../backlog/docs/features/doc-10%20-%20R-09-stats-advanced.md#가격-데이터-품질)
 
-## Pencil SSOT
-- 기존 통계 화면을 `통계 페이지 (R-09 이전)`으로 보존하고 재사용 KPI component `UJyM5`를 추가했습니다.
-- 기본 `e0g4Gi`, 기간 선택 `sNWZW`, loading `JEqvV`, error/retry `t7WjbV`, empty `oqkpx`, 가격 부분 데이터 `sj5OP` 상태를 같은 `.pen`에 반영했습니다.
-- 여섯 상태 모두 `snapshot_layout(problemsOnly)` 문제 0건입니다.
-- Pencil 앱 저장 후 파일 SHA-1이 `b05e35508b88f5570f2b1ec1e41c85a31130e0de`에서 `be8ea7276aca5f792c63d19f627f1a41275d2356`으로 변경된 것을 확인했습니다.
+<a id="재방문율"></a>
+[재방문율](../../backlog/docs/features/doc-10%20-%20R-09-stats-advanced.md#재방문율)
 
-## 로컬 검증 근거
-- PostgreSQL 17 disposable DB 두 개에서 forward migration 11개 누적 경로와 `schema.sql` 경로를 각각 적용했습니다.
-- 두 경로 모두 R-07, R-08, R-09 SQL 테스트를 통과했고 synthetic Auth/customer/service/appointment residue는 각 0건입니다.
-- R-09 fixture는 completed/confirmed/cancelled × 양수/0/NULL, KST 시작 전·시작·종료·종료 후, 1회/2회 고객, 자유입력·연결 서비스 가격 NULL, 빈 분모, 역방향·366일 초과, owner/staff/profileless/anon/PUBLIC, 최소 JSON key를 검증합니다.
-- `pg_dump` 공개 스키마 비교에서 객체 의미 차이는 없고 과거 `ALTER TABLE` 이력 때문에 발생한 세 테이블의 물리적 column order 차이만 남습니다.
-- bundled Node `npm ci`는 audit 0, 환경변수를 포함한 `npm run build`는 warning/error 없이 통과했습니다.
-- Playwright mock에서 390×844와 360×800 기본/기간/부분 데이터, error/retry, empty, loading을 확인했습니다. 날짜 입력 중 RPC POST 0회, 적용 시 POST 1회를 확인했습니다.
-- production-mode local PWA에서 SW active/controller, manifest standalone, 192/512 icon과 offline 문서 200, 임의 미캐시 URL offline fallback, console error/warning 0건을 확인했습니다.
-- Supabase API는 기존 `NetworkOnly` 규칙을 유지하며 SW/cache 전략을 변경하지 않았습니다.
+<a id="시술별-지표"></a>
+[시술별 지표](../../backlog/docs/features/doc-10%20-%20R-09-stats-advanced.md#시술별-지표)
 
-## 스크린샷
-- before: `output/playwright/r09-stats/20260712_stats_before_390x844.png`
-- after: `output/playwright/r09-stats/20260712_stats_after_390x844.png`
-- Android: `output/playwright/r09-stats/20260712_stats_after_360x800.png`
-- period/error/empty/loading 상태도 같은 디렉터리에 보관하며 Git에는 stage하지 않습니다.
+<a id="db권한-설계"></a>
+[DB·권한 설계](../../backlog/docs/features/doc-10%20-%20R-09-stats-advanced.md#db권한-설계)
 
-## Rollback
-- 애플리케이션은 이 변경 commit을 revert합니다.
-- DB는 `supabase/rollbacks/20260712124959_r09_stats_advanced.down.sql`을 수동 검토 후 실행해 grant를 회수하고 함수만 drop합니다. 데이터 변경·backfill이 없어 row rollback은 없습니다.
+<a id="변경-파일"></a>
+[변경 파일](../../backlog/docs/features/doc-10%20-%20R-09-stats-advanced.md#변경-파일)
 
-## 남은 리스크
-- Preview Supabase 격리는 문서 충돌로 `확인 필요`이며 확인 전 Preview 로그인·실데이터 smoke는 금지합니다.
-- Production/Preview 테스트 고객·예약은 생성하지 않았고, live owner/staff 실제 데이터 집계 브라우저 smoke도 개인정보 보호를 위해 생략했습니다. SQL role fixture와 catalog/ACL로 권한 계약을 검증했습니다.
-- advisor에는 기존 GraphQL authenticated table 노출, `rls_auto_enable`, SECURITY DEFINER RPC, leaked-password protection, 미사용/누락 index와 중복 permissive policy 항목이 남습니다. R-09 함수 자체에 대한 신규 advisor 항목은 없습니다.
-- 실기기 install/standalone/SW update는 기존 R-06 후속 운영 범위로 유지합니다.
+<a id="pencil-ssot"></a>
+[Pencil SSOT](../../backlog/docs/features/doc-10%20-%20R-09-stats-advanced.md#pencil-ssot)
+
+<a id="로컬-검증-근거"></a>
+[로컬 검증 근거](../../backlog/docs/features/doc-10%20-%20R-09-stats-advanced.md#로컬-검증-근거)
+
+<a id="스크린샷"></a>
+[스크린샷](../../backlog/docs/features/doc-10%20-%20R-09-stats-advanced.md#스크린샷)
+
+<a id="rollback"></a>
+[Rollback](../../backlog/docs/features/doc-10%20-%20R-09-stats-advanced.md#rollback)
+
+<a id="남은-리스크"></a>
+[남은 리스크](../../backlog/docs/features/doc-10%20-%20R-09-stats-advanced.md#남은-리스크)
