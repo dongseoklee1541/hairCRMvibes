@@ -1,0 +1,106 @@
+---
+id: doc-2
+title: R-01-rls-policy
+type: specification
+created_date: '2026-09-29 14:44'
+updated_date: '2026-09-29 14:45'
+tags:
+  - migrated
+  - dated-source
+---
+# 이관 안내 — doc-2
+
+기능 계약·설계·날짜별 검증/배포/관찰/감사 근거를 전체 이관했다. 아래 `상태`·`현재`·`다음 행동`·승인 문구와 경로는 원문 기록 시점의 사실/제안/계획이다. 현재 상태·다음 행동의 원본은 연결 task/Draft이며 원문에 과거 미완료가 있어도 완료된 구현을 재실행하지 않는다.
+
+- 원래 경로: `docs/roadmap/R-01-rls-policy.md` (역사적 식별자)
+- 이관일: 2026-09-29 KST; 실제 구현·검증은 원래 날짜 유지, 이번 이관에서 재실행하지 않음
+- 원문 기준 commit: `b095a7546a16169b6706ab8b520b1e38c7776f14`
+- 원문 SHA-256: `e57ffd97be9cd624c3f83ef5ea712d749a2f6c58fb2c9ac8e201cc91b24939d8`
+- 작업: [TASK-1](../../tasks/task-1%20-%20R-01-RLS-%EC%A0%95%EC%B1%85-%EC%A0%95%EB%A6%AC.md), [TASK-22](../../tasks/task-22%20-%20%EB%B3%B4%EC%95%88-%ED%9B%84%EC%86%8D-%EC%A0%95%EC%B1%85%C2%B7%EC%8B%A0%EA%B7%9C-profile%C2%B7Advisor%C2%B7MFA-%ED%99%95%EC%9D%B8.md)
+- 관리 절차: [doc-41](../operations/doc-41%20-%20backlog-workflow.md)
+
+문서/이미지/SQL/증거 Markdown 링크는 이 문서 위치 기준으로 수정했다. 코드 블록과 backtick의 역사적/저장소 루트 경로는 그대로 유지하며 과거 명령을 현재 승인으로 해석하지 않는다.
+
+<!-- migrated-source:start -->
+# R-01 RLS Policy
+
+## 상태
+- Done (live + fresh replay verified)
+- 브랜치: `feature/r02-appointment-edit-status` (Phase 1 통합 브랜치)
+- 최종 업데이트: 2026-07-12
+
+## 완료 기준
+- `customers`, `appointments`의 `Allow all` 정책 제거
+- `auth.role()` 기반 정책 제거
+- `profiles.role`의 `owner`/`staff`를 기준으로 고객/예약 운영 데이터 접근 허용
+- `profiles` 자체 role escalation 방지
+- `salon_closed_dates`는 owner/staff 읽기, owner 변경으로 제한
+- DB 변경은 migration과 `schema.sql`에 동기화
+
+## 권한 매트릭스 (R-07 반영 후 현재 live)
+| 리소스 | Owner | Staff | Anon |
+| --- | --- | --- | --- |
+| `customers` | select, 기본정보 column insert/update, lifecycle·merge RPC; hard delete deny | select, 기본정보 column insert/update, 중복 후보 조회; lifecycle·merge·hard delete deny | deny |
+| `appointments` | select/insert/update; hard delete deny | select/insert/update; hard delete deny | deny |
+| `profiles` | own profile select | own profile select | deny |
+| `salon_closed_dates` | select/insert/update/delete | select | deny |
+| 휴무일 RPC | execute 후 함수 내부 owner 검증 | execute 가능하지만 함수 내부에서 deny | deny |
+
+## 구현 근거
+- `supabase/migrations/20260219000000_phase1_genesis_baseline.sql`
+- `supabase/migrations/20260707155922_r01_rls_policy.sql`
+- `supabase/rollbacks/20260707155922_r01_rls_policy.down.sql`
+- `supabase/migrations/20260707161054_phase1_function_privilege_hardening.sql`
+- `schema.sql`
+
+## 검증
+- `PATH="/Users/idongseog/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH" npm run build` 통과
+- Supabase MCP 프로젝트 조회: `burtyhairCRM` 프로젝트가 `ACTIVE_HEALTHY` 상태임을 확인
+- live migration 적용 확인:
+  - `20260707155922` / `r01_rls_policy_20260706010000`
+  - `20260707155948` / `r02_appointment_status_20260706011000`
+  - `20260707160023` / `r05_settings_business_hours_20260706012000`
+  - `20260707160103` / `r03_booking_conflict_hours_20260706013000`
+  - `20260707161054` / `phase1_function_privilege_hardening_20260706014000`
+- live RLS smoke:
+  - anon `customers` select 차단
+  - owner/staff `customers` CRUD 허용
+  - owner/staff `appointments` CRUD 허용
+  - owner `salon_operation_settings` write 허용
+  - staff `salon_operation_settings` write 차단(`0 rows affected`, 값 변경 없음)
+  - anon `set_appointment_status` 실행 차단
+- hardening 확인:
+  - Phase 1 함수의 mutable `search_path` advisor 해소
+  - Phase 1 RPC/helper 함수의 anon execute 권한 차단 확인
+- 2026-07-11 live read-only 재확인:
+  - 핵심 7개 테이블 RLS 활성화 및 `customers`/`appointments` realtime 등록
+  - Auth 사용자 수와 profile 수가 각각 2이며 누락 profile 0건
+  - `ensure_user_profile_role()` 및 `create_profile_for_new_user` trigger가 live에 없음
+  - 점검 대상 Phase 1 함수 10개의 `search_path=public` 확인
+- 2026-07-12 live read-only 감사:
+  - migration history 9개와 local forward migration 9개의 version 일치 확인. 4~8번 live history name에는 repair 전 timestamp suffix가 남아 있음
+  - `customers`는 authenticated table-level DELETE를 차단하고 `name`, `phone`, `memo` insert/update와 `updated_at` update만 column grant로 허용함을 확인
+  - `appointments`는 authenticated select/insert/update만 허용하고 DELETE를 차단함을 확인
+- PostgreSQL 17 disposable fresh replay:
+  - forward migration 8개를 timestamp 순서대로 적용
+  - 핵심 테이블 7개, RLS 7개, realtime 2개 및 owner/staff/anon 경계 확인
+  - 새 Auth 사용자는 profile이 자동 생성되지 않는 승인된 운영 제약 확인
+  - 별도 DB에 `schema.sql`을 적용한 뒤 table/column/constraint/index/policy/function/trigger/ACL/realtime 구성을 정규화 비교해 semantic diff 없음 확인
+- 정적 검색:
+  - active Phase 1 migration과 `schema.sql`에서 owner/staff 정책, `to authenticated`, explicit anon revoke, `set search_path = public` 확인
+  - `Allow all access`와 `auth.role()`은 R-01 이전 legacy forward/rollback SQL과 문서의 이력 설명에만 남아 있음
+
+## 남은 리스크
+
+2026-09-26 [설정·catalog 점검](../history/doc-31%20-%20security-audit-2026-09-26.md)에서 Production의 GraphQL 설치, `rls_auto_enable` 실행 권한과 활성 이벤트 트리거, 유출 비밀번호 보호 비활성을 확인했습니다. 아래 항목은 최초 release의 후속 목록이며 최신 분류·미검증 범위는 점검 기록을 따릅니다. 기존 RLS 구현 완료 상태는 유지합니다.
+
+- Supabase advisor가 signed-in GraphQL table exposure를 보고합니다. anon 공개는 아니지만 GraphQL 사용 여부에 따라 비활성화 또는 노출 정책을 별도 결정해야 합니다.
+- 기존 `public.rls_auto_enable()`은 anon/authenticated가 실행 가능한 `SECURITY DEFINER` 함수로 advisor 경고가 남습니다. Phase 1 신규 함수는 아니지만 별도 보안 hardening 우선순위로 다뤄야 합니다.
+- Auth leaked-password protection이 비활성화되어 있다는 advisor 경고가 남습니다. 애플리케이션 migration이 아니라 Supabase Auth 운영 설정에서 결정해야 합니다.
+- `apply_closed_day_with_cancellations`, `apply_closed_days_batch_with_cancellations`, `remove_closed_day_range`는 `security definer`를 유지합니다. 내부 owner 검증은 있으나 advisor 경고가 남으므로 후속 보안 리뷰 대상입니다.
+- `appointments.customer_id`, `appointments.cancelled_by`, `salon_closed_dates.created_by/updated_by` FK index와 일부 settings/closed_dates select 정책 중복은 성능/정책 정리 backlog로 남깁니다.
+- 신규 Auth 사용자 profile 자동 생성은 별도 보안/운영 작업으로 분리했습니다. 초대/운영 절차가 profile row를 만들기 전에는 해당 사용자가 RLS 보호 데이터에 접근할 수 없습니다. 첫 사용자를 자동 owner로 승격하는 trigger는 live, migration, `schema.sql` 어디에도 두지 않습니다.
+- `phase1_function_privilege_hardening`은 의도적인 forward-only migration입니다. mutable `search_path` 또는 anon execute를 자동 복원하는 down SQL은 만들지 않으며, 장애 시 영향 함수만 검토 후 additive forward-fix로 교정합니다.
+- genesis와 기존 R-03 두 migration(`20260219000000`, `20260220000000`, `20260221000000`)의 history repair는 2026-07-12 별도 승인 아래 완료됐습니다. SQL을 재실행하지 않았으며 향후에는 version 일치와 live history name suffix 차이를 함께 확인해야 합니다.
+
+<!-- migrated-source:end -->

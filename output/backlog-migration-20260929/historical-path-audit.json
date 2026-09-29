@@ -1,0 +1,140 @@
+{
+  "checked_at_utc": "2026-09-29T15:01:25.430857+00:00",
+  "valid_concrete_or_glob_paths": 62,
+  "unresolved": [
+    {
+      "source": "docs/roadmap/R-09-stats-advanced.md",
+      "doc": "doc-10",
+      "original_path": "output/playwright/r09-stats/20260712_stats_before_390x844.png",
+      "classification": "historical-local-path-not-found",
+      "missing_now": [
+        "output/playwright/r09-stats/20260712_stats_before_390x844.png"
+      ],
+      "migration_loss": false
+    },
+    {
+      "source": "docs/roadmap/R-09-stats-advanced.md",
+      "doc": "doc-10",
+      "original_path": "output/playwright/r09-stats/20260712_stats_after_390x844.png",
+      "classification": "historical-local-path-not-found",
+      "missing_now": [
+        "output/playwright/r09-stats/20260712_stats_after_390x844.png"
+      ],
+      "migration_loss": false
+    },
+    {
+      "source": "docs/roadmap/R-09-stats-advanced.md",
+      "doc": "doc-10",
+      "original_path": "output/playwright/r09-stats/20260712_stats_after_360x800.png",
+      "classification": "historical-local-path-not-found",
+      "missing_now": [
+        "output/playwright/r09-stats/20260712_stats_after_360x800.png"
+      ],
+      "migration_loss": false
+    },
+    {
+      "source": "docs/roadmap/R-10-role-management.md",
+      "doc": "doc-12",
+      "original_path": "output/playwright/r10-role-management/20260713_r10_settings_before_390x844.png",
+      "classification": "historical-local-path-not-found",
+      "missing_now": [
+        "output/playwright/r10-role-management/20260713_r10_settings_before_390x844.png"
+      ],
+      "migration_loss": false
+    },
+    {
+      "source": "docs/roadmap/R-10-role-management.md",
+      "doc": "doc-12",
+      "original_path": "output/playwright/r10-role-management/20260714_r10_invitation_unknown_{before,after}_{390x844,360x800}.png",
+      "classification": "historical-local-path-not-found",
+      "missing_now": [
+        "output/playwright/r10-role-management/20260714_r10_invitation_unknown_before_390x844.png",
+        "output/playwright/r10-role-management/20260714_r10_invitation_unknown_before_360x800.png",
+        "output/playwright/r10-role-management/20260714_r10_invitation_unknown_after_390x844.png",
+        "output/playwright/r10-role-management/20260714_r10_invitation_unknown_after_360x800.png"
+      ],
+      "migration_loss": false
+    },
+    {
+      "source": "docs/roadmap/R-11-notification-automation.md",
+      "doc": "doc-13",
+      "original_path": "supabase/migrations/<timestamp>_r11_notification_automation.sql",
+      "classification": "proposed-not-created",
+      "missing_now": [
+        "supabase/migrations/<timestamp>_r11_notification_automation.sql"
+      ],
+      "migration_loss": false
+    },
+    {
+      "source": "docs/roadmap/R-11-notification-automation.md",
+      "doc": "doc-13",
+      "original_path": "supabase/rollbacks/<timestamp>_r11_notification_automation.down.sql",
+      "classification": "proposed-not-created",
+      "missing_now": [
+        "supabase/rollbacks/<timestamp>_r11_notification_automation.down.sql"
+      ],
+      "migration_loss": false
+    },
+    {
+      "source": "docs/roadmap/R-11-notification-automation.md",
+      "doc": "doc-13",
+      "original_path": "supabase/tests/r11_notification_automation.sql",
+      "classification": "proposed-not-created",
+      "missing_now": [
+        "supabase/tests/r11_notification_automation.sql"
+      ],
+      "migration_loss": false
+    },
+    {
+      "source": "docs/roadmap/R-11-notification-automation.md",
+      "doc": "doc-13",
+      "original_path": "supabase/tests/r11_notification_concurrency.sh",
+      "classification": "proposed-not-created",
+      "missing_now": [
+        "supabase/tests/r11_notification_concurrency.sh"
+      ],
+      "migration_loss": false
+    },
+    {
+      "source": "docs/roadmap/R-15-customer-service-price.md",
+      "doc": "doc-19",
+      "original_path": "output/playwright/actual-price-input-ux/browser-check.js",
+      "classification": "historical-local-path-not-found",
+      "missing_now": [
+        "output/playwright/actual-price-input-ux/browser-check.js"
+      ],
+      "migration_loss": false
+    },
+    {
+      "source": "docs/roadmap/R-15-customer-service-price.md",
+      "doc": "doc-19",
+      "original_path": "output/actual-price-input-ux/mock-api.cjs",
+      "classification": "historical-local-path-not-found",
+      "missing_now": [
+        "output/actual-price-input-ux/mock-api.cjs"
+      ],
+      "migration_loss": false
+    },
+    {
+      "source": "docs/roadmap/R-16-customer-session-pass.md",
+      "doc": "doc-20",
+      "original_path": "output/playwright/r16-customer-session-pass/before/",
+      "classification": "historical-local-path-not-found",
+      "missing_now": [
+        "output/playwright/r16-customer-session-pass/before/"
+      ],
+      "migration_loss": false
+    },
+    {
+      "source": "docs/roadmap/phase-2-execution-prompt.md",
+      "doc": "doc-29",
+      "original_path": "output/pencil/**",
+      "classification": "historical-glob",
+      "missing_now": [
+        "output/pencil/**"
+      ],
+      "migration_loss": false
+    }
+  ],
+  "note": "Original literal paths remain historical data. No new dead Markdown links; this migration did not recreate or delete evidence. R-11 expected implementation files remain uncreated under On Hold."
+}

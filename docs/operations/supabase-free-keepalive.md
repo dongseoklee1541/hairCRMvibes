@@ -1,102 +1,41 @@
-# Supabase Free Keepalive On Vercel
+# 이동 안내
 
-## 목적과 한계
+2026-09-29 KST부터 이 경로의 편집을 종료했습니다. 작업·문서 관리는 Backlog.md에서 수행합니다.
 
-- Vercel production Cron이 하루 한 번 Supabase에 실제 read-only DB 요청을 보내 Free 프로젝트의 비활성 일시정지 가능성을 낮춥니다.
-- 이 구성은 best-effort이며 Supabase uptime을 보장하지 않습니다. 유료 플랜만 inactivity 자동 일시정지 대상에서 제외됩니다.
-- Vercel Hobby는 비상업적 개인 프로젝트용입니다. 실제 미용실 영업에 사용하기 전에는 Vercel 플랜 적합성을 별도로 결정해야 합니다.
-- 고객, 예약, 연락처 데이터는 조회하지 않습니다. `salon_operation_settings.id` 한 컬럼만 읽고 응답에도 포함하지 않습니다.
+- 전체 원문·계약·날짜별 근거: [doc-40](../../backlog/docs/operations/doc-40%20-%20supabase-free-keepalive.md)
+- 현재 작업/후보: [TASK-26](../../backlog/tasks/task-26%20-%20%EC%9E%91%EC%97%85%C2%B7%EC%84%A4%EA%B3%84%C2%B7%EA%B2%80%EC%A6%9D%C2%B7%EC%9A%B4%EC%98%81-%EB%AC%B8%EC%84%9C%EB%A5%BC-Backlog.md%EB%A1%9C-%EC%A0%84%EB%A9%B4-%EC%A0%84%ED%99%98.md)
+- 탐색: [doc-42](../../backlog/docs/doc-42%20-%20backlog-catalog.md)
+- 관리 절차: [doc-41](../../backlog/docs/operations/doc-41%20-%20backlog-workflow.md)
+- 이관표: [doc-43](../../backlog/docs/migration/doc-43%20-%20backlog-migration-20260929.md)
 
-## 구성
+기존 경로는 외부 링크 연결용 이동 안내입니다. 본문·현재 상태표·체크리스트를 다시 작성하지 않습니다.
 
-- Route: `GET /api/cron/supabase-keepalive`
-- Schedule: `17 3 * * *` (매일 03:17 UTC, 12:17 KST 전후)
-- Vercel Hobby에서는 지정한 시간으로부터 최대 약 59분 오차가 발생할 수 있습니다.
-- Route와 응답은 `no-store`이며 PWA/service worker cache 대상이 아닙니다.
+<a id="supabase-free-keepalive-on-vercel"></a>
+[Supabase Free Keepalive On Vercel](../../backlog/docs/operations/doc-40%20-%20supabase-free-keepalive.md#supabase-free-keepalive-on-vercel)
 
-## Vercel 환경변수
+<a id="목적과-한계"></a>
+[목적과 한계](../../backlog/docs/operations/doc-40%20-%20supabase-free-keepalive.md#목적과-한계)
 
-Production 환경에 다음 값을 직접 등록합니다.
+<a id="구성"></a>
+[구성](../../backlog/docs/operations/doc-40%20-%20supabase-free-keepalive.md#구성)
 
-| 이름 | 공개 여부 | 설명 |
-| --- | --- | --- |
-| `NEXT_PUBLIC_SUPABASE_URL` | 공개 가능 | 현재 Supabase Project URL |
-| `SUPABASE_SECRET_KEY` | 서버 전용 | Supabase에서 발급한 최신 secret key의 Production 배포 사본. `NEXT_PUBLIC_` 접두사 금지 |
-| `CRON_SECRET` | 서버 전용 | Vercel Cron 요청의 Bearer 검증용 무작위 secret |
+<a id="vercel-환경변수"></a>
+[Vercel 환경변수](../../backlog/docs/operations/doc-40%20-%20supabase-free-keepalive.md#vercel-환경변수)
 
-`SUPABASE_SECRET_KEY`와 `CRON_SECRET`은 저장소, 브라우저 bundle, 로그, 응답, 문서에 실제 값을 기록하지 않습니다.
-Supabase secret key의 발급·회전·폐기 원본은 Supabase이며 Vercel Production에는 배포 사본만 둡니다. 높은 권한을 가지므로 브라우저나 응답으로 전달하지 않습니다. R-10 이전에는 keepalive의 최소 read-only 조회에만 사용했으며, R-10부터는 별도 Node server-only 직원 목록/초대 route가 Auth Admin API를 호출할 때도 사용합니다. 역할 변경은 secret client가 아니라 caller JWT를 유지한 owner-only DB RPC로 처리합니다.
+<a id="production-적용-이력-2026-07-12"></a>
+[Production 적용 이력 (2026-07-12)](../../backlog/docs/operations/doc-40%20-%20supabase-free-keepalive.md#production-적용-이력-2026-07-12)
 
-`CRON_SECRET` 생성 예시:
+<a id="r-10-server-only-재사용-사전-확인-2026-07-13"></a>
+[R-10 server-only 재사용 사전 확인 (2026-07-13)](../../backlog/docs/operations/doc-40%20-%20supabase-free-keepalive.md#r-10-server-only-재사용-사전-확인-2026-07-13)
 
-```bash
-openssl rand -hex 32
-```
+<a id="배포-후-검증"></a>
+[배포 후 검증](../../backlog/docs/operations/doc-40%20-%20supabase-free-keepalive.md#배포-후-검증)
 
-출력값은 Vercel Dashboard에 직접 등록하고 채팅이나 커밋에 붙여 넣지 않습니다.
-승인된 로컬 검증에서 재사용해야 하는 `CRON_SECRET`은 macOS login Keychain에만 보관하고,
-[`scripts/haircrm-keychain`](./local-keychain-secrets.md)의 고정 alias와 비출력 명령으로 접근합니다.
-로컬 Keychain 사본은 Vercel Production 환경변수를 대체하는 원본이 아닙니다.
+<a id="실패-상태"></a>
+[실패 상태](../../backlog/docs/operations/doc-40%20-%20supabase-free-keepalive.md#실패-상태)
 
-## Production 적용 이력 (2026-07-12)
+<a id="복구와-운영"></a>
+[복구와 운영](../../backlog/docs/operations/doc-40%20-%20supabase-free-keepalive.md#복구와-운영)
 
-아래 적용·사전 확인 절은 2026-07-12~13 당시 기록입니다. 현재 배포·env·Auth URL·Cron 상태는 관련 작업 재개 시 확인합니다. R-10 후속 적용·잔여 gate는 [R-10 상세](../roadmap/R-10-role-management.md)를 따릅니다.
-
-- 당시 release 기준은 `main@16157f89976e41f5218377712d5d77026bc14417`, Vercel deployment는 `5z5MKHSAyxtLrRt6ACF3UZtLBGh7`입니다.
-- 자동 Production build는 성공했지만 deployment가 `Staged` 상태이고 custom domain 할당이 생략돼, Dashboard에서 정확한 merge SHA를 Promote했습니다. 현재 canonical은 `https://hair-cr-mvibes.vercel.app`입니다.
-- Vercel Production에 `SUPABASE_SECRET_KEY`, `CRON_SECRET`이 Sensitive 변수로 존재함을 이름과 scope만 확인했습니다. 실제 값은 열거나 출력하지 않았습니다.
-- Cron Jobs는 Enabled이며 `/api/cron/supabase-keepalive`가 `17 3 * * *`로 등록됐습니다.
-- 무인증 요청은 `401 + application/json + no-store`, Keychain wrapper 승인 요청은 `200 + {"ok":true}`를 반환했습니다. Runtime Logs의 Warning/Error/Fatal은 각각 0건이었습니다.
-- Production DB `select 1`과 임시 CA/Cron response residue 0건도 함께 확인했습니다.
-
-## R-10 server-only 재사용 사전 확인 (2026-07-13)
-
-- Vercel Project `hair-cr-mvibes`에서 `SUPABASE_SECRET_KEY`가 `Sensitive / Production`으로 존재함을 값 조회 없이 다시 확인했습니다.
-- R-10의 `GET /api/staff`, `POST /api/staff/invitations`만 Auth 사용자 식별/초대를 위해 Admin client를 사용합니다. 응답에는 마스킹된 email만 포함하고 raw email·token·secret은 기록하지 않습니다.
-- `PATCH /api/staff/[userId]/role`은 caller access token과 owner-only `change_staff_role` RPC만 사용합니다.
-- 당시 Supabase Auth Site URL은 `http://localhost:3000`, Redirect URL은 0개로 확인됐습니다. canonical `/invite/accept` 허용 전에는 Production 초대 수락 링크를 완료할 수 없으며, 외부 Auth URL 설정은 별도 release gate입니다.
-- 전용 Preview Supabase와 Vercel Preview 공개 URL/key 격리는 R-12에서 완료됐지만, R-10 Admin route용 Preview server secret은 이번 범위에서 추가·변경·검증하지 않았습니다. 실제 Preview/Production 초대는 모두 금지합니다.
-
-## 배포 후 검증
-
-Cron은 production deployment에서만 등록·실행됩니다. push/deploy 승인 후 다음 순서로 확인합니다.
-
-1. Vercel Project Settings의 Production 환경에 세 변수를 등록합니다.
-2. production deployment를 생성합니다.
-3. Settings > Cron Jobs에서 `/api/cron/supabase-keepalive`가 하루 한 번 일정으로 등록됐는지 확인합니다.
-4. secret 없는 호출이 `401`인지 확인합니다.
-5. 로컬 Keychain wrapper를 사용한 수동 호출이 HTTP `200`, `application/json`, 정확한 `{"ok":true}` 응답을 반환하는지 비출력 상태로 확인합니다.
-
-```bash
-scripts/haircrm-keychain cron-request \
-  'https://hair-cr-mvibes.vercel.app/api/cron/supabase-keepalive'
-```
-
-6. Vercel Runtime Logs에서 성공 여부만 확인합니다. secret이나 Supabase 응답 데이터가 로그에 없어야 합니다.
-7. Supabase에서 inactivity 경고 메일이 오면 실제 앱 요청과 Dashboard 활동을 추가 확인합니다.
-
-Production build가 성공해도 deployment가 `Staged`이고 `Assigning Custom Domains`가 `Skipped`라면 canonical은 이전 배포를 계속 가리킬 수 있습니다. 이 경우 deployment detail에서 source SHA를 다시 확인한 후 `Promote`하고, canonical의 무인증 `401`과 승인 `200`을 모두 재검증합니다.
-
-## 실패 상태
-
-| HTTP | 의미 | 대응 |
-| --- | --- | --- |
-| `401` | Bearer secret 불일치 | Vercel의 `CRON_SECRET`과 요청 헤더 확인 |
-| `503 cron_not_configured` | `CRON_SECRET` 누락 | Production 환경변수 등록 후 재배포 |
-| `503 supabase_not_configured` | URL 또는 secret key 누락 | 환경변수 scope와 이름 확인 후 재배포 |
-| `502 supabase_query_failed` | Supabase 조회 실패 | 프로젝트 상태, 키 활성 여부, 테이블 존재 및 Vercel 로그의 error code 확인 |
-
-## 복구와 운영
-
-- Cron을 중단하려면 Vercel Dashboard에서 Cron Jobs를 비활성화하거나 `vercel.json` 항목을 제거하고 재배포합니다.
-- secret 노출이 의심되면 `CRON_SECRET`과 `SUPABASE_SECRET_KEY`를 즉시 회전합니다.
-- Supabase Free 프로젝트가 일시정지되면 Dashboard에서 90일 안에 resume합니다.
-- Free 프로젝트는 정기 백업을 별도로 보관해야 합니다. keepalive는 백업을 대체하지 않습니다.
-
-## 공식 참고
-
-- [Supabase Free Project Pausing](https://supabase.com/docs/guides/platform/free-project-pausing)
-- [Supabase API Keys](https://supabase.com/docs/guides/getting-started/api-keys)
-- [Vercel Cron Jobs](https://vercel.com/docs/cron-jobs)
-- [Vercel Cron Usage And Pricing](https://vercel.com/docs/cron-jobs/usage-and-pricing)
-- [Vercel Hobby Plan](https://vercel.com/docs/plans/hobby)
+<a id="공식-참고"></a>
+[공식 참고](../../backlog/docs/operations/doc-40%20-%20supabase-free-keepalive.md#공식-참고)

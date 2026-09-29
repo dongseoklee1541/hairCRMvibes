@@ -1,0 +1,121 @@
+---
+id: doc-12
+title: R-10-role-management
+type: specification
+created_date: '2026-09-29 14:44'
+updated_date: '2026-09-29 14:45'
+tags:
+  - migrated
+  - dated-source
+---
+# 이관 안내 — doc-12
+
+기능 계약·설계·날짜별 검증/배포/관찰/감사 근거를 전체 이관했다. 아래 `상태`·`현재`·`다음 행동`·승인 문구와 경로는 원문 기록 시점의 사실/제안/계획이다. 현재 상태·다음 행동의 원본은 연결 task/Draft이며 원문에 과거 미완료가 있어도 완료된 구현을 재실행하지 않는다.
+
+- 원래 경로: `docs/roadmap/R-10-role-management.md` (역사적 식별자)
+- 이관일: 2026-09-29 KST; 실제 구현·검증은 원래 날짜 유지, 이번 이관에서 재실행하지 않음
+- 원문 기준 commit: `b095a7546a16169b6706ab8b520b1e38c7776f14`
+- 원문 SHA-256: `0e9e45a92dd07f22700aae2f9f5350047e4422852cbc547c854aed9bfcf33ad1`
+- 작업: [TASK-10](../../tasks/task-10%20-%20R-10-%EC%A7%81%EC%9B%90-%EC%B4%88%EB%8C%80%C2%B7%EC%97%AD%ED%95%A0-%EA%B4%80%EB%A6%AC-%EA%B5%AC%ED%98%84%EA%B3%BC-%EB%B0%B0%ED%8F%AC.md), [TASK-17](../../tasks/task-17%20-%20R-10-%EC%8B%A4%EC%A0%9C-owner-staff-%EA%B2%80%EC%A6%9D%EA%B3%BC-%EC%B4%88%EB%8C%80-%ED%99%9C%EC%84%B1%ED%99%94-gate.md), [TASK-22](../../tasks/task-22%20-%20%EB%B3%B4%EC%95%88-%ED%9B%84%EC%86%8D-%EC%A0%95%EC%B1%85%C2%B7%EC%8B%A0%EA%B7%9C-profile%C2%B7Advisor%C2%B7MFA-%ED%99%95%EC%9D%B8.md)
+- 관리 절차: [doc-41](../operations/doc-41%20-%20backlog-workflow.md)
+
+문서/이미지/SQL/증거 Markdown 링크는 이 문서 위치 기준으로 수정했다. 코드 블록과 backtick의 역사적/저장소 루트 경로는 그대로 유지하며 과거 명령을 현재 승인으로 해석하지 않는다.
+
+<!-- migrated-source:start -->
+# R-10 Role Management
+
+## 상태
+- In Progress (보안 경고·owner 검증 잔여)
+- 구현 브랜치: `codex/r10-role-management`
+- 최초 구현 기준: `origin/main@b2258844642fae0d7a5f07798a95c9a3091cd502`
+- 구현 commit: `fccf3753856abbe0c254813eafd48bcbfffafcb0`
+- PR: [#26](https://github.com/dongseoklee1541/hairCRMvibes/pull/26) merged
+- R-10 당시 Production release 기준: `origin/main@6cfb71e88cbe4bbfd3a8469a3c5b4487a3ccb449`
+- 최초 release 검증 기록: 2026-07-14
+- 최신 원격 설정·catalog 점검: 2026-09-26 ([점검 결과와 변경안](../history/doc-31%20-%20security-audit-2026-09-26.md)); 실제 owner/staff smoke는 미검증; 2026-09-27 Vercel Production 설정 flag=false 확인
+
+## 현재 판정과 재개 조건
+
+- 2026-09-27 [Astra 사전 검토](doc-11%20-%20R-10-astra-review-2026-09-27.md)에서 초대 재시도 결함 P1·P2를 확인했습니다. 기존 서버 계약 22개 통과와 별개로 두 반례를 합성 재현했습니다. 이후 두 결함을 수정하고 [로컬 회귀·Astra 재검토](../history/doc-24%20-%20astra-feedback-remediation-2026-09-27.md)를 완료했습니다. 2026-09-28 PR #44로 운영 배포하고 [공개 경계 검증](../history/doc-23%20-%20astra-feedback-release-2026-09-28.md)을 완료했습니다. 실제 계정 검증은 별도입니다.
+
+- 구현·PR #26 병합·Preview/Production migration·배포는 아래 2026-07-14 release 근거로 완료입니다. 초기 인덱스의 `live 미적용`은 이 release 이전 기록입니다.
+- Auth URL 적용·재조회는 완료했고 advisor hardening·authenticated owner smoke가 남아 In Progress를 유지합니다. 초대 활성화 gate는 닫혀 있습니다.
+- 2026-09-26 관리 화면과 catalog SELECT에서 양 환경의 Site URL=`http://localhost:3000`, Redirect URL 0개, R-10 6개 함수의 본문·ACL·owner 검사 계약과 private 원장의 직접 접근 차단을 확인했습니다. authenticated EXECUTE 경고를 없애려고 정상 owner RPC 권한을 일괄 회수하지 않습니다. 이후 사용자 승인으로 환경별 Auth URL을 적용하고 새로고침 후 반영을 확인했습니다. 변경 전 점검과 적용 후 값은 위 점검 기록에서 구분합니다.
+- `R10_INVITATIONS_ENABLED=false`는 2026-09-27 Vercel Production 설정에서 재확인했습니다. 기존 배포 환경 snapshot은 미검증입니다. Pencil transport 실패는 **과거 관찰**이며 현재 지속 여부를 확인하지 않았습니다. Supabase 관리 접근은 사용자 로그인 후 가능해졌습니다. CLI의 대상 프로젝트 접근 문제와 관리 화면 접근을 구분하고 과거 장애를 현재 모든 경로의 실패로 간주하지 않습니다.
+- 다음 행동: 잔여 운영 정책·실제 owner/staff 검증 범위 결정. 2026-09-27 ACL migration 양 환경 적용·권한 검증·대상 Advisor 경고 해소는 완료했습니다. 완료된 Auth URL 적용은 반복하지 않습니다. 실제 초대·계정·역할 변경과 flag 활성화는 승인된 대상/환경에 한정합니다. [운영 runbook](../operations/doc-38%20-%20r10-invitation-ledger.md)을 따릅니다.
+
+이하 구현·검증·release 절의 환경값·hash·접근 실패는 2026-07-14 당시 기록입니다.
+
+## 목표
+- owner가 앱에서 직원 초대 상태를 확인하고 기존 `profiles.role`을 안전하게 변경합니다.
+- DB가 owner 권한, 자기 강등 금지, 마지막 owner와 동시 강등 불변식을 강제합니다.
+- 초대·목록에서 raw email, service secret, token을 브라우저 번들·응답·로그·스크린샷에 노출하지 않습니다.
+- 기존 `pencil-hairshopcrm.pen`, migration/schema/rollback/test, 앱, 로드맵 SSOT를 같은 작업에서 동기화합니다.
+
+## 선택한 방식
+- A′안: Supabase Admin API는 Node server-only route에서만 사용하고 앱 역할의 SSOT는 `public.profiles.role`로 유지하되, 외부 Auth 호출 전에 private invitation claim ledger를 원자적으로 선점합니다.
+- 초대 신규 profile의 초기 역할은 `staff`로 고정합니다. 역할 승격은 별도 owner action으로 분리합니다.
+- Auth invite와 profile provisioning은 단일 transaction이 아니므로 Auth 사용자를 자동 삭제하지 않습니다. profile 실패는 `auth_succeeded` 상태로 보존하고 같은 email 재요청이 이메일 재전송 없이 provisioning을 멱등 복구합니다.
+- ledger에는 raw email 대신 server-only `SUPABASE_SECRET_KEY`를 domain-separated HMAC-SHA256 key로 사용한 64자리 fingerprint만 저장합니다. 역할 audit에는 actor/target/이전·이후 역할/event/request/time만 보관합니다.
+- 상태는 `claimed`, `auth_succeeded`, `provisioned`, `failed_definitive`, `unknown`으로 제한합니다. 동일 request/email의 winner 한 건만 Admin invite를 호출하고, 호출 결과가 모호하거나 claim이 stale이면 `unknown`으로 닫아 자동 재전송하지 않습니다.
+- 이는 외부 이메일의 exactly-once 전달 보장이 아니라 logical request/active fingerprint당 Admin API **at-most-once 호출** 보장입니다. `unknown`은 운영 확인 대상이며 UI도 즉시 재시도를 권하지 않습니다.
+- 계정 삭제, 비활성화, Auth ban은 범위 밖입니다.
+- 초대 route는 server-only `R10_INVITATIONS_ENABLED === 'true'`일 때만 활성화하며, 비활성 상태는 owner/ledger/Admin side effect 없이 `503 + invitation_maintenance + private, no-store`로 닫습니다. 역할 조회·역할 변경 route에는 이 gate를 적용하지 않습니다.
+
+## 권한 경계
+- client 역할 숨김은 UX일 뿐 권한 근거로 사용하지 않습니다.
+- authenticated caller JWT를 유지한 `SECURITY DEFINER` RPC가 `auth.uid()`와 owner profile을 다시 확인합니다.
+- 함수는 빈 `search_path`, 완전 수식 객체, PUBLIC/anon EXECUTE 회수, authenticated 명시 grant를 사용합니다.
+- 역할 변경은 공통 transaction advisory lock 뒤 actor 역할을 재검사하고 target row를 잠급니다. self-demotion과 마지막 owner demotion을 거부하며 update와 audit을 원자적으로 처리합니다.
+
+## 확인된 기준선
+- live Auth 사용자 2명, profile 2명, owner 1명, staff 1명, profile 누락 0명이며 읽기 전용 aggregate만 확인했습니다.
+- Vercel project `hair-cr-mvibes`의 `SUPABASE_SECRET_KEY`는 값 확인 없이 `Sensitive / Production`으로 존재함을 확인했습니다.
+- Supabase Auth URL metadata는 이번 release에서 변경하지 않았고 dashboard 인증/management access blocker로 현재 exact 값을 재확인하지 못했습니다. 목표 Production Site/Redirect URL을 설정하기 전에는 canonical 초대 수락 경로를 활성화하지 않습니다.
+- 전용 `burtyhairCRM-preview` 프로젝트와 Vercel Preview 공개 URL/key 격리는 R-12에서 완료됐습니다. 다만 R-10 Admin 경로의 Preview server secret은 이번 범위에서 추가·변경·검증하지 않았고 실제 Preview/Production 초대·로그인·역할 변경 smoke도 수행하지 않습니다.
+
+## UI/Pencil 범위
+- `/settings`에 권한관리 진입점을 두고 상세 화면은 `/settings/team`으로 분리합니다.
+- 직원 목록, 초대 form, 성공/pending/중복, loading/empty/error-retry, 역할 변경 confirmation, self/last-owner 차단, owner-only forbidden을 설계·구현합니다.
+- 390×844와 360×800, 44×44px touch target, safe-area, keyboard/focus/aria-live를 검증합니다.
+- before 캡처는 `output/playwright/r10-role-management/20260713_r10_settings_before_390x844.png`와 `20260713_r10_settings_before_360x800.png`입니다.
+- after 캡처는 같은 디렉터리의 `20260713_r10_settings_after_*`, `20260713_r10_team_after_*`, `20260713_r10_role_confirmation_after_390x844.png`, `20260713_r10_forbidden_after_390x844.png`입니다.
+- 최신 main과 통합한 Pencil node는 직원 목록 `v5otbf`, 초대 상태 `ckGvh`, 역할 변경 `CaBNI`, 시스템 상태 `PtvkE`이며 네 node 모두 layout problem 0건입니다. R-12 설정 `rYt9h`와 `DataBackupCard` `mVQYv`, R-14 Home Before `U1DsdP`와 After `e8e2Nz`도 같은 SSOT에 보존했고 각각 layout problem 0건입니다. 파일 SHA-1은 최초 `9b4f4b0ad1b07b92b10d296aefd109cfd72597ef`, R-10 설계 저장 `c2dff27286addba3c990040bd68a06bcbe9be51a`, R-12 통합·초안 정리 `140b7833a1a1eec4a0a93843919fbde13722a8e3`, 최신 R-14 main 충돌 해소 `a2019b2e78c386bc589f0003de090e051b0d358b` 순으로 변경됐습니다.
+- A′ 추가 UI 변경은 레이아웃·정보구조가 아니라 `in_progress`/`unknown` 안전 문구 보강이므로 별도 Pencil 편집을 하지 않는 micro-copy 예외로 승인됐습니다. 디스크의 `.pen` SHA-1은 `a2019b2e78c386bc589f0003de090e051b0d358b`로 불변이지만, 이번 세션의 Pencil 앱 transport 연결 실패로 node/layout read-only 재검증은 blocked입니다. 후속 설계 작업에 필요할 때 연결과 해당 R-10 node를 다시 읽기 전용 확인합니다. 이 과거 장애를 현재 설계 차단으로 자동 승계하지 않습니다.
+
+## 검증 결과
+- PostgreSQL 17 disposable DB에서 forward migration 13/13과 R-07/R-08/R-09/R-10 회귀를 통과했습니다. migration replay DB와 `schema.sql` replay DB의 R-10 semantic catalog diff는 없고, `20260713143746` ledger migration 657행은 `schema.sql` 마지막 657행과 byte-identical입니다.
+- 두 session owner 교차 강등은 한 transaction만 성공해 owner 1명과 audit 1건을 보존했습니다. 동시 동일 fingerprint claim은 token-bearing acquisition 1건과 tokenless replay 1건으로 수렴했습니다. ledger rollback은 claim/settle/reconcile RPC 3개를 제거하면서 private table/RLS/no-grant/evidence를 보존했고 재적용과 R-10 회귀를 통과했습니다. 기존 R-10 rollback의 staff RPC 3개 제거/audit 보존/profiles SELECT-only 근거도 유지합니다.
+- 서버 계약 mock 20/20은 신규·재초대, confirmed profileless canonical 복구, 부분 실패 후 무재전송 복구, 성공 replay, 동일 active fingerprint의 다른 request 동시 경합, `unknown` 무재전송·무token·무email, Admin 반환 email mismatch 격리, 기존 역할 audit request ID의 Auth side effect 전 거부, 역할 변경과 안정 오류 응답을 통과했습니다.
+- 두 mobile viewport에서 목록·초대 validation/success·역할 confirmation/change·loading/empty/error/retry·staff forbidden·profileless·anon redirect·초대 수락/로그아웃을 확인했습니다. dialog focus trap, Escape, focus restore, body scroll 복원, 44px touch target과 수평 overflow 0건도 통과했습니다.
+- Production-mode local PWA에서 SW activated/controller, 390×844·360×800 offline fallback, online refresh recovery, console error 0건, API/Supabase/document response cache 0건을 확인했습니다. manifest/SW/offline/icon 192·512는 HTTP 200입니다.
+- 무환경·synthetic-env `npm run build`, `git diff --check`, browser bundle secret/HMAC domain/claim token scan을 통과했습니다. 실제 Auth 사용자·초대·역할·고객·예약 데이터는 변경하지 않았습니다.
+- 기존 최신 main 통합에서 R-14 사용성 변경, R-12 `DataBackupCard`, R-10 진입점을 함께 보존했습니다. A′에서는 390×844·360×800의 `unknown` 안내 상태를 추가 검증해 수평 overflow 0건, 모든 주요 touch target 44px 이상, 일반 page load console 0건을 확인했습니다. 실제 409 mock에는 Chromium의 예상 resource error 1건만 있고 app exception은 없습니다. 캡처는 `output/playwright/r10-role-management/20260714_r10_invitation_unknown_{before,after}_{390x844,360x800}.png`이며 synthetic masked data만 사용했습니다.
+- maintenance gate 단위 검증은 정확히 문자열 `true`만 활성화하고 누락·대소문자 변형·숫자·boolean 값을 비활성으로 처리하며, 비활성 handler가 downstream client/owner RPC/claim-settle-reconcile/Admin invite를 0회 호출하는 계약을 포함합니다. UI는 `직원 초대 기능을 점검 중입니다. 잠시 후 다시 확인해주세요.` 문구를 stable error code에 매핑합니다. 운영 절차와 상태 aggregate/unknown/reconcile/key rotation/rollback SQL은 [`docs/operations/r10-invitation-ledger.md`](../operations/doc-38%20-%20r10-invitation-ledger.md)에 기록했습니다.
+- PR #26은 구현 commit `fccf3753856abbe0c254813eafd48bcbfffafcb0`에서 squash merge되어 `main@6cfb71e88cbe4bbfd3a8469a3c5b4487a3ccb449`가 되었습니다. PR checks와 Vercel Production/Preview Comments는 통과했습니다.
+- Preview에는 `20260714145253 r10_role_management`, `20260714145314 r10_invitation_claim_ledger`가 connector 적용 시각으로 기록됐고, Production에는 local migration version `20260712153420 r10_role_management`, `20260713143746 r10_invitation_claim_ledger`가 기록됐습니다. 두 환경 모두 private ledger RLS/no-grant, public audit RLS/owner-read policy, R-10 RPC의 `authenticated` execute ACL을 비식별 catalog로 확인했습니다.
+- Preview/Production `private.staff_invitation_requests` 상태 aggregate는 0건이었으며 실제 Auth 사용자·초대·역할 변경·고객·예약 데이터는 변경하지 않았습니다.
+- Supabase Auth URL 설정은 dashboard가 sign-in으로 되돌아가고 CLI management access token도 없어 실행하지 못했습니다. 따라서 canonical Site/Redirect URL은 변경하지 않았고, Production `R10_INVITATIONS_ENABLED=false`를 유지했습니다.
+- Vercel Production deployment `dpl_2vuPaKZxcv93nF71Nxk1DQKCZnHV`는 READY이며 canonical `https://hair-cr-mvibes.vercel.app`에 연결됐습니다. 390×844 canonical login redirect, manifest/SW/offline HTTP 200, 무인증 staff invitation `401 + no-store`, synthetic bearer의 maintenance `503 + private, no-store`, SW offline fallback 및 online recovery를 확인했습니다.
+- Preview/Production Supabase advisor에서 R-10 `SECURITY DEFINER` 함수 6개가 `authenticated_security_definer_function_executable` WARN으로 잡혔고, 두 환경의 private ledger는 의도적으로 RLS/no-policy입니다. Production에는 `role_management_events`의 GraphQL authenticated exposure WARN도 있습니다. 이는 권한 경계를 넓혀 숨기는 대신 별도 hardening blocker로 유지합니다.
+
+## PR, migration, Auth, Vercel release 기록
+- 구현 commit `fccf3753856abbe0c254813eafd48bcbfffafcb0`은 PR #26으로 squash merge됐고 merge SHA는 `6cfb71e88cbe4bbfd3a8469a3c5b4487a3ccb449`입니다. 최신 `origin/main`과 release-record worktree의 conflict test는 충돌 없이 통과했습니다.
+- Preview migration history는 connector 적용 시각을 보존해 `20260714145253 r10_role_management`, `20260714145314 r10_invitation_claim_ledger`입니다. Production migration history는 기존 local filename convention에 맞춰 `20260712153420 r10_role_management`, `20260713143746 r10_invitation_claim_ledger`입니다.
+- 두 live 프로젝트에서 `role_management_events`와 `private.staff_invitation_requests`의 RLS/ACL, R-10 function ACL, owner-only audit policy, empty ledger aggregate를 확인했습니다. private ledger에는 Data API role 직접 권한이나 policy를 추가하지 않았습니다.
+- Supabase Auth dashboard는 인증 화면으로 리다이렉트되어 URL metadata를 변경하지 못했고, CLI management access token도 제공되지 않았습니다. 목표값은 Site URL `https://hair-cr-mvibes.vercel.app`, exact redirect 3개이며 wildcard Preview redirect는 추가하지 않습니다.
+- Vercel Production `dpl_2vuPaKZxcv93nF71Nxk1DQKCZnHV`는 READY/canonical alias 연결 상태입니다. Production env에는 `R10_INVITATIONS_ENABLED=false`만 추가했고, Auth URL과 advisor blocker가 해소되기 전에는 `true`로 바꾸지 않습니다.
+
+## A′ claim ledger 결정
+- `private.staff_invitation_requests`는 queue/worker가 아니라 요청 claim과 복구 상태만 보존하는 최소 ledger입니다. private schema/table은 RLS를 켜고 Data API role에 schema/table 직접 권한을 주지 않습니다.
+- public `SECURITY DEFINER` RPC는 user JWT 구조를 유지하기 위한 제한적 예외입니다. 모든 RPC가 빈 `search_path`, 완전 수식 객체, `auth.uid()` owner 재검사, transaction advisory lock을 사용하며 PUBLIC/anon/service_role EXECUTE를 회수하고 authenticated만 명시적으로 허용합니다.
+- 동일 request ID를 다른 actor/fingerprint가 재사용하면 충돌하고, 활성 fingerprint의 부분 unique index가 다른 request ID 경합도 canonical row 하나로 수렴시킵니다. 신규 claim과 `failed_definitive` 재claim은 같은 request ID가 기존 `role_management_events`에 있으면 Admin side effect 전에 `22023`으로 거부합니다. claim token은 최초 winner의 server 흐름에서만 사용하고 API 응답·로그·replay에는 노출하지 않습니다.
+- stale `claimed`와 Admin API의 timeout/모호한 오류는 `unknown`으로 유지해 자동 takeover/reinvite를 금지합니다. `unknown`은 active unique index를 계속 점유하며 자동 만료·재전송·직접 UPDATE/DELETE로 해제하지 않습니다. 운영자는 비식별 ledger 상태와 Auth user/profile/동일 request provisioning audit을 대조하고 세 증거가 일치할 때만 reconcile로 `provisioned` 처리합니다. 증거가 없거나 상충하면 초대 route를 중지하고 incident로 유지하며, 감사 가능한 별도 resolution 계약이 승인되기 전에는 임의 해제하지 않습니다.
+- HMAC key를 겸하는 `SUPABASE_SECRET_KEY`가 회전하면 기존 active fingerprint와 새 fingerprint가 달라져 at-most-once 장벽을 우회할 수 있습니다. 회전은 초대 route `503 + no-store` 선중지 → in-flight 0 → 기존 key의 active `claimed`/`auth_succeeded`/`unknown` 0 확인 → 모든 server instance secret 교체·재배포 → 새 key smoke와 old active 0 재확인 → route 재개의 순서로만 진행합니다. 기존 fingerprint를 재계산·삭제하지 않습니다.
+
+## 미해결 gate 기록 (2026-07-14 이력; 최신 판정은 상단 점검 기록)
+- Supabase Auth Site/Redirect URL은 dashboard 인증 및 management access token 부재로 설정하지 못했습니다. canonical invite accept 경로를 허용하기 전에는 초대 route를 활성화하지 않습니다.
+- Preview/Production advisor의 R-10 `SECURITY DEFINER` execute WARN 6건과 Production GraphQL exposure WARN 1건은 권한 경계를 바꾸지 않고 별도 hardening 검토로 남겨 둡니다. 이 상태에서 `R10_INVITATIONS_ENABLED=true`로 전환하지 않습니다.
+- authenticated owner의 실제 로그인·초대·역할 변경 smoke는 실제 side effect 방지 범위 때문에 수행하지 않았습니다. Auth URL 설정과 advisor hardening 후 별도 승인된 synthetic/운영 검증이 필요합니다.
+
+<!-- migrated-source:end -->

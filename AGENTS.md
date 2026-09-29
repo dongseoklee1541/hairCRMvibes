@@ -4,13 +4,25 @@
 
 ## 0) 문서 역할과 시작점
 
-- 현재 상태와 우선순위: [future-todo.md](future-todo.md)
-- 업무 탐색과 상태 표기: [로드맵 인덱스](docs/roadmap/README.md)
-- 개별 결정·완료 근거·미검증 항목: 관련 `docs/roadmap/R-*.md`
-- 실행·복구 절차: 관련 `docs/operations/` 문서
-- 과거 기록과 Codex 메모리는 탐색 단서입니다. 기록 날짜·대상 commit·환경을 확인하고 현재 상태로 단정하지 않습니다.
+- 작업·설계·검증·운영 문서 관리의 유일한 기준: Backlog.md의 `backlog/`
+- 현재 상태·우선순위·완료 기준·실행 계획·진행/검증 메모·다음 행동·의존관계·완료 요약: `backlog/tasks/`의 native task
+- 기능 계약·상세 설계·검증/배포 근거·관찰·감사/release 이력: `backlog/docs/`의 native doc
+- 확정 선택·대안·이유·제약은 `backlog/decisions/`; accepted와 proposed 구분
+- 반복 실행·검증·복구 절차: `backlog/docs/operations/`
+- 미승인 사용성 후보: `backlog/drafts/`; 정식 R ID를 임의 부여/예약하지 않음
+- 기존 `future-todo.md`, `docs/roadmap/`, `docs/operations/`는 이동 안내로 편집 종료. 기존 세 문서 동기화 규칙도 종료
 
-로드맵 작업은 이 파일 → `future-todo.md` → 인덱스 → 관련 상세 문서 순으로 읽고, 현재 branch/HEAD·diff·worktree·`package.json` 및 필요한 runtime 상태와 대조합니다. 작업과 무관한 전체 조사·검증을 다시 시작하지 않습니다. 요약과 상세가 다르면 파일 우선순위만으로 결론을 내리지 말고 최신의 직접 근거로 교정하거나 `확인 필요`로 남깁니다.
+작업은 이 파일 → [Backlog 작업 절차](backlog/docs/operations/doc-41%20-%20backlog-workflow.md) → 로컬 `npm run backlog -- instructions overview`와 관련 guide → task 검색/조회 → 연결 doc/decision/Draft 순으로 읽고, 현재 branch/HEAD·diff·worktree·`package.json` 및 필요한 runtime과 대조합니다. [탐색 인덱스](backlog/docs/doc-42%20-%20backlog-catalog.md)와 [이관표](backlog/docs/migration/doc-43%20-%20backlog-migration-20260929.md)는 경로/ID 연결을 제공하며 현재 상태표를 복제하지 않습니다. 원래 R ID는 기능 식별자이며 native TASK ID와 연결합니다.
+
+`npm run backlog -- search R-10 --plain`, `npm run backlog -- task view TASK-10 --plain`, `npm run backlog -- task list --exclude-status Done --plain`을 사용합니다. 프로젝트에 고정한 로컬 CLI를 사용하고 생성/메타데이터 변경은 지원 CLI를 우선합니다. 1.53.0의 decision body update와 status/priority 목록은 CLI 미지원이므로 해당 부분만 메타데이터 보존 편집하며 자세한 절차를 따릅니다. 전역 설치·MCP·hook 추가는 자동 수행하지 않습니다.
+
+현재 상태는 task만 갱신합니다. 구현 계획은 `--plan`, 날짜·commit·환경·명령/결과·증거·보류/차단/미검증·다음 행동은 `--notes`/`--append-notes`, 완료 범위와 근거는 `--final-summary`에 기록하고 긴 계약/검증/배포 기록은 doc로 연결합니다. 운영 방법 개선은 검증한 뒤 해당 operations doc의 절차를 CLI로 갱신합니다. 날짜 있는 과거 상태표·승인 문구·실행 프롬프트는 역사적 기록이며 현재 승인/검증으로 바꾸지 않습니다. 상충은 최신 직접 근거로 해소하거나 확인 필요로 남깁니다.
+
+To Do는 준비/계획 대기, In Progress는 현재 승인 작업 진행, Waiting Validation은 독립 검증 대기, On Hold는 명시적 보류/재개 조건, Blocked는 특정 접근/정보/결정 차단, Done은 명시한 완료 범위의 근거, Draft는 미승인 후보입니다. 미검증/확인 필요는 항목별 notes로 상태와 함께 관리합니다. Done은 별도 후속을 통과했다는 뜻이 아니며 완료 구현을 후속 때문에 전체 미완료로 되돌리지 않습니다. R-10/R-14 구현 완료와 역할 검증/대표 사용자 관찰은 별도 task로 연결했고 R-11 구현 및 모바일 로그인·실기기 IME·설치형 PWA 보류를 유지합니다.
+
+P0(보안·데이터 보호·운영 중단), P1(운영 효율·품질), P2(확장·자동화·관리 편의) 의미를 유지합니다. 등록·우선순위·담당·dependency·CLI readiness는 실행 승인이나 보류 해제가 아닙니다. 담당이 불명확하면 비워 둡니다. 공식 Backlog workflow를 이미 승인된 목표의 단계별 재승인 의무로 확대하지 않으며 §2와 전역 목표 단위 승인 규칙을 따릅니다.
+
+현재 설정은 자동 commit/remote Git/status shell callback 비활성화, hook 우회 없음, 현재 checkout만 조회입니다. 조회 결과에는 cwd·branch·HEAD·config 출처를 기록하며 다른 worktree의 미커밋 상태가 자동 통합된다고 가정하지 않습니다. 과거 기록·Codex 메모리는 탐색 단서이며 당시 날짜·대상 commit·환경을 확인합니다. 관계없는 전체 조사·운영 smoke를 반복하지 않습니다.
 
 ## 1) 소통과 판단
 
@@ -52,14 +64,14 @@
 
 전역 AGENTS.md의 `GitHub Publishing: CLI First`를 따릅니다. Git은 `git`, PR 생성·조회·병합은 `gh`를 우선하며, 인증 실패 시 사용자 재인증을 요청하고 브라우저·connector로 자동 대체하지 않습니다. 게시 승인과 base/head·CI·병합 가능 상태 확인은 유지합니다.
 
-이 저장소에 로컬 계정 매핑이 설정돼 있으면 PR 작업은 `git gh-account pr ...`, 계정·권한 확인은 `git gh-account check`를 사용합니다. 호스트 전체의 `gh auth switch`로 다른 저장소의 계정을 바꾸지 않습니다. 네트워크 제한을 인증 만료로 단정하지 않으며 최초 로그인·Git helper 연결·복구는 [저장소별 GitHub 계정 절차](docs/operations/github-account-workflow.md)를 따릅니다.
+이 저장소에 로컬 계정 매핑이 설정돼 있으면 PR 작업은 `git gh-account pr ...`, 계정·권한 확인은 `git gh-account check`를 사용합니다. 호스트 전체의 `gh auth switch`로 다른 저장소의 계정을 바꾸지 않습니다. 네트워크 제한을 인증 만료로 단정하지 않으며 최초 로그인·Git helper 연결·복구는 [저장소별 GitHub 계정 절차](backlog/docs/operations/doc-34%20-%20github-account-workflow.md)를 따릅니다.
 
 ## 3) 코드·환경 기준
 
 - 기존 JavaScript/React, Next.js App Router, Tailwind/CSS 변수·primitives, Supabase, Lucide, PWA 구성을 따릅니다. 실제 버전·의존성·명령의 기준은 `package.json`과 lockfile입니다.
 - 상태는 component/local state 또는 Context로 유지하고 불필요한 전역 상태·추상화를 추가하지 않습니다.
 - production 의존성 추가/교체는 이름·이유·bundle/runtime 영향·복구가 승인 계획에 포함돼야 합니다.
-- 현재 실행 경로는 `npm run dev`, `npm run build`, `npm run start`, `npm test`, `npm run test:node`, `npm run test:race`입니다. 실행 전에 실제 scripts를 확인하며 없는 `lint`/`typecheck`를 가정하지 않습니다.
+- Backlog 로컬 명령은 `npm run backlog -- ...`입니다. 앱의 현재 실행 경로는 `npm run dev`, `npm run build`, `npm run start`, `npm test`, `npm run test:node`, `npm run test:race`입니다. 실행 전에 실제 scripts를 확인하며 없는 `lint`/`typecheck`를 가정하지 않습니다.
 - `public/sw.js`, `public/workbox-*.js`는 생성물입니다. `next.config.mjs`나 소스를 변경해 재생성하며 명시적인 예외 없이는 직접 편집하지 않습니다.
 - PWA 기반을 제거/교체할 때 service worker·offline·update·rollback 영향을 먼저 설명합니다.
 
@@ -71,7 +83,7 @@
 - 정책·grant·미인증 접근 확대는 명시적 승인 없이 수행하지 않습니다. UI 숨김만으로 권한을 보호하지 않습니다.
 - salon-local 날짜는 `lib/dateTime.js`의 KST helper와 `YYYY-MM-DD` date key를 사용합니다. UTC 의도가 명시되지 않은 `toISOString().split('T')[0]`을 도입하지 않습니다.
 - 민감 데이터의 localStorage/IndexedDB/Cache Storage/SW 저장은 필요성·보존기간·노출 위험·대안을 계획에 포함합니다.
-- 실제 계정/권한/운영 데이터 변경은 승인된 대상과 환경에 한정합니다. [migration·release 절차](docs/operations/migration-release-workflow.md)를 참고합니다.
+- 실제 계정/권한/운영 데이터 변경은 승인된 대상과 환경에 한정합니다. [migration·release 절차](backlog/docs/operations/doc-36%20-%20migration-release-workflow.md)를 참고합니다.
 
 ## 5) 디자인과 Mobile UX
 
@@ -82,7 +94,7 @@
 
 ### 5.1 Pencil Desktop
 
-기본 경로는 Desktop MCP입니다. 현재 도구 목록·스키마를 먼저 확인하고 과거 API 이름을 가정하지 않습니다. 필요한 화면만 읽고 변경 범위의 구조·시각 검증과 디스크 저장을 구분합니다. 활성 `.pen` 절대 경로·단독 편집·저장 검증을 포함한 [Pencil 작업 절차](docs/operations/pencil-desktop-workflow.md)를 설계 작업 시 따릅니다.
+기본 경로는 Desktop MCP입니다. 현재 도구 목록·스키마를 먼저 확인하고 과거 API 이름을 가정하지 않습니다. 필요한 화면만 읽고 변경 범위의 구조·시각 검증과 디스크 저장을 구분합니다. 활성 `.pen` 절대 경로·단독 편집·저장 검증을 포함한 [Pencil 작업 절차](backlog/docs/operations/doc-37%20-%20pencil-desktop-workflow.md)를 설계 작업 시 따릅니다.
 
 ## 6) 필수 검증
 
@@ -102,7 +114,7 @@
 - 탐색·재현에는 사용 가능한 Ego Lite, 반복 가치가 있는 절차만 스크립트화, 회귀에는 기존 테스트와 Chrome/Playwright를 우선합니다. 사용자 지정 도구·세션 지원 범위를 존중하며 모든 브라우저를 중복 실행하지 않습니다.
 - 도구가 막히면 원인·대체 경로·검증 한계를 남깁니다. 같은 실패를 근거 없이 반복하거나 도구 변경을 이유로 필수 검증을 생략하지 않습니다.
 - desktop 모바일 viewport, 실제 기기 키보드/IME, 설치형 PWA는 별도 검증입니다. 기존 로그인 세션, 새 자격 증명 로그인, owner/staff 권한도 구분합니다.
-- 사용자 보류 항목을 자동 재개하거나 완료로 바꾸지 않습니다. 절차·기록 양식은 [브라우저 검증 작업 방식](docs/operations/browser-validation-workflow.md)을 따릅니다.
+- 사용자 보류 항목을 자동 재개하거나 완료로 바꾸지 않습니다. 절차·기록 양식은 [브라우저 검증 작업 방식](backlog/docs/operations/doc-32%20-%20browser-validation-workflow.md)을 따릅니다.
 
 ### 6.3 PWA 검증
 
@@ -127,7 +139,7 @@ build 성공이나 offline 화면만으로 완료 처리하지 않습니다. con
 
 ## 9) 결과 보고
 
-변경 내용과 이유, 파일 링크, 정확한 실행 명령·결과, UI 전후 증거(해당 시), 남은 위험/미검증/보류/차단을 전달합니다. 작은 작업은 짧은 문단으로 묶습니다. 필수 완료 조건이 남아 있으면 전체 완료로 표현하지 않습니다. 로드맵 상태가 바뀌면 상세 근거와 두 요약을 같은 변경에서 맞춥니다.
+변경 내용과 이유, 파일 링크, 정확한 실행 명령·결과, UI 전후 증거(해당 시), 남은 위험/미검증/보류/차단을 전달합니다. 작은 작업은 짧은 문단으로 묶습니다. 필수 완료 조건이 남아 있으면 전체 완료로 표현하지 않습니다. 상태가 바뀌면 해당 native task의 상태·notes·다음 행동을 갱신하고 상세 근거 doc를 연결합니다. 이전 요약 문서나 날짜 있는 과거 상태표를 동기화하지 않습니다.
 
 ## 10) 참고
 
