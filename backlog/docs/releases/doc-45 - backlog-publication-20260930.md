@@ -3,7 +3,7 @@ id: doc-45
 title: backlog-publication-20260930
 type: other
 created_date: '2026-09-29 15:21'
-updated_date: '2026-09-29 15:36'
+updated_date: '2026-09-29 15:41'
 tags:
   - publication
   - release
@@ -49,7 +49,7 @@ tags:
 - 로컬 main을 origin/main에 fast-forward로 동기화했다. 추가 로컬 merge commit/reset/stash/사용자 파일 정리를 수행하지 않음.
 - 기존 보호 파일3,334개 SHA-256 동일·기존 미추적 사용자 파일 전부 보존. worktree/branch를 자동 제거하거나 archive하지 않음.
 
-이 결과를 task/doc에 저장하는 후속 PR은 문서·감사 JSON만 반영한다. 최초 이관의 native 생성일·원문40개의 기준 commit/hash·기존 로컬 검증 날짜를 바꾸지 않는다. 추가 앱/DB/환경/Pencil 변경·운영/실기기 검증 없이 해당 후속 head의 기존 CI·자동 배포 상태만 확인한다.
+이 결과를 task/doc에 저장하는 후속 PR은 게시 문서·감사 JSON·검증 산출물만 반영한다. 감사 스크립트의 변경 경로 읽기는 `git diff --name-only -z`로 교정해 한글 파일명을 정확히 처리하며 전역 Git 설정은 바꾸지 않는다. 최초 이관의 native 생성일·원문40개의 기준 commit/hash·기존 로컬 검증 날짜를 바꾸지 않는다. 추가 앱/DB/환경/Pencil 변경·운영/실기기 검증 없이 해당 후속 head의 기존 CI·자동 배포 상태만 확인한다.
 
 ## 실제 원격 근거 파일
 
