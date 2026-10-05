@@ -4,7 +4,7 @@ title: R-13 예약 고객 검색·빠른 등록
 status: Done
 assignee: []
 created_date: '2026-09-29 14:45'
-updated_date: '2026-09-29 14:53'
+updated_date: '2026-10-02 06:50'
 labels:
   - R-13
   - formal-feature
@@ -40,7 +40,12 @@ ordinal: 13000
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [x] #1 연결된 원문 문서의 명시된 구현·release 범위에 완료 근거가 있으며 원래 날짜·commit·환경을 추적할 수 있다.
+- [x] #1 새 예약에서 활성 고객의 id,name만 조회해 이름 검색 combobox로 선택하게 하며 전화번호 검색/대량 전송과 입력마다 고객 전체 재조회를 하지 않는다.
+- [x] #2 예약 화면 안의 bottom sheet에서 기존 CustomerForm·전화번호 validation·중복 확인을 재사용하고 중복 후보 선택 또는 별도 고객 등록 확인을 명시적으로 받는다.
+- [x] #3 신규 고객 등록 또는 기존 중복 후보 선택 뒤 해당 고객을 자동 선택하고 날짜·시간·서비스·소요시간·가격 snapshot·메모 draft를 유지한다.
+- [x] #4 이름 검색·결과 없음·로딩·오류·선택 상태와 ArrowUp/Down·Enter·Escape·Tab·IME composition 및 종료 후 포커스를 처리한다. desktop 모바일 viewport와 실제 기기 IME 검증은 구분한다.
+- [x] #5 고객 생성은 기존 authenticated insert grant/RLS와 R-07 중복 정책을 사용하고 중복 후보에 전화번호를 표시하지 않는다. 신규 migration/RPC/RLS/table이나 R-09 집계 계약 변경을 도입하지 않는다.
+- [x] #6 390×844·360×800 합성 검증 범위에서 주요 조작 영역·sheet 스크롤·배경 스크롤 잠금·safe-area와 성공/실패/취소 후 예약 draft 보존을 제공한다.
 <!-- AC:END -->
 
 ## Implementation Plan
@@ -65,6 +70,10 @@ ordinal: 13000
 - Preview Supabase 격리가 확인되지 않아 Preview/Production 실제 고객 생성 smoke는 금지 상태입니다.
 - 실제 owner/staff 로그인 세션과 모바일 실기기 IME·standalone install은 후속 운영 검증입니다.
 - 실제 owner/staff authenticated Production 기능 smoke는 실데이터 변경 위험 때문에 수행하지 않았습니다.
+
+2026-10-02 이관 보완: 원문의 기능 조건을 native 완료 기준으로 복원했다. 체크는 다음 기존 구현/검증 기록의 재사용이며 오늘 새 앱/DB/브라우저 검증을 실행했다는 뜻이 아니다.
+근거: doc-15 목표·개인정보/DB·구현 구조·합성 모바일 검증(2026-07-12 PR #18).
+미검증 경계: 실제 owner/staff는 TASK-23 대기, 실기기 IME/설치형 PWA는 TASK-20/21 사용자 보류다.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary

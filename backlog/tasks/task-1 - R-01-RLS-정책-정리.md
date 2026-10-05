@@ -4,13 +4,15 @@ title: R-01 RLS 정책 정리
 status: Done
 assignee: []
 created_date: '2026-09-29 14:45'
-updated_date: '2026-09-29 14:59'
+updated_date: '2026-10-02 06:50'
 labels:
   - R-01
   - formal-feature
   - historical-evidence
   - implementation-complete
 dependencies: []
+references:
+  - backlog/tasks/task-22 - 보안-후속-정책·신규-profile·Advisor·MFA-확인.md
 documentation:
   - backlog/docs/features/doc-2 - R-01-rls-policy.md
 priority: p0
@@ -26,7 +28,9 @@ ordinal: 1000
 
 승인: 작업 등록·우선순위·의존관계·담당 지정은 실행 승인이 아닙니다. 이번 승인은 관리 체계 이관에 한정되며 이 기능을 구현하거나 운영 검증하지 않습니다. 담당은 미지정입니다.
 
-기능 의도와 계약:
+### 기능 의도와 범위
+
+고객·예약 데이터의 포괄 허용 정책을 제거하고 인증된 원장/직원 역할에 따라 읽기·쓰기를 제한한다. profiles의 역할 상승을 막고 휴무일 변경은 owner에 한정하며 migration과 schema.sql에 권한 계약을 함께 유지한다. 이후 R-07 lifecycle 계약의 hard delete 차단과 제한된 RPC 경계는 연결한 원문 권한 매트릭스를 따른다.
 <!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria
@@ -71,6 +75,8 @@ ordinal: 1000
 - genesis와 기존 R-03 두 migration(`20260219000000`, `20260220000000`, `20260221000000`)의 history repair는 2026-07-12 별도 승인 아래 완료됐습니다. SQL을 재실행하지 않았으며 향후에는 version 일치와 live history name suffix 차이를 함께 확인해야 합니다.
 
 완료 기준은 원문의 구현 완료 범위에서 이관했다. 체크는 원문 날짜의 기존 증거에 따른 역사적 완료 표시이며 2026-09-29 새 동작 검증을 뜻하지 않는다. 독립 검증/실기기 보류 항목은 후속 작업에 유지한다.
+
+2026-10-02 이관 보완: 빈 기능 설명을 이관 원문의 RLS 목표·완료 기준·권한 매트릭스로 채웠다. 기능/권한·Done 범위·과거 검증일은 그대로이며 보안 후속은 TASK-22에서 추적한다.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary

@@ -4,7 +4,7 @@ title: R-08 서비스 마스터와 예약 snapshot
 status: Done
 assignee: []
 created_date: '2026-09-29 14:45'
-updated_date: '2026-09-29 14:59'
+updated_date: '2026-10-02 06:50'
 labels:
   - R-08
   - formal-feature
@@ -13,6 +13,7 @@ labels:
 dependencies: []
 references:
   - backlog/decisions/decision-6 - R-08-service-snapshot-and-trigger.md
+  - backlog/tasks/task-24 - 예약·시간대·CSV-부하와-환경-검증-공백.md
 documentation:
   - backlog/docs/features/doc-9 - R-08-service-master.md
 priority: p1
@@ -63,6 +64,8 @@ ordinal: 8000
 원문에서 유지한 검증 공백·위험·재개 조건:
 
 완료 기준은 원문의 구현 완료 범위에서 이관했다. 체크는 원문 날짜의 기존 증거에 따른 역사적 완료 표시이며 2026-09-29 새 동작 검증을 뜻하지 않는다. 독립 검증/실기기 보류 항목은 후속 작업에 유지한다.
+
+2026-10-02 이관 보완: doc-9의 완료 경계와 다음 단계에서 빠졌던 대규모 동시 부하 후속을 복원했다. 2026-07-12 기본 서비스 불변식의 순차 회귀·2-session 경쟁은 완료 기록이며 더 큰 부하는 TASK-24의 독립 성능 검증 대기다. R-08 Done 범위를 유지하고 이관 보완으로 부하 시험을 실행하지 않는다.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary
