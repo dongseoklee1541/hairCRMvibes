@@ -4,7 +4,7 @@ title: R-10 직원 초대·역할 관리 구현과 배포
 status: Done
 assignee: []
 created_date: '2026-09-29 14:45'
-updated_date: '2026-09-29 14:53'
+updated_date: '2026-10-02 08:52'
 labels:
   - R-10
   - formal-feature
@@ -47,8 +47,14 @@ ordinal: 10000
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [x] #1 PR #26 직원 초대·권한관리 구현과 migration·배포 및 PR #44 재시도 수정의 완료 근거가 보존되어 있다.
-- [x] #2 2026-09-26 Auth URL 적용·재조회와 2026-09-27 ACL 적용·권한 검증의 기록이 보존되어 있다.
+- [x] #1 직원 목록·초대·역할 변경은 서버/RPC에서 caller JWT와 owner 역할을 다시 검사하고 profiles.role을 앱 역할의 기준으로 사용한다.
+- [x] #2 역할 변경은 잠금과 재검사 아래 수행하며 자기 강등과 마지막 owner 강등을 거부하고 역할 변경과 감사 기록을 원자적으로 처리한다.
+- [x] #3 신규 초대의 초기 역할은 staff로 고정하고 승격은 별도 owner 행동으로 처리한다. Admin API와 secret은 server-only 경계에 둔다.
+- [x] #4 private claim ledger로 동일 요청/active fingerprint의 Admin 초대 호출을 최대 한 번으로 제한하고 auth_succeeded의 profile 복구는 메일 재전송 없이 멱등 처리한다.
+- [x] #5 모호한 외부 결과·stale claim은 unknown으로 유지하고 자동 재초대하지 않는다. 미수락 기존 계정만으로 unknown을 완료 처리하지 않는다.
+- [x] #6 응답 유실 시 AuthProvider의 인증 사용자별 메모리에 미확정 request ID를 보존해 재사용하고 성공 후 해제한다. 사용자 변경과 늦은 응답을 격리하며 새로고침 이후 보존을 보장하지 않는다.
+- [x] #7 인증 헤더가 없는 초대 요청은 401로 거부한다. R10_INVITATIONS_ENABLED가 정확히 문자열 true일 때만 초대를 활성화하고, 비활성 handler는 503 invitation_maintenance와 private no-store를 반환하며 downstream owner/ledger/Admin 호출을 하지 않는다.
+- [x] #8 private ledger의 Data API 직접 접근을 막고 raw email·secret·claim token을 브라우저 응답/번들/로그에 노출하지 않는다. 두 desktop 모바일 viewport의 접근 차단·확인·오류·재시도·포커스 피드백을 제공한다.
 <!-- AC:END -->
 
 ## Implementation Plan
@@ -84,6 +90,10 @@ ordinal: 10000
 상충 교정: 09-26/07-14의 미적용·Advisor 잔여 문구는 당시 기록이다. 09-27 ACL 적용·권한 검증·대상 경고 해소는 후속 직접 기록으로 완료. GraphQL·MFA·password protection 등 다른 정책과 실제 owner/staff는 별도 후속이다. Production 설정 flag=false는 09-27 관찰값이며 기존 배포 snapshot·현재값을 새로 확인한 것은 아니다.
 
 독립 후속: TASK-17 (backlog/tasks/task-17 - R-10-실제-owner-staff-검증과-초대-활성화-gate.md). 후속 검증 완료 전 전체 기능의 검증 완료를 주장하지 않는다.
+
+2026-10-02 이관 보완: 원문의 기능 조건을 native 완료 기준으로 복원했다. 체크는 다음 기존 구현/검증 기록의 재사용이며 오늘 새 앱/DB/브라우저 검증을 실행했다는 뜻이 아니다.
+근거: doc-12 선택 방식·권한 경계·검증 결과(2026-07-14 PR #26); doc-24 F1/F2 합성 회귀(2026-09-27); doc-23 PR #44 배포/공개 접근 경계(2026-09-28).
+미검증 경계: 실제 owner/staff·초대/역할 변경·메일 및 flag 배포 snapshot은 TASK-17 대기다. native Done은 구현·배포 기록 범위다.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary

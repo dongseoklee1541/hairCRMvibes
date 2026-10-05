@@ -3,7 +3,7 @@ id: doc-42
 title: backlog-catalog
 type: readme
 created_date: '2026-09-29 14:45'
-updated_date: '2026-09-29 15:21'
+updated_date: '2026-10-02 06:50'
 ---
 # Backlog 탐색 인덱스
 
@@ -105,3 +105,8 @@ updated_date: '2026-09-29 15:21'
 ## 저장소 반영 근거
 
 - [TASK-27](../tasks/task-27%20-%20Backlog-%EC%A0%84%EB%A9%B4-%EC%A0%84%ED%99%98-%EC%A0%80%EC%9E%A5%EC%86%8C-%EB%B0%98%EC%98%81%C2%B7main-%EB%B3%91%ED%95%A9.md) — [doc-45](releases/doc-45%20-%20backlog-publication-20260930.md)
+
+## 구조화 이관 보완 근거
+
+- [TASK-28](../tasks/task-28%20-%20Backlog-%EC%9D%B4%EA%B4%80%EC%9D%98-%EA%B8%B0%EB%8A%A5-%EA%B8%B0%EC%A4%80%C2%B7%EA%B2%B0%EC%A0%95%C2%B7%ED%9B%84%EC%86%8D-%EC%97%B0%EA%B2%B0-%EB%B3%B4%EC%99%84.md) — [doc-46](migration/doc-46%20-%20backlog-migration-repair-20261002.md)
+- [decision-13 — R-09 집계 RPC 선택](../decisions/decision-13%20-%20R-09-stats-aggregate-rpc.md)

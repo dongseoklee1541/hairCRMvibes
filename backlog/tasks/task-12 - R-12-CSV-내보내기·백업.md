@@ -4,7 +4,7 @@ title: R-12 CSV 내보내기·백업
 status: Done
 assignee: []
 created_date: '2026-09-29 14:45'
-updated_date: '2026-09-29 14:53'
+updated_date: '2026-10-02 06:50'
 labels:
   - R-12
   - formal-feature
@@ -40,7 +40,12 @@ ordinal: 12000
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [x] #1 연결된 원문 문서의 명시된 구현·release 범위에 완료 근거가 있으며 원래 날짜·commit·환경을 추적할 수 있다.
+- [x] #1 owner가 /settings에서 민감정보 보관 책임을 확인한 뒤 고객 CSV와 예약 CSV를 각각 내려받을 수 있고 미확인 상태에서는 다운로드 버튼을 비활성화한다.
+- [x] #2 /api/export는 사용자 JWT·owner profile·기존 RLS를 검사한다. staff는 403, 미인증/만료 세션은 401, 허용하지 않은 데이터셋은 400으로 거부하고 service-role/secret key를 사용하지 않는다.
+- [x] #3 고객/예약 필드를 원문 CSV 계약의 고정 순서로 내보내고 UTF-8 BOM·CRLF·셀 큰따옴표 인용 및 spreadsheet formula injection 방어를 적용한다.
+- [x] #4 created_at,id 순서의 1000행 페이지를 순차 스트리밍한다. 첫 페이지 오류는 JSON으로 반환하고 임의 100000행 상한을 두지 않는다. 여러 조회의 완전한 DB 시점 snapshot은 보장하지 않는다.
+- [x] #5 응답을 private no-store로 제공하고 고객 데이터를 서버 파일·localStorage·IndexedDB·Cache Storage에 저장하지 않는다. 지원 브라우저는 파일 스트리밍을 사용하고 Blob fallback은 URL을 해제한다.
+- [x] #6 공통 KST helper로 파일명 날짜를 생성하고 전체 CSV에 연락처·메모가 포함된다는 안내와 원문의 암호화 보관·최대30일 취급 기준을 제공한다.
 <!-- AC:END -->
 
 ## Implementation Plan
@@ -68,6 +73,10 @@ ordinal: 12000
 - File System Access API가 없는 모바일·Safari 계열은 Blob fallback을 사용하므로 매우 큰 파일에서 클라이언트 메모리 사용량이 커질 수 있습니다.
 - 브라우저 다운로드 이후 파일의 암호화·접근통제·삭제주기는 운영자와 기기 정책의 책임이며 애플리케이션이 강제하지 못합니다.
 - `main` merge와 Production 배포·공개/API 경계 검증은 완료했습니다. Production 실제 owner 다운로드는 민감정보 파일 생성 책임 때문에 의도적으로 실행하지 않았습니다.
+
+2026-10-02 이관 보완: 원문의 기능 조건을 native 완료 기준으로 복원했다. 체크는 다음 기존 구현/검증 기록의 재사용이며 오늘 새 앱/DB/브라우저 검증을 실행했다는 뜻이 아니다.
+근거: doc-14 목표·권한/보관·CSV 계약과 전용 Preview 통합 근거(2026-07-13 PR #22); doc-33 CSV 취급 절차.
+미검증 경계: 실제 Production CSV 생성은 TASK-23, 대량/Blob 부하는 TASK-24 대기다.
 <!-- SECTION:NOTES:END -->
 
 ## Final Summary

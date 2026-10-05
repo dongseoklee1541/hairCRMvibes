@@ -1,0 +1,48 @@
+{
+  "verification_date_client": "2026-10-05 Asia/Seoul",
+  "ok": true,
+  "failures": [],
+  "scope_files": [
+    "backlog/decisions/decision-13 - R-09-stats-aggregate-rpc.md",
+    "backlog/docs/doc-42 - backlog-catalog.md",
+    "backlog/docs/migration/doc-46 - backlog-migration-repair-20261002.md",
+    "backlog/docs/operations/doc-41 - backlog-workflow.md",
+    "backlog/tasks/task-1 - R-01-RLS-정책-정리.md",
+    "backlog/tasks/task-10 - R-10-직원-초대·역할-관리-구현과-배포.md",
+    "backlog/tasks/task-12 - R-12-CSV-내보내기·백업.md",
+    "backlog/tasks/task-13 - R-13-예약-고객-검색·빠른-등록.md",
+    "backlog/tasks/task-24 - 예약·시간대·CSV-부하와-환경-검증-공백.md",
+    "backlog/tasks/task-28 - Backlog-이관의-기능-기준·결정·후속-연결-보완.md",
+    "backlog/tasks/task-8 - R-08-서비스-마스터와-예약-snapshot.md",
+    "backlog/tasks/task-9 - R-09-통계-고도화.md"
+  ],
+  "source_documents": 40,
+  "source_bytes": 445606,
+  "code_blocks": 24,
+  "table_rows": 390,
+  "local_links": 1404,
+  "counts": {
+    "tasks": 28,
+    "docs": 46,
+    "decisions": 13,
+    "drafts": 3
+  },
+  "functional_criteria": {
+    "TASK-9": 5,
+    "TASK-10": 8,
+    "TASK-12": 6,
+    "TASK-13": 6
+  },
+  "existing_task_status_priority_assignee_labels_dates_preserved": true,
+  "original_tracked_files_outside_scope_unchanged": true,
+  "old_decisions_preserved": 12,
+  "old_source_manifest_unchanged": true,
+  "legacy_audit": {
+    "returncode": 1,
+    "known_fixed_count_difference": [
+      "decision count"
+    ],
+    "explanation": "The initial 2026-09-29 one-time audit expects exactly 12 decisions. This repair explicitly adds decision-13; all other historical checks pass, and current decision/source/status/links are checked above."
+  },
+  "tracker_status": "Done"
+}

@@ -3,7 +3,7 @@ id: doc-41
 title: backlog-workflow
 type: guide
 created_date: '2026-09-29 14:45'
-updated_date: '2026-09-29 15:04'
+updated_date: '2026-10-02 06:50'
 ---
 # Backlog.md 작업·문서 관리 절차
 
@@ -109,3 +109,13 @@ task notes에는 실행일·branch/HEAD·대상 환경·명령·실제 결과·�
 공식 자료는 설치 버전 tag를 기준으로 확인했다: [README](https://github.com/MrLesk/Backlog.md/blob/v1.53.0/README.md), [CLI](https://github.com/MrLesk/Backlog.md/blob/v1.53.0/CLI-INSTRUCTIONS.md), [config](https://github.com/MrLesk/Backlog.md/blob/v1.53.0/ADVANCED-CONFIG.md), [branch/task loader](https://github.com/MrLesk/Backlog.md/blob/v1.53.0/src/core/task-loader.ts), [filesystem/locks](https://github.com/MrLesk/Backlog.md/blob/v1.53.0/src/file-system/operations.ts). CLI help와 instructions는 로컬 binary로 실제 확인했다.
 
 관련 문서: [전체 탐색](../doc-42%20-%20backlog-catalog.md), [이관표](../migration/doc-43%20-%20backlog-migration-20260929.md)
+
+## 이관의 구조화 점검 — 2026-10-02
+
+문서 보존과 task/decision/후속 연결을 함께 대조한다. 기능 설명이 비어 있지 않은지, 완료 기준이 기능의 관찰 가능한 동작·권한·오류 조건을 담는지 확인한다. 완료 근거의 존재만으로 기능 기준을 대체하지 않는다. 체크한 기준마다 원래 검증일·환경·증거와 후속 미검증 경계를 연결한다.
+
+원문의 확정 선택·비교 대안·이유·제약은 native decision과 관련 task에서 찾을 수 있어야 한다. 뒤에 바뀐 계약은 최신 결정/문서를 직접 연결하고 원래 계약은 날짜가 있는 이력으로 유지한다. 완료 구현 뒤의 독립 후속 조건은 기존 task 또는 별도 후속 task에 상태·의존관계·원문 근거를 연결하되 등록을 실행 승인으로 취급하지 않는다.
+
+최초 이관의 output/backlog-migration-20260929/verify.py는 당시 task 상태와 결정 개수 등 고정 조건을 가진 일회성 감사다. 새 decision 추가를 누락으로 오인하지 않도록 현재 승인 변경 목록과 기준 시점을 함께 비교한다. 본문/ID/체크 개수 통과만으로 의미상 이관 완료를 판정하지 않는다.
+
+검증된 보완 사례와 근거: [doc-46](../migration/doc-46%20-%20backlog-migration-repair-20261002.md)
